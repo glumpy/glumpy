@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quickstart &mdash; glumpy v2.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="glumpy v2.0 documentation" href="index.html"/>
+        <link rel="next" title="Modern OpenGL" href="dev-modern-gl.html"/>
+        <link rel="prev" title="Installation" href="user-install.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> glumpy</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="user-install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#packages-requirements">Packages requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#backends-requirements">Backends requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#hardware-requirements">Hardware requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#id6">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hello-world">Hello World!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#displaying-an-image">Displaying an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#my-first-shader">My first shader</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev-modern-gl.html">Modern OpenGL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev-modern-gl.html#shaders">Shaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev-modern-gl.html#buffers">Buffers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev-modern-gl.html#uniform-attribute-varying">Uniform, attribute, varying</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev-modern-gl.html#transformations">Transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev-modern-gl.html#learning-modern-opengl">Learning modern OpenGL</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">glumpy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Quickstart</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/user-quickstart.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="hello-world">
+<h2>Hello World!<a class="headerlink" href="#hello-world" title="Permalink to this headline">¶</a></h2>
+<p>We&#8217;ll begin with the requisite &#8220;Hello, World&#8221; introduction. This program will
+open a window with some text in it and wait to be closed. You can find the
+entire program in the <a class="reference external" href="github.com">hello_world.py file</a>.</p>
+<p>Begin by importing the glumpy package:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">glumpy</span>
+</pre></div>
+</div>
+<p>Create a Window by calling its default constructor. The window will be visible
+as soon as it&#8217;s created, and will have reasonable default values for all its
+parameters:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">glumpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To display the text, we&#8217;ll create a Label. Keyword arguments are used to set
+the font, position and anchorage of the label:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">font</span>  <span class="o">=</span> <span class="n">glumpy</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="s">&quot;Vera.ttf&quot;</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">glumpy</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s">u&quot;Hello World !&quot;</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span>
+                          <span class="n">anchor_x</span> <span class="o">=</span> <span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">anchor_y</span> <span class="o">=</span> <span class="s">&#39;center&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An on_draw event is dispatched to the window to give it a chance to redraw its
+contents. glumpy provides several ways to attach event handlers to objects; a
+simple way is to use a decorator:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Within the on_draw handler the window is cleared to the default background
+color (black), and the label is drawn.</p>
+<p>Finally, call:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">glumpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To let glumpy respond to application events such as the mouse and
+keyboard. Your event handlers will now be called as required, and the <em>run</em>
+method will return only when all application windows have been closed.</p>
+</div>
+<div class="section" id="displaying-an-image">
+<h2>Displaying an image<a class="headerlink" href="#displaying-an-image" title="Permalink to this headline">¶</a></h2>
+<p>In this example we&#8217;ll load an image from the examples data directory and
+display it within the window while enforcing the image aspect such that
+proportion of the image are conserved when user resize the window.
+You can find the entire program in the <a class="reference external" href="github.com">image.py file</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">glumpy</span>
+
+<span class="n">img</span> <span class="o">=</span> <span class="n">glumpy</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s">&quot;data/lena.png&quot;</span><span class="p">,</span>
+                            <span class="n">anchor_x</span> <span class="o">=</span> <span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">anchor_y</span> <span class="o">=</span> <span class="s">&#39;center&#39;</span><span class="p">)</span>
+<span class="n">aspect</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">width</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">glumpy</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">aspect</span> <span class="o">=</span> <span class="n">aspect</span><span class="p">)</span>
+
+<span class="nd">@window.event</span>
+<span class="k">def</span> <span class="nf">on_draw</span><span class="p">():</span>
+   <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+   <span class="k">with</span> <span class="n">window</span><span class="o">.</span><span class="n">viewport</span><span class="p">():</span>
+       <span class="n">img</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="my-first-shader">
+<h2>My first shader<a class="headerlink" href="#my-first-shader" title="Permalink to this headline">¶</a></h2>
+<p>The previous example made implicit use of shaders to display things on
+screen. However, the real power of modern OpenGL lies in the possibility of
+writing custom shaders to draw virutally anything. We&#8217;ll now see how to write a
+shader from scratch. Let&#8217;s start by creating a window as usual.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">glumpy.gl</span> <span class="kn">as</span> <span class="nn">gl</span>
+<span class="kn">import</span> <span class="nn">glumpy.app</span> <span class="kn">as</span> <span class="nn">app</span>
+<span class="kn">import</span> <span class="nn">glumpy.gloo</span> <span class="kn">as</span> <span class="nn">gloo</span>
+
+<span class="n">window</span> <span class="o">=</span> <span class="n">Window</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>What has not be explained previously is that the position on the window surface
+can be accessed in many different ways, until now, we have been using an
+implicit normalized representation of the surface that goes from [-1,-1] to
+[+1,+1]. This means that if we want to draw something, we need to have our
+coordinates transformed such that they fit within this range. Suppose we want
+to display a simple quad that cover the whole window:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">quad</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>We need to tell OpenGL how to display this object and we thus need a program
+that is composed of a <strong>vertex shader</strong> and a <strong>fragment shader</strong>. Let&#8217;s write first
+the vertex shader that tell OpenGL how to transform vertex coordinates into a
+normalized coordinates (easy since our quad is already normalized).</p>
+<div class="code highlight-python"><div class="highlight"><pre>vec2 attribute position;
+void main()
+{
+    gl_Position = vec4(position, 0.0, 1.0);
+}
+</pre></div>
+</div>
+<p>The first line declares that a vertex is made of one attribute that is a vector
+of two floats and named <tt class="docutils literal"><span class="pre">position</span></tt> such that it can be used in the main
+function. <tt class="docutils literal"><span class="pre">gl_Position</span></tt> is a special keyword of GLSL that tell the vertex
+shader the final position of the vertex. It is a four-dimensions vector because
+OpenGL uses quaternion. We can now consider the fragment shader in order to
+tell OpenGL the color to draw each fragment that will be contained within our
+object.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">At this point, we still don&#8217;t known what our shape will be, we only
+have some vertices placed on screen.</p>
+</div>
+<div class="code highlight-python"><div class="highlight"><pre>void main()
+{
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+}
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">gl_FragColor</span></tt> is another special GLSL keyword that contains the final
+fragment (=pixel) color and uses an RGBA normalized encoding. In the program
+above, any fragment will be white. We&#8217;re almost done and we need now to create
+a program:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">program</span> <span class="o">=</span> <span class="n">gloo</span><span class="o">.</span><span class="n">Program</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span> <span class="n">fragment</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and we need to fill the attributes. The most simple and straightforward way to
+do that is:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">program</span><span class="p">[</span><span class="s">&#39;position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">quad</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dev-modern-gl.html" class="btn btn-neutral float-right" title="Modern OpenGL"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="user-install.html" class="btn btn-neutral" title="Installation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Nicolas P. Rougier.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <h4 class="sidebar-box-heading">Versions</h4>
+<div class="well sidebar-box">
+    <ul class="nav nav-list">
+        <script src="_static/js/docversions.js"></script>
+        <script type="text/javascript">
+            insert_version_links();
+        </script>
+    </ul>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

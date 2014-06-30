@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Modern OpenGL &mdash; glumpy v2.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="glumpy v2.0 documentation" href="index.html"/>
+        <link rel="prev" title="Quickstart" href="user-quickstart.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> glumpy</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="user-install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#packages-requirements">Packages requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#backends-requirements">Backends requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#hardware-requirements">Hardware requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-install.html#id6">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user-quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user-quickstart.html#hello-world">Hello World!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-quickstart.html#displaying-an-image">Displaying an image</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Modern OpenGL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#shaders">Shaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#buffers">Buffers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#uniform-attribute-varying">Uniform, attribute, varying</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transformations">Transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#learning-modern-opengl">Learning modern OpenGL</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">glumpy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Modern OpenGL</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/dev-modern-gl.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="modern-opengl">
+<h1>Modern OpenGL<a class="headerlink" href="#modern-opengl" title="Permalink to this headline">¶</a></h1>
+<p>OpenGL has evolved over the years and a big change occured in 2003 with the
+introduction of the dynamic pipeline (OpenGL 2.0), i.e. the use of shaders that
+allow to have direct access to the GPU.</p>
+<img alt="_images/gl-history.png" src="_images/gl-history.png" />
+<p>Before this version, OpenGL was using a fixed pipeline and you may still find a
+lot of tutorials that still use this fixed pipeline. This introduces some
+radical changes in the way of programming OpenGL and makes it both more
+difficult to program but far more powerful.</p>
+<div class="section" id="shaders">
+<h2>Shaders<a class="headerlink" href="#shaders" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The shader language is called glsl.  There are many versions that goes from 1.0
+to 1.5 and subsequents version get the number of OpenGL version. Last version
+is 4.4 (February 2014).</p>
+</div>
+<p>Shaders are pieces of program (using a C-like language) that are build onto the
+GPU and executed during the rendering pipeline. Depending on the nature of the
+shaders (there are many types depending on the version of OpenGL you&#8217;re using),
+they will act at different stage of the rendering pipeline. To simplify this
+tutorial, we&#8217;ll use only <strong>vertex</strong> and <strong>fragment</strong> shader as shown below:</p>
+<img alt="_images/gl-pipeline.png" src="_images/gl-pipeline.png" />
+<p>A vertex shader acts on vertices and is supposed to output the vertex
+<strong>position</strong> (→ <tt class="docutils literal"><span class="pre">gl_Position</span></tt>) on the viewport (i.e. screen). A fragment shader
+acts at the fragment level and is supposed to output the <strong>color</strong>
+(→ <tt class="docutils literal"><span class="pre">gl_FragColor</span></tt>) of the fragment. Hence, a minimal vertex shader is:</p>
+<div class="highlight-python"><div class="highlight"><pre>void main()
+{
+    gl_Position = vec4(0.0,0.0,0.0,1.0);
+}
+</pre></div>
+</div>
+<p>while a minimal fragment shader would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>void main()
+{
+    gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+}
+</pre></div>
+</div>
+<p>These two shaders are not very useful since the first will transform any
+vertex into the null vertex while the second will output the black color for
+any fragment. We&#8217;ll see later how to make them to do more useful things.</p>
+<p>One question remains: when are those shaders exectuted exactly ? The vertex
+shader is executed for each vertex that is given to the rendering pipeline
+(we&#8217;ll see what does that mean exactly later) and the fragment shader is
+executed on each fragment that is generated after the vertex stage. For
+example, in the simple figure above, the vertex would be called 3 times, once
+for each vertex (1,2 and 3) while the fragment shader would be executed 21
+times, once for each fragment (pixel).</p>
+</div>
+<div class="section" id="buffers">
+<h2>Buffers<a class="headerlink" href="#buffers" title="Permalink to this headline">¶</a></h2>
+<p>We explained earlier that the vertex shader act on the vertices. The question
+is thus where do those vertices comes from ? The idea of modern GL is that
+vertices are stored on the GPU and needs to be uploaded (only once) to the GPU
+before rendering. The way to do that is to build buffers onto the CPU and to
+send them onto the GPU. If your data does not change, no need to upload it
+again. That is the big difference with the previous fixed pipeline where data
+were uploaded at each rendering call (only display lists were built into GPU
+memory).</p>
+<p>But what is the structure of a vertex ? OpenGL does not assume anything about
+your vertex structure and you&#8217;re free to use as many information you may need
+for each vertex. The only condition is that all vertices from a buffer have the
+same structure (possibly with different content). This again is a big
+difference with the fixed pipeline where OpenGL was doing a lot of complex
+rendering stuff for you (projections, lighting, normals, etc.) with an implicit
+fixed vertex structure. Now you&#8217;re on your own...</p>
+<ul>
+<li><p class="first"><strong>Good news</strong> is that you&#8217;re now free to do virtually anything you want.</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Bad news</strong> is that you have to program everything, even the most basic</dt>
+<dd><p class="first last">things like projection and lighting.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Let&#8217;s take a simple example of a vertex structure where we want each vertex to
+hold a position and a color. The easiest way to do that in python is to use a
+structured array using the <a class="reference external" href="http://www.numpy.org">numpy</a> library:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="s">&quot;position&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                <span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">,</span>    <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>We just created a CPU buffer with 4 vertices, each of them having a
+<tt class="docutils literal"><span class="pre">position</span></tt> (3 floats for x,y,z coordinates) and a <tt class="docutils literal"><span class="pre">color</span></tt> (4 floats for
+red, blue, green and alpha channels). Note that we explicitely chose to have 3
+coordinates for <tt class="docutils literal"><span class="pre">position</span></tt> but we may have chosen to have only 2 if were to
+work in two-dimensions only. Same holds true for <tt class="docutils literal"><span class="pre">color</span></tt>. We could have used
+only 3 channels (r,g,b) if we did not want to use transparency. This would save
+some bytes for each vertex. Of course, for 4 vertices, this does not really
+matter but you have to realize it <strong>will matter</strong> if you data size grows up to
+one or ten million vertices.</p>
+</div>
+<div class="section" id="uniform-attribute-varying">
+<h2>Uniform, attribute, varying<a class="headerlink" href="#uniform-attribute-varying" title="Permalink to this headline">¶</a></h2>
+<p>At this point in the tutorial, we know what are shaders and buffers but we
+still need to explain how they may be connected together. So, let&#8217;s consider
+again our CPU buffer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="s">&quot;position&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                                <span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">,</span>    <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>We need to tell the vertex shader that it will have to handle vertices where a
+position is a tuple of 3 floats and color is a tuple of 4 floats. This is
+precisely what attributes are meant for. Let us change slightly our previous
+vertex shader:</p>
+<div class="highlight-python"><div class="highlight"><pre>attribute vec2 position;
+attribute vec4 color;
+void main()
+{
+    gl_Position = vec4(position, 0.0, 1.0);
+}
+</pre></div>
+</div>
+<p>This vertex shader now expects a vertex to possess 2 attributes, one named
+<tt class="docutils literal"><span class="pre">position</span></tt> and one named <tt class="docutils literal"><span class="pre">color</span></tt> with specified types (vec3 means tuple of
+3 floats and vec4 means tuple of 4 floats). It is important to note that even
+if we labeled the first attribute <tt class="docutils literal"><span class="pre">position</span></tt>, this attribute is not yet bound
+to the actual <tt class="docutils literal"><span class="pre">position</span></tt> in the numpy array. We&#8217;ll need to do it explicitly
+at some point in our program and there is no automagic that will bind the numpy
+array field to the right attribute, you&#8217;ll have to do it yourself, but we&#8217;ll
+see that later.</p>
+<p>The second type of information we can feed the vertex shader are the uniforms
+that may be considered as constant values (across all the vertices). Let&#8217;s say
+for example we want to scale all the vertices by a constant factor <tt class="docutils literal"><span class="pre">scale</span></tt>,
+we would thus write:</p>
+<div class="highlight-python"><div class="highlight"><pre>uniform float scale;
+attribute vec2 position;
+attribute vec4 color;
+void main()
+{
+    gl_Position = vec4(position*scale, 0.0, 1.0);
+}
+</pre></div>
+</div>
+<p>Last type is the varying type that is used to pass information between the
+vertex stage and the fragment stage. So let us suppose (again) we want to pass
+the vertex color to the fragment shader, we now write:</p>
+<div class="highlight-python"><div class="highlight"><pre>uniform float scale;
+attribute vec2 position;
+attribute vec4 color;
+varying vec4 v_color;
+
+void main()
+{
+    gl_Position = vec4(position*scale, 0.0, 1.0);
+    v_color = color;
+}
+</pre></div>
+</div>
+<p>and then in the fragment shader, we write:</p>
+<div class="highlight-python"><div class="highlight"><pre>varying vec4 v_color;
+
+void main()
+{
+    gl_FragColor = v_color;
+}
+</pre></div>
+</div>
+<p>The question is what is the value of <tt class="docutils literal"><span class="pre">v_color</span></tt> inside the fragment shader ?
+If you look at the figure that introduced the gl pipleline, we have 3 vertices and 21
+fragments. What is the color of each individual fragment ?</p>
+<p>The answer is <em>the interpolation of all 3 vertices color</em>. This interpolation
+is made using distance of the fragment to each individual vertex. This is a
+very important concept to understand. Any varying value is interpolated between
+the vertices that compose the elementary item (mostly, line or triangle).</p>
+</div>
+<div class="section" id="transformations">
+<h2>Transformations<a class="headerlink" href="#transformations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="projection-matrix">
+<h3>Projection matrix<a class="headerlink" href="#projection-matrix" title="Permalink to this headline">¶</a></h3>
+<p>We need first to define what do we want to view, that is, we need to define a
+viewing volume such that any object within the volume (even partially) will be
+rendered while objects outside won&#8217;t. On the image below, the yellow and red
+spheres are within the volume while the green one is not and does not appear on
+the projection.</p>
+<img alt="_images/ViewFrustum.png" src="_images/ViewFrustum.png" />
+<p>There exist many different ways to project a 3D volume onto a 2D screen but
+we&#8217;ll only use the <a class="reference external" href="https://en.wikipedia.org/wiki/Perspective_(graphical)">perspective projection</a> (distant objects
+appear smaller) and the <a class="reference external" href="https://en.wikipedia.org/wiki/Orthographic_projection_(geometry)">orthographic projection</a> which is a
+parallel projection (distant objects have the same size as closer ones) as
+illustrated on the image above. Until now (previous section), we have been
+using implicitly an orthographic projection in the z=0 plane.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In older versions of OpenGL, these matrices were available as <a class="reference external" href="https://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml">glFrustum</a> and <a class="reference external" href="https://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml">glOrtho</a>.</p>
+</div>
+<p>Depending on the projection we want, we will use one of the two projection matrices
+below:</p>
+<p><strong>Perspective matrix</strong></p>
+<img alt="_images/frustum-matrix.png" src="_images/frustum-matrix.png" />
+<p><strong>Orthographic matrix</strong></p>
+<img alt="_images/ortho-matrix.png" src="_images/ortho-matrix.png" />
+<p>At this point, it is not necessary to understand how these matrices were built.
+Suffice it to say they are standard matrices in the 3D world. Both suppose the
+viewer (=camera) is located at position (0,0,0) and is looking in the direction
+(0,0,1).</p>
+<p>There exists a second form of the perpective matrix that might be easier to
+manipulate. Instead of specifying the right/left/top/bottom planes, we&#8217;ll use
+field of view in the horizontal and vertical direction:</p>
+<p><strong>Perspective matrix</strong></p>
+<img alt="_images/perspective-matrix.png" src="_images/perspective-matrix.png" />
+<p>where <tt class="docutils literal"><span class="pre">fovy</span></tt> specifies the field of view angle, in degrees, in the y
+direction and <tt class="docutils literal"><span class="pre">aspect</span></tt> specifies the aspect ratio that determines the field
+of view in the x direction.</p>
+</div>
+<div class="section" id="model-and-view-matrices">
+<h3>Model and view matrices<a class="headerlink" href="#model-and-view-matrices" title="Permalink to this headline">¶</a></h3>
+<p>We are almost done with matrices. You may have guessed that the above matrix
+requires the viewing volume to be in the z direction. We could design our 3D
+scene such that all objects are withing this direction but it would not be very
+convenient. So instead, we&#8217;ll use a view matrix that will map the the world
+space to camera space. This is pretty much as if we were orienting the camera
+at a given position and look toward a given direction. In the meantime, we can
+further refine the whole pipeline by providing a model matrix that will maps
+the object&#8217;s local coordinate space into world space. For example, this wil be
+useful for rotating an object around its center. To sum up, we need:</p>
+<ul class="simple">
+<li><strong>Model matrix</strong> maps from an object&#8217;s local coordinate space into world space</li>
+<li><strong>View matrix</strong> maps from world space to camera space</li>
+<li><strong>Projection matrix</strong> maps from camera to screen space</li>
+</ul>
+</div>
+</div>
+<div class="section" id="learning-modern-opengl">
+<h2>Learning modern OpenGL<a class="headerlink" href="#learning-modern-opengl" title="Permalink to this headline">¶</a></h2>
+<p>There exist a lot of resources on the web related to OpenGL. I only mention
+here a few of them that deals with the dynamic rendering pipeline. If you&#8217;ve
+found other resources, make sure they deal with the dynamic rendering pipeline
+and not the fixed one.</p>
+<div class="section" id="an-intro-to-modern-opengl">
+<h3>An intro to modern OpenGL<a class="headerlink" href="#an-intro-to-modern-opengl" title="Permalink to this headline">¶</a></h3>
+<p>OpenGL has been around a long time, and from reading all the accumulated layers
+of documentation out there on the Internet, it&#8217;s not always clear what parts
+are historic and what parts are still useful and supported on modern graphics
+hardware. It&#8217;s about time for a new OpenGL <a class="reference external" href="http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Table-of-Contents.html">introduction that</a>
+walks through the parts that are still relevant today.</p>
+</div>
+<div class="section" id="learning-modern-3d-graphics-programming">
+<h3>Learning Modern 3D Graphics Programming<a class="headerlink" href="#learning-modern-3d-graphics-programming" title="Permalink to this headline">¶</a></h3>
+<p>This <a class="reference external" href="http://www.arcsynthesis.org/gltut/">book</a> is intended to teach you how
+to be a graphics programmer. It is not aimed at any particular graphics field;
+it is designed to cover most of the basics of 3D rendering. So if you want to
+be a game developer, a CAD program designer, do some computer visualization, or
+any number of things, this book can still be an asset for you. This does not
+mean that it covers everything there is about 3D graphics. Hardly. It tries to
+provide a sound foundation for your further exploration in whatever field of 3D
+graphics you are interested in.</p>
+</div>
+<div class="section" id="opengl-es-2-0-documentation">
+<h3>OpenGL ES 2.0 documentation<a class="headerlink" href="#opengl-es-2-0-documentation" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://www.khronos.org/opengles/2_X/">OpenGL ES 2.0</a> is defined relative to
+the OpenGL 2.0 specification and emphasizes a programmable 3D graphics pipeline
+with the ability to create shader and program objects and the ability to write
+vertex and fragment shaders in the OpenGL ES Shading Language. Vispy is based
+on OpenGL ES 2.0 because it give access to the programmable pipeline while
+keeping overall complexity tractable.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="user-quickstart.html" class="btn btn-neutral" title="Quickstart"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Nicolas P. Rougier.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <h4 class="sidebar-box-heading">Versions</h4>
+<div class="well sidebar-box">
+    <ul class="nav nav-list">
+        <script src="_static/js/docversions.js"></script>
+        <script type="text/javascript">
+            insert_version_links();
+        </script>
+    </ul>
+</div>
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
