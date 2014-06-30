@@ -18,5 +18,9 @@ class OrthographicProjection(Transform):
         Transform.__init__(self, "./orthographic_projection.glsl")
 
     def on_resize(self, width, height):
-        name = self.lookup("projection")
-        self.program[name] = glm.ortho(0, width, 0, height, +1,-1)
+        self._projection = glm.ortho(0, width, 0, height, +1,-1)
+        self.update("projection")
+
+    @property
+    def projection(self):
+        return self._projection

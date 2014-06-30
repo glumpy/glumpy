@@ -40,9 +40,9 @@ transform = gp.transforms.OrthographicProjection()
 program = gp.gloo.Program(transform.code + vertex, fragment, count=4)
 
 # We attach the program to the transform
-transform.program = program
+transform.attach(program)
 
 # We attach the transform to the window
 window.push_handlers(transform)
 
-app.run()
+gp.run()

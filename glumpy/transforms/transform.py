@@ -15,7 +15,7 @@ class Transform(EventDispatcher):
     # Internal id counter to name transforms
     _idcount = 0
 
-    def __init__(self, source_file):
+    def __init__(self, source_file="identity.glsl"):
 
         # Unique transform identified used for name mangling
         Transform._idcount += 1
