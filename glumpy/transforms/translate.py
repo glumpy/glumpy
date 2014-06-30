@@ -11,25 +11,12 @@ from glumpy.transforms.transform import Transform
 class Translate(Transform):
     """
     Translation transform
-
-    Parameters
-    ----------
-
-    translate : float or tuple
-       Translation factor for x,y,z coordinates
     """
 
-    def __init__(self, translate=(0.0,0.0,0.0)):
-        Transform.__init__(self, "./translate.glsl")
-        self._translate = translate
-
-    def forward(self, P):
-        """ Forward transformation """
-        return P + self._translate
-
-    def inverse(self, P):
-        """ Inverse transformation """
-        return P - self._translate
+    def __init__(self, translate=(0,0,0)):
+        Transform.__init__(self, "translate.glsl")
+        self._translate = np.zeros(3,np.float32)
+        self._translate[...] = translate
 
     @property
     def translate(self):
@@ -37,6 +24,5 @@ class Translate(Transform):
 
     @translate.setter
     def translate(self, value):
-        self._translate = value
-        if self._program:
-            self._program[self.lookup("translate")] = self._translate
+        self._translate[...] = value
+        self.update("translate")

@@ -46,7 +46,7 @@ transform = NormalizedAspect()
 program = gp.gloo.Program(transform.code + vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 
-transform.program = program
+transform.attach(program)
 window.push_handlers(transform)
 
 gp.run()

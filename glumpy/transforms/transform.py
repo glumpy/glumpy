@@ -22,7 +22,7 @@ class Transform(EventDispatcher):
         self._id = Transform._idcount
 
         # No program attached yet
-        self._program = None
+        self._programs = []
 
         directory = os.path.dirname(os.path.realpath(__file__))
         self._source_file = os.path.join(directory,source_file)
@@ -76,22 +76,34 @@ class Transform(EventDispatcher):
         return self._next
 
     @property
-    def program(self):
-        return self._program
+    def programs(self):
+        return self._programs
 
 
-    @program.setter
-    def program(self, program):
-        self._program = program
+    def update(self, name):
+        for program in self._programs:
+            program[self.lookup(name)] = getattr(self, name)
+
+    def attach(self, program):
+        if program in self._programs:
+            return
+
+        self._programs.append(program)
 
         # Update variables in program
         for symbol in self._table.keys():
             if symbol not in ["forward", "inverse"] and hasattr(self, symbol):
-                self._program[self.lookup(symbol)] = getattr(self, symbol)
+                for program in self._programs:
+                    program[self.lookup(symbol)] = getattr(self, symbol)
 
         # Update variables in next transforms
         if self.next:
-            self.next.program = program
+            self.next.attach(program)
+
+    def detach(self, program):
+        programs = self._programs
+        if program in programs:
+            del programs[programs.index(program)]
 
 
 

@@ -11,42 +11,12 @@ from glumpy.transforms.transform import Transform
 class LogScale(Transform):
     """
     Logarithmic scaling transform
-
-    Parameters
-    ----------
-
-    base : floar or tuple
-       Logartihmic base for x,y,z
     """
 
-    def __init__(self, base):
-        Transform.__init__(self)
-        self._base = base
-
-    def forward(self, P):
-        """ Forward transformation """
-
-        shape = P.shape
-        if len(shape) == 1:
-            P = P.reshape(shape[0],1)
-        R = P.copy()
-
-        for i in range(R.shape[-1]):
-            if self._base[i] > 1.0:
-                R[...,i] = np.log(P[...,i]) / np.log(self._base[i])
-        return R
-
-    def inverse(self, P):
-        """ Inverse transformation """
-        shape = P.shape
-        if len(shape) == 1:
-            P = P.reshape(shape[0],1)
-        R = P.copy()
-
-        for i in range(R.shape[-1]):
-            if self._base[i] > 1.0:
-                R[...,i] = np.power(self._base[i], P[...,i])
-        return R
+    def __init__(self, base = (0,0,0)):
+        Transform.__init__(self, "log_scale.glsl")
+        self._base = np.zeros(3, np.float32)
+        self._base[...] = base
 
     @property
     def base(self):
@@ -54,6 +24,5 @@ class LogScale(Transform):
 
     @base.setter
     def base(self, value):
-        self._base = value
-        if self._program:
-            self._program[self.lookup("base")] = self._base
+        self._base[...] = value
+        self.update("base")

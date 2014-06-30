@@ -13,17 +13,10 @@ class LinearScale(Transform):
     Linear scaling transform
     """
 
-    def __init__(self, scale=(1.0,1.0,1.0)):
-        Transform.__init__(self, "./linear_scale.glsl")
-        self._scale = np.array(scale)
-
-    def forward(self, P):
-        """ Forward transformation """
-        return P * self._scale
-
-    def inverse(self, P):
-        """ Inverse transformation """
-        return P / self._scale
+    def __init__(self, scale=(1,1,1)):
+        Transform.__init__(self, "linear_scale.glsl")
+        self._scale = np.zeros(3,np.float32)
+        self._scale[...] = scale
 
     @property
     def scale(self):
@@ -31,5 +24,5 @@ class LinearScale(Transform):
 
     @scale.setter
     def scale(self, value):
-        self._scale = value
-        self._program[self.lookup("scale")] = self._scale
+        self._scale[...] = value
+        self.update("scale")
