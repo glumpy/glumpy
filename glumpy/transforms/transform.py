@@ -15,7 +15,7 @@ class Transform(EventDispatcher):
     # Internal id counter to name transforms
     _idcount = 0
 
-    def __init__(self, source_file="identity.glsl"):
+    def __init__(self, source_file=None):
 
         # Unique transform identified used for name mangling
         Transform._idcount += 1
@@ -24,9 +24,13 @@ class Transform(EventDispatcher):
         # No program attached yet
         self._programs = []
 
-        directory = os.path.dirname(os.path.realpath(__file__))
-        self._source_file = os.path.join(directory,source_file)
-        self._source_code = open(self._source_file).read()
+        if source_file is None:
+            self._source_file = None
+            self._source_code = ""
+        else:
+            directory = os.path.dirname(os.path.realpath(__file__))
+            self._source_file = os.path.join(directory,source_file)
+            self._source_code = open(self._source_file).read()
 
         # Default symbol table
         self._table = { "forward" : "forward_%d" % self._id,

@@ -6,9 +6,10 @@
 
 # from polar import Polar
 # from rotate import Rotate
-from translate import Translate
 from log_scale import LogScale
-# from symlog_scale import SymLogScale
+from translate import Translate
+from transform import Transform
 from linear_scale import LinearScale
+# from symlog_scale import SymLogScale
 # from perpective_projection import PerspectiveProjection
 from orthographic_projection import OrthographicProjection

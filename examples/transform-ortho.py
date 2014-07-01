@@ -43,6 +43,6 @@ program = gp.gloo.Program(transform.code + vertex, fragment, count=4)
 transform.attach(program)
 
 # We attach the transform to the window
-window.push_handlers(transform)
+window.attach(transform)
 
 gp.run()

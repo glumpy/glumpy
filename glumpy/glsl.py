@@ -82,10 +82,14 @@ def get_declarations(code, qualifier = ""):
         return variables
 
 def get_uniforms(code):
-    return get_declarations(code, qualifier = "uniform")
+    if len(code):
+        return get_declarations(code, qualifier = "uniform")
+    return []
 
 def get_attributes(code):
-    return get_declarations(code, qualifier = "attribute")
+    if len(code):
+        return get_declarations(code, qualifier = "attribute")
+    return []
 
 def get_functions(source):
     functions = []

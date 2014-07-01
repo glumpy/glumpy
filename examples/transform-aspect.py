@@ -47,6 +47,6 @@ program = gp.gloo.Program(transform.code + vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 
 transform.attach(program)
-window.push_handlers(transform)
+window.attach(transform)
 
 gp.run()
