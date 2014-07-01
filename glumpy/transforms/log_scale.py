@@ -15,14 +15,5 @@ class LogScale(Transform):
 
     def __init__(self, base = (0,0,0)):
         Transform.__init__(self, "log_scale.glsl")
-        self._base = np.zeros(3, np.float32)
-        self._base[...] = base
-
-    @property
-    def base(self):
-        return self._base
-
-    @base.setter
-    def base(self, value):
-        self._base[...] = value
-        self.update("base")
+        self["base"] = np.zeros(3, np.float32)
+        self["base"][...] = base

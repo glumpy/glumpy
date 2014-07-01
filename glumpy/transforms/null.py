@@ -4,7 +4,6 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-import numpy as np
 from glumpy.transforms.transform import Transform
 
 
@@ -14,4 +13,4 @@ class Null(Transform):
     """
 
     def __init__(self):
-        Transform.__init__(self, "./null.glsl")
+        Transform.__init__(self, "null.glsl")

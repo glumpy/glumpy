@@ -12,49 +12,35 @@ import glumpy.gl as gl
 
 
 
-class PanZoom(object):
-    """ A pan zoom transform  """
+class PanZoom(gp.transforms.TranslateScale):
 
     def __init__(self):
-        self.tr_scale     = gp.transforms.LinearScale()
-        self.tr_translate = gp.transforms.Translate()
-        self.tr_all       = self.tr_translate + self.tr_scale
-        self._scale       = np.array([1.,1.,1.])
-        self._translate   = np.array([0.,0.,0.])
-
-    @property
-    def code(self):
-        return self.tr_all.code
-
-    def attach(self, program):
-        self.tr_all.attach(program)
+        gp.transforms.TranslateScale.__init__(self)
+        self.scale     = np.array([1.,1.,1.])
+        self.translate = np.array([0.,0.,0.])
 
     def on_resize(self, width, height):
-        self._width, self._height = float(width), float(height)
-        ratio = self._width/self._height
+        self.width, self.height = float(width), float(height)
+        ratio = self.width/self.height
         if ratio > 1.0:
-            self._aspect = 1.0/ratio, 1.0, 1.0
+            self.aspect = 1.0/ratio, 1.0, 1.0
         else:
-            self._aspect = 1.0, ratio/1.0, 1.0
-        self.tr_scale.scale = self._scale * self._aspect
+            self.aspect = 1.0, ratio/1.0, 1.0
+        self["scale"] = self.scale * self.aspect
 
     def on_mouse_scroll(self, x, y, dx, dy):
-        x = x/(self._width/2) - 1
-        y = 1 - y/(self._height/2)
-        s = np.minimum(np.maximum(self._scale*(1+dy/100), 0.1), 100)
-        t = self._translate
-        t[0] = x - s[0] * (x - t[0]) / self._scale[0]
-        t[1] = y - s[1] * (y - t[1]) / self._scale[1]
-        self._scale = s
-        self._translate = t
-        self.tr_scale.scale = self._scale * self._aspect
-        self.tr_translate.translate = t
+        x = x/(self.width/2) - 1
+        y = 1 - y/(self.height/2)
+        s = np.minimum(np.maximum(self.scale*(1+dy/100), 0.1), 100)
+        self.translate[0] = x - s[0] * (x - self.translate[0]) / self.scale[0]
+        self.translate[1] = y - s[1] * (y - self.translate[1]) / self.scale[1]
+        self.scale = s
+        self["scale"] = self.scale * self.aspect
+        self["translate"] = self.translate
 
     def on_mouse_drag(self, x, y, dx, dy, button):
-        dx /= self._width/2
-        dy /= self._height/2
-        self._translate += (dx,-dy,0) #/self._scale
-        self.tr_translate.translate = self._translate
+        self.translate += (2*dx/self.width, -2*dy/self.height,0)
+        self["translate"] = self.translate
 
 
 vertex = """

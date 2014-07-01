@@ -53,7 +53,7 @@ def remove_comments(code):
 def get_declarations(code, qualifier = ""):
     variables = []
     re_type = re.compile("""
-                         \s*%s                      # Variable qualifier
+                         %s                         # Variable qualifier
                          \s+(?P<type>\w+)           # Variable type
                          \s+(?P<names>[\w,\[\] ]+); # Variable name(s)
                          """ % qualifier, re.VERBOSE)
@@ -67,6 +67,7 @@ def get_declarations(code, qualifier = ""):
     for match in re.finditer(re_type, code):
         gtype =_gtypes[match.group('type')]
         names = match.group('names')
+
         for match in re.finditer(re_names, names):
             name = match.group('name')
             size = match.group('size')
@@ -79,7 +80,8 @@ def get_declarations(code, qualifier = ""):
                 for i in range(size):
                     iname = '%s[%d]' % (name,i)
                     variables.append((iname, gtype))
-        return variables
+    return variables
+
 
 def get_uniforms(code):
     if len(code):

@@ -15,14 +15,5 @@ class Translate(Transform):
 
     def __init__(self, translate=(0,0,0)):
         Transform.__init__(self, "translate.glsl")
-        self._translate = np.zeros(3,np.float32)
-        self._translate[...] = translate
-
-    @property
-    def translate(self):
-        return self._translate
-
-    @translate.setter
-    def translate(self, value):
-        self._translate[...] = value
-        self.update("translate")
+        self["translate"] = np.zeros(3,np.float32)
+        self["translate"][...] = translate

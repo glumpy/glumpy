@@ -17,7 +17,7 @@ class Transform(EventDispatcher):
 
     def __init__(self, source_file=None):
 
-        # Unique transform identified used for name mangling
+        # Unique transform identifier used for name mangling
         Transform._idcount += 1
         self._id = Transform._idcount
 
@@ -35,10 +35,12 @@ class Transform(EventDispatcher):
         # Default symbol table
         self._table = { "forward" : "forward_%d" % self._id,
                         "inverse" : "inverse_%d" % self._id }
+        self._values = {}
 
         # Get uniform delarations
         for name,gtype in glsl.get_uniforms(self._source_code):
             self._table[name] = "%s_%d" % (name, self._id)
+            self._values[name] = None
 
         # Generate mangled code (no name collision with other transforms)
         code = self._source_code
@@ -49,6 +51,21 @@ class Transform(EventDispatcher):
         # No other transforms yet
         self._next = None
 
+
+    def __getitem__(self, key):
+        if key in self._values.keys():
+            return self._values[key]
+
+
+    def __setitem__(self, key, value):
+        if key in self._values.keys():
+            self._values[key] = value
+            self.update(key)
+
+    def update(self, key):
+        if key in self._values.keys():
+            for program in self._programs:
+                program[self.lookup(key)] = self._values[key]
 
     def on_resize(self, width, height):
         if self._next:
@@ -62,12 +79,20 @@ class Transform(EventDispatcher):
         if self._next:
             self_next.dispatch_event("on_mouse_scroll", x, y, dx, dy)
 
+    def on_data(self):
+        if self._next:
+            self_next.dispatch_event("on_data")
+
+
     def last(self):
+        """ Get last transform from the whole transfrom chain """
         if self._next:
             return self._next.last()
         return self
 
     def __add__(self, transform):
+        """ Append a transform to this one """
+
         self.last()._next = transform
         return self
 
@@ -83,11 +108,6 @@ class Transform(EventDispatcher):
     def programs(self):
         return self._programs
 
-
-    def update(self, name):
-        for program in self._programs:
-            program[self.lookup(name)] = getattr(self, name)
-
     def attach(self, program):
         if program in self._programs:
             return
@@ -98,7 +118,7 @@ class Transform(EventDispatcher):
         for symbol in self._table.keys():
             if symbol not in ["forward", "inverse"] and hasattr(self, symbol):
                 for program in self._programs:
-                    program[self.lookup(symbol)] = getattr(self, symbol)
+                    program[self.lookup(symbol)] = self._values[symbol]
 
         # Update variables in next transforms
         if self.next:
@@ -110,10 +130,11 @@ class Transform(EventDispatcher):
             del programs[programs.index(program)]
 
 
-
     @property
     def code(self):
-        func = ""
+        """ Compositon of all transformation (funcs + call) """
+
+        funcs = ""
         call = (
             """\n"""
             """// -----------------------------\n"""
@@ -124,7 +145,7 @@ class Transform(EventDispatcher):
         transform = self
         n = 0
         while transform:
-            func += transform._mangle_code
+            funcs += transform._mangle_code
             call += transform._table["forward"] + "( "
             transform = transform._next
             n += 1
@@ -133,9 +154,10 @@ class Transform(EventDispatcher):
         call += " )" * n + ";"
         call += "\n}"
 
-        return func + call
+        return funcs + call
 
 
+Transform.register_event_type('on_data')
 Transform.register_event_type('on_resize')
 Transform.register_event_type('on_mouse_drag')
 Transform.register_event_type('on_mouse_scroll')

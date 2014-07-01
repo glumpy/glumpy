@@ -8,13 +8,12 @@ import numpy as np
 from glumpy.transforms.transform import Transform
 
 
-class LinearScale(Transform):
+class SymLogScale(Transform):
     """
-    Linear scale transform
+    Symetric logarithmic scaling transform
     """
 
-    def __init__(self, scale=(1,1,1)):
-        Transform.__init__(self, "linear_scale.glsl")
-
-        self['scale'] = np.zeros(3,np.float32)
-        self['scale'][...] = scale
+    def __init__(self, base = (0,0,0)):
+        Transform.__init__(self, "symlog_scale.glsl")
+        self["base"] = np.zeros(3, np.float32)
+        self["base"][...] = base

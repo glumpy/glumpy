@@ -15,13 +15,4 @@ class Rotate(Transform):
 
     def __init__(self, theta=0):
         Transform.__init__(self, "rotate.glsl")
-        self._base = float(theta)
-
-    @property
-    def theta(self):
-        return self._theta
-
-    @theta.setter
-    def theta(self, value):
-        self._theta[...] = value
-        self.update("theta")
+        self["theta"] = float(theta)
