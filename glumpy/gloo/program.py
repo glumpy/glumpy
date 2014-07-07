@@ -267,7 +267,7 @@ class Program(GLObject):
         for (name,gtype) in self.all_uniforms:
             uniform = Uniform(self, name, gtype)
             if gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D):
-                uniform._unit = count
+                uniform._texture_unit = count
                 count += 1
             self._uniforms[name] = uniform
         self._need_update = True

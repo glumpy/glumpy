@@ -10,6 +10,8 @@ import numpy as np
 from glumpy import gl
 from glumpy.log import log
 from glumpy.gloo.globject import GLObject
+from glumpy.gloo.parser import remove_comments, get_uniforms, get_attributes
+
 
 
 # ------------------------------------------------------------ Shader class ---
@@ -179,24 +181,15 @@ class Shader(GLObject):
         print()
 
 
-    def _remove_comments(self, string):
-        """ Remove C-style comment from a string """
+    @property
+    def hooks(self):
+        """ Shader uniforms obtained from source code """
 
-        pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
-        # first group captures quoted strings (double or single)
-        # second group captures comments (//single-line or /* multi-line */)
-        regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
-
-        def do_replace(match):
-            # if the 2nd group (capturing comments) is not None,
-            # it means we have captured a non-quoted (real) comment string.
-            if match.group(2) is not None:
-                return "" # so we will return empty to remove the comment
-            else: # otherwise, we will return the 1st group
-                return match.group(1) # captured quoted-string
-
-        return regex.sub(do_replace, string)
-
+        # We take care of:  uniform float a;
+        #                   uniform float a[3];
+        #                   uniform float a, b, c;
+        code = remove_comments(self._code)
+        return get_hooks(code)
 
     @property
     def uniforms(self):
@@ -205,35 +198,9 @@ class Shader(GLObject):
         # We take care of:  uniform float a;
         #                   uniform float a[3];
         #                   uniform float a, b, c;
-
-        uniforms = []
-        re_type = re.compile("""
-                             \s*uniform         # Attribute declaration
-                             \s+(?P<type>\w+)   # Attribute type
-                             \s+(?P<names>[\w,\[\] ]+);  # Attributes name(s)
-                             """, re.VERBOSE)
-        re_names = re.compile("""
-                              (?P<name>\w+)           # Attribute name
-                              \s*(\[(?P<size>\d+)\])? # Attribute size
-                              """, re.VERBOSE)
-        code = self._remove_comments(self._code)
-        for match in re.finditer(re_type, code):
-            gtype = Shader._gtypes[match.group('type')]
-            names = match.group('names')
-            for match in re.finditer(re_names, names):
-                name = match.group('name')
-                size = match.group('size')
-                if size is None:
-                    uniforms.append((name, gtype))
-                else:
-                    size = int(size)
-                    if size == 0:
-                        raise RuntimeError("Size of uniform array cannot be zero")
-                    for i in range(size):
-                        iname = '%s[%d]' % (name,i)
-                        uniforms.append((iname, gtype))
-
-        return uniforms
+        code = remove_comments(self._code)
+        gtypes = Shader._gtypes
+        return [ (n,gtypes[t]) for (n,t) in get_uniforms(code) ]
 
 
     @property
@@ -243,36 +210,9 @@ class Shader(GLObject):
         # We take care of:  attribute float a;
         #                   attribute float a[3];
         #                   attribute float a, b, c;
-
-        attributes = []
-        re_type = re.compile("""
-                             \s*attribute         # Attribute declaration
-                             \s+(?P<type>\w+)   # Attribute type
-                             \s+(?P<names>[\w,\[\] ]+);  # Attributes name(s)
-                             """, re.VERBOSE)
-        re_names = re.compile("""
-                              (?P<name>\w+)           # Attribute name
-                              \s*(\[(?P<size>\d+)\])? # Attribute size
-                              """, re.VERBOSE)
-        code = self._remove_comments(self._code)
-
-        for match in re.finditer(re_type, code):
-            gtype = Shader._gtypes[match.group('type')]
-            names = match.group('names')
-            for match in re.finditer(re_names, names):
-                name = match.group('name')
-                size = match.group('size')
-                if size is None:
-                    attributes.append((name, gtype))
-                else:
-                    size = int(size)
-                    if size == 0:
-                        raise RuntimeError("Size of uniform array cannot be zero")
-                    for i in range(size):
-                        iname = '%s[%d]' % (name,i)
-                        attributes.append((iname, gtype))
-
-        return attributes
+        code = remove_comments(self._code)
+        gtypes = Shader._gtypes
+        return [(n,gtypes[t]) for (n,t) in get_attributes(code)]
 
 
 

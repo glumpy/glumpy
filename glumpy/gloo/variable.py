@@ -38,7 +38,7 @@ gl_typeinfo = {
 
 # ---------------------------------------------------------- Variable class ---
 class Variable(GLObject):
-    """ A variable is an interface between a program and some data """
+    """ A variable is an interface between a program and data """
 
     def __init__(self, program, name, gtype):
         """ Initialize the data into default state """
@@ -147,7 +147,7 @@ class Uniform(Variable):
         size, _, dtype = gl_typeinfo[self._gtype]
         self._data = np.zeros(size, dtype)
         self._ufunction = Uniform._ufunctions[self._gtype]
-        self._unit = -1
+        self._texture_unit = -1
 
 
     def set_data(self, data):
@@ -194,8 +194,8 @@ class Uniform(Variable):
     def _activate(self):
         if self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D):
             if self.data is not None:
-                log.debug("GPU: Active texture is %d" % self._unit)
-                gl.glActiveTexture(gl.GL_TEXTURE0 + self._unit)
+                log.debug("GPU: Active texture is %d" % self._texture_unit)
+                gl.glActiveTexture(gl.GL_TEXTURE0 + self._texture_unit)
                 self.data.activate()
 
     def _update(self):
@@ -219,10 +219,10 @@ class Uniform(Variable):
         # Textures (need to get texture count)
         elif self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D):
             # texture = self.data
-            # log.debug("GPU: Active texture is %d" % self._unit)
+            log.debug("GPU: Activactin texture %d" % self._texture_unit)
             # gl.glActiveTexture(gl.GL_TEXTURE0 + self._unit)
             # gl.glBindTexture(texture.target, texture.handle)
-            gl.glUniform1i(self._handle, self._unit)
+            gl.glUniform1i(self._handle, self._texture_unit)
 
         # Regular uniform
         else:
@@ -260,9 +260,9 @@ class Attribute(Variable):
         self._generic = False
 
 
+
     def set_data(self, data):
         """ Set data (deferred operation) """
-
 
         isnumeric = isinstance(data, (float, int))
 
