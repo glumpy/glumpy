@@ -53,6 +53,11 @@ def set_default_options(parser):
                         action='store_true',
                         help="Display framerate in the console")
 
+    # Framerate option
+    parser.add_argument("--debug", "-d",
+                        action='store_true',
+                        help="Verbose debug mode")
+
     # Window size
     parser.add_argument("--size", "-s",
                         default = "",

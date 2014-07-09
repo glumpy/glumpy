@@ -10,7 +10,11 @@ const float SQRT_2 = 1.4142135623730951;
 
 // External functions
 // ------------------------------------
-float marker(vec2 P, float size);
+float marker(vec2, float);
+vec4 filled(float, float, float, vec4);
+vec4 outline(float, float, float, vec4, vec4);
+vec4 stroke(float, float, float, vec4);
+
 
 // Uniforms
 // ------------------------------------
@@ -33,25 +37,10 @@ void main()
              v_rotation.y*P.x + v_rotation.x*P.y);
 
     float point_size = SQRT_2*v_size  + 2 * (v_linewidth + 1.5*u_antialias);
-    float t = v_linewidth/2.0 - u_antialias;
-    float signed_distance = marker(P*point_size, v_size);
-    float border_distance = abs(signed_distance) - t;
-    float alpha = border_distance/u_antialias;
-    alpha = exp(-alpha*alpha);
 
-    // Within linestroke
-    if( border_distance < 0 )
-        gl_FragColor = v_fg_color;
-    else if( signed_distance < 0 )
-        // Inside shape
-        if( border_distance > (v_linewidth/2.0 + u_antialias) )
-            gl_FragColor = v_bg_color;
-        else // Line stroke interior border
-            gl_FragColor = mix(v_bg_color,v_fg_color,alpha);
-    else
-        // Outide shape
-        if( border_distance > (v_linewidth/2.0 + u_antialias) )
-            discard;
-        else // Line stroke exterior border
-            gl_FragColor = vec4(v_fg_color.rgb, v_fg_color.a * alpha);
+    float distance = marker(P*point_size, v_size);
+
+    gl_FragColor = outline(distance, v_linewidth, u_antialias, v_fg_color, v_bg_color);
+//    gl_FragColor = filled(distance, v_linewidth, u_antialias, v_fg_color);
+//    gl_FragColor = stroke(distance, v_linewidth, u_antialias, v_fg_color);
 }

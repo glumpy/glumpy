@@ -79,9 +79,10 @@ data['a_orientation'][n-1] = 0
 
 # Parse options to get marker
 options = app.parser.get_options()
-marker = "shaders/markers/marker-%s.frag" % options.marker
 program = gloo.Program(("shaders/markers/marker.vert",),
-                       (marker, "shaders/markers/marker.frag"))
+                       ("shaders/markers/marker-%s.frag" % options.marker,
+                        "shaders/markers/antialias.glsl",
+                        "shaders/markers/marker.frag"))
 program.bind(data)
 program['u_antialias'] = 1.00
 program['u_model'] = np.eye(4)

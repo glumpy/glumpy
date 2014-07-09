@@ -43,5 +43,5 @@ void main (void)
     v_bg_color = a_bg_color;
     v_rotation = vec2(cos(a_orientation), sin(a_orientation));
     gl_Position = u_projection  * u_view * u_model * vec4(a_position, 1.0);
-    gl_PointSize = SQRT_2 * v_size + 2 * (a_linewidth + 1.5*u_antialias);
+    gl_PointSize = SQRT_2 * v_size + 2.0 * (a_linewidth + 1.5*u_antialias);
 }

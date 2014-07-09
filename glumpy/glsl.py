@@ -52,11 +52,17 @@ def remove_comments(code):
 
 def get_declarations(code, qualifier = ""):
     variables = []
-    re_type = re.compile("""
-                         %s                         # Variable qualifier
-                         \s+(?P<type>\w+)           # Variable type
-                         \s+(?P<names>[\w,\[\] ]+); # Variable name(s)
-                         """ % qualifier, re.VERBOSE)
+    if qualifier:
+        re_type = re.compile("""
+                             %s                         # Variable qualifier
+                             \s+(?P<type>\w+)           # Variable type
+                             \s+(?P<names>[\w,\[\] ]+); # Variable name(s)
+                             """ % qualifier, re.VERBOSE)
+    else:
+        re_type = re.compile("""
+                             \s*(?P<type>\w+)          # Variable type
+                             \s+(?P<names>[\w\[\] ]+) # Variable name(s)
+                             """, re.VERBOSE)
 
     re_names = re.compile("""
                           (?P<name>\w+)            # Variable name
@@ -82,6 +88,10 @@ def get_declarations(code, qualifier = ""):
                     variables.append((iname, gtype))
     return variables
 
+def get_args(code):
+    if len(code):
+        return get_declarations(code, qualifier = "")
+    return []
 
 def get_uniforms(code):
     if len(code):
@@ -97,18 +107,18 @@ def get_functions(source):
     functions = []
 
     regex = re.compile("""
-                       \s*(?P<rtype>\w+)    # Function return type
+                       \s*(?P<type>\w+)    # Function return type
                        \s+(?P<name>[\w]+)   # Function name
                        \s*\((?P<args>.*?)\) # Function arguments
                        \s*\{(?P<code>.*?)\} # Function content
                        """, re.VERBOSE | re.DOTALL)
 
-    code = remove_comments(source)
+    source = remove_comments(source)
     for match in re.finditer(regex, source):
-        rtype= match.group('rtype')
+        gtype =_gtypes[match.group('type')]
         name = match.group('name')
         args = match.group('args')
         code = match.group('code')
-        functions.append( (rtype, name, args, code) )
+        functions.append( (gtype, name, args, code) )
 
     return functions

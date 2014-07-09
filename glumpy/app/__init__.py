@@ -8,6 +8,7 @@
 import os
 import re
 import sys
+import logging
 import importlib
 
 from glumpy import gl
@@ -211,6 +212,9 @@ def __run__(clock=None, framerate=None, backend=None):
     global __clock__
 
     options = parser.get_options()
+
+    if options.debug:
+        log.setLevel(logging.DEBUG)
 
     if framerate is None:
         framerate = options.framerate

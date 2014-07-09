@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Copyright (c) 2014, Nicolas P. Rougier
@@ -14,7 +13,7 @@ class OrthographicProjection(Transform):
     """
 
     def __init__(self):
-        Transform.__init__(self, "./orthographic_projection.glsl")
+        Transform.__init__(self, "matrix.glsl")
 
     def on_resize(self, width, height):
-        self["projection"] = glm.ortho(0, width, 0, height, +1,-1)
+        self["matrix"] = glm.ortho(0, width, 0, height, +1,-1)

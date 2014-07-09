@@ -42,6 +42,12 @@ class PanZoom(gp.transforms.TranslateScale):
         self.translate += (2*dx/self.width, -2*dy/self.height,0)
         self["translate"] = self.translate
 
+    def reset(self):
+        self.scale = np.array([1.,1.,1.])
+        self.translate = np.array([0.,0.,0.])
+        self["scale"] = self.aspect * np.array([1.,1.,1.])
+        self["translate"] = np.array([0.,0.,0.])
+
 
 vertex = """
     attribute vec2 position;
@@ -70,12 +76,19 @@ def on_draw():
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_TRIANGLE_STRIP)
 
+@window.event
+def on_key_press(key, modifiers):
+    if key == gp.app.window.key.SPACE:
+        transform.reset()
+
 
 transform = PanZoom()
 program = gp.gloo.Program(transform.code + vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['texture'] = np.array(Image.open("lena.png"))
+
+
 transform.attach(program)
 window.attach(transform)
 
