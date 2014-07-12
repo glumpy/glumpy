@@ -31,8 +31,8 @@ class Texture(GPUData,GLObject):
         GLObject.__init__(self)
         self._target = target
         self._interpolation = gl.GL_LINEAR, gl.GL_LINEAR
-        self._wrapping = gl.GL_CLAMP_TO_EDGE
-
+        # self._wrapping = gl.GL_CLAMP_TO_EDGE
+        self._wrapping = gl.GL_REPEAT
 
     def _check_shape(self, shape, ndims):
         """ Check and normalize shape. """
@@ -118,8 +118,8 @@ class Texture(GPUData,GLObject):
 
         log.debug("GPU: Activate texture")
         gl.glBindTexture(self.target, self._handle)
-        #if self._need_parameterization:
-        #    self._parameterize()
+        if self._need_setup:
+            self._setup()
 
 
     def _deactivate(self):
@@ -206,6 +206,8 @@ class Texture2D(Texture):
         gl.glBindTexture(self.target, self._handle)
         gl.glTexImage2D(self.target, 0, self.format, self.width, self.height,
                         0, self.format, self.gtype, None)
+#        gl.glTexImage2D(self.target, 0, gl.GL_RGBA32F, self.width, self.height,
+#                        0, self.format, self.gtype, None)
 
     def _update(self):
         """ Update texture on GPU """

@@ -11,7 +11,7 @@ import glumpy.app as app
 import glumpy.glm as glm
 import glumpy.gloo as gloo
 
-transform = "cartesian.glsl"
+transform = "warp.glsl"
 vertex    = "grid.vert"
 fragment  = "grid.frag"
 

@@ -14,8 +14,8 @@ const float M_SQRT2 = 1.41421356237309504880;
 vec2 forward(vec2 P)
 {
     const float B = 2.0;
-    float latitude  = P.y;
     float longitude = P.x;
+    float latitude  = P.y;
     float cos_lat = cos(latitude);
     float sin_lat = sin(latitude);
     float cos_lon = cos(longitude/B);

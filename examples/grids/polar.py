@@ -86,7 +86,7 @@ program['u_major_grid_color'] = 0, 0, 0, 1.0
 program['u_minor_grid_color'] = 0, 0, 0, 0.5
 
 limits1 = -5, +5, -5, +5
-limits2 = 1, 5, 0, 2*np.pi
+limits2 = 0, 5, 0, 2*np.pi
 
 major_grid = np.array([ 1.0, np.pi/6])
 minor_grid = np.array([ 0.2, np.pi/60])

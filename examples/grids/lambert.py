@@ -11,7 +11,7 @@ import glumpy.app as app
 import glumpy.glm as glm
 import glumpy.gloo as gloo
 
-transform = "cartesian.glsl"
+transform = "lambert.glsl"
 vertex    = "grid.vert"
 fragment  = "grid.frag"
 
@@ -85,15 +85,15 @@ program['u_minor_grid_width'] = 1.0
 program['u_major_grid_color'] = 0, 0, 0, 1.0
 program['u_minor_grid_color'] = 0, 0, 0, 0.5
 
-limits1 = -50, +50, -50, +50
-limits2 = -50, +50, -50, +50
+limits1 = -2.0, +2.0, -2.0, +2.0
+limits2 = -np.pi, +np.pi, -np.pi/2, +np.pi/2
 
-major_grid = np.array([ 10.0, 10.0])
-minor_grid = np.array([  2.0,  2.0])
+major_grid = np.array([1.0, 0.5])*np.pi/(6*1)
+minor_grid = np.array([1.0, 0.5])*np.pi/(6*10)
 program['u_limits1'] = limits1
 program['u_limits2'] = limits2
 program['u_antialias'] = 1.0
-Z = np.zeros((1,2*1024,4), dtype=np.float32)
+Z = np.zeros((1,1024,4), dtype=np.float32)
 program['u_grid'] = Z
 program['u_grid'].interpolation = gl.GL_NEAREST
 

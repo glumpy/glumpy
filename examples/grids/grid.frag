@@ -79,10 +79,10 @@ void main()
     float x2 = P.x;
     float y2 = P.y;
 
-    if( x2 <= x2min) discard;
-    if( x2 >= x2max) discard;
-    if( y2 <= y2min) discard;
-    if( y2 >= y2max) discard;
+    if( x2 < x2min) discard;
+    if( x2 > x2max) discard;
+    if( y2 < y2min) discard;
+    if( y2 > y2max) discard;
 
     float norm_x2 = (x2 - x2min) / x2range;
     float norm_y2 = (y2 - y2min) / y2range;
@@ -98,11 +98,9 @@ void main()
     float mx = length(a_size * (vec2(norm_x1,norm_y1) - P));
 
     T = texture2D(u_grid, vec2(norm_y2,0.5));
-
     P = forward(vec2(x2,T.z));
     P = (P - vec2(x1min,y1min)) / vec2(x1range,y1range);
     float My = length(a_size * (vec2(norm_x1,norm_y1) - P));
-
     P = forward(vec2(x2,T.w));
     P = (P - vec2(x1min,y1min)) / vec2(x1range,y1range);
     float my = length(a_size * (vec2(norm_x1,norm_y1) - P));
@@ -120,5 +118,4 @@ void main()
         color = u_minor_grid_color;
     }
     gl_FragColor = vec4(color.rgb, color.a*alpha);
-
 }

@@ -31,7 +31,6 @@ fragment = """
     void main()
     {
         gl_FragColor = texture1D(texture1, v_texcoord.x);
-                     //* texture2D(texture2, v_texcoord);
     }
 """
 

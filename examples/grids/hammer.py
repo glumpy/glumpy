@@ -30,9 +30,9 @@ def update_grid():
     xmin, xmax = limits2[:2]
     t1 = major_grid[0]
     t2 = minor_grid[0]
-    I3 = np.linspace(xmin, xmax, (xmax-xmin)/t1, endpoint=False)
+    I3 = np.linspace(xmin, xmax, (xmax-xmin)/t1+1, endpoint=True)
     Z[..., 0] = I3[find_closest_direct(I3, start=xmin, end=xmax, count=n)]
-    I4 = np.linspace(xmin, xmax, (xmax-xmin)/t2, endpoint=False)
+    I4 = np.linspace(xmin, xmax, (xmax-xmin)/t2+1, endpoint=True)
     Z[..., 1] = I4[find_closest_direct(I4, start=xmin, end=xmax, count=n)]
 
     ymin, ymax = limits2[2:]

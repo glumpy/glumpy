@@ -11,8 +11,8 @@ import glumpy.app as app
 import glumpy.glm as glm
 import glumpy.gloo as gloo
 
-vertex   = "./hammer-texture.vert"
-fragment = "./hammer-texture.frag"
+vertex   = "./grid.vert"
+fragment = "./grid-texture.frag"
 
 
 class Hammer(object):
@@ -26,15 +26,16 @@ class Hammer(object):
         sin_lon = np.sin(longitude/2)
         D = np.sqrt(1 + cos_lat * cos_lon)
         P_ = np.empty_like(P)
-        P_[:,0] = (2 * np.sqrt(2) * cos_lat * sin_lon) / D
-        P_[:,1] =     (np.sqrt(2) * sin_lat) / D
+        P_[...,0] = (2 * np.sqrt(2) * cos_lat * sin_lon) / D
+        P_[...,1] =     (np.sqrt(2) * sin_lat) / D
         return P_
 
     def inverse(self,P):
         X = P[...,0]
         Y = P[...,1]
-        Z = 1 - (X/4)**2 - (Y/2)**2
-        Z = np.where(Z > 0.0, np.sqrt(Z), np.nan)
+        Z = np.maximum(1 - (X/4)**2 - (Y/2)**2,0)
+        # Z = np.where(Z > 0.0, np.sqrt(Z), np.nan)
+        Z = np.sqrt(Z)
         P_ = np.empty_like(P)
         P_[...,0] = 2*np.arctan( (Z*X)/(2*(2*Z*Z - 1)) )
         P_[...,1] = np.arcsin(Z*Y)
@@ -42,7 +43,6 @@ class Hammer(object):
 
 
     def texture(self, limits1, limits2):
-        H = Hammer()
         n = 512
         T = np.zeros((n,n,4),dtype=np.float32)
 
@@ -50,13 +50,13 @@ class Hammer(object):
         X_ = np.linspace(xmin, xmax, n, endpoint=True)
         Y_ = np.linspace(ymin, ymax, n, endpoint=True)
         T[...,0], T[...,1] = np.meshgrid(X_,Y_)
-        T[...,:2] = H.forward(T[...,:2].reshape(n*n,2)).reshape(n,n,2)
+        T[...,:2] = self.forward(T[...,:2].reshape(n*n,2)).reshape(n,n,2)
 
         xmin,xmax,ymin,ymax = limits1
         X_ = np.linspace(xmin, xmax, n, endpoint=True)
         Y_ = np.linspace(ymin, ymax, n, endpoint=True)
         T[...,2], T[...,3] = np.meshgrid(X_,Y_)
-        T[...,2:] = H.inverse(T[...,2:].reshape(n*n,2)).reshape(n,n,2)
+        T[...,2:] = self.inverse(T[...,2:].reshape(n*n,2)).reshape(n,n,2)
 
         return T
 
@@ -73,16 +73,16 @@ def update_grid():
     n = Z.shape[1]
 
     xmin, xmax = limits2[:2]
-    t1 = major_grid[1]
-    t2 = minor_grid[1]
+    t1 = major_grid[0]
+    t2 = minor_grid[0]
     I3 = np.linspace(xmin, xmax, (xmax-xmin)/t1, endpoint=False)
     Z[..., 0] = I3[find_closest_direct(I3, start=xmin, end=xmax, count=n)]
     I4 = np.linspace(xmin, xmax, (xmax-xmin)/t2, endpoint=False)
     Z[..., 1] = I4[find_closest_direct(I4, start=xmin, end=xmax, count=n)]
 
     ymin, ymax = limits2[2:]
-    t1 = major_grid[0]
-    t2 = minor_grid[0]
+    t1 = major_grid[1]
+    t2 = minor_grid[1]
     I1 = np.linspace(ymin, ymax, (ymax-ymin)/t1+1, endpoint=True)
     Z[..., 2] = I1[find_closest_direct(I1, start=ymin, end=ymax, count=n)]
     I2 = np.linspace(ymin, ymax, (ymax-ymin)/t2+1, endpoint=True)
@@ -92,7 +92,7 @@ def update_grid():
 
 
 
-window = app.Window(width=1024, height=512)
+window = app.Window(width=1024, height=1024)
 
 @window.event
 def on_draw():
@@ -103,7 +103,7 @@ def on_draw():
 def on_resize(width, height):
     gl.glViewport(0, 0, width, height)
 
-    aspect = 0.5
+    aspect = 1.0
     if width < aspect*height:
         w,h = width, aspect*width
         x,y = 0, (height - h)/2.0
@@ -130,21 +130,22 @@ program['u_minor_grid_width'] = 1.0
 program['u_major_grid_color'] = 0, 0, 0, 1.0
 program['u_minor_grid_color'] = 0, 0, 0, 0.5
 
-limits1  = np.array([-3.0, +3.0, -1.5, +1.5])
-limits2 = -np.pi/2, +np.pi/2, -np.pi, +np.pi
+limits1  = -3.0, +3.0, -1.5, +1.5
+limits2 = -np.pi, +np.pi, -np.pi/2, +np.pi/2
 
 major_grid = np.array([1.0, 0.5])*np.pi/6
 minor_grid = np.array([1.0, 0.5])*np.pi/(6*5)
 program['u_limits1'] = limits1
 program['u_limits2'] = limits2
 program['u_antialias'] = 1.0
-Z = np.zeros((1,2*1024,4), dtype=np.float32)
+Z = np.zeros((1,1024,4), dtype=np.float32)
 program['u_grid'] = Z
 program['u_grid'].interpolation = gl.GL_NEAREST
 
-H = Hammer()
-program['u_hammer'] = H.texture(limits1, limits2)
-program['u_hammer'].interpolation = gl.GL_LINEAR
+T = Hammer().texture(limits1, limits2)
+program['u_transform'] = T
+program['u_transform'].interpolation = gl.GL_LINEAR
+program['u_transform_shape'] = T.shape[:2]
 
 gl.glClearColor(1, 1, 1, 1)
 gl.glEnable(gl.GL_BLEND)
