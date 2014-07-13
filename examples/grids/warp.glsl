@@ -9,7 +9,7 @@ const float M_PI = 3.14159265358979323846;
 
 // Forward transform
 // ------------------------------------
-vec2 forward(vec2 P)
+vec2 transform_forward(vec2 P)
 {
     float rho = length(P);
     float r = (70.0-rho)/70.0;
@@ -21,7 +21,7 @@ vec2 forward(vec2 P)
 
 // Inverse transform
 // ------------------------------------
-vec2 inverse(vec2 P)
+vec2 transform_inverse(vec2 P)
 {
     float rho = length(P);
     float r = (70.0-rho)/70.0;

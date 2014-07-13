@@ -11,7 +11,7 @@ const float M_SQRT2 = 1.41421356237309504880;
 
 // Forward transform
 // ------------------------------------
-vec2 forward(vec2 P)
+vec2 transform_forward(vec2 P)
 {
     const float B = 2.0;
     float longitude = P.x;
@@ -28,7 +28,7 @@ vec2 forward(vec2 P)
 
 // Inverse transform
 // ------------------------------------
-vec2 inverse(vec2 P)
+vec2 transform_inverse(vec2 P)
 {
     const float B = 2.0;
     float x = P.x;

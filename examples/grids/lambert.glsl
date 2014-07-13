@@ -16,7 +16,7 @@ float cos_phi1 = cos(phi1);
 
 // Forward transform
 // ------------------------------------
-vec2 forward(vec2 P)
+vec2 transform_forward(vec2 P)
 {
     float lambda = P.x;
     float phi = P.y;
@@ -30,7 +30,7 @@ vec2 forward(vec2 P)
 
 // Inverse transform
 // ------------------------------------
-vec2 inverse(vec2 P)
+vec2 transform_inverse(vec2 P)
 {
     float x = P.x;
     float y = P.y;

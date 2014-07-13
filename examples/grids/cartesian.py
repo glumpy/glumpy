@@ -87,9 +87,9 @@ program['u_minor_grid_color'] = 0, 0, 0, 0.5
 
 limits1 = -50, +50, -50, +50
 limits2 = -50, +50, -50, +50
-
 major_grid = np.array([ 10.0, 10.0])
 minor_grid = np.array([  2.0,  2.0])
+
 program['u_limits1'] = limits1
 program['u_limits2'] = limits2
 program['u_antialias'] = 1.0

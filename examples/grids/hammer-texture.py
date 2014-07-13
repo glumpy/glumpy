@@ -5,6 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
+from PIL import Image
+
 import glumpy
 import glumpy.gl as gl
 import glumpy.app as app
@@ -37,7 +39,7 @@ class Hammer(object):
         # Z = np.where(Z > 0.0, np.sqrt(Z), np.nan)
         Z = np.sqrt(Z)
         P_ = np.empty_like(P)
-        P_[...,0] = 2*np.arctan( (Z*X)/(2*(2*Z*Z - 1)) )
+        P_[...,0] = 2*np.arctan2( (Z*X), (2*(2*Z*Z - 1)) )
         P_[...,1] = np.arcsin(Z*Y)
         return P_
 
@@ -92,7 +94,7 @@ def update_grid():
 
 
 
-window = app.Window(width=1024, height=1024)
+window = app.Window(width=1024, height=512)
 
 @window.event
 def on_draw():
@@ -103,7 +105,7 @@ def on_draw():
 def on_resize(width, height):
     gl.glViewport(0, 0, width, height)
 
-    aspect = 1.0
+    aspect = .5
     if width < aspect*height:
         w,h = width, aspect*width
         x,y = 0, (height - h)/2.0
@@ -125,10 +127,10 @@ w,h = window.width, window.height
 program['a_position'] = (0, 0), (0, h), (w, 0), (w, h)
 program['a_texcoord'] = (0, 0), (0, +1), (+1, 0), (+1, +1)
 program['a_size'] = w,h
-program['u_major_grid_width'] = 1.5
+program['u_major_grid_width'] = 2.0
 program['u_minor_grid_width'] = 1.0
-program['u_major_grid_color'] = 0, 0, 0, 1.0
-program['u_minor_grid_color'] = 0, 0, 0, 0.5
+program['u_major_grid_color'] = 1, 1, 1, 1.0
+program['u_minor_grid_color'] = 1, 1, 1, 1.0
 
 limits1  = -3.0, +3.0, -1.5, +1.5
 limits2 = -np.pi, +np.pi, -np.pi/2, +np.pi/2
@@ -146,6 +148,8 @@ T = Hammer().texture(limits1, limits2)
 program['u_transform'] = T
 program['u_transform'].interpolation = gl.GL_LINEAR
 program['u_transform_shape'] = T.shape[:2]
+
+program['u_texture'] = np.array(Image.open("earth.jpg"))
 
 gl.glClearColor(1, 1, 1, 1)
 gl.glEnable(gl.GL_BLEND)

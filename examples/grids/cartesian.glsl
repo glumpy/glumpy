@@ -3,12 +3,12 @@
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
 
-vec2 forward(vec2 P)
+vec2 transform_forward(vec2 P)
 {
     return P;
 }
 
-vec2 inverse(vec2 P)
+vec2 transform_inverse(vec2 P)
 {
     return P;
 }

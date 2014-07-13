@@ -17,7 +17,7 @@ float sinh(float x) { return 0.5 * (exp(x)-exp(-x)); }
 
 // Forward transform
 // ------------------------------------
-vec2 forward(vec2 P)
+vec2 transform_forward(vec2 P)
 {
     float lambda = P.x;
     float phi = P.y;
@@ -28,7 +28,7 @@ vec2 forward(vec2 P)
 
 // Inverse transform
 // ------------------------------------
-vec2 inverse(vec2 P)
+vec2 transform_inverse(vec2 P)
 {
     float x = P.x;
     float y = P.y;

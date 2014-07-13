@@ -44,12 +44,23 @@ uniform sampler2D u_transform;
 uniform vec2 u_transform_shape;
 
 
-// Compute transparency according to distance
-float compute_alpha(float d, float width, float antialias)
+uniform sampler2D u_texture;
+
+
+float stroke_alpha(float distance, float linewidth, float antialias)
 {
-    d -= width/2.0 - antialias;
-    float alpha = d/antialias;
-    return exp(-alpha*alpha);
+    float t = linewidth/2.0 - antialias;
+    float signed_distance = distance;
+    float border_distance = abs(signed_distance) - t;
+    float alpha = border_distance/antialias;
+    alpha = exp(-alpha*alpha);
+
+    if( border_distance > (linewidth/2.0 + antialias) )
+        return 0.0;
+    else if( border_distance < 0.0 )
+        return 1.0;
+    else
+        return alpha;
 }
 
 
@@ -94,22 +105,21 @@ vec2 transform_inverse(vec2 P) {
 
 void main()
 {
-    vec2 P;
     vec2 NP1 = v_texcoord;
     vec2 P1 = scale_forward(NP1, u_limits1);
     vec2 P2 = transform_inverse(P1);
 
-    if( P2.x < u_limits2[0]) discard;
-    if( P2.x > u_limits2[1]) discard;
-    if( P2.y < u_limits2[2]) discard;
-    if( P2.y > u_limits2[3]) discard;
+    if( P2.x < u_limits2[0] ) discard;
+    if( P2.x > u_limits2[1] ) discard;
+    if( P2.y < u_limits2[2] ) discard;
+    if( P2.y > u_limits2[3] ) discard;
 
     vec2 NP2 = scale_inverse(P2,u_limits2);
 
     vec4 Tx = texture2D(u_grid, vec2(NP2.x, 0.5));
     vec4 Ty = texture2D(u_grid, vec2(NP2.y, 0.5));
 
-    P = transform_forward(vec2(Tx.x,P2.y));
+    vec2 P = transform_forward(vec2(Tx.x,P2.y));
     P = scale_inverse(P, u_limits1);
     float Mx = length(a_size * (NP1 - P));
 
@@ -129,13 +139,17 @@ void main()
     float m = min(mx,my);
 
     vec4 color = u_major_grid_color;
-    float alpha1 = compute_alpha( M, u_major_grid_width, u_antialias);
-    float alpha2 = compute_alpha( m, u_minor_grid_width, u_antialias);
+    float alpha1 = stroke_alpha(M, u_major_grid_width, u_antialias);
+    float alpha2 = stroke_alpha(m, u_minor_grid_width, u_antialias);
+
     float alpha  = alpha1;
     if( alpha2 > alpha1*1.5 )
     {
         alpha = alpha2;
         color = u_minor_grid_color;
     }
-    gl_FragColor = vec4(color.rgb, color.a*alpha);
+
+    vec4 tcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
+//    gl_FragColor = vec4(color.rgb, color.a*alpha);
+    gl_FragColor = mix(tcolor, color, alpha);
 }
