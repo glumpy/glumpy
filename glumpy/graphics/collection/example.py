@@ -7,7 +7,6 @@
 import numpy as np
 from collection import Collection
 
-
 # Vertices dtype
 vtype = [('position', 'f4', 2)]
 
@@ -18,11 +17,26 @@ utype = [('color', 'f4', 3)]
 itype = np.uint32
 
 # Creates empty collection
-C = Collection(vtype, utype, itype)
+# C = Collection(vtype, utype, itype)
+# C = Collection(vtype)
 
-print C.vertices.dtype
-print C.indices.dtype
-print C.uniforms.dtype
+C = Collection(vtype)
+item = np.zeros(3, dtype=vtype)
+item['position'] = (1,2),(3,4),(5,6)
+
+C.append(item,itemsize=1)
+
+C[0] = item
+
+print C[0]
+print C[1]
+print C[2]
+
+print C
+
+
+
+
 
 
 
@@ -31,6 +45,7 @@ print C.uniforms.dtype
 # indices  = [0,1,2,0,2,3]
 # uniforms = np.zeros(1, dtype=utype)
 # C.append(vertices, indices, uniforms)
+
 
 # # Add another item
 # # In such case, indices are updated such that they point to the right

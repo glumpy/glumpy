@@ -82,23 +82,17 @@ vec2 scale_inverse(vec2 P, vec4 limits)
     return P;
 }
 
-//
-vec2 transform_forward(vec2 P) {
-    P = scale_inverse(P, u_limits2);
-
+vec2 transform_forward(vec2 P, vec4 limits) {
+    P = scale_inverse(P, limits);
     vec2 epsilon = 1.0/u_transform_shape;
     P = epsilon/2.0 +(1.0-epsilon)*P;
-
     return texture2D(u_transform,P).xy;
 }
 
-//
-vec2 transform_inverse(vec2 P) {
-    P = scale_inverse(P, u_limits1);
-
+vec2 transform_inverse(vec2 P, vec4 limits) {
+    P = scale_inverse(P, limits);
     vec2 epsilon = 1.0/u_transform_shape;
     P = epsilon/2.0 +(1.0-epsilon)*P;
-
     return texture2D(u_transform, P).zw;
 }
 
@@ -107,7 +101,7 @@ void main()
 {
     vec2 NP1 = v_texcoord;
     vec2 P1 = scale_forward(NP1, u_limits1);
-    vec2 P2 = transform_inverse(P1);
+    vec2 P2 = transform_inverse(P1, u_limits1);
 
     if( P2.x < u_limits2[0] ) discard;
     if( P2.x > u_limits2[1] ) discard;
@@ -119,19 +113,19 @@ void main()
     vec4 Tx = texture2D(u_grid, vec2(NP2.x, 0.5));
     vec4 Ty = texture2D(u_grid, vec2(NP2.y, 0.5));
 
-    vec2 P = transform_forward(vec2(Tx.x,P2.y));
+    vec2 P = transform_forward(vec2(Tx.x,P2.y), u_limits2);
     P = scale_inverse(P, u_limits1);
     float Mx = length(a_size * (NP1 - P));
 
-    P = transform_forward(vec2(Tx.y,P2.y));
+    P = transform_forward(vec2(Tx.y,P2.y), u_limits2);
     P = scale_inverse(P, u_limits1);
     float mx = length(a_size * (NP1 - P));
 
-    P = transform_forward(vec2(P2.x,Ty.z));
+    P = transform_forward(vec2(P2.x,Ty.z), u_limits2);
     P = scale_inverse(P, u_limits1);
     float My = length(a_size * (NP1 - P));
 
-    P = transform_forward(vec2(P2.x,Ty.w));
+    P = transform_forward(vec2(P2.x,Ty.w), u_limits2);
     P = scale_inverse(P, u_limits1);
     float my = length(a_size * (NP1 - P));
 
@@ -149,7 +143,8 @@ void main()
         color = u_minor_grid_color;
     }
 
-    vec4 tcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
-//    gl_FragColor = vec4(color.rgb, color.a*alpha);
-    gl_FragColor = mix(tcolor, color, alpha);
+    vec4 texcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
+    gl_FragColor = mix(texcolor, color, alpha);
+    // gl_FragColor = vec4(color.rgb, color.a*alpha);
+
 }

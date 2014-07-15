@@ -132,4 +132,4 @@ gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
 gl.glEnable(gl.GL_POINT_SPRITE)
 
-app.run(framerate=60)
+app.run() #framerate=60)

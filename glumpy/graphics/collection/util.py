@@ -88,7 +88,7 @@ def fetchcode(utype, prefix="u_"):
         Attribute giving the index of the uniforms to be fetched. This index
        relates to the index in the uniform array from python side.
     """
-    
+
     utype = np.dtype(utype)
     _utype = dtype_reduce(utype, level=1)
 
@@ -105,18 +105,16 @@ attribute float     a_index;
     for name,count,_ in _utype:
         header += "varying %s %s%s;\n" % (types[count],prefix,name)
 
-
     # Body generation (not so easy)
-    body = """\nvoid fetch_uniforms(void) {
+    body = """\nvoid fetch_uniforms(float index) {
     float rows   = u_uniforms_shape.x;
     float cols   = u_uniforms_shape.y;
     float count  = u_uniforms_shape.z;
-    float index  = a_index;
     int index_x  = int(mod(index, (floor(cols/(count/4.0))))) * int(count/4.0);
     int index_y  = int(floor(index / (floor(cols/(count/4.0)))));
     float size_x = cols - 1.0;
     float size_y = rows - 1.0;
-    float ty     = 0.0; 
+    float ty     = 0.0;
     if (size_y > 0.0)
         ty = float(index_y)/size_y;
     int i = index_x;

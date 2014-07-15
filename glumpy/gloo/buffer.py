@@ -38,6 +38,7 @@ class Buffer(GPUData,GLObject):
 
         self._handle = gl.glGenBuffers(1)
         self._activate()
+        log.debug("GPU: Creating buffer (id=%d)" % self._id)
         gl.glBufferData(self._target, self.nbytes, None, self._usage)
         self._deactivate()
 
@@ -45,18 +46,21 @@ class Buffer(GPUData,GLObject):
     def _delete(self):
         """ Delete buffer from GPU """
 
-        gl.glDeleteBuffers(1, [self._handle])
+        if self._handle > -1:
+            gl.glDeleteBuffers(1, [self._handle])
 
 
     def _activate(self):
         """ Bind the buffer to some target """
 
+        log.debug("GPU: Activating buffer (id=%d)" % self._id)
         gl.glBindBuffer(self._target, self._handle)
 
 
     def _deactivate(self):
         """ Unbind the current bound buffer """
 
+        log.debug("GPU: Deactivating buffer (id=%d)" % self._id)
         gl.glBindBuffer(self._target, 0)
 
 
@@ -66,7 +70,7 @@ class Buffer(GPUData,GLObject):
         if self.pending_data:
             offset, nbytes = self.pending_data
             data = self.view(np.ubyte)[offset:offset+nbytes]
-            gl.glBufferSubData(self._target, offset, nbytes, data) #self)
+            gl.glBufferSubData(self.target, offset, nbytes, data)
         self._pending_data = None
         self._need_update = False
 

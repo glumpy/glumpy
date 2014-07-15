@@ -498,8 +498,8 @@ class Program(GLObject):
             indices.deactivate()
         else:
             first = 0
-            count = (self._count or attributes[0].size) - first
-            #count = attributes[0].size
+            # count = (self._count or attributes[0].size) - first
+            count = len(attributes[0])
             gl.glDrawArrays(mode, first, count)
 
         gl.glBindBuffer( gl.GL_ARRAY_BUFFER, 0 )

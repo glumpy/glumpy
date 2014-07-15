@@ -139,7 +139,8 @@ class Texture(GPUData,GLObject):
         """ Delete texture from GPU """
 
         log.debug("GPU: Deleting texture")
-        gl.glDeleteTexture([self.handle])
+        if self.handle > -1:
+            gl.glDeleteTexture([self.handle])
 
 
 

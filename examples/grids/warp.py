@@ -5,6 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
+from PIL import Image
+
 import glumpy
 import glumpy.gl as gl
 import glumpy.app as app
@@ -96,6 +98,8 @@ program['u_antialias'] = 1.0
 Z = np.zeros((1,2*1024,4), dtype=np.float32)
 program['u_grid'] = Z
 program['u_grid'].interpolation = gl.GL_NEAREST
+
+program['u_texture'] = np.array(Image.open("earth.jpg"))
 
 gl.glClearColor(1, 1, 1, 1)
 gl.glEnable(gl.GL_BLEND)

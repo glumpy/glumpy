@@ -73,8 +73,8 @@ class ArrayList(object):
         self._writeable = writeable
 
         if data is not None:
-            if type(data) in [list, tuple]:
-                if type(data[0]) in [list, tuple]:
+            if isinstance(data, (list, tuple)):
+                if isinstance(data[0], (list, tuple)):
                     itemsize = [len(l) for l in data]
                     data = [item for sublist in data for item in sublist]
             self._data = np.array(data, copy=False)
@@ -85,7 +85,7 @@ class ArrayList(object):
 
             # Check item sizes and get items count
             if itemsize is not None:
-                if type(itemsize) is int:
+                if isinstance(itemsize, int):
                     if (self._size % itemsize) != 0:
                         raise ValueError("Cannot partition data as requested")
                     self._count = self._size // itemsize
@@ -145,7 +145,7 @@ class ArrayList(object):
     def __getitem__(self, key):
         """ x.__getitem__(y) <==> x[y] """
 
-        if type(key) is int:
+        if isinstance(key, int):
             if key < 0:
                 key += len(self)
             if key < 0 or key >= len(self):
@@ -154,7 +154,7 @@ class ArrayList(object):
             dstop = self._items[key][1]
             return self._data[dstart:dstop]
 
-        elif type(key) is slice:
+        elif isinstance(key, slice):
             istart, istop, step = key.indices(len(self))
             if istart > istop:
                 istart, istop = istop, istart
@@ -178,37 +178,48 @@ class ArrayList(object):
         """ x.__setitem__(i, y) <==> x[i]=y """
 
         if not self._writeable:
-            raise AttributeError("List is not sizeable")
+            raise AttributeError("List is not writeable")
 
-        if type(key) is int:
-            if key < 0:
-                key += len(self)
-            if key < 0 or key > len(self):
-                raise IndexError("List assignment index out of range")
-            dstart = self._items[key][0]
-            dstop = self._items[key][1]
-            self._data[dstart:dstop] = data
+        if isinstance(key, (int,slice)):
+            if isinstance(key, int):
+                if key < 0:
+                    key += len(self)
+                if key < 0 or key > len(self):
+                    raise IndexError("List assignment index out of range")
+                dstart = self._items[key][0]
+                dstop = self._items[key][1]
+                istart = key
+            elif isinstance(key, slice):
+                istart, istop, step = key.indices(len(self))
+                if istart == istop:
+                    return
+                if istart > istop:
+                    istart, istop = istop, istart
+                if istart > len(self) or istop > len(self):
+                    raise IndexError("Can only assign iterable")
+                dstart = self._items[istart][0]
+                if istart == istop:
+                    dstop = dstart
+                else:
+                    dstop = self._items[istop - 1][1]
 
-        elif type(key) is slice:
-            istart, istop, step = key.indices(len(self))
-            if istart == istop:
-                return
-            if istart > istop:
-                istart, istop = istop, istart
-            if istart > len(self) or istop > len(self):
-                raise IndexError("Can only assign iterable")
-            dstart = self._items[istart][0]
-            if istart == istop:
-                dstop = dstart
-            else:
-                dstop = self._items[istop - 1][1]
-            print dstart,dstop
-            self._data[dstart:dstop] = data
+            if hasattr(data, "__len__"):
+                if len(data) == dstop-dstart: # or len(data) == 1:
+                    self._data[dstart:dstop] = data
+                else:
+                    self.__delitem__(key)
+                    self.insert(istart,data)
+            else: # we assume len(data) = 1
+                if dstop-dstart == 1:
+                    self._data[dstart:dstop] = data
+                else:
+                    self.__delitem__(key)
+                    self.insert(istart,data)
 
         elif key is Ellipsis:
             self.data[...] = data
 
-        elif type(key) is str:
+        elif isinstance(key, str):
             self._data[key][:self._size] = data
 
         else:
@@ -221,7 +232,7 @@ class ArrayList(object):
             raise AttributeError("List is not sizeable")
 
         # Deleting a single item
-        if type(key) is int:
+        if isinstance(key, int):
             if key < 0:
                 key += len(self)
             if key < 0 or key > len(self):
@@ -230,7 +241,7 @@ class ArrayList(object):
             dstart, dstop = self._items[key]
 
         # Deleting several items
-        elif type(key) is slice:
+        elif isinstance(key, slice):
             istart, istop, step = key.indices(len(self))
             if istart > istop:
                 istart, istop = istop, istart
@@ -290,7 +301,7 @@ class ArrayList(object):
         if not self._sizeable:
             raise AttributeError("List is not sizeable")
 
-        if type(data) in [list, tuple] and type(data[0]) in [list, tuple]:
+        if isinstance(data, (list, tuple)) and isinstance(data[0], (list, tuple)):
             itemsize = [len(l) for l in data]
             data = [item for sublist in data for item in sublist]
 
@@ -299,7 +310,7 @@ class ArrayList(object):
 
         # Check item size and get item number
         if itemsize is not None:
-            if type(itemsize) is int:
+            if isinstance(itemsize, int):
                 if (size % itemsize) != 0:
                     raise ValueError("Cannot partition data as requested")
                 _count = size // itemsize
@@ -394,3 +405,12 @@ class ArrayList(object):
         """
 
         self.insert(len(self), data, itemsize)
+
+
+if __name__ == '__main__':
+    L = ArrayList(dtype=int)
+    L.append( (1,2,3), itemsize=1 )
+    L[0] = 1,2,3
+    L[1] = 1,2,3
+    L[2] = 1,2,3
+    print L

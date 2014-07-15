@@ -24,16 +24,20 @@ class GLObject(object):
         self._id = GLObject._idcount
 
 
-    def __del__(self):
-        """ Fake deletion """
-        # You never know when this is goint to happen. The window might
-        # already be closed and no OpenGL context might be available.
-        # Worse, there might be multiple contexts and calling delete()
-        # at the wrong moment might remove other gl objects, leading to
-        # very strange and hard to debug behavior.
-        #
-        # So we don't do anything.
-        pass
+    # def __del__(self):
+    #     """ Fake deletion """
+    #     # You never know when this is goint to happen. The window might
+    #     # already be closed and no OpenGL context might be available.
+    #     # Worse, there might be multiple contexts and calling delete()
+    #     # at the wrong moment might remove other gl objects, leading to
+    #     # very strange and hard to debug behavior.
+    #     #
+    #     # So we don't do anything.
+    #     if hasattr(self, "_handle"):
+    #         if self._handle > -1:
+    #             self._delete()
+    #     else:
+    #         print "Deleting something"
 
 
     @property

@@ -364,3 +364,10 @@ class Attribute(Variable):
         if self._data is None:
             return 0
         return self._data.size
+
+    def __len__(self):
+        """ Length of the underlying vertex buffer """
+
+        if self._data is None:
+            return 0
+        return len(self._data)

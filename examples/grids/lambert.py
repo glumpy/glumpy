@@ -5,6 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
+from PIL import Image
+
 import glumpy
 import glumpy.gl as gl
 import glumpy.app as app
@@ -80,22 +82,23 @@ w,h = window.width, window.height
 program['a_position'] = (0, 0), (0, h), (w, 0), (w, h)
 program['a_texcoord'] = (0, 0), (0, +1), (+1, 0), (+1, +1)
 program['a_size'] = w,h
-program['u_major_grid_width'] = 1.5
+program['u_major_grid_width'] = 2.0
 program['u_minor_grid_width'] = 1.0
 program['u_major_grid_color'] = 0, 0, 0, 1.0
-program['u_minor_grid_color'] = 0, 0, 0, 0.5
+program['u_minor_grid_color'] = 0, 0, 0, 1.0
 
 limits1 = -2.0, +2.0, -2.0, +2.0
 limits2 = -np.pi, +np.pi, -np.pi/2, +np.pi/2
 
 major_grid = np.array([1.0, 0.5])*np.pi/(6*1)
-minor_grid = np.array([1.0, 0.5])*np.pi/(6*10)
+minor_grid = np.array([1.0, 0.5])*np.pi/(6*5)
 program['u_limits1'] = limits1
 program['u_limits2'] = limits2
 program['u_antialias'] = 1.0
 Z = np.zeros((1,1024,4), dtype=np.float32)
 program['u_grid'] = Z
 program['u_grid'].interpolation = gl.GL_NEAREST
+program['u_texture'] = np.array(Image.open("earth.jpg"))
 
 gl.glClearColor(1, 1, 1, 1)
 gl.glEnable(gl.GL_BLEND)
