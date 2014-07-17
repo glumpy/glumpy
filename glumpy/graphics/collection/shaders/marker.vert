@@ -9,6 +9,9 @@ const float SQRT_2 = 1.4142135623730951;
 
 // Uniforms
 // ------------------------------------
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_projection;
 
 // Externs
 // ------------------------------------
@@ -29,11 +32,18 @@ varying vec4  v_fg_color;
 varying vec4  v_bg_color;
 varying vec2  v_orientation;
 
+// Functions
+// ------------------------------------
+vec4 transform(vec3 position)
+{
+    return u_projection * u_view * u_model * vec4(position,1.0);
+}
+
 // Main
 // ------------------------------------
 void main (void)
 {
-    // External definition of this function
+    // This function is externally generated
     fetch_uniforms();
 
     v_size        = size;

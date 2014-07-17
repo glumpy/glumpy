@@ -10,81 +10,12 @@ import numpy as np
 from functools import reduce
 from glumpy.gloo.program import Program
 from glumpy.graphics.collection.util import fetchcode
-from glumpy.graphics.collection.base_collection import BaseCollection
-
-
-
-class Collection(BaseCollection):
-
-    _gtypes = { ('float32', 1) : "float",
-                ('float32', 2) : "vec2",
-                ('float32', 3) : "vec3",
-                ('float32', 4) : "vec4",
-                ('int32', 1)   : "int",
-                ('int32', 2)   : "ivec2",
-                ('int32', 3)   : "ivec3",
-                ('int32', 4)   : "ivec4" }
-
-    def __init__(self, dtypes, scopes, itype=None, **kwargs):
-
-        vtype      = [] # self._vertices
-        utype      = [] # self._uniforms
-
-        self._uniforms = {}
-        self._attributes = {}
-        self._varyings = {}
-
-        declarations = {"uniforms"   : "",
-                        "attributes" : "",
-                        "varyings"   : ""}
-        dtypes = np.dtype(dtypes)
-        for name in dtypes.names:
-            scope = kwargs.get(name, scopes.get(name, 'local'))
-            dtype = dtypes[name].base
-            count = np.zeros(dtypes[name].shape).size
-            gtype = Collection._gtypes[(dtype.name,count)]
-
-            if scope is "local":
-                vtype.append( (name, dtype, count) )
-                declarations["attributes"] += "attribute %s %s;\n" % (gtype, name)
-            elif scope is "shared":
-                utype.append( (name, dtype, count) )
-                declarations["varyings"] += "varying %s %s;\n" % (gtype, name)
-            else:
-                declarations["uniforms"] += "uniform %s %s;\n" % (gtype, name)
-                self._uniforms[name] = None
-
-        vtype = np.dtype(vtype)
-        itype = np.dtype(itype) if itype else None
-        utype = np.dtype(utype) if utype else None
-        BaseCollection.__init__(self, vtype=vtype, utype=utype, itype=itype)
-        self._declarations = declarations
-
-
-    def __getitem__(self, key):
-        if key in self._uniforms.keys():
-            if self._program is not None:
-                return self._program[key]
-            return self._uniforms[key]
-        else:
-            return BaseCollection.__getitem__(self, key)
-
-
-    def __setitem__(self, key, value):
-
-        if key in self._uniforms.keys():
-            if self._program is not None:
-                self._program[key] = value
-            self._uniforms[key] = value
-        else:
-            BaseCollection.__setitem__(self, key, value)
-
-
-
+from glumpy.graphics.collection.collection import Collection
 
 
 
 class MarkerCollection(Collection):
+    """ """
 
     defaults = { 'position'    : (0.0,0.0,0.0),
                  'size'        : 32.0,
@@ -94,8 +25,7 @@ class MarkerCollection(Collection):
                  'antialias'   : 1.0,
                  'linewidth'   : 1.0 }
 
-    def __init__(self, count=0, marker='cross'):
-
+    def __init__(self, count=0, marker='cross', **kwargs):
         # This cannot be changed (shader code depends on it)
         dtypes = [ ('position',    np.float32, 3),
                    ('size',        np.float32, 1),
@@ -105,7 +35,7 @@ class MarkerCollection(Collection):
                    ('linewidth',   np.float32, 1),
                    ('antialias',   np.float32, 1) ]
 
-        # This can be changed but 'position'
+        # This can be changed but 'position' that must be local
         scopes = { 'position'   : 'local',
                    'size'       : 'local',
                    'orientation': 'local',
@@ -113,8 +43,10 @@ class MarkerCollection(Collection):
                    'bg_color'   : 'local',
                    'linewidth'  : 'global',
                    'antialias'  : 'global' }
+        kwargs['position'] = 'local'
 
-        Collection.__init__(self, dtypes, scopes)
+
+        Collection.__init__(self, dtypes, scopes, **kwargs)
 
         path = os.path.dirname(__file__)
         path = os.path.join(path,'shaders')
@@ -128,7 +60,7 @@ class MarkerCollection(Collection):
         vertex += open(os.path.join(path, 'marker.vert')).read()
 
         fragment = ""
-        fragment += open(os.path.join(path, 'marker-cross.frag')).read()
+        fragment += open(os.path.join(path, 'marker-%s.frag') % marker).read()
         fragment += open(os.path.join(path, 'antialias.glsl')).read()
         fragment += open(os.path.join(path, 'marker.frag')).read()
 
@@ -147,7 +79,7 @@ class MarkerCollection(Collection):
     # def append( self, position, size=32.0, orientation = 0.0,
     #                   fg_color = (0,0,0,1), bg_color = (1,1,1,1),
     #                   linewidth = 1.0, antialias = 1.0):
-    #     V = np.zeros(1, dtype=self._vertices.dtype)
+    #     V = np.zeros(1, dtype=self.vtype)
     #     V['position'] = position
     #     V['orientation'] = orientation
     #     V['size'] = 32

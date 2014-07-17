@@ -346,7 +346,7 @@ class BaseCollection(object):
             if key in self.vtype.names:
                 V[key] = data
             # Setting a named field in uniforms
-            elif key in self.utype.names:
+            elif self.utype and key in self.utype.names:
                 U[key] = data
             else:
                 raise IndexError("Unknonw field name ('%s')" % key)
