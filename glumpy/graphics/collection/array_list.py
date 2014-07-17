@@ -131,6 +131,15 @@ class ArrayList(object):
         """ Describes the format of the elements in the buffer. """
         return self._data.dtype
 
+
+    def reserve(self, capacity):
+        """ Set current capacity of the underlying array"""
+
+        if capacity >= self._data.size:
+            capacity = int(2 ** np.ceil(np.log2(capacity)))
+            self._data = np.resize(self._data, capacity)
+
+
     def __len__(self):
         """ x.__len__() <==> len(x) """
         return self._count
@@ -273,6 +282,7 @@ class ArrayList(object):
         size = dstop - dstart
         self._items[istart:istop + size + 1] -= size, size
         self._count -= istop - istart
+
 
     def insert(self, index, data, itemsize=None):
         """ Insert data before index

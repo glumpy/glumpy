@@ -4,22 +4,19 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 """
-A collection is a (virtual) container for several objects having the same
-vertex structure (vtype) and same uniforms type (utype). A collection allows to
-manipulate objects individually but they can be rendered at once (single call).
-Each object can have its own set of uniforms provided they are a combination of
-floats.
+A collection is a container for several (optionally indexed) objects having
+the same vertex structure (vtype) and same uniforms type (utype). A collection
+allows to manipulate objects individually and each object can have its own set
+of uniforms provided they are a combination of floats.
 """
 import math
 import numpy as np
-
 from glumpy import gl
-from glumpy.gloo.program import Program
 from glumpy.gloo.texture import Texture2D
 from glumpy.gloo.buffer import VertexBuffer, IndexBuffer
-from glumpy.gloo.shader import VertexShader, FragmentShader
+from glumpy.graphics.collection.util import dtype_reduce
 from glumpy.graphics.collection.array_list import ArrayList
-from glumpy.graphics.collection.util import dtype_reduce, fetchcode
+
 
 
 class Item(object):
@@ -28,7 +25,6 @@ class Item(object):
     when accessing a specific object of the collection.
     """
 
-    # ---------------------------------
     def __init__(self, parent, key, vertices, indices, uniforms):
         """
         Create an item from an existing collection.
@@ -123,53 +119,39 @@ class Item(object):
 
 
 
-class Collection(object):
+class BaseCollection(object):
     """
     A collection is a container for several objects having the same vertex
     structure (vtype) and same uniforms type (utype). A collection allows to
-    manipulate objects individually but they can be rendered at once (single
-    call). Each object can have its own set of uniforms provided they are a
-    combination of floats.
+    manipulate objects individually and each object can have its own set of
+    uniforms provided they are a combination of floats.
+
+    Parameters
+    ----------
+
+    vtype: np.dtype
+        Vertices data type
+
+    utype: np.dtype or None
+        Uniforms data type
+
+    itype: np.dtype or None
+        Indices data type
     """
 
-    def __init__(self, vtype, utype=None, itype=None, vertex=None, fragment=None):
-        """
-
-        Parameters
-        ----------
-
-        vtype: np.dtype
-            Vertices data type
-
-        utype: np.dtype
-            Uniforms data type
-
-        itype: np.dtype
-            Indices data type
-        """
-
-        self._vbuffer = None
-        self._ibuffer = None
-        self._utexture = None
-        self._vertex = vertex
-        self._fragment = fragment
-        self._program = None
-
-        # Should be this line but we may not have a GL context yet
-        # self._max_texture_size = gl.glGetInteger(gl.GL_MAX_TEXTURE_SIZE)
-        self._max_texture_size = 1024
+    def __init__(self, vtype, utype=None, itype=None):
 
         # Vertices and type (mandatory)
-        self._vertices       = None
-        self._vertices_dtype = None
+        self._vertices_list = None
+        self._vertices_buffer = None
 
         # Vertex indices and type (optional)
-        self._indices       = None
-        self._indices_dtype = None
+        self._indices_list = None
+        self._indices_buffer = None
 
         # Uniforms and type (optional)
-        self._uniforms       = None
-        self._uniforms_dtype = None
+        self._uniforms_list = None
+        self._uniforms_texture = None
 
         # Make sure types are np.dtype (or None)
         vtype = np.dtype(vtype) if vtype is not None else None
@@ -186,8 +168,15 @@ class Collection(object):
         if itype is not None:
             if itype not in [np.uint8, np.uint16, np.uint32]:
                 raise ValueError("itype must be unsigned integer or None")
-            self._indices = ArrayList(dtype=itype)
-            self._indices_dtype = itype
+            self._indices_list = ArrayList(dtype=itype)
+
+        # No program yet
+        self._program = None
+
+        # We should use this line but we may not have a GL context yet
+        # self._max_texture_size = gl.glGetInteger(gl.GL_MAX_TEXTURE_SIZE)
+        self._max_texture_size = 1024
+
 
         # Uniforms type (optional)
         # -------------------------
@@ -213,123 +202,164 @@ class Collection(object):
             if (count - r_utype[1]) > 0:
                 utype.append(('unused', 'f4', count-r_utype[1]))
 
-            self._uniforms       = ArrayList(dtype=utype)
-            self._uniforms_dtype = utype
+            self._uniforms_list  = ArrayList(dtype=utype)
             self._uniforms_float_count = count
-
             self._compute_ushape(1)
-            self._uniforms.reserve( self._ushape[1] / (count/4) )
+            self._uniforms_list.reserve( self._ushape[1] / (count/4) )
 
         # Last since utype may add a new field in vtype (a_index)
-        self._vertices = ArrayList(dtype=vtype)
-        self._vertices_dtype = vtype
+        self._vertices_list  = ArrayList(dtype=vtype)
 
 
-    def draw(self, *args, **kwargs):
-        if self._program is None:
-            self._build_program()
-        self._program.draw(*args, **kwargs)
+
+    def _compute_ushape(self, size=1):
+        """ Compute uniform texture shape """
+
+        texsize = self._max_texture_size
+        count = self._uniforms_float_count
+        cols = texsize//(count/4)
+        rows = (size // cols)+1
+        self._ushape = rows, cols*(count/4), count
+        return self._ushape
+
+
+
+    def _build_buffers(self):
+        """ """
+
+        if self._vertices_buffer is not None:
+            self._vertices_buffer._delete()
+        self._vertices_buffer = self._vertices_list.data.view(VertexBuffer)
+
+        if self._indices_list is not None:
+            if self._indices_buffer is not None:
+                self._indices_buffer._delete()
+            self._indices_buffer = self._indices_list.data.view(IndexBuffer)
+
+        if self._uniforms_list is not None:
+            if self._uniforms_texture is not None:
+                self._uniforms_texture._delete()
+            shape = self._compute_ushape(len(self))
+            # We take the whole array (_data), not the data one
+            texture = self._uniforms_list._data.view(np.float32)
+            texture = texture.reshape(shape[0],shape[1],4)
+            self._uniforms_texture = texture.view(Texture2D)
+            self._uniforms_texture.interpolation =  gl.GL_NEAREST
+
+        if self._program is not None:
+            self._program.bind(self._vertices_buffer)
+            if self._uniforms_list is not None:
+                self._program["u_uniforms"] = self._uniforms_texture
+                self._program["u_uniforms_shape"] = self._ushape
+
 
 
     @property
     def vtype(self):
         """ Vertices dtype """
 
-        return self._vertices_dtype
+        return self._vertices_list.dtype
+
 
     @property
     def itype(self):
-        """ Uniforms dtype """
+        """ Indices dtype """
 
-        return self._indices_dtype
+        if self._indices_list is not None:
+            return self._indices_list.dtype
+        return None
+
 
     @property
     def utype(self):
         """ Uniforms dtype """
 
-        return self._uniforms.dtype
-
-
-    @property
-    def vertices(self):
-        """ Vertices buffer """
-
-        return self._vertices.data
-
-
-    @property
-    def indices(self):
-        """ Indices buffer """
-
-        return self._indices.data
-
-
-    @property
-    def uniforms(self):
-        """ Uniforms buffer """
-
-        return self._uniforms.data
+        if self._uniforms_list is not None:
+            return self._uniforms_list.dtype
+        return None
 
 
     def __len__(self):
         """ """
-        return len(self._vertices)
+        return len(self._vertices_list)
 
 
     def __getitem__(self, key):
         """ """
 
-        V, I, U = self._vertices, self._indices, self._uniforms
+        # WARNING
+        # Here we want to make sure to use buffers and texture (instead of
+        # lists) since only them are aware of any external modification.
 
-        # Getting field
-        # -------------
+        V = self._vertices_buffer
+        I = None
+        U = None
+        if self._indices_list is not None:
+            I = self._indices_buffer
+        if self._uniforms_list is not None:
+            U = self._uniforms_texture.ravel().view(self.utype)
+
+        # Getting a whole field
         if isinstance(key, str):
+            # Getting a named field from vertices
             if key in V.dtype.names:
                 return V[key]
+            # Getting a named field from uniforms
             elif U is not None and key in U.dtype.names:
                 return U[key]
             else:
                 raise IndexError("Unknonw field name ('%s')" % key)
 
         # Getting individual item
-        # -----------------------
         elif isinstance(key, int):
-            vertices = V[key]
-            indices  = I[key] if I is not None else None
-            uniform  = U[key] if U is not None else None
+            vstart, vend = self._vertices_list._items[key]
+            istart, iend = self._indices_list._items[key]
+            ustart, uend = self._uniforms_list._items[key]
+            vertices = V[vstart:vend]
+            indices  = I[istart:iend] if I is not None else None
+            uniform  = U[ustart:uend] if U is not None else None
             return Item(self, key, vertices, indices, uniform)
 
         # Error
-        # -----
         else:
-            raise IndexError("Cannot get more than one item")
+            raise IndexError("Cannot get more than one item at once")
 
 
     def __setitem__(self, key, data):
-        """ """
+        """ x.__setitem__(i, y) <==> x[i]=y """
 
-        # Setting field
-        # -------------
+        # WARNING
+        # Here we want to make sure to use buffers and texture (instead of
+        # lists) since only them are aware of any external modification.
+
+        V = self._vertices_buffer
+        I = None
+        U = None
+        if self._indices_list is not None:
+            I = self._indices_buffer
+        if self._uniforms_list is not None:
+            U = self._uniforms_texture.ravel().view(self.utype)
+
+        # Setting a whole field
         if isinstance(key, str):
-            # Setting vertices field at once
-            if key in self._vertices_dtype.names:
-                self._vertices.data[key] = data
-
-            # Setting uniforms field at once
-            elif key in self._uniforms_dtype.names:
-                self._uniforms.data[key] = data
+            # Setting a named field in vertices
+            if key in self.vtype.names:
+                V[key] = data
+            # Setting a named field in uniforms
+            elif key in self.utype.names:
+                U[key] = data
             else:
                 raise IndexError("Unknonw field name ('%s')" % key)
 
-        # Setting individual item
-        # -----------------------
-        elif isinstance(key, int):
-            vertices, indices, uniforms = data
-            del self[key]
-            self.insert(key, vertices, indices, uniforms)
+        # # Setting individual item
+        # elif isinstance(key, int):
+        #     #vstart, vend = self._vertices_list._items[key]
+        #     #istart, iend = self._indices_list._items[key]
+        #     #ustart, uend = self._uniforms_list._items[key]
+        #     vertices, indices, uniforms = data
+        #     del self[key]
+        #     self.insert(key, vertices, indices, uniforms)
 
-        # Setting individual item
-        # -----------------------
         else:
             raise IndexError("Cannot set more than one item")
 
@@ -338,8 +368,11 @@ class Collection(object):
     def __delitem__(self, index):
         """ x.__delitem__(y) <==> del x[y] """
 
+        # WARNING
+        # Here we want to make sure to use buffers and texture (instead of
+        # lists) since only them are aware of any external modification.
+
         # Deleting one item
-        # -----------------
         if isinstance(index, int):
             if index < 0:
                 index += len(self)
@@ -348,7 +381,6 @@ class Collection(object):
             istart, istop = index, index+1
 
         # Deleting several items
-        # ----------------------
         elif isinstance(index, slice):
             istart, istop, _ = index.indices(len(self))
             if istart > istop:
@@ -357,27 +389,32 @@ class Collection(object):
                 return
 
         # Deleting everything
-        # -------------------
         elif index is Ellipsis:
             istart, istop = 0, len(self)
 
         # Error
-        # -----
         else:
             raise TypeError("Collection deletion indices must be integers")
 
-        vsize = len(self._vertices[index])
-        if self._indices is not None:
-            del self._indices[index]
-            self._indices[index] -= vsize
-        del self._vertices[index]
-        if self._uniforms is not None:
-            del self._uniforms[index]
+        vsize = len(self._vertices_list[index])
+        if self._indices_list is not None:
+            del self._indices_list[index]
+            self._indices_list[index] -= vsize
+        del self._vertices_list[index]
+        if self._uniforms_list is not None:
+            del self._uniforms_list[index]
 
         # Update a_index at once
-        if self._uniforms is not None:
-            I = np.repeat(np.arange(len(self)), self._vertices.itemsize)
-            self._vertices['a_index'] = I.astype(np.float32)
+        if self._uniforms_list is not None:
+            I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
+            self._vertices_list['a_index'] = I.astype(np.float32)
+
+
+        # It is not strictly necessary to build new buffers each time an
+        # item is deleted, but it would complexify even more this already
+        # complex object.
+        self._build_buffers()
+
 
 
     def insert(self, index, vertices, uniforms=None, indices=None, itemsize=None):
@@ -409,28 +446,28 @@ class Collection(object):
             itemsize values is different from array size, an error is raised.
         """
 
-        vtype = self._vertices.dtype
+        vtype = self.vtype
         vertices = np.array(vertices,copy=False).astype(vtype).ravel()
 
         # Sanity checks
         # -------------
-        if indices is not None and self._indices is None:
+        if indices is not None and self._indices_list is None:
             raise RuntimeError("Collection has been created without indices")
-        elif indices is None and self._indices is not None:
-            indices = np.arange(len(vertices), dtype=self._indices_dtype)
+        elif indices is None and self._indices_list is not None:
+            indices = np.arange(len(vertices), dtype=self.itype)
             #raise RuntimeError("Items must be provided with indices")
 
-        if uniforms is not None and self._uniforms is None:
+        if uniforms is not None and self._uniforms_list is None:
             raise RuntimeError("Collection has been created without uniforms")
-        elif uniforms is None and self._uniforms is not None:
+        elif uniforms is None and self._uniforms_list is not None:
             raise RuntimeError("Items must be provided with uniforms")
 
         if indices is not None:
-            itype = self._indices.dtype
+            itype = self.itype
             indices = np.array(indices,copy=False).astype(itype).ravel()
 
         if uniforms is not None:
-            utype = self._uniforms.dtype
+            utype = self.utype
             uniforms = np.array(uniforms,copy=False).astype(utype).ravel()
 
         # Check index
@@ -440,45 +477,47 @@ class Collection(object):
             raise IndexError("Collection insertion index out of range")
 
         # Inserting
-        if index < len(self._vertices):
-            vstart = self._vertices._items[index][0]
-            if self._indices is not None:
-                istart = self._indices._items[index][0]
-            if self._uniforms is not None:
-                ustart = self._uniforms._items[index][0]
+        if index < len(self._vertices_list):
+            vstart = self._vertices_list._items[index][0]
+            if self._indices_list is not None:
+                istart = self._indices_list._items[index][0]
+            if self._uniforms_list is not None:
+                ustart = self._uniforms_list._items[index][0]
         # Appending
         else:
-            vstart = self._vertices.size
-            if self._indices is not None:
-                istart = self._indices.size
-            if self._uniforms is not None:
-                ustart = self._uniforms.size
+            vstart = self._vertices_list.size
+            if self._indices_list is not None:
+                istart = self._indices_list.size
+            if self._uniforms_list is not None:
+                ustart = self._uniforms_list.size
 
         # Updating indices
-        if self._indices is not None:
-            self._indices._data[istart:] += len(vertices)
+        if self._indices_list is not None:
+            self._indices_list._data[istart:] += len(vertices)
             indices += vstart
 
         # Inserting one item
         if itemsize is None:
-            self._vertices.insert(index,vertices)
-            if self._indices is not None:
-                self._indices.insert(index,indices)
-            if self._uniforms is not None:
+            self._vertices_list.insert(index,vertices)
+            if self._indices_list is not None:
+                self._indices_list.insert(index,indices)
+            if self._uniforms_list is not None:
                 if uniforms is not None:
-                    self._uniforms.insert(index,uniforms)
+                    self._uniforms_list.insert(index,uniforms)
                 else:
-                    U = np.zeros(1,dtype=self._uniforms.dtype)
-                    self._uniforms.insert(index,U)
+                    U = np.zeros(1,dtype=self.utype)
+                    self._uniforms_list.insert(index,U)
 
             # Update a_index at once
-            if self._uniforms is not None:
-                I = np.repeat(np.arange(len(self)), self._vertices.itemsize)
-                self._vertices['a_index'] = I.astype(np.float32)
+            if self._uniforms_list is not None:
+                I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
+                self._vertices_list['a_index'] = I.astype(np.float32)
 
+            # It is not strictly necessary to build new buffers each time an
+            # item is inserted, but it would complexify even more this already
+            # complex object.
             self._build_buffers()
             return
-
 
         # No item size specified
         if itemsize is None:
@@ -502,7 +541,6 @@ class Collection(object):
             v_itemsize = itemsize[0]
             v_itemcount = vertices.size // v_itemsize
             v_itemsize = v_itemsize*np.ones(v_itemcount,dtype=int)
-
             if indices is not None:
                 i_itemsize = itemsize[1]
                 i_itemcount = indices.size // i_itemsize
@@ -524,89 +562,37 @@ class Collection(object):
             if v_itemcount != i_itemcount:
                 raise ValueError("Vertices/Indices item size not compatible")
 
-        self._vertices.insert(index, vertices, v_itemsize)
+        self._vertices_list.insert(index, vertices, v_itemsize)
 
-        if self._indices is not None:
+        if self._indices_list is not None:
             I = np.repeat(v_itemsize.cumsum(),i_itemsize)
             indices[i_itemsize[0]:] += I[:-i_itemsize[0]]
-            self._indices.insert(index, indices, i_itemsize)
+            self._indices_list.insert(index, indices, i_itemsize)
 
-        if self._uniforms is not None:
+        if self._uniforms_list is not None:
             if uniforms is None:
-                U = np.zeros(v_itemcount,dtype=self._uniforms.dtype)
-                self._uniforms.insert(index,U, itemsize=1)
+                U = np.zeros(v_itemcount,dtype=self.utype)
+                self._uniforms_list.insert(index,U, itemsize=1)
             else:
                 if len(uniforms) != v_itemcount:
                     if len(uniforms) == 1:
                         U = np.resize(uniforms, v_itemcount)
-                        self._uniforms.insert(index, U, itemsize=1)
+                        self._uniforms_list.insert(index, U, itemsize=1)
                     else:
                         raise ValueError("Vertices/Uniforms item number not compatible")
                 else:
-                    self._uniforms.insert(index, uniforms, itemsize=1)
+                    self._uniforms_list.insert(index, uniforms, itemsize=1)
 
         # Update a_index at once
-        if self._uniforms is not None:
-            I = np.repeat(np.arange(len(self)), self._vertices.itemsize)
-            self._vertices['a_index'] = I.astype(np.float32)
+        if self._uniforms_list is not None:
+            I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
+            self._vertices_list['a_index'] = I.astype(np.float32)
 
+        # It is not strictly necessary to build new buffers each time an item
+        # is inserted, but it would complexify even more this already complex
+        # object.
         self._build_buffers()
 
-
-    def _compute_ushape(self, size=1):
-        texsize = self._max_texture_size
-        count = self._uniforms_float_count
-        cols = texsize//(count/4)
-        rows = (size // cols)+1
-        self._ushape = rows, cols*(count/4), count
-
-
-    def _build_program(self):
-        """ """
-
-        vert, frag = self._vertex, self._fragment
-        #if not isinstance(vert, VertexShader):
-        #    vert = VertexShader(vert)
-        #code = ""
-        #if self._uniforms is not None:
-        #    code += fetchcode(self._uniforms_dtype)
-        #code += vert._code
-        #vert = VertexShader(code)
-        self._program = Program(self._vertex, self._fragment)
-        self._build_buffers()
-
-
-
-    def _build_buffers(self):
-        """ """
-
-        # Explicit deletion of buffers & texture from GPU memory
-        if self._vbuffer is not None:
-            self._vbuffer._delete()
-        if self._utexture is not None:
-            self._utexture._delete()
-        if self._ibuffer is not None:
-            self._ibuffer._delete()
-
-        self._vbuffer = self._vertices.data.view(VertexBuffer)
-
-        if self._indices is not None:
-            self._ibuffer = self._indices.data.view(IndexBuffer)
-
-        if self._uniforms is not None:
-            self._compute_ushape(len(self))
-            shape = self._ushape
-            # We take the whole array (_data), not the data one
-            texture = self._uniforms._data.view(np.float32)
-            texture = texture.reshape(shape[0],shape[1],4)
-            self._utexture = texture.view(Texture2D)
-            self._utexture.interpolation =  gl.GL_NEAREST
-
-        if self._program is not None:
-            self._program.bind(self._vbuffer)
-            if self._uniforms is not None:
-                self._program["u_uniforms"] = self._utexture
-                self._program["u_uniforms_shape"] = self._ushape
 
 
     def append(self, vertices, uniforms=None, indices=None, itemsize=None):
@@ -646,7 +632,8 @@ if __name__ == '__main__':
     utype = [('color', 'f4', 3)]
     itype = np.uint32
 
-    C = Collection(vtype, utype, itype)
+    C = BaseCollection(vtype, utype, itype)
+
     for i in range(4):
         V = np.zeros(i+1,vtype)
         I = np.arange(i+1)
@@ -655,9 +642,16 @@ if __name__ == '__main__':
         U['color'] = i
         C.append(V, U, I)
 
+    print C._vertices_buffer._pending_data
+    C._vertices_buffer._pending_data = None
+    print C._vertices_buffer._pending_data
+
+#    C['position'] = -1,-1
+#    print C._vertices_buffer._pending_data
 
     for i in range(4):
         print C[i]
     print
     del C[:3]
     print C[0]
+    print C._vertices_buffer._pending_data

@@ -73,7 +73,7 @@ def dtype_reduce(dtype, level=0, depth=0):
             return items
 
 
-def fetchcode(utype, prefix="u_"):
+def fetchcode(utype, prefix=""):
     """
     Generate the GLSL code needed to retrieve fake uniform values from a texture.
 
@@ -106,10 +106,11 @@ attribute float     a_index;
         header += "varying %s %s%s;\n" % (types[count],prefix,name)
 
     # Body generation (not so easy)
-    body = """\nvoid fetch_uniforms(float index) {
+    body = """\nvoid fetch_uniforms() {
     float rows   = u_uniforms_shape.x;
     float cols   = u_uniforms_shape.y;
     float count  = u_uniforms_shape.z;
+    float index  = a_index;
     int index_x  = int(mod(index, (floor(cols/(count/4.0))))) * int(count/4.0);
     int index_y  = int(floor(index / (floor(cols/(count/4.0)))));
     float size_x = cols - 1.0;
@@ -140,7 +141,7 @@ attribute float     a_index;
             elif shift == 3: b = "w"
 
             i = min(min(len(b), count), len(a))
-            body += "    %s%s.%s = _uniforms.%s;\n" % (prefix,name,b[:i],a[:i])
+            body += "    %s%s.%s = _uniform.%s;\n" % (prefix,name,b[:i],a[:i])
             count -= i
             shift += i
             store -= i
