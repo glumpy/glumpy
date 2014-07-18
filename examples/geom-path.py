@@ -27,13 +27,17 @@ uniform float linewidth;
 uniform float miter_limit;
 
 varying float v_length;
-varying float v_alpha;
-varying vec2 v_texcoord;
-varying vec2 v_bevel_distance;
+varying vec2  v_caps;
+varying vec2  v_texcoord;
+varying vec2  v_bevel_distance;
 
 void main()
 {
     float distance = v_texcoord.y;
+    vec4 color = vec4(0,0,0,1);
+
+    if (v_caps.x < 0.0)      { color = vec4(1,0,0,1); }
+    if (v_caps.y > v_length) { color = vec4(0,0,1,1); }
 
     // Round join (instead of miter)
     // if (v_texcoord.x < 0.0)          { distance = length(v_texcoord); }
@@ -52,7 +56,7 @@ void main()
         alpha = d/(antialias);
         alpha = exp(-alpha*alpha);
     }
-    gl_FragColor = vec4(0, 0, 0, alpha*v_alpha);
+    gl_FragColor = vec4(color.rgb, color.a*alpha);
 } """
 
 geometry = """
@@ -65,8 +69,8 @@ uniform float antialias;
 uniform float linewidth;
 uniform float miter_limit;
 
+varying out vec2 v_caps;
 varying out float v_length;
-varying out float v_alpha;
 varying out vec2 v_texcoord;
 varying out vec2 v_bevel_distance;
 
@@ -86,7 +90,7 @@ float line_distance(vec2 p0, vec2 p1, vec2 p)
     float l2 = v.x*v.x + v.y*v.y;
     float u = ((p.x-p0.x)*v.x + (p.y-p0.y)*v.y) / l2;
 
-    // h is the prpjection of p on (p0,p1)
+    // h is the projection of p on (p0,p1)
     vec2 h = p0 + u*v;
 
     return length(p-h);
@@ -133,68 +137,80 @@ void main(void)
     float d1 = +1.0;
     if( (v1.x*v2.y - v1.y*v2.x) > 0 ) { d1 = -1.0; }
 
+
+
     // Generate the triangle strip
 
-    v_alpha = 1.0;
     // Cap at start
     if( p0 == p1 ) {
         p = p1 - w*v1 + w*n1;
         gl_Position = projection*vec4(p, 0.0, 1.0);
         v_texcoord = vec2(-w, +w);
-        if (p2 == p3) v_alpha = 0.0;
+        v_caps.x = v_texcoord.x;
     // Regular join
     } else {
         p = p1 + length_a * miter_a;
         gl_Position = projection*vec4(p, 0.0, 1.0);
         v_texcoord = vec2(compute_u(p1,p2,p), +w);
+        v_caps.x = 1.0;
     }
+    if( p2 == p3 ) v_caps.y = v_texcoord.x;
+    else           v_caps.y = 1.0;
+
     v_bevel_distance.x = +d0*line_distance(p1+d0*n0*w, p1+d0*n1*w, p);
     v_bevel_distance.y =    -line_distance(p2+d1*n1*w, p2+d1*n2*w, p);
     EmitVertex();
 
-    v_alpha = 1.0;
     // Cap at start
     if( p0 == p1 ) {
         p = p1 - w*v1 - w*n1;
         v_texcoord = vec2(-w, -w);
-        if (p2 == p3) v_alpha = 0.0;
+        v_caps.x = v_texcoord.x;
     // Regular join
     } else {
         p = p1 - length_a * miter_a;
         v_texcoord = vec2(compute_u(p1,p2,p), -w);
+        v_caps.x = 1.0;
     }
+    if( p2 == p3 ) v_caps.y = v_texcoord.x;
+    else           v_caps.y = 1.0;
     gl_Position = projection*vec4(p, 0.0, 1.0);
     v_bevel_distance.x = -d0*line_distance(p1+d0*n0*w, p1+d0*n1*w, p);
     v_bevel_distance.y =    -line_distance(p2+d1*n1*w, p2+d1*n2*w, p);
     EmitVertex();
 
-    v_alpha = 1.0;
     // Cap at end
     if( p2 == p3 ) {
         p = p2 + w*v1 + w*n1;
         v_texcoord = vec2(v_length+w, +w);
-        if (p0 == p1) v_alpha = 0.0;
+        v_caps.y = v_texcoord.x;
     // Regular join
     } else {
         p = p2 + length_b * miter_b;
         v_texcoord = vec2(compute_u(p1,p2,p), +w);
+        v_caps.y = 1.0;
     }
+    if( p0 == p1 ) v_caps.x = v_texcoord.x;
+    else           v_caps.x = 1.0;
+
     gl_Position = projection*vec4(p, 0.0, 1.0);
     v_bevel_distance.x =    -line_distance(p1+d0*n0*w, p1+d0*n1*w, p);
     v_bevel_distance.y = +d1*line_distance(p2+d1*n1*w, p2+d1*n2*w, p);
     EmitVertex();
 
-    v_alpha = 1.0;
     // Cap at end
     if( p2 == p3 ) {
         p = p2 + w*v1 - w*n1;
         v_texcoord = vec2(v_length+w, -w);
-        if (p0 == p1) v_alpha = 0.0;
+        v_caps.y = v_texcoord.x;
     // Regular join
     } else {
         p = p2 - length_b * miter_b;
         v_texcoord = vec2(compute_u(p1,p2,p), -w);
+        v_caps.y = 1.0;
     }
+    if( p0 == p1 ) v_caps.x = v_texcoord.x;
+    else           v_caps.x = 1.0;
     gl_Position = projection*vec4(p, 0.0, 1.0);
     v_bevel_distance.x =    -line_distance(p1+d0*n0*w, p1+d0*n1*w, p);
     v_bevel_distance.y = -d1*line_distance(p2+d1*n1*w, p2+d1*n2*w, p);
@@ -215,7 +231,7 @@ P[:,0] = 400 + np.cos(T)*R
 P[:,1] = 400 + np.sin(T)*R
 
 # Star
-def star(inner=0.5, outer=1.0, n=5):
+def star(inner=0.45, outer=1.0, n=5):
     R = np.array( [inner,outer]*n)
     T = np.linspace(0,2*np.pi,2*n,endpoint=False)
     P = np.zeros((2*n,2))
@@ -223,45 +239,47 @@ def star(inner=0.5, outer=1.0, n=5):
     P[:,1]= R*np.sin(T)
     return P
 
-n = 12
-miter_limit = 1.0
-linewidth = 20.0
-P = np.zeros((2*n+2,2),dtype=np.float32)
-P[1:-1] = (star(n=12)*400 + (400,400)).astype(np.float32)
-P[0] = P[1]
-P[-1] = P[-2]
-
-
-
 vertex   = gp.gloo.VertexShader(vertex)
 fragment = gp.gloo.FragmentShader(fragment)
-geometry = gp.gloo.GeometryShader(geometry,
-                                  4, gl.GL_LINES_ADJACENCY_EXT, gl.GL_TRIANGLE_STRIP)
+geometry = gp.gloo.GeometryShader(geometry, 4, gl.GL_LINES_ADJACENCY_EXT, gl.GL_TRIANGLE_STRIP)
 program = gp.gloo.Program(vertex, fragment, geometry)
 
+P = (star(n=5)*350 + (400,400)).astype(np.float32)
 
+closed = not False
+if closed:
+    if np.allclose(P[0],P[1]):
+        I = (np.arange(len(P)+2)-1)
+        I[0], I[-1] = 0, len(P)-1
+    else:
+        I = (np.arange(len(P)+3)-1)
+        I[0], I[-2], I[-1] = len(P)-1, 0, 1
+else:
+    I = (np.arange(len(P)+2)-1)
+    I[0], I[-1] = 0, len(P)-1
+I = I.astype(np.uint32).view(gp.gloo.IndexBuffer)
+
+
+program["position"] = P
+program["linewidth"] = 32.0
+program["antialias"] = 1.0
+program["miter_limit"] = 4.0
 
 window = gp.app.Window(width=800, height=800)
 
 @window.event
 def on_draw():
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-    program.draw(gl.GL_LINE_STRIP_ADJACENCY_EXT)
+    program.draw(gl.GL_LINE_STRIP_ADJACENCY_EXT, I)
 
 @window.event
 def on_resize(width, height):
     gl.glViewport(0, 0, width, height)
     program['projection'] = gp.glm.ortho(0, width, 0, height, -1, +1)
 
-
 gl.glClearColor(1.0, 1.0, 1.0, 1.0)
 gl.glDisable(gl.GL_DEPTH_TEST)
 gl.glEnable(gl.GL_BLEND)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
-
-program["position"] = P
-program["linewidth"] = 10.0
-program["antialias"] = 1.0
-program["miter_limit"] = 4.0
 gp.app.run()
