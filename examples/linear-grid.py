@@ -261,7 +261,7 @@ def on_mouse_scroll(x, y, dx, dy):
     update_grid(w, h)
 
 
-program = gloo.Program(vertex, fragment, 4)
+program = gloo.Program(vertex, fragment, count=4)
 program['a_position'] = (-1, -1), (-1, +1), (+1, -1), (+1, +1)
 program['a_texcoord'] = (0, 0), (0, +1), (+1, 0), (+1, +1)
 program['u_major_grid_width'] = 1.0

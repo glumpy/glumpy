@@ -59,7 +59,7 @@ def on_draw():
 def on_resize(width, height):
     gl.glViewport(0, 0, width, height)
 
-program = gloo.Program(vertex, fragment, 4)
+program = gloo.Program(vertex, fragment, count=4)
 program['a_position'] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
 program['a_texcoord'] = ( 0, 0), ( 0,+1), (+1, 0), (+1,+1)
 data = np.random.uniform(0,1,(32,32,1))

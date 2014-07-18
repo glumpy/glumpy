@@ -43,7 +43,7 @@ def on_draw():
     oscilloscope['intensity'][index] = 1.0
 
 index = 0
-oscilloscope = gloo.Program(vertex, fragment, 150)
+oscilloscope = gloo.Program(vertex, fragment, count=150)
 oscilloscope['x'] = np.linspace(-1,1,len(oscilloscope))
 
 app.run()

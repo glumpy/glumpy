@@ -115,13 +115,11 @@ def on_draw():
 
     framebuffer.activate()
     gl.glViewport(0, 0, width, height)
-    compute["texture"].interpolation = gl.GL_NEAREST
     compute.draw(gl.GL_TRIANGLE_STRIP)
     framebuffer.deactivate()
 
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     gl.glViewport(0, 0, width, height)
-    render["texture"].interpolation = gl.GL_LINEAR
     render.draw(gl.GL_TRIANGLE_STRIP)
 
 
@@ -149,18 +147,23 @@ for i in range(len(gun)):
     x += 1
 
 pingpong = 1
-compute = gloo.Program(compute_vertex, compute_fragment, 4)
+compute = gloo.Program(compute_vertex, compute_fragment, count=4)
 compute["texture"] = Z
+compute["texture"].interpolation = gl.GL_NEAREST
+compute["texture"].wrapping = gl.GL_CLAMP_TO_EDGE
 compute["position"] = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
 compute["texcoord"] = [(0, 0), (0, 1), (1, 0), (1, 1)]
 compute['dx'] = 1.0 / w
 compute['dy'] = 1.0 / h
 compute['pingpong'] = pingpong
 
-render = gloo.Program(render_vertex, render_fragment, 4)
+
+render = gloo.Program(render_vertex, render_fragment, count=4)
 render["position"] = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
 render["texcoord"] = [(0, 0), (0, 1), (1, 0), (1, 1)]
 render["texture"] = compute["texture"]
+render["texture"].interpolation = gl.GL_LINEAR
+render["texture"].wrapping = gl.GL_CLAMP_TO_EDGE
 render['pingpong'] = pingpong
 
 framebuffer = gloo.FrameBuffer(color=compute["texture"],

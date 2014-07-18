@@ -94,7 +94,7 @@ def on_mouse_scroll(x, y, dx, dy):
     update_grid()
 
 
-program = gloo.Program(vertex, fragment, 4)
+program = gloo.Program(vertex, fragment, count=4)
 program['u_model']      = np.eye(4)
 program['u_view']       = np.eye(4)
 program['u_projection'] = np.eye(4)

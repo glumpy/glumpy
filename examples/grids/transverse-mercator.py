@@ -73,7 +73,7 @@ def on_resize(width, height):
     program['u_projection'] = glm.ortho(0, width, 0, height, -1, +1)
     update_grid()
 
-program = gloo.Program(vertex, [transform,fragment], 4)
+program = gloo.Program(vertex, [transform,fragment], count=4)
 program['u_model']      = np.eye(4)
 program['u_view']       = np.eye(4)
 program['u_projection'] = np.eye(4)

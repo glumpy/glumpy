@@ -89,7 +89,7 @@ window = app.Window(width=800, height=800)
 
 
 n = 1000000
-program = gloo.Program(vertex, fragment, n)
+program = gloo.Program(vertex, fragment, count=n)
 view = np.eye(4, dtype=np.float32)
 glm.translate(view, 0, 0, -5)
 

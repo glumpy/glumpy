@@ -31,8 +31,7 @@ class Texture(GPUData,GLObject):
         GLObject.__init__(self)
         self._target = target
         self._interpolation = gl.GL_LINEAR, gl.GL_LINEAR
-        # self._wrapping = gl.GL_CLAMP_TO_EDGE
-        self._wrapping = gl.GL_REPEAT
+        self._wrapping = gl.GL_CLAMP_TO_EDGE
 
     def _check_shape(self, shape, ndims):
         """ Check and normalize shape. """

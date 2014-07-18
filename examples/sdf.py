@@ -93,7 +93,7 @@ def on_resize(width, height):
     projection = glm.ortho(0, width, 0, height, -1, +1)
     program['u_projection'] = projection
 
-program = gloo.Program(vertex, fragment, 1)
+program = gloo.Program(vertex, fragment, count=1)
 program['a_position']  = 256,256
 program['a_size']      = 2*256
 program['u_fg_color']  = 0.00, 0.00, 0.00, 1.00

@@ -91,7 +91,7 @@ for i in range(n):
     colors[i] = norm_rgb(r, g, b)
 
 
-program = gloo.Program(vertex, fragment, len(galaxy))
+program = gloo.Program(vertex, fragment, count=len(galaxy))
 
 view = np.eye(4, dtype=np.float32)
 model = np.eye(4, dtype=np.float32)
