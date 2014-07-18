@@ -8,6 +8,7 @@
 import os
 import numpy as np
 from functools import reduce
+from glumpy import gl
 from glumpy.graphics.collection.base_collection import BaseCollection
 
 
@@ -74,3 +75,12 @@ class Collection(BaseCollection):
                 self._program[key] = value
                 return
         BaseCollection.__setitem__(self, key, value)
+
+
+    def draw(self, mode = gl.GL_POINTS):
+        """ Draw collection """
+
+        if self._indices_list is not None:
+            self._program.draw(mode, self._indices_buffer)
+        else:
+            self._program.draw(mode)

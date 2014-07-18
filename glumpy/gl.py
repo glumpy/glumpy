@@ -15,3 +15,5 @@ def cleanupCallback( context=None ):
 	return callback
 
 from OpenGL.GL import *
+from OpenGL.GL.EXT.geometry_shader4 import *
+from OpenGL.GL.NV.geometry_program4 import *

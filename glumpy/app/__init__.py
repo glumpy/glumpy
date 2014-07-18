@@ -157,23 +157,23 @@ class Window(object):
         kwargs['config'] = kwargs.get('config', config)
 
         # Get command line size
-        if options.size:
-            size = options.size.split(",")
-            kwargs['width'] = int(size[0])
-            kwargs['height'] = int(size[1])
-        else:
-            kwargs['width']  = kwargs.get('width', 512)
-            kwargs['height'] = kwargs.get('height', 512)
+        # if options.size:
+        #     size = options.size.split(",")
+        #     kwargs['width'] = int(size[0])
+        #     kwargs['height'] = int(size[1])
+        # else:
+        #     kwargs['width']  = kwargs.get('width', 512)
+        #     kwargs['height'] = kwargs.get('height', 512)
 
         # Get command line position
-        if options.position:
-            position = options.position.split(",")
-            #kwargs['x'] = kwargs.get('x', int(position[0]))
-            #kwargs['y'] = kwargs.get('y', int(position[1]))
-        else:
-            pass
-            #kwargs['x'] = kwargs.get('x', 0)
-            #kwargs['y'] = kwargs.get('y', 0)
+        # if options.position:
+        #     position = options.position.split(",")
+        #     #kwargs['x'] = kwargs.get('x', int(position[0]))
+        #     #kwargs['y'] = kwargs.get('y', int(position[1]))
+        # else:
+        #     pass
+        #     #kwargs['x'] = kwargs.get('x', 0)
+        #     #kwargs['y'] = kwargs.get('y', 0)
 
 
         # Create the backend window

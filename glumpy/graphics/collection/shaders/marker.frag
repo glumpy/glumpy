@@ -13,6 +13,7 @@ const float SQRT_2 = 1.4142135623730951;
 // vec4 filled(float, float, float, vec4);
 // vec4 outline(float, float, float, vec4, vec4);
 // vec4 stroke(float, float, float, vec4);
+// vec4 cap(float, float, float, float, vec4);
 
 // Varyings
 // ------------------------------------

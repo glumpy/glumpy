@@ -9,4 +9,5 @@ from . uniforms import Uniforms
 from . texture import Texture1D, Texture2D
 from . buffer import VertexBuffer, IndexBuffer
 from . shader import VertexShader, FragmentShader
+from . shader import VertexShader, GeometryShader
 from . framebuffer import FrameBuffer, ColorBuffer, DepthBuffer, StencilBuffer

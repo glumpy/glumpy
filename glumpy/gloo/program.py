@@ -10,7 +10,7 @@ from glumpy import gl
 from glumpy.log import log
 from glumpy.gloo.globject import GLObject
 from glumpy.gloo.buffer import VertexBuffer, IndexBuffer
-from glumpy.gloo.shader import VertexShader, FragmentShader
+from glumpy.gloo.shader import VertexShader, FragmentShader, GeometryShader
 from glumpy.gloo.variable import gl_typeinfo, Uniform, Attribute
 
 
@@ -43,8 +43,9 @@ class Program(GLObject):
     """
 
     # ---------------------------------
-    def __init__(self, verts=None, frags=None, count=0):
-        """Initialize the program and register shaders to be linked.
+    def __init__(self, verts=None, frags=None, geoms=None, count=0):
+        """
+        Initialize the program and register shaders to be linked.
 
         Parameters
         ----------
@@ -55,6 +56,9 @@ class Program(GLObject):
         frags : str, FragmentShader, or list
             The fragment shader(s) to be used by this program
 
+        geoms : str, GeometryShader, or list
+            The geometry shader(s) to be used by this program
+
         count : int (optional)
             Number of vertices this program will use. This can be given to
             initialize a VertexBuffer during Program initialization.
@@ -62,11 +66,8 @@ class Program(GLObject):
         Note
         ----
 
-        If several vertex shaders are specified, only one can contain the main
-        function.
-
-        If several fragment shaders are specified, only one can contain the main
-        function.
+        If several vertex/fragment/geometry shaders are specified, only one can
+        contain the main function respectively.
         """
 
         GLObject.__init__(self)
@@ -100,7 +101,7 @@ class Program(GLObject):
         elif isinstance(frags, (type(None), tuple, list)):
             frags = frags or []
         else:
-            raise ValueError('Frag must be str, FragmentShader or list')
+            raise ValueError('frags must be str, FragmentShader or list')
         # Apply
         for shader in frags:
             if isinstance(shader, str):
@@ -110,7 +111,26 @@ class Program(GLObject):
                     self._frags.append(shader)
             else:
                 T = type(shader)
-                raise ValueError('Cannot make a FragmentShader of %r.' % T)
+                raise ValueError('Cannot make a FragmentShader out of %r.' % T)
+
+        # Get all geoms shaders
+        self._geoms = []
+        if isinstance(geoms, (str, GeometryShader)):
+            geoms = [geoms]
+        elif isinstance(geoms, (type(None), tuple, list)):
+            geoms = geoms or []
+        else:
+            raise ValueError('geoms must be str, GeometryShader or list')
+        # Apply
+        for shader in geoms:
+            if isinstance(shader, str):
+                self._geoms.append(GeometryShader(shader))
+            elif isinstance(shader, GeometryShader):
+                if shader not in self._geoms:
+                    self._geoms.append(shader)
+            else:
+                T = type(shader)
+                raise ValueError('Cannot make a GeometryShader out of %r.' % T)
 
         # Build uniforms and attributes
         self._build_uniforms()
@@ -226,12 +246,28 @@ class Program(GLObject):
         for handle in attached:
             gl.glDetachShader(self._handle, handle)
 
-        # Attach vertex and fragment shaders
+        # Attach vertex shaders
         for shader in self._verts:
             shader.activate()
             gl.glAttachShader(self._handle, shader.handle)
+
+        # Attach fragment shaders
         for shader in self._frags:
             shader.activate()
+            gl.glAttachShader(self._handle, shader.handle)
+
+        # Attach geometry shaders
+        for shader in self._geoms:
+            shader.activate()
+            gl.glProgramParameteriEXT(self._handle,
+                                      gl.GL_GEOMETRY_VERTICES_OUT_EXT,
+                                      shader.vertices_out)
+            gl.glProgramParameteriEXT(self._handle,
+                                      gl.GL_GEOMETRY_INPUT_TYPE_EXT,
+                                      shader.input_type)
+            gl.glProgramParameteriEXT(self._handle,
+                                      gl.GL_GEOMETRY_OUTPUT_TYPE_EXT,
+                                      shader.output_type)
             gl.glAttachShader(self._handle, shader.handle)
 
         log.debug("GPU: Creating program")
@@ -347,6 +383,8 @@ class Program(GLObject):
             uniforms.extend(shader.uniforms)
         for shader in self._frags:
             uniforms.extend(shader.uniforms)
+        for shader in self._geoms:
+            uniforms.extend(shader.uniforms)
         uniforms = list(set(uniforms))
         return uniforms
     all_uniforms = property(_get_all_uniforms,
@@ -460,6 +498,7 @@ class Program(GLObject):
         shaders = []
         shaders.extend(self._verts)
         shaders.extend(self._frags)
+        shaders.extend(self._geoms)
         return shaders
 
 

@@ -144,6 +144,7 @@ def set_configuration(config):
         glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
                             glfw.GLFW_OPENGL_ANY_PROFILE)
 
+
 # ------------------------------------------------------------------ Window ---
 class Window(window.Window):
 

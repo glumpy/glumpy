@@ -84,7 +84,7 @@ def fetchcode(utype, prefix=""):
         Size of texture (width,height,count) where count is the number of float
         to be fetched.
 
-    a_index: float
+    a_uniform_index: float
         Attribute giving the index of the uniforms to be fetched. This index
        relates to the index in the uniform array from python side.
     """
@@ -95,7 +95,7 @@ def fetchcode(utype, prefix=""):
     header = """
 uniform   sampler2D u_uniforms;
 uniform   vec3      u_uniforms_shape;
-attribute float     a_index;
+attribute float     a_uniform_index;
 
 """
 
@@ -110,7 +110,7 @@ attribute float     a_index;
     float rows   = u_uniforms_shape.x;
     float cols   = u_uniforms_shape.y;
     float count  = u_uniforms_shape.z;
-    float index  = a_index;
+    float index  = a_uniform_index;
     int index_x  = int(mod(index, (floor(cols/(count/4.0))))) * int(count/4.0);
     int index_y  = int(floor(index / (floor(cols/(count/4.0)))));
     float size_x = cols - 1.0;
@@ -127,6 +127,7 @@ attribute float     a_index;
     # Be very careful with utype name order (_utype.keys is wrong)
     for name in utype.names:
         count, shift =_utype[name], 0
+        size = count
         while count:
             if store == 0:
                 body += "\n    _uniform = texture2D(u_uniforms, vec2(float(i++)/size_x,ty));\n"
@@ -139,14 +140,16 @@ attribute float     a_index;
             elif shift == 1: b = "yzw"
             elif shift == 2: b = "zw"
             elif shift == 3: b = "w"
-
             i = min(min(len(b), count), len(a))
-            body += "    %s%s.%s = _uniform.%s;\n" % (prefix,name,b[:i],a[:i])
+            if size > 1:
+                body += "    %s%s.%s = _uniform.%s;\n" % (prefix,name,b[:i],a[:i])
+            else:
+                body += "    %s%s = _uniform.%s;\n" % (prefix,name,a[:i])
             count -= i
             shift += i
             store -= i
 
-    body += """}"""
+    body += """}\n\n"""
     return header + body
 
 

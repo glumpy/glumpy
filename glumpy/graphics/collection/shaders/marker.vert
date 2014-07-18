@@ -15,11 +15,10 @@ uniform mat4 u_projection;
 
 // Externs
 // ------------------------------------
-// extern vec3  position;
-// extern float size;
-// extern float orientation;
+// extern vec2  P0;
+// extern vec2  P1;
+// extern float index;
 // extern vec4  fg_color;
-// extern vec4  bg_color;
 // extern float antialias;
 // extern float linewidth;
 
@@ -28,6 +27,7 @@ uniform mat4 u_projection;
 varying float v_antialias;
 varying float v_linewidth;
 varying float v_size;
+varying float v_texcoord;
 varying vec4  v_fg_color;
 varying vec4  v_bg_color;
 varying vec2  v_orientation;

@@ -8,6 +8,7 @@ import os.path
 import numpy as np
 
 from glumpy import gl
+
 from glumpy.log import log
 from glumpy.gloo.globject import GLObject
 from glumpy.gloo.parser import remove_comments, get_uniforms, get_attributes
@@ -51,9 +52,8 @@ class Shader(GLObject):
         """
 
         GLObject.__init__(self)
-        if target not in [gl.GL_VERTEX_SHADER, gl.GL_FRAGMENT_SHADER]:
-            raise ValueError("Shader target must be vertex or fragment")
-
+        #if target not in [gl.GL_VERTEX_SHADER, gl.GL_FRAGMENT_SHADER]:
+        #    raise ValueError("Shader target must be vertex or fragment")
         self._target = target
         self._code = None
         self._source = None
@@ -224,7 +224,7 @@ class VertexShader(Shader):
         Shader.__init__(self, gl.GL_VERTEX_SHADER, code)
 
     def __repr__(self):
-        return "Vertex Shader %d (%s)" % (self._id, self._source)
+        return "Vertex shader %d (%s)" % (self._id, self._source)
 
 
 
@@ -238,4 +238,54 @@ class FragmentShader(Shader):
 
 
     def __repr__(self):
-        return "Fragment Shader %d (%s)" % (self._id, self._source)
+        return "Fragment shader %d (%s)" % (self._id, self._source)
+
+
+# ---------------------------------------------------- GeometryShader class ---
+class GeometryShader(Shader):
+    """ Geometry shader class """
+
+
+    def __init__(self, code=None, vertices_out=0, input_type=None, output_type=None):
+        Shader.__init__(self, gl.GL_GEOMETRY_SHADER_EXT, code)
+
+        self._vertices_out = vertices_out
+
+        # GL_POINTS
+        # GL_LINES​, GL_LINE_STRIP​, GL_LINE_LIST
+        # GL_LINES_ADJACENCY​, GL_LINE_STRIP_ADJACENCY
+        # GL_TRIANGLES​, GL_TRIANGLE_STRIP​, GL_TRIANGLE_FAN
+        # GL_TRIANGLES_ADJACENCY​, GL_TRIANGLE_STRIP_ADJACENCY
+        self._input_type = input_type
+
+        # GL_POINTS, GL_LINES​, GL_LINE_STRIP
+        # GL_TRIANGLES​, GL_TRIANGLE_STRIP​, GL_TRIANGLE_FAN
+        self._output_type = output_type
+
+    @property
+    def vertices_out(self):
+        return self._vertices_out
+
+    @vertices_out.setter
+    def vertices_out(self, value):
+        self._vertices_out = value
+
+    @property
+    def input_type(self):
+        """ """
+        return self._input_type
+
+    @input_type.setter
+    def input_type(self, value):
+        self._input_type = value
+
+    @property
+    def output_type(self):
+        return self._output_type
+
+    @output_type.setter
+    def output_type(self, value):
+        self._output_type = value
+
+    def __repr__(self):
+        return "Geometry shader %d (%s)" % (self._id, self._source)

@@ -188,7 +188,7 @@ class BaseCollection(object):
             # we can append new fields
             vtype = eval(str(np.dtype(vtype)))
             # We add a uniform index to access uniform data
-            vtype.append( ('a_index', 'f4') )
+            vtype.append( ('a_uniform_index', 'f4') )
             vtype = np.dtype(vtype)
 
             # Check utype is made of float32 only
@@ -198,16 +198,15 @@ class BaseCollection(object):
                 raise RuntimeError("utype cannot be reduced to float32 only")
 
             # Make utype divisible by 4
-            count = int(math.pow(2, math.ceil(math.log(r_utype[1], 2))))
+            count = ((r_utype[1]-1)//4+1)*4
             if (count - r_utype[1]) > 0:
-                utype.append(('unused', 'f4', count-r_utype[1]))
-
+                utype.append(('__unused__', 'f4', count-r_utype[1]))
             self._uniforms_list  = ArrayList(dtype=utype)
             self._uniforms_float_count = count
             self._compute_ushape(1)
             self._uniforms_list.reserve( self._ushape[1] / (count/4) )
 
-        # Last since utype may add a new field in vtype (a_index)
+        # Last since utype may add a new field in vtype (a_uniform_index)
         self._vertices_list  = ArrayList(dtype=vtype)
 
 
@@ -404,10 +403,10 @@ class BaseCollection(object):
         if self._uniforms_list is not None:
             del self._uniforms_list[index]
 
-        # Update a_index at once
+        # Update a_uniform_index at once
         if self._uniforms_list is not None:
             I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
-            self._vertices_list['a_index'] = I.astype(np.float32)
+            self._vertices_list['a_uniform_index'] = I.astype(np.float32)
 
 
         # It is not strictly necessary to build new buffers each time an
@@ -511,7 +510,7 @@ class BaseCollection(object):
             # Update a_index at once
             if self._uniforms_list is not None:
                 I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
-                self._vertices_list['a_index'] = I.astype(np.float32)
+                self._vertices_list['a_uniform_index'] = I.astype(np.float32)
 
             # It is not strictly necessary to build new buffers each time an
             # item is inserted, but it would complexify even more this already
@@ -583,10 +582,10 @@ class BaseCollection(object):
                 else:
                     self._uniforms_list.insert(index, uniforms, itemsize=1)
 
-        # Update a_index at once
+        # Update a_uniform_index at once
         if self._uniforms_list is not None:
             I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
-            self._vertices_list['a_index'] = I.astype(np.float32)
+            self._vertices_list['a_uniform_index'] = I.astype(np.float32)
 
         # It is not strictly necessary to build new buffers each time an item
         # is inserted, but it would complexify even more this already complex
