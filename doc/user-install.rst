@@ -124,6 +124,14 @@ developing games and other visually-rich applications for Windows, Mac OS X
 and Linux.
 
 
+SDL2 (a.k.a. PyGame2)
+---------------------
+
+`PySDL2 <http://www.pygame.org>`_ is a wrapper around the SDL2 library and as
+such similar to the discontinued PySDL project. In contrast to PySDL, it has no
+licensing restrictions, nor does it rely on C code, but uses ctypes instead.
+
+
 GTK 2.x (not yet done)
 ----------------------
 
@@ -139,9 +147,11 @@ WX 3.x (not yet done)
 PyGame (a.k.a. SDL)
 -------------------
 
-SDL2 (a.k.a. PyGame2)
----------------------
-
+`Pygame <http://www.pygame.org>`_ is a set of Python modules designed for
+writing games. Pygame adds functionality on top of the excellent SDL
+library. This allows you to create fully featured games and multimedia programs
+in the python language. Pygame is highly portable and runs on nearly every
+platform and operating system.
 
 
 

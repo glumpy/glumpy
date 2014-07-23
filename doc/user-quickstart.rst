@@ -22,7 +22,7 @@ parameters:
 
 .. code:: python
 
-   window = glumpy.app.Window(width=512, height=512)
+   window = glumpy.Window(width=512, height=512)
 
 To display the text, we'll create a Label. Keyword arguments are used to set
 the font, position and anchorage of the label:
@@ -52,15 +52,15 @@ Finally, call:
 
 .. code:: python
 
-   glumpy.app.run()
+   glumpy.run()
 
 To let glumpy respond to application events such as the mouse and
 keyboard. Your event handlers will now be called as required, and the *run*
 method will return only when all application windows have been closed.
 
 
-Displaying an image
-===================
+Hello Lena!
+===========
 
 In this example we'll load an image from the examples data directory and
 display it within the window while enforcing the image aspect such that
@@ -86,8 +86,8 @@ You can find the entire program in the `image.py file <github.com>`_.
    app.run()
 
 
-My first shader
-===============
+Hello GLSL!
+===========
 
 The previous example made implicit use of shaders to display things on
 screen. However, the real power of modern OpenGL lies in the possibility of

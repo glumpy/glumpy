@@ -42,7 +42,7 @@ C = gp.GlyphCollection(dtypes=[('translate', np.float32, 2)],
 
 for anchor_x in ['left', 'center', 'right']:
     for anchor_y in ['bottom', 'center', 'top']:
-        C.append("Hello", font, anchor_x=anchor_x, anchor_y=anchor_y, color=(0,0,0,1))
+        C.append("Hello", font, anchor_x=anchor_x, anchor_y=anchor_y, color=(0,0,0,.5))
 
 theta,dtheta = 0,0
 C['u_kernel'] = np.load("spatial-filters.npy")

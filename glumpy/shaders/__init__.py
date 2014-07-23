@@ -33,3 +33,9 @@ def get_code(name):
     if filename:
         return open(filename).read()
     return ""
+
+
+def get(name):
+    """ Retrieve a shader filename and content """
+
+    return get_file(name), get_code(name)

@@ -83,7 +83,7 @@ fixed vertex structure. Now you're on your own...
 
 * **Good news** is that you're now free to do virtually anything you want.
 * **Bad news** is that you have to program everything, even the most basic
-               things like projection and lighting.
+  things like projection and lighting.
 
 Let's take a simple example of a vertex structure where we want each vertex to
 hold a position and a color. The easiest way to do that in python is to use a

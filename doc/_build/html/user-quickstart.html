@@ -67,8 +67,8 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Quickstart</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#hello-world">Hello World!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#displaying-an-image">Displaying an image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#my-first-shader">My first shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hello-lena">Hello Lena!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hello-glsl">Hello GLSL!</a></li>
 </ul>
 </li>
 </ul>
@@ -129,7 +129,7 @@ entire program in the <a class="reference external" href="github.com">hello_worl
 <p>Create a Window by calling its default constructor. The window will be visible
 as soon as it&#8217;s created, and will have reasonable default values for all its
 parameters:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">glumpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">glumpy</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To display the text, we&#8217;ll create a Label. Keyword arguments are used to set
@@ -151,15 +151,15 @@ simple way is to use a decorator:</p>
 <p>Within the on_draw handler the window is cleared to the default background
 color (black), and the label is drawn.</p>
 <p>Finally, call:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">glumpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">glumpy</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>To let glumpy respond to application events such as the mouse and
 keyboard. Your event handlers will now be called as required, and the <em>run</em>
 method will return only when all application windows have been closed.</p>
 </div>
-<div class="section" id="displaying-an-image">
-<h2>Displaying an image<a class="headerlink" href="#displaying-an-image" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hello-lena">
+<h2>Hello Lena!<a class="headerlink" href="#hello-lena" title="Permalink to this headline">¶</a></h2>
 <p>In this example we&#8217;ll load an image from the examples data directory and
 display it within the window while enforcing the image aspect such that
 proportion of the image are conserved when user resize the window.
@@ -181,8 +181,8 @@ You can find the entire program in the <a class="reference external" href="githu
 </pre></div>
 </div>
 </div>
-<div class="section" id="my-first-shader">
-<h2>My first shader<a class="headerlink" href="#my-first-shader" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hello-glsl">
+<h2>Hello GLSL!<a class="headerlink" href="#hello-glsl" title="Permalink to this headline">¶</a></h2>
 <p>The previous example made implicit use of shaders to display things on
 screen. However, the real power of modern OpenGL lies in the possibility of
 writing custom shaders to draw virutally anything. We&#8217;ll now see how to write a
