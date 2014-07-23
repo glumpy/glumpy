@@ -32,13 +32,17 @@ class Collection(BaseCollection):
         self._uniforms = {}
         self._attributes = {}
         self._varyings = {}
+        self._mode = None
 
         declarations = {"uniforms"   : "",
                         "attributes" : "",
                         "varyings"   : ""}
         dtypes = np.dtype(dtypes)
         for name in dtypes.names:
-            scope = kwargs.get(name, scopes.get(name, 'local'))
+            if name in scopes.keys() and scopes[name] != "!local":
+                scope = kwargs.get(name, scopes.get(name, 'local'))
+            else:
+                scope = "local"
             dtype = dtypes[name].base
             count = np.zeros(dtypes[name].shape).size
             gtype = Collection._gtypes[(dtype.name,count)]
@@ -80,6 +84,7 @@ class Collection(BaseCollection):
     def draw(self, mode = gl.GL_POINTS):
         """ Draw collection """
 
+        mode = self._mode or mode
         if self._indices_list is not None:
             self._program.draw(mode, self._indices_buffer)
         else:

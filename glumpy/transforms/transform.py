@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import os
 import numpy as np
-from glumpy import glsl
+from glumpy.gloo import parser
 from glumpy.app.window.event import EventDispatcher
 
 
@@ -38,7 +38,7 @@ class Transform(EventDispatcher):
         self._values = {}
 
         # Get uniform delarations
-        for name,gtype in glsl.get_uniforms(self._source_code):
+        for name,gtype in parser.get_uniforms(self._source_code):
             self._table[name] = "%s_%d" % (name, self._id)
             self._values[name] = None
 

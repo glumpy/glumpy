@@ -27,8 +27,7 @@ class MarkerCollection(Collection):
                  'linewidth'   : 1.0 }
 
     def __init__(self, marker='cross', **kwargs):
-        """
-        """
+        """ """
 
         # This cannot be changed (shader code depends on it)
         dtypes = [ ('position',    np.float32, 3),
