@@ -3,9 +3,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All rights reserved.
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
-from transform import Transform
-
 from panzoom import PanZoom
+from transform import Transform
 from position2d import Position2D
 from position3d import Position3D
 from linear_scale import LinearScale

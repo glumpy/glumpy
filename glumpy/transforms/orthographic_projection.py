@@ -4,7 +4,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 from glumpy import glm
-from . import Transform
+from . transform import Transform
 
 
 class OrthographicProjection(Transform):

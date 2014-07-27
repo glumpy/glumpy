@@ -336,15 +336,17 @@ class Program(GLObject):
 
 
     def __setitem__(self, name, data):
-        if name in self._hooks.keys():
-            self._hooks[name][1] = data
-            shader = self._hooks[name][0]
-            shader[name] = data
-            if isinstance(data, Snippet):
-                data.program = self
 
-            self._build_uniforms()
-            self._build_attributes()
+        if name in self._hooks.keys():
+            snippet = data
+
+            self._hooks[name][1] = snippet
+            shader = self._hooks[name][0]
+            shader[name] = snippet
+            if isinstance(data, Snippet):
+                snippet.attach(self)
+            # self._build_uniforms()
+            # self._build_attributes()
             self._need_update = True
 
         elif name in self._uniforms.keys():

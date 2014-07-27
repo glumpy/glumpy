@@ -70,20 +70,31 @@ class Snippet(object):
 
 
     @property
-    def program(self):
-        """ Program this snippet is attached to """
+    def programs(self):
+        """ Attached programs """
+
         return self._programs
 
-    @program.setter
-    def program(self, value):
-        """ Program this nisppet is attached to """
 
-        self._programs.append(value)
-        self._programs = list(set(self._programs))
-        for snippet in self.snippets:
-            if snippet is not self:
-                snippet.program = value
+    def attach(self, program):
+        """ Attach this snippet to a program """
 
+        if program not in self._programs:
+            self._programs.append(program)
+        for snippet in self._args + [self._next]:
+            if isinstance(snippet, Snippet):
+                snippet.attach(program)
+
+
+    def detach(self, program):
+        """ Detach this snippet from a program """
+
+        if program in self._programs:
+            index = self._programs.indexof(program)
+            del self._programs[index]
+        for snippet in self._args + [self._next]:
+            if isinstance(snippet, Snippet):
+                snippet.detach(program)
 
 
     @property
@@ -194,6 +205,7 @@ class Snippet(object):
                 operand, other = self.next
                 s = str(other)
         return s
+
 
 #    def __getattr__(self, key):
 #        for  (rtype, name, args, code) in self._objects["functions"]:
@@ -330,14 +342,6 @@ class Snippet(object):
                 if isinstance(snippet, Snippet):
                     snippet[key] = value
 
-
-    def attach(self, program):
-        """ Attach snippet to a program """
-        pass
-
-    def detach(self, program):
-        """ Detach snippet from a program """
-        pass
 
 
 
