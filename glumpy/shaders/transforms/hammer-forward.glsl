@@ -12,7 +12,7 @@ const float M_SQRT2 = 1.41421356237309504880;
    Parameters:
    -----------
 
-   position : 2d position in (longitude,latitiude) coordinates
+   position : 2d position in (longitude,latitude) coordinates
 
    Return:
    -------

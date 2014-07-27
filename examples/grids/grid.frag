@@ -124,7 +124,8 @@ void main()
         alpha = alpha2;
         color = u_minor_grid_color;
     }
-    vec4 texcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
-    gl_FragColor = mix(texcolor, color, alpha);
-    // gl_FragColor = vec4(color.rgb, color.a*alpha);
+    //vec4 texcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
+    //gl_FragColor = mix(texcolor, color, alpha);
+
+    gl_FragColor = vec4(color.rgb, color.a*alpha);
 }

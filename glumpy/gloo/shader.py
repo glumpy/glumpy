@@ -8,14 +8,14 @@ import os.path
 import numpy as np
 
 from glumpy import gl
-
 from glumpy.log import log
-from glumpy.gloo.globject import GLObject
-from glumpy.gloo.parser import remove_comments, get_uniforms, get_attributes
+from . snippet import Snippet
+from . globject import GLObject
+from . parser import (remove_comments,
+                      get_uniforms, get_attributes, get_hooks)
 
 
 
-# ------------------------------------------------------------ Shader class ---
 class Shader(GLObject):
     """Abstract shader class."""
 
@@ -52,19 +52,33 @@ class Shader(GLObject):
         """
 
         GLObject.__init__(self)
-        #if target not in [gl.GL_VERTEX_SHADER, gl.GL_FRAGMENT_SHADER]:
-        #    raise ValueError("Shader target must be vertex or fragment")
         self._target = target
         self._code = None
         self._source = None
+        self._hooked = None
         if code is not None:
             self.code = code
+        self._program = None
+
+
+    def __setitem__(self, name, data):
+        """ """
+
+        name = "<%s>" % name
+        if isinstance(data,Snippet):
+            call = data.call
+            code = data.code
+            self._hooked = self._hooked.replace(name, call)
+            self._hooked = code + self._hooked
+        else:
+            self._hooked = self._hooked.replace(name, data)
 
 
     @property
     def code(self):
         """ Shader source code """
-        return self._code
+        return self._hooked
+
 
     @code.setter
     def code(self, code):
@@ -77,32 +91,42 @@ class Shader(GLObject):
         else:
             self._code   = code
             self._source = '<string>'
+        self._hooked = self._code
         self._need_update = True
 
 
-    @property
-    def source(self):
-        """ Shader source (string or filename) """
-        return self._source
+#    @property
+#    def source(self):
+#        """ Shader source (string or filename) """
+#        return self._source
 
 
     def _create(self):
-        """ Compile the source and checks eveyrthing's ok """
+        """ Create the shader """
+
+        log.debug("GPU: Creating shader")
 
         # Check if we have something to compile
-        if not self._code:
+        if not self.code:
             raise RuntimeError("No code has been given")
 
         # Check that shader object has been created
         if self._handle <= 0:
             self._handle = gl.glCreateShader(self._target)
             if self._handle <= 0:
-                raise RuntimeError("Cannot create shader object")
+                raise RuntimeErrolr("Cannot create shader object")
+
+
+    def _update(self):
+        """ Compile the source and checks everything's ok """
+
+        log.debug("GPU: Compiling shader")
+
+        if len(self.hooks):
+            raise RuntimeError("Shader has pending hooks, cannot compile")
 
         # Set shader source
-        gl.glShaderSource(self._handle, self._code)
-
-        log.debug("GPU: Creating shader")
+        gl.glShaderSource(self._handle, self.code)
 
         # Actual compilation
         gl.glCompileShader(self._handle)
@@ -161,7 +185,7 @@ class Shader(GLObject):
         lineno: int
             Line where error occurs
         """
-        lines = self._code.split('\n')
+        lines = self.code.split('\n')
         start = max(0,lineno-3)
         end = min(len(lines),lineno+3)
 
@@ -183,22 +207,18 @@ class Shader(GLObject):
 
     @property
     def hooks(self):
-        """ Shader uniforms obtained from source code """
+        """ Shader hooks (place where snippets can be inserted) """
 
-        # We take care of:  uniform float a;
-        #                   uniform float a[3];
-        #                   uniform float a, b, c;
-        code = remove_comments(self._code)
+        # We get hooks from the original code, not the hooked one
+        code = remove_comments(self._hooked)
         return get_hooks(code)
+
 
     @property
     def uniforms(self):
         """ Shader uniforms obtained from source code """
 
-        # We take care of:  uniform float a;
-        #                   uniform float a[3];
-        #                   uniform float a, b, c;
-        code = remove_comments(self._code)
+        code = remove_comments(self.code)
         gtypes = Shader._gtypes
         return [ (n,gtypes[t]) for (n,t) in get_uniforms(code) ]
 
@@ -207,10 +227,7 @@ class Shader(GLObject):
     def attributes(self):
         """ Shader attributes obtained from source code """
 
-        # We take care of:  attribute float a;
-        #                   attribute float a[3];
-        #                   attribute float a, b, c;
-        code = remove_comments(self._code)
+        code = remove_comments(self.code)
         gtypes = Shader._gtypes
         return [(n,gtypes[t]) for (n,t) in get_attributes(code)]
 

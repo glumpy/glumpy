@@ -8,10 +8,11 @@ import numpy as np
 
 from glumpy import gl
 from glumpy.log import log
-from glumpy.gloo.globject import GLObject
-from glumpy.gloo.buffer import VertexBuffer, IndexBuffer
-from glumpy.gloo.shader import VertexShader, FragmentShader, GeometryShader
-from glumpy.gloo.variable import gl_typeinfo, Uniform, Attribute
+from . snippet import Snippet
+from . globject import GLObject
+from . buffer import VertexBuffer, IndexBuffer
+from . shader import VertexShader, FragmentShader, GeometryShader
+from . variable import gl_typeinfo, Uniform, Attribute
 
 
 # Patch: pythonize the glGetActiveAttrib
@@ -74,68 +75,18 @@ class Program(GLObject):
         self._count = count
         self._buffer = None
 
+        # Make sure shaders are shaders
+        self._verts = self._get_shaders(verts, VertexShader)
+        self._frags = self._get_shaders(frags, FragmentShader)
+        self._geoms = self._get_shaders(geoms, GeometryShader)
 
-        # Get all vertex shaders
-        self._verts = []
-        if isinstance(verts, (str, VertexShader)):
-            verts = [verts]
-        elif isinstance(verts, (type(None), tuple, list)):
-            verts = verts or []
-        else:
-            raise ValueError('Vert must be str, VertexShader or list')
-        # Apply
-        for shader in verts:
-            if isinstance(shader, str):
-                self._verts.append(VertexShader(shader))
-            elif isinstance(shader, VertexShader):
-                if shader not in self._verts:
-                    self._verts.append(shader)
-            else:
-                T = type(shader)
-                raise ValueError('Cannot make a VertexShader of %r.' % T)
+        self._uniforms = {}
+        self._attributes = {}
 
-        # Get all fragment shaders
-        self._frags = []
-        if isinstance(frags, (str, FragmentShader)):
-            frags = [frags]
-        elif isinstance(frags, (type(None), tuple, list)):
-            frags = frags or []
-        else:
-            raise ValueError('frags must be str, FragmentShader or list')
-        # Apply
-        for shader in frags:
-            if isinstance(shader, str):
-                self._frags.append(FragmentShader(shader))
-            elif isinstance(shader, FragmentShader):
-                if shader not in self._frags:
-                    self._frags.append(shader)
-            else:
-                T = type(shader)
-                raise ValueError('Cannot make a FragmentShader out of %r.' % T)
-
-        # Get all geoms shaders
-        self._geoms = []
-        if isinstance(geoms, (str, GeometryShader)):
-            geoms = [geoms]
-        elif isinstance(geoms, (type(None), tuple, list)):
-            geoms = geoms or []
-        else:
-            raise ValueError('geoms must be str, GeometryShader or list')
-        # Apply
-        for shader in geoms:
-            if isinstance(shader, str):
-                self._geoms.append(GeometryShader(shader))
-            elif isinstance(shader, GeometryShader):
-                if shader not in self._geoms:
-                    self._geoms.append(shader)
-            else:
-                T = type(shader)
-                raise ValueError('Cannot make a GeometryShader out of %r.' % T)
-
-        # Build uniforms and attributes
+        # Build hooks, uniforms and attributes
+        self._build_hooks()
         self._build_uniforms()
         self._build_attributes()
-
 
         # Build associated structured vertex buffer if count is given
         if self._count > 0:
@@ -146,6 +97,30 @@ class Program(GLObject):
             self.bind(self._buffer)
 
 
+    def _get_shaders(self, shaders, shader_class):
+
+        # Get all geoms shaders
+        if isinstance(shaders, (str, shader_class)):
+            shaders = [shaders]
+        elif isinstance(shaders, (type(None), tuple, list)):
+            shaders = shaders or []
+        else:
+            raise ValueError('shaders must be str, Shader or list')
+
+        # Apply
+        shaders_list = []
+        for shader in shaders:
+            if isinstance(shader, str):
+                shaders_list.append(shader_class(shader))
+            elif isinstance(shader, shader_class):
+                if shader not in shaders_list:
+                    shaders_list.append(shader)
+            else:
+                raise ValueError('Cannot make a Shader out of %r.' % type(shader))
+
+        return shaders_list
+
+
     def __len__(self):
         if self._buffer is not None:
             return len(self._buffer)
@@ -153,73 +128,78 @@ class Program(GLObject):
             return None
 
 
-    def attach(self, shaders):
-        """ Attach one or several vertex/fragment shaders to the program.
+    # def attach(self, shaders):
+    #     """ Attach one or several vertex/fragment shaders to the program.
 
-        Parameters
-        ----------
+    #     Parameters
+    #     ----------
 
-        shaders : VertexShader or FragmentShaders or list
-            Shaders to attach
-        """
+    #     shaders : VertexShader or FragmentShaders or list
+    #         Shaders to attach
+    #     """
 
-        if isinstance(shaders, (VertexShader, FragmentShader)):
-            shaders = [shaders]
-        for shader in shaders:
-            if isinstance(shader, VertexShader):
-                self._verts.append(shader)
-            elif isinstance(shader, FragmentShader):
-                self._frags.append(shader)
-            else:
-                log.warn("Unknown shader type")
+    #     if isinstance(shaders, (VertexShader, FragmentShader)):
+    #         shaders = [shaders]
+    #     for shader in shaders:
+    #         if isinstance(shader, VertexShader):
+    #             self._verts.append(shader)
+    #         elif isinstance(shader, FragmentShader):
+    #             self._frags.append(shader)
+    #         else:
+    #             log.warn("Unknown shader type")
 
-        # Ensure uniqueness of shaders
-        self._verts = list(set(self._verts))
-        self._frags = list(set(self._frags))
+    #     # Ensure uniqueness of shaders
+    #     self._verts = list(set(self._verts))
+    #     self._frags = list(set(self._frags))
 
-        self._need_create = True
-        self._need_update = True
+    #     self._need_create = True
+    #     self._need_update = True
 
-        # Build uniforms and attributes
-        self._build_uniforms()
-        self._build_attributes()
+    #     # Build uniforms and attributes
+    #     self._build_uniforms()
+    #     self._build_attributes()
 
 
 
-    def detach(self, shaders):
-        """Detach one or several vertex/fragment shaders from the program.
+    def _setup(self):
+        """ Setup the program by resolving all pending hooks. """
+        pass
 
-        Parameters
-        ----------
 
-        shaders : VertexShader or FragmentShaders or list
-            Shaders to detach
+    # def detach(self, shaders):
+    #     """Detach one or several vertex/fragment shaders from the program.
 
-        Note
-        ----
+    #     Parameters
+    #     ----------
 
-        We don't need to defer attach/detach shaders since shader deletion
-        takes care of that.
-        """
+    #     shaders : VertexShader or FragmentShaders or list
+    #         Shaders to detach
 
-        if type(shaders) in [VertexShader, FragmentShader]:
-            shaders = [shaders]
-        for shader in shaders:
-            if isinstance(shader, VertexShader):
-                if shader in self._verts:
-                    self._verts.remove(shader)
-                else:
-                    raise ValueError("Shader is not attached to the program")
-            elif isinstance(shader, FragmentShader):
-                if shader in self._frags:
-                    self._frags.remove(shader)
-                else:
-                    raise ValueError("Shader is not attached to the program")
-        self._need_update = True
+    #     Note
+    #     ----
 
-        # Build uniforms and attributes
-        self._build_uniforms()
-        self._build_attributes()
+    #     We don't need to defer attach/detach shaders since shader deletion
+    #     takes care of that.
+    #     """
+
+    #     if type(shaders) in [VertexShader, FragmentShader]:
+    #         shaders = [shaders]
+    #     for shader in shaders:
+    #         if isinstance(shader, VertexShader):
+    #             if shader in self._verts:
+    #                 self._verts.remove(shader)
+    #             else:
+    #                 raise ValueError("Shader is not attached to the program")
+    #         elif isinstance(shader, FragmentShader):
+    #             if shader in self._frags:
+    #                 self._frags.remove(shader)
+    #             else:
+    #                 raise ValueError("Shader is not attached to the program")
+    #     self._need_update = True
+
+    #     # Build uniforms and attributes
+    #     self._build_uniforms()
+    #     self._build_attributes()
 
 
     def _create(self):
@@ -229,11 +209,7 @@ class Program(GLObject):
         A GL context must be available to be able to build (link)
         """
 
-        # Check if we have something to link
-        if not self._verts:
-            raise ValueError("No vertex shader has been given")
-        if not self._frags:
-            raise ValueError("No fragment shader has been given")
+        log.debug("GPU: Creating program")
 
         # Check if program has been created
         if self._handle <= 0:
@@ -241,36 +217,9 @@ class Program(GLObject):
             if not self._handle:
                 raise ValueError("Cannot create program object")
 
-        # Detach any attached shaders
-        attached = gl.glGetAttachedShaders(self._handle)
-        for handle in attached:
-            gl.glDetachShader(self._handle, handle)
+        self._build_shaders(self._handle)
 
-        # Attach vertex shaders
-        for shader in self._verts:
-            shader.activate()
-            gl.glAttachShader(self._handle, shader.handle)
-
-        # Attach fragment shaders
-        for shader in self._frags:
-            shader.activate()
-            gl.glAttachShader(self._handle, shader.handle)
-
-        # Attach geometry shaders
-        for shader in self._geoms:
-            shader.activate()
-            gl.glProgramParameteriEXT(self._handle,
-                                      gl.GL_GEOMETRY_VERTICES_OUT_EXT,
-                                      shader.vertices_out)
-            gl.glProgramParameteriEXT(self._handle,
-                                      gl.GL_GEOMETRY_INPUT_TYPE_EXT,
-                                      shader.input_type)
-            gl.glProgramParameteriEXT(self._handle,
-                                      gl.GL_GEOMETRY_OUTPUT_TYPE_EXT,
-                                      shader.output_type)
-            gl.glAttachShader(self._handle, shader.handle)
-
-        log.debug("GPU: Creating program")
+        log.debug("GPU: Linking program")
 
         # Link the program
         gl.glLinkProgram(self._handle)
@@ -295,13 +244,65 @@ class Program(GLObject):
                 attribute.active = False
 
 
+    def _build_shaders(self, program):
+        """ Build and attach shaders """
+
+        # Check if we have at least something to attach
+        if not self._verts:
+            raise ValueError("No vertex shader has been given")
+        if not self._frags:
+            raise ValueError("No fragment shader has been given")
+
+        log.debug("GPU: Attaching shaders to program")
+
+        # Attach shaders
+        attached = gl.glGetAttachedShaders(program)
+        shaders = self._verts + self._frags + self._geoms
+        for shader in shaders: #self._verts:
+            if shader.need_update:
+                if shader.handle in attached:
+                    gl.glDetachShader(program, handle)
+                shader.activate()
+                if isinstance(shader, GeometryShader):
+                    if shader.vertices_out is not None:
+                        gl.glProgramParameteriEXT(self._handle,
+                                                  gl.GL_GEOMETRY_VERTICES_OUT_EXT,
+                                                  shader.vertices_out)
+                    if shader.input_type is not None:
+                        gl.glProgramParameteriEXT(self._handle,
+                                                  gl.GL_GEOMETRY_INPUT_TYPE_EXT,
+                                                  shader.input_type)
+                    if shader.output_type is not None:
+                        gl.glProgramParameteriEXT(self._handle,
+                                                  gl.GL_GEOMETRY_OUTPUT_TYPE_EXT,
+                                                  shader.output_type)
+                gl.glAttachShader(program, shader.handle)
+                shader._program = self
+
+
+    def _build_hooks(self):
+        """ Build hooks """
+
+        shaders = self._verts + self._frags + self._geoms
+        self._hooks = {}
+        for shader in shaders:
+            for hook in shader.hooks:
+                self._hooks[hook] = [shader, None]
+
+
     def _build_uniforms(self):
         """ Build the uniform objects """
 
-        self._uniforms = {}
+        # We might rebuild the program because of snippets but we must
+        # keep already bound uniforms
+
         count = 0
         for (name,gtype) in self.all_uniforms:
-            uniform = Uniform(self, name, gtype)
+            if name not in self._uniforms.keys():
+                uniform = Uniform(self, name, gtype)
+            else:
+                uniform = self._uniforms[name]
+            gtype = uniform.gtype
             if gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D):
                 uniform._texture_unit = count
                 count += 1
@@ -312,11 +313,16 @@ class Program(GLObject):
     def _build_attributes(self):
         """ Build the attribute objects """
 
-        self._attributes = {}
+        # We might rebuild the program because of snippets but we must
+        # keep already bound attributes
 
         dtype = []
         for (name,gtype) in self.all_attributes:
-            attribute = Attribute(self, name, gtype)
+            if name not in self._attributes.keys():
+                attribute = Attribute(self, name, gtype)
+            else:
+                attribute = self._attributes[name]
+
             self._attributes[name] = attribute
             dtype.append(attribute.dtype)
 
@@ -330,7 +336,18 @@ class Program(GLObject):
 
 
     def __setitem__(self, name, data):
-        if name in self._uniforms.keys():
+        if name in self._hooks.keys():
+            self._hooks[name][1] = data
+            shader = self._hooks[name][0]
+            shader[name] = data
+            if isinstance(data, Snippet):
+                data.program = self
+
+            self._build_uniforms()
+            self._build_attributes()
+            self._need_update = True
+
+        elif name in self._uniforms.keys():
             self._uniforms[name].set_data(data)
         elif name in self._attributes.keys():
             self._attributes[name].set_data(data)
@@ -339,7 +356,9 @@ class Program(GLObject):
 
 
     def __getitem__(self, name):
-        if name in self._uniforms.keys():
+        if name in self._hooks.keys():
+            return self._hooks[name][1]
+        elif name in self._uniforms.keys():
             return self._uniforms[name].data
         elif name in self._attributes.keys():
             return self._attributes[name].data

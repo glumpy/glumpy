@@ -8,7 +8,7 @@ import numpy as np
 import glumpy as gp
 import glumpy.gl as gl
 import glumpy.glm as glm
-from sdf_font import SDFFont
+from glumpy.font import Font
 
 
 window = gp.Window(width=700, height=700)
@@ -35,17 +35,16 @@ def on_mouse_scroll(x, y, dx, dy):
 
 
 
-font = SDFFont("Vera.ttf")
+font = Font("Vera.ttf")
 
-C = gp.GlyphCollection(dtypes=[('translate', np.float32, 2)],
-                       translate='shared')
+C = gp.GlyphCollection(dtypes=[('translate', np.float32, 2)], translate='shared')
 
 for anchor_x in ['left', 'center', 'right']:
     for anchor_y in ['bottom', 'center', 'top']:
         C.append("Hello", font, anchor_x=anchor_x, anchor_y=anchor_y, color=(0,0,0,.5))
 
 theta,dtheta = 0,0
-C['u_kernel'] = np.load("spatial-filters.npy")
+C['u_kernel'] = gp.data.get("spatial-filters.npy")
 C['atlas_data'] = font.atlas
 C['atlas_data'].interpolation = gl.GL_LINEAR
 C['atlas_shape'] = font.atlas.shape[1],font.atlas.shape[0]
