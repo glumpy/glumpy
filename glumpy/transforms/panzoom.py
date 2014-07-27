@@ -41,7 +41,7 @@ class PanZoom(Transform):
         self["translate"] = self.translate
 
     def on_mouse_drag(self, x, y, dx, dy, button):
-        self.translate += (2*dx/self.width, -2*dy/self.height,0)
+        self.translate += (2*dx/self.width, -2*dy/self.height)
         self["translate"] = self.translate
 
     def reset(self):

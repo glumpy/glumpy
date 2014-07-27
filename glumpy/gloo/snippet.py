@@ -80,7 +80,6 @@ class Snippet(object):
 
         self._programs.append(value)
         self._programs = list(set(self._programs))
-
         for snippet in self.snippets:
             if snippet is not self:
                 snippet.program = value

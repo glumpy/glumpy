@@ -9,6 +9,7 @@ from panzoom import PanZoom
 from position2d import Position2D
 from position3d import Position3D
 from linear_scale import LinearScale
+from orthographic_projection import OrthographicProjection
 
 
 # from polar import Polar
