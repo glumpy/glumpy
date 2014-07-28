@@ -47,8 +47,7 @@ void main()
         float v = pow(index/float(n),0.5);
         gl_FragColor = texture1D(colormap, v);
     } else {
-        // gl_FragColor = texture1D(colormap, 1.0);
-        discard;
+        gl_FragColor = texture1D(colormap, 1.0);
     }
 }
 """
@@ -72,7 +71,7 @@ colormap = np.zeros((512,3), np.float32)
 colormap[:,0] = np.interp(np.arange(512), [0, 171, 342, 512], [0,1,1,1])
 colormap[:,1] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,1,1])
 colormap[:,2] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,0,1])
-# colormap[-1] = 0,0,0
+colormap[-1] = 0,0,0
 
 program['colormap'] = colormap
 program['colormap'].interpolation = gl.GL_LINEAR
