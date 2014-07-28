@@ -7,5 +7,8 @@ from . transform import Transform
 
 
 class Position3D(Transform):
-    def __init__(self):
-        Transform.__init__(self, "position-3d.glsl")
+
+    shaderfile = "position-3d.glsl"
+
+    def __init__(self, *args, **kwargs):
+        Transform.__init__(self, *args, **kwargs)

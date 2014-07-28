@@ -52,6 +52,6 @@ program['texture'] = np.array(Image.open("lena.png"))
 
 transform = PanZoom(Position2D("position"))
 program['transform'] = transform
-
 window.attach(transform)
+
 gp.run()

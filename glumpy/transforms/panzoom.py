@@ -19,6 +19,7 @@ class PanZoom(Transform):
 
         self.scale     = np.array([1.,1.])
         self.translate = np.array([0.,0.])
+        self.bounds = (0.1, 10000.0)
 
 
     def on_attach(self, program):
@@ -45,7 +46,8 @@ class PanZoom(Transform):
 
         x = x/(self.width/2) - 1
         y = 1 - y/(self.height/2)
-        s = np.minimum(np.maximum(self.scale*(1+dy/100), 0.1), 100)
+        scale_min, scale_max = self.bounds
+        s = np.minimum(np.maximum(self.scale*(1+dy/100), scale_min), scale_max)
         self.translate[0] = x - s[0] * (x - self.translate[0]) / self.scale[0]
         self.translate[1] = y - s[1] * (y - self.translate[1]) / self.scale[1]
         self.scale = s

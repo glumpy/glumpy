@@ -4,10 +4,12 @@
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
 from panzoom import PanZoom
+from trackball import Trackball
 from transform import Transform
 from position2d import Position2D
 from position3d import Position3D
 from linear_scale import LinearScale
+from pvm_projection import PVMProjection
 from orthographic_projection import OrthographicProjection
 
 

@@ -286,8 +286,8 @@ class Program(GLObject):
         shaders = self._verts + self._frags + self._geoms
         self._hooks = {}
         for shader in shaders:
-            for hook in shader.hooks:
-                self._hooks[hook] = [shader, None]
+            for (hook,subhook) in shader.hooks:
+                self._hooks[hook] = [shader, subhook, None]
 
 
     def _build_uniforms(self):
@@ -339,14 +339,21 @@ class Program(GLObject):
 
         if name in self._hooks.keys():
             snippet = data
-
-            self._hooks[name][1] = snippet
             shader = self._hooks[name][0]
-            shader[name] = snippet
+            function = self._hooks[name][1]
+            if isinstance(data, Snippet):
+                snippet._default = function
+            self._hooks[name][1] = snippet
+
+            if function is not None:
+                shader["%s.%s" %(name,function)] = snippet
+            else:
+                shader["%s" % (name)] = snippet
+
             if isinstance(data, Snippet):
                 snippet.attach(self)
-            # self._build_uniforms()
-            # self._build_attributes()
+            self._build_uniforms()
+            self._build_attributes()
             self._need_update = True
 
         elif name in self._uniforms.keys():

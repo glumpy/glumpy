@@ -81,7 +81,7 @@ class Snippet(object):
 
         if program not in self._programs:
             self._programs.append(program)
-        for snippet in self._args + [self._next]:
+        for snippet in list(self._args) + [self._next]:
             if isinstance(snippet, Snippet):
                 snippet.attach(program)
 
@@ -92,7 +92,7 @@ class Snippet(object):
         if program in self._programs:
             index = self._programs.indexof(program)
             del self._programs[index]
-        for snippet in self._args + [self._next]:
+        for snippet in list(self._args) + [self._next]:
             if isinstance(snippet, Snippet):
                 snippet.detach(program)
 
