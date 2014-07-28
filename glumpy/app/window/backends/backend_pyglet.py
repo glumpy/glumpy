@@ -120,19 +120,22 @@ class Window(window.Window):
             resizable=True, vsync=False, config=__configuration__)
 
  	def on_mouse_drag(x, y, dx, dy, button, modifiers):
-            self.dispatch_event("on_mouse_drag", x, y, dx ,dy, button)
+            # BUGFIX
+            self.dispatch_event("on_mouse_drag", x, y, dx, -dy, button)
         self._native_window.on_mouse_drag = on_mouse_drag
 
  	def on_mouse_enter(x, y):
+            y = self.height-y
             self.dispatch_event("on_enter", x, y)
         self._native_window.on_mouse_enter = on_mouse_enter
 
  	def on_mouse_leave(x, y):
+            y = self.height-y
             self.dispatch_event("on_leave", x, y)
         self._native_window.on_mouse_leave = on_mouse_leave
 
  	def on_mouse_motion(x, y, dx, dy):
-            self.dispatch_event("on_mouse_motion", x, y, dx, dy)
+            self.dispatch_event("on_mouse_motion", x, y, dx, -dy)
         self._native_window.on_mouse_motion = on_mouse_motion
 
  	def on_mouse_press(x, y, button, modifiers):
@@ -144,7 +147,9 @@ class Window(window.Window):
         self._native_window.on_mouse_release = on_mouse_release
 
  	def on_mouse_scroll(x, y, scroll_x, scroll_y):
-            self.dispatch_event("on_mouse_scroll", x, y, scroll_x, scroll_y)
+            # BUGFIX
+            y = self.height-y
+            self.dispatch_event("on_mouse_scroll", x, y, scroll_x, -scroll_y)
         self._native_window.on_mouse_scroll = on_mouse_scroll
 
  	def on_resize(width, height):

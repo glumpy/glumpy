@@ -251,7 +251,7 @@ class Window(window.Window):
                 offset_y = event.delta()
             x = event.pos().x()
             y = event.pos().y()
-            self.dispatch_event("on_mouse_scroll", x, y, offset_x, offset_y)
+            self.dispatch_event("on_mouse_scroll", x, y, offset_x*10.0, offset_y*10.0)
         self._native_window.wheelEvent = wheel_event
 
         def key_press_event(event):

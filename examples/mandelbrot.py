@@ -27,20 +27,30 @@ varying vec2 v_texcoord;
 void main()
 {
     const int n = 300;
+    const float log_2 = 0.6931471805599453;
     vec2 c = 3.0*v_texcoord - vec2(2.0,1.5);
 
+    float x, y, d;
     int i;
     vec2 z = c;
     for(i = 0; i < n; ++i)
     {
-        float x = (z.x*z.x - z.y*z.y) + c.x;
-        float y = (z.y*z.x + z.x*z.y) + c.y;
-        if ((x*x + y*y) > 4.0) break;
+        x = (z.x*z.x - z.y*z.y) + c.x;
+        y = (z.y*z.x + z.x*z.y) + c.y;
+        d = x*x + y*y;
+        if (d > 4.0) break;
         z = vec2(x,y);
     }
-    float v = pow(float(i)/float(n), 0.75);
-    gl_FragColor = texture1D(colormap, v);
+    if ( i < n ) {
+        float nu = log(log(sqrt(d))/log_2)/log_2;
+        float index = float(i) + 1.0 - nu;
+        float v = pow(index/float(n),0.5);
+        gl_FragColor = texture1D(colormap, v);
+    } else {
+        // gl_FragColor = texture1D(colormap, 1.0);
+        discard;
     }
+}
 """
 
 window = gp.Window(width=800, height=800)
@@ -62,7 +72,11 @@ colormap = np.zeros((512,3), np.float32)
 colormap[:,0] = np.interp(np.arange(512), [0, 171, 342, 512], [0,1,1,1])
 colormap[:,1] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,1,1])
 colormap[:,2] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,0,1])
+# colormap[-1] = 0,0,0
+
 program['colormap'] = colormap
+program['colormap'].interpolation = gl.GL_LINEAR
+
 transform = PanZoom(Position2D("position"))
 program['transform'] = transform
 window.attach(transform)

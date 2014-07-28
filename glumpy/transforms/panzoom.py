@@ -20,6 +20,7 @@ class PanZoom(Transform):
         self.scale     = np.array([1.,1.])
         self.translate = np.array([0.,0.])
         self.bounds = (0.1, 10000.0)
+        self.aspect = np.ones(2)
 
 
     def on_attach(self, program):
@@ -32,13 +33,17 @@ class PanZoom(Transform):
     def on_resize(self, width, height):
         """ Window has been resized """
 
-        self.width, self.height = float(width), float(height)
+        self.width = float(width)
+        self.height = float(height)
         ratio = self.width/self.height
         if ratio > 1.0:
-            self.aspect = 1.0/ratio, 1.0
+            aspect = np.array([1.0/ratio, 1.0])
         else:
-            self.aspect = 1.0, ratio/1.0
+            aspect = np.array([1.0, ratio/1.0])
+        self.translate *= aspect / self.aspect
+        self.aspect = aspect
         self["scale"] = self.scale * self.aspect
+        self["translate"] = self.translate
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
@@ -47,7 +52,7 @@ class PanZoom(Transform):
         x = x/(self.width/2) - 1
         y = 1 - y/(self.height/2)
         scale_min, scale_max = self.bounds
-        s = np.minimum(np.maximum(self.scale*(1+dy/100), scale_min), scale_max)
+        s = np.minimum(np.maximum(self.scale*(1+dy/100.0), scale_min), scale_max)
         self.translate[0] = x - s[0] * (x - self.translate[0]) / self.scale[0]
         self.translate[1] = y - s[1] * (y - self.translate[1]) / self.scale[1]
         self.scale = s
@@ -60,7 +65,6 @@ class PanZoom(Transform):
 
         self.translate += (2*dx/self.width, -2*dy/self.height)
         self["translate"] = self.translate
-
 
     def reset(self):
         """ Reset transformation """
