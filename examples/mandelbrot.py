@@ -31,15 +31,15 @@ void main()
 
     int i;
     vec2 z = c;
-    for(i=0; i < n; ++i)
+    for(i = 0; i < n; ++i)
     {
         float x = (z.x*z.x - z.y*z.y) + c.x;
         float y = (z.y*z.x + z.x*z.y) + c.y;
         if ((x*x + y*y) > 4.0) break;
         z = vec2(x,y);
     }
-    float v = float(i) / float(n);
-    gl_FragColor = texture1D(colormap, sqrt(v));
+    float v = pow(float(i)/float(n), 0.75);
+    gl_FragColor = texture1D(colormap, v);
     }
 """
 
@@ -58,14 +58,11 @@ def on_key_press(key, modifiers):
 program = gp.gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1, 1), ( 1,-1), ( 1, 1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-
 colormap = np.zeros((512,3), np.float32)
 colormap[:,0] = np.interp(np.arange(512), [0, 171, 342, 512], [0,1,1,1])
 colormap[:,1] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,1,1])
 colormap[:,2] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,0,1])
-# colormap[-1] = 0,0,0
 program['colormap'] = colormap
-
 transform = PanZoom(Position2D("position"))
 program['transform'] = transform
 window.attach(transform)
