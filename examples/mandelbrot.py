@@ -29,7 +29,6 @@ void main()
     const int n = 300;
     vec2 c = 3.0*v_texcoord - vec2(2.0,1.5);
 
-    // Main Mandelbrot computation
     int i;
     vec2 z = c;
     for(i=0; i < n; ++i)
@@ -39,9 +38,8 @@ void main()
         if ((x*x + y*y) > 4.0) break;
         z = vec2(x,y);
     }
-
     float v = float(i) / float(n);
-    gl_FragColor = texture1D(colormap,v);
+    gl_FragColor = texture1D(colormap, sqrt(v));
     }
 """
 
@@ -65,7 +63,7 @@ colormap = np.zeros((512,3), np.float32)
 colormap[:,0] = np.interp(np.arange(512), [0, 171, 342, 512], [0,1,1,1])
 colormap[:,1] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,1,1])
 colormap[:,2] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,0,1])
-#colormap[-1] = 0,0,0
+# colormap[-1] = 0,0,0
 program['colormap'] = colormap
 
 transform = PanZoom(Position2D("position"))
