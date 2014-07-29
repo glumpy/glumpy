@@ -29,19 +29,21 @@ theta, phi = 0,0
 window = app.Window(width=800, height=800)
 
 
-n = 100000
+n = 500000
 
 # Parse options to get marker
 options = app.parser.get_options()
 marker = "shaders/markers/marker-%s.frag" % options.marker
 program = gloo.Program(("shaders/markers/marker.vert",),
-                       (marker, "shaders/markers/marker.frag"),n)
+                       (marker,
+                        "shaders/markers/antialias.glsl",
+                        "shaders/markers/marker.frag"), count=n)
 
 view = np.eye(4, dtype=np.float32)
 glm.translate(view, 0, 0, -5)
 
 program['a_position'] = 0.35 * np.random.randn(n,3)
-program['a_size']   = np.random.uniform(40,60,n)
+program['a_size']   = np.random.uniform(20,40,n)
 program['a_fg_color'] = 0,0,0,1
 colors = np.random.uniform(0.75, 1.00, (n, 4))
 colors[:,3] = 1

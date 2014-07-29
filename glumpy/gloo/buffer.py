@@ -69,7 +69,7 @@ class Buffer(GPUData,GLObject):
 
         if self.pending_data:
             offset, nbytes = self.pending_data
-            data = self.view(np.ubyte)[offset:offset+nbytes]
+            data = self.ravel().view(np.ubyte)[offset:offset+nbytes]
             gl.glBufferSubData(self.target, offset, nbytes, data)
         self._pending_data = None
         self._need_update = False

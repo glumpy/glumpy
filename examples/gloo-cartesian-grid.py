@@ -45,12 +45,6 @@ fragment = """
     uniform float     u_minor_grid_width;
     uniform vec4      u_major_grid_color;
     uniform vec4      u_minor_grid_color;
-    uniform vec2      u_major_tick_size;
-    uniform vec2      u_minor_tick_size;
-    uniform float     u_major_tick_width;
-    uniform float     u_minor_tick_width;
-    uniform vec4      u_major_tick_color;
-    uniform vec4      u_minor_tick_color;
     uniform sampler2D u_grid;
 
     varying vec2 v_texcoord;
@@ -83,94 +77,6 @@ fragment = """
             color = u_minor_grid_color;
         }
 
-        // Top major ticks
-        if( y > (u_size.y - u_major_tick_size.y) )
-        {
-            float a = compute_alpha(Mx, u_major_tick_width, u_antialias);
-            if (a > alpha)
-            {
-               alpha = a;
-               color = u_major_tick_color;
-            }
-        }
-
-        // Bottom major ticks
-        else if( y < u_major_tick_size.y )
-        {
-            float a = compute_alpha(Mx, u_major_tick_width, u_antialias);
-            if (a > alpha)
-            {
-               alpha = a;
-               color = u_major_tick_color;
-            }
-        }
-
-        // Left major ticks
-        if( x < u_major_tick_size.x )
-        {
-            float a = compute_alpha(My, u_major_tick_width, u_antialias);
-            if (a > alpha )
-            {
-               alpha = a;
-               color = u_major_tick_color;
-            }
-        }
-
-        // Right major ticks
-        else if( x > (u_size.x - u_major_tick_size.x) )
-        {
-            float a = compute_alpha(My, u_major_tick_width, u_antialias);
-            if (a > alpha )
-            {
-               alpha = a;
-               color = u_major_tick_color;
-            }
-        }
-
-        // Top minor ticks
-        if( y > (u_size.y - u_minor_tick_size.y) )
-        {
-            float a = compute_alpha(mx, u_minor_tick_width, u_antialias);
-            if (a > alpha)
-            {
-               alpha = a;
-               color = u_minor_tick_color;
-            }
-        }
-
-        // Bottom minor ticks
-        else if( y < u_minor_tick_size.y )
-        {
-            float a = compute_alpha(mx, u_minor_tick_width, u_antialias);
-            if (a > alpha)
-            {
-               alpha = a;
-               color = u_minor_tick_color;
-            }
-        }
-
-        // Left minor ticks
-        if( x < u_minor_tick_size.x )
-        {
-            float a = compute_alpha(my, u_minor_tick_width, u_antialias);
-            if (a > alpha )
-            {
-               alpha = a;
-               color = u_minor_tick_color;
-            }
-        }
-
-        // Right major ticks
-        else if( x > (u_size.x - u_minor_tick_size.x) )
-        {
-            float a = compute_alpha(my, u_minor_tick_width, u_antialias);
-            if (a > alpha )
-            {
-               alpha = a;
-               color = u_minor_tick_color;
-            }
-        }
-
         gl_FragColor = vec4(color.xyz, alpha*color.a);
     }
     """
@@ -189,33 +95,20 @@ def find_closest(A, target):
 def update_grid(w, h):
 
     n = Z.shape[1]
-
-    # Logarithmic grid
     t1 = major_grid[0] * scale
     t2 = minor_grid[0] * scale
     t3 = major_grid[1] * scale
     t4 = minor_grid[1] * scale
 
-    L = (np.log(np.linspace(1,10,10,endpoint=True))-np.log(1))/np.log(10)
-    L = (L[+1:-1])
-
-    I1 = np.arange( np.fmod(translate[0], t1), np.fmod(translate[0], t1) + w + t1, t1)
-    I2 = np.repeat(I1,8).reshape(len(I1),8)
-    I2[:] += L * t1
-    I2 = I2.ravel()
-
-    I3 = np.arange( np.fmod(translate[1], t3), np.fmod(translate[1], t3) + h + t3, t3)
-    I4 = np.repeat(I3,8).reshape(len(I3),8)
-    # I4[:] += (np.log(np.arange(1,11))/np.log(10)) * t1
-    I4[:] += L * t3
-    I4 = I4.ravel()
-
-    # Logarithmic grid
-    # (np.log(np.arange(1,11))/np.log(10))[1:-1]
-#    I1 = np.logspace(np.log10(1), np.log10(2 * w), 5) * scale
-#    I2 = np.logspace(np.log10(1), np.log10(2 * w), 50) * scale
-#    I3 = np.logspace(np.log10(1), np.log10(2 * h), 5) * scale
-#    I4 = np.logspace(np.log10(1), np.log10(2 * h), 50) * scale
+    # Linear grid
+    I1 = np.arange(
+        np.fmod(translate[0], t1), np.fmod(translate[0], t1) + w + t1, t1)
+    I2 = np.arange(
+        np.fmod(translate[0], t2), np.fmod(translate[0], t2) + w + t2, t2)
+    I3 = np.arange(
+        np.fmod(translate[1], t3), np.fmod(translate[1], t3) + h + t3, t3)
+    I4 = np.arange(
+        np.fmod(translate[1], t4), np.fmod(translate[1], t4) + h + t4, t4)
 
     # We are here in screen space and we want integer coordinates
     np.floor(I1, out=I1)
@@ -232,6 +125,7 @@ def update_grid(w, h):
 
     program['u_grid'][...] = Z
     program['u_size'] = w, h
+
 
 
 window = app.Window(width=2*512, height=2*512)
@@ -267,22 +161,17 @@ def on_mouse_scroll(x, y, dx, dy):
     scale = s
     program['u_translate'] = translate
     program['u_scale'] = scale
+
     update_grid(w, h)
 
 
-program = gloo.Program(vertex, fragment, 4)
-program['a_position'] = np.array([(-1, -1), (-1, +1), (+1, -1), (+1, +1)])
+program = gloo.Program(vertex, fragment, count=4)
+program['a_position'] = (-1, -1), (-1, +1), (+1, -1), (+1, +1)
 program['a_texcoord'] = (0, 0), (0, +1), (+1, 0), (+1, +1)
 program['u_major_grid_width'] = 1.0
 program['u_minor_grid_width'] = 1.0
 program['u_major_grid_color'] = 0, 0, 0, .75
 program['u_minor_grid_color'] = 0, 0, 0, .25
-program['u_major_tick_size'] = 10, 10
-program['u_minor_tick_size'] = 5, 5
-program['u_major_tick_width'] = 2.0
-program['u_minor_tick_width'] = 1.1
-program['u_major_tick_color'] = 0, 0, 0, 1
-program['u_minor_tick_color'] = 0, 0, 0, 1
 program['u_antialias'] = 1.0
 program['u_translate'] = 0, 0
 program['u_scale'] = 1.0

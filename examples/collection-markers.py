@@ -28,9 +28,7 @@ def on_draw():
 #    if not len(C):
 #        app.exit()
 
-
 gl.glClearColor(1,1,1,1)
-gl.glDisable(gl.GL_DEPTH_TEST)
 gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
 gl.glEnable(gl.GL_POINT_SPRITE)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)

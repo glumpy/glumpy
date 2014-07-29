@@ -18,11 +18,8 @@ from orthographic_projection import OrthographicProjection
 #from pvm import PVM
 #from log_scale import LogScale
 #from translate import Translate
-
-
 #from translate_scale import TranslateScale
 #from scale_translate import ScaleTranslate
-
-# from symlog_scale import SymLogScale
-# from perpective_projection import PerspectiveProjection
+#from symlog_scale import SymLogScale
+#from perpective_projection import PerspectiveProjection
 #from orthographic_projection import OrthographicProjection

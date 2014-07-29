@@ -6,16 +6,15 @@
 # -----------------------------------------------------------------------------
 import sys
 import numpy as np
+import glumpy as gp
 
-import glumpy
 import glumpy.gl as gl
-import glumpy.app as app
 import glumpy.glm as glm
 import glumpy.gloo as gloo
 
 
 # Add an option for choosing marker
-app.parser.get_default().add_argument(
+gp.app.parser.get_default().add_argument(
     "--marker", "-m", help="Marker to display", default="disc",
     choices=("disc", "clobber", "asterisk", "infinity", "check", "T", "ring",
              "chevron-left", "chevron-right", "chevron-up", "chevron-down",
@@ -28,7 +27,7 @@ app.parser.get_default().add_argument(
 
 
 # Create window
-window = app.Window(width=2*512, height=512)
+window = gp.Window(width=2*512, height=512)
 
 # What to draw when necessary
 @window.event
@@ -53,7 +52,7 @@ data = np.zeros(n, dtype=[('a_position',    np.float32, 3),
                           ('a_size',        np.float32, 1),
                           ('a_orientation', np.float32, 1),
                           ('a_linewidth',   np.float32, 1)])
-data = data.view(gloo.VertexBuffer)
+data = data.view(gp.gloo.VertexBuffer)
 data['a_linewidth'] = 1
 data['a_fg_color'] = 0, 0, 0, 1
 data['a_bg_color'] = 1, 1, 1, 0
@@ -78,16 +77,15 @@ data['a_bg_color'][n-1]    = .95, .95, .95, 1
 data['a_orientation'][n-1] = 0
 
 # Parse options to get marker
-options = app.parser.get_options()
-program = gloo.Program(("shaders/markers/marker.vert",),
-                       ("shaders/markers/marker-%s.frag" % options.marker,
-                        "shaders/markers/antialias.glsl",
-                        "shaders/markers/marker.frag"))
+options = gp.app.parser.get_options()
+program = gp.gloo.Program(("shaders/markers/marker.vert",),
+                          ("shaders/markers/marker-%s.frag" % options.marker,
+                           "shaders/markers/antialias.glsl",
+                           "shaders/markers/marker.frag"))
 program.bind(data)
 program['u_antialias'] = 1.00
 program['u_model'] = np.eye(4)
 program['u_view'] = np.eye(4)
-
 
 gl.glClearColor(1.0, 1.0, 1.0, 1.0)
 gl.glDisable(gl.GL_DEPTH_TEST)
@@ -96,4 +94,4 @@ gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
 gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
 gl.glEnable(gl.GL_POINT_SPRITE)
 
-app.run()
+gp.run()
