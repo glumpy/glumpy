@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from makecube import makecube
-from glumpy import gl, app, glm, gloo
+from glumpy import gl, app, glm, gloo, filters
 
 
 cube_vertex = """
@@ -33,31 +33,6 @@ void main()
 }
 """
 
-quad_vertex = """
-attribute vec2 position;
-attribute vec2 texcoord;
-varying vec2 v_texcoord;
-void main()
-{
-    gl_Position = vec4(position, 0.0, 1.0);
-    v_texcoord = texcoord;
-}
-"""
-
-quad_fragment = """
-uniform sampler2D texture;
-varying vec2 v_texcoord;
-void main()
-{
-    vec2 d = 5.0 * vec2(sin(v_texcoord.y*50.0),0)/512.0;
-    if( v_texcoord.x > 0.5 ) {
-        gl_FragColor.rgb = 1.0-texture2D(texture, v_texcoord+d).rgb;
-    } else {
-        gl_FragColor = texture2D(texture, v_texcoord);
-    }
-}
-"""
-
 
 def checkerboard(grid_num=8, grid_size=32):
     row_even = grid_num / 2 * [0, 1]
@@ -66,21 +41,40 @@ def checkerboard(grid_num=8, grid_size=32):
     return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
 
 
-window = app.Window(width=1024, height=1024)
+window = app.Window(1024,1024)
+
+# See http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
+VBlur = gloo.Snippet("""
+vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+{
+    return 0.2270270270 *  texture2D( filtered, texcoord)
+         + 0.3162162162 * (texture2D( filtered, texcoord + vec2(0.0, 1.3846153846)/texsize) +
+                           texture2D( filtered, texcoord - vec2(0.0, 1.3846153846)/texsize) )
+         + 0.0702702703 * (texture2D( filtered, texcoord + vec2(0.0, 3.2307692308)/texsize) +
+                           texture2D( filtered, texcoord - vec2(0.0, 3.2307692308)/texsize) );
+}""")
+
+HBlur = gloo.Snippet("""
+vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+{
+    return 0.2270270270 *  texture2D( filtered, texcoord)
+         + 0.3162162162 * (texture2D( filtered, texcoord + vec2(1.3846153846, 0.0)/texsize) +
+                           texture2D( filtered, texcoord - vec2(1.3846153846, 0.0)/texsize) )
+         + 0.0702702703 * (texture2D( filtered, texcoord + vec2(3.2307692308, 0.0)/texsize) +
+                           texture2D( filtered, texcoord - vec2(3.2307692308, 0.0)/texsize) );
+}""")
+GaussianBlur = filters.Filter(512, 512, VBlur, HBlur)
+
+
 
 @window.event
 def on_draw():
     global phi, theta
 
-    framebuffer.activate()
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-    gl.glEnable(gl.GL_DEPTH_TEST)
-    cube.draw(gl.GL_TRIANGLES, faces)
-    framebuffer.deactivate()
-
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-    gl.glDisable(gl.GL_DEPTH_TEST)
-    quad.draw(gl.GL_TRIANGLE_STRIP)
+    with GaussianBlur:
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        cube.draw(gl.GL_TRIANGLES, faces)
 
     theta += 0.5 # degrees
     phi += 0.5 # degrees
@@ -111,19 +105,6 @@ cube['view'] = view
 cube['model'] = np.eye(4, dtype=np.float32)
 cube['texture'] = checkerboard()
 phi, theta = 0, 0
-
-# Build framebuffer
-w,h = window.width, window.height
-depthbuffer = gloo.DepthBuffer(w,h)
-colorbuffer = np.zeros((w,h,3),np.float32).view(gloo.Texture2D)
-framebuffer = gloo.FrameBuffer(color=colorbuffer, depth=depthbuffer)
-
-# Build quad
-quad = gloo.Program(quad_vertex, quad_fragment, count=4)
-quad['texcoord'] = [(0, 0), (0, 1), (1, 0), (1, 1)]
-quad['position'] = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
-quad['texture'] = colorbuffer
-quad["texture"].interpolation = gl.GL_LINEAR
 
 # Run
 app.run()

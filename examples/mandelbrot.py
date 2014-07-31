@@ -8,6 +8,7 @@ import numpy as np
 import glumpy as gp
 import glumpy.gl as gl
 from glumpy.transforms import PanZoom, Position2D
+from glumpy import filters
 
 
 vertex = """

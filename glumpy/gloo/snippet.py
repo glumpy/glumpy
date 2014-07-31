@@ -81,7 +81,7 @@ class Snippet(object):
 
         if program not in self._programs:
             self._programs.append(program)
-        for snippet in list(self._args) + [self._next]:
+        for snippet in list(self._args) + [self.next]:
             if isinstance(snippet, Snippet):
                 snippet.attach(program)
 
@@ -92,7 +92,7 @@ class Snippet(object):
         if program in self._programs:
             index = self._programs.indexof(program)
             del self._programs[index]
-        for snippet in list(self._args) + [self._next]:
+        for snippet in list(self._args) + [self.next]:
             if isinstance(snippet, Snippet):
                 snippet.detach(program)
 
@@ -168,7 +168,7 @@ class Snippet(object):
 
         # Get code from next snippet
         if self.next:
-            operand, snippet = self.next
+            operand, snippet = self._next
             if isinstance(snippet, Snippet):
                 code += snippet._generate_code(fdup, vdup)
 
@@ -186,19 +186,20 @@ class Snippet(object):
     def _generate_call(self):
         """ Generate mangled call """
 
+        s = ""
         if len(self._objects["functions"]):
             if self._default:
                 name = self._default
             else:
                 _,name,_,_ = self._objects["functions"][0]
 
-            s = self.lookup(name)
+            s = self.lookup(name) or name
             if len(self._args):
                 s += " ( " + ", ".join([str(arg) for arg in self._args]) + " )"
             else:
                 s += "()"
             if self.next:
-                operand, other = self.next
+                operand, other = self._next
                 s += " %s " % operand + str(other)
         else:
             if self._next:
@@ -225,10 +226,19 @@ class Snippet(object):
 
 
     @property
+    def args(self):
+        """ Call arguments """
+
+        return list(self._args)
+
+
+    @property
     def next(self):
         """ Get next snippet in the chain """
 
-        return self._next
+        if self._next:
+            return self._next[1]
+        return None
 
 
     @property
@@ -251,7 +261,7 @@ class Snippet(object):
             if isinstance(snippet, Snippet):
                 all.extend(snippet.snippets)
         if self.next:
-            operand, snippet = self.next
+            operand, snippet = self._next
             if isinstance(snippet, Snippet):
                 all.extend(snippet.snippets)
         return all

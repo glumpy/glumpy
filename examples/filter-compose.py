@@ -6,13 +6,11 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from makecube import makecube
-from glumpy import gl, app, glm, gloo
+from glumpy import gl, app, glm, gloo, filters
 
 
 cube_vertex = """
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 model, view, projection;
 attribute vec3 position;
 attribute vec2 texcoord;
 varying vec2 v_texcoord;
@@ -33,31 +31,6 @@ void main()
 }
 """
 
-quad_vertex = """
-attribute vec2 position;
-attribute vec2 texcoord;
-varying vec2 v_texcoord;
-void main()
-{
-    gl_Position = vec4(position, 0.0, 1.0);
-    v_texcoord = texcoord;
-}
-"""
-
-quad_fragment = """
-uniform sampler2D texture;
-varying vec2 v_texcoord;
-void main()
-{
-    vec2 d = 5.0 * vec2(sin(v_texcoord.y*50.0),0)/512.0;
-    if( v_texcoord.x > 0.5 ) {
-        gl_FragColor.rgb = 1.0-texture2D(texture, v_texcoord+d).rgb;
-    } else {
-        gl_FragColor = texture2D(texture, v_texcoord);
-    }
-}
-"""
-
 
 def checkerboard(grid_num=8, grid_size=32):
     row_even = grid_num / 2 * [0, 1]
@@ -66,24 +39,46 @@ def checkerboard(grid_num=8, grid_size=32):
     return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
 
 
-window = app.Window(width=1024, height=1024)
+pixelate = gloo.Snippet(
+"""
+uniform float level;
+vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+{
+    vec2 uv = (texcoord * level);
+    uv = (uv - fract(uv)) / level;
+    return texture2D(filtered, uv);
+} """)
+sepia = gloo.Snippet(
+"""
+vec4 filter(vec4 color)
+{
+    return vec4( dot(color.rgb, vec3(.393, .769, .189)),
+                 dot(color.rgb, vec3(.349, .686, .168)),
+                 dot(color.rgb, vec3(.272, .534, .131)),
+                 color.a );
+}
+vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+{
+    return filter( texture2D(filtered, texcoord) );
+}
+ """)
+
+compose = filters.Filter(512,512, sepia(pixelate))
+compose["level"] = 256.0
+
+
+window = app.Window(1024,1024)
 
 @window.event
 def on_draw():
     global phi, theta
 
-    framebuffer.activate()
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-    gl.glEnable(gl.GL_DEPTH_TEST)
-    cube.draw(gl.GL_TRIANGLES, faces)
-    framebuffer.deactivate()
-
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-    gl.glDisable(gl.GL_DEPTH_TEST)
-    quad.draw(gl.GL_TRIANGLE_STRIP)
-
-    theta += 0.5 # degrees
-    phi += 0.5 # degrees
+    with compose:
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        cube.draw(gl.GL_TRIANGLES, faces)
+    theta += 0.5
+    phi += 0.5
     model = np.eye(4, dtype=np.float32)
     glm.rotate(model, theta, 0, 0, 1)
     glm.rotate(model, phi, 0, 1, 0)
@@ -94,6 +89,12 @@ def on_draw():
 def on_resize(width, height):
     gl.glViewport(0, 0, width, height)
     cube['projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
+    pixelate.viewport = 0, 0, width, height
+
+@window.event
+def on_mouse_scroll(x, y, dx, dy):
+    p = compose["level"]
+    compose["level"] = min(max(8, p + .01 * dy * p), 512)
 
 
 # Build cube data
@@ -111,19 +112,4 @@ cube['view'] = view
 cube['model'] = np.eye(4, dtype=np.float32)
 cube['texture'] = checkerboard()
 phi, theta = 0, 0
-
-# Build framebuffer
-w,h = window.width, window.height
-depthbuffer = gloo.DepthBuffer(w,h)
-colorbuffer = np.zeros((w,h,3),np.float32).view(gloo.Texture2D)
-framebuffer = gloo.FrameBuffer(color=colorbuffer, depth=depthbuffer)
-
-# Build quad
-quad = gloo.Program(quad_vertex, quad_fragment, count=4)
-quad['texcoord'] = [(0, 0), (0, 1), (1, 0), (1, 1)]
-quad['position'] = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
-quad['texture'] = colorbuffer
-quad["texture"].interpolation = gl.GL_LINEAR
-
-# Run
 app.run()

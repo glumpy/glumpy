@@ -4,12 +4,11 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+import numpy as np
 from glumpy import gl
 from glumpy.log import log
 from glumpy.gloo.globject import GLObject
 from glumpy.gloo.texture import Texture2D
-
-# ------------------------------------------------------ RenderBuffer class ---
 
 
 class RenderBuffer(GLObject):
@@ -21,48 +20,50 @@ class RenderBuffer(GLObject):
     format : GLEnum
         The buffer format: gl.GL_RGB565, gl.GL_RGBA4, gl.GL_RGB5_A1,
         gl.GL_DEPTH_COMPONENT16, or gl.GL_STENCIL_INDEX8
-    shape : tuple of 2 ints
-        Buffer shape (always two dimensional)
-    resizeable : bool
-        Indicates whether texture can be resized
+    width: int
+        Buffer width
+    height: int
+        Buffer height
     """
 
-    def __init__(self, shape=None, format=None, resizeable=True):
+    def __init__(self, width=0, height=0, format=None):
         GLObject.__init__(self)
-        self._shape = shape
+        self._width = width
+        self._height = height
         self._target = gl.GL_RENDERBUFFER
         self._format = format
-        self._resizeable = resizeable
         self._need_resize = True
-        self._need_update = False
+
 
     @property
-    def shape(self):
-        """ Buffer shape """
+    def width(self):
+        """ Buffer width """
+        return self._width
 
-        return self._shape
 
-    def resize(self, shape):
+    @property
+    def height(self):
+        """ Buffer height """
+        return self._height
+
+
+    def resize(self, width, height):
         """ Resize the buffer (deferred operation)
 
         Parameters
         ----------
 
-        shape : tuple of 2 integers
-            New buffer shape (always two dimensional)
+        width : int
+            New buffer width
+        height : int
+            New buffer height
         """
 
-        if not self._resizeable:
-            raise RuntimeError("Buffer is not resizeable")
+        if width != self._width or height != self._height:
+            self._need_resize = True
+            self._width = width
+            self._height = height
 
-        if len(shape) != len(self.shape):
-            raise ValueError("New shape has wrong number of dimensions")
-
-        if shape == self.shape:
-            return
-
-        self._need_resize = True
-        self._shape = shape
 
     def _create(self):
         """ Create buffer on GPU """
@@ -70,11 +71,13 @@ class RenderBuffer(GLObject):
         log.debug("GPU: Create render buffer")
         self._handle = gl.glGenRenderbuffers(1)
 
+
     def _delete(self):
         """ Delete buffer from GPU """
 
         log.debug("GPU: Deleting render buffer")
         gl.glDeleteRenderbuffer(self._handle)
+
 
     def _activate(self):
         """ Activate buffer on GPU """
@@ -85,63 +88,67 @@ class RenderBuffer(GLObject):
             self._resize()
             self._need_resize = False
 
+
     def _deactivate(self):
         """ Deactivate buffer on GPU """
 
         log.debug("GPU: Deactivate render buffer")
         gl.glBindRenderbuffer(gl.GL_RENDERBUFFER, 0)
 
+
     def _resize(self):
         """ Buffer resize on GPU """
 
-        # WARNING: Shape should be checked against maximum size
+        # WARNING: width/height should be checked against maximum size
         # maxsize = gl.glGetParameter(gl.GL_MAX_RENDERBUFFER_SIZE)
         log.debug("GPU: Resize render buffer")
         gl.glRenderbufferStorage(self._target, self._format,
-                                 self._shape[1], self._shape[0])
+                                 self._width, self._height)
 
 
-# ------------------------------------------------------- ColorBuffer class ---
+
+
 class ColorBuffer(RenderBuffer):
     """ Color buffer object
 
     Parameters
     ----------
 
+    width: int
+        Buffer width
+    height: int
+        Buffer height
     format : GLEnum
         gl.GL_RGB565, gl.GL_RGBA4, gl.GL_RGB5_A1
-    shape : tuple of 2 integers
-        Buffer shape (always two dimensional)
-    resizeable : bool
-        Indicates whether buffer can be resized
     """
 
-    def __init__(self, shape, format=gl.GL_RGBA, resizeable=True):
+    def __init__(self, width, height, format=gl.GL_RGBA):
         # if format not in (gl.GL_RGB565, gl.GL_RGBA4, gl.GL_RGB5_A1):
         #     raise ValueError("Format not allowed for color buffer")
-        RenderBuffer.__init__(self, shape, format, resizeable)
+        RenderBuffer.__init__(self, width, height, format)
 
 
-# ------------------------------------------------------- DepthBuffer class ---
+
+
+
 class DepthBuffer(RenderBuffer):
     """ Depth buffer object
 
     Parameters
     ----------
 
-    shape : tuple of 2 integers
-        Buffer shape (always two dimensional)
+    width: int
+        Buffer width
+    height: int
+        Buffer height
     format : GLEnum
         gl.GL_DEPTH_COMPONENT16
-    resizeable : bool
-        Indicates whether buffer can be resized
     """
 
-    def __init__(self, shape,
-                 format=gl.GL_DEPTH_COMPONENT, resizeable=True):
+    def __init__(self, width, height, format=gl.GL_DEPTH_COMPONENT):
         #if format not in (gl.GL_DEPTH_COMPONENT16,):
         #    raise ValueError("Format not allowed for depth buffer")
-        RenderBuffer.__init__(self, shape, format, resizeable)
+        RenderBuffer.__init__(self, width, height, format)
 
 
 # ----------------------------------------------------- StencilBuffer class ---
@@ -151,19 +158,18 @@ class StencilBuffer(RenderBuffer):
     Parameters
     ----------
 
-    shape : tuple of 2 integers
-        Buffer shape (always two dimensional)
+    width: int
+        Buffer width
+    height: int
+        Buffer height
     format : GLEnum
         gl.GL_STENCIL_INDEX8
-    resizeable : bool
-        Indicates whether buffer can be resized
     """
 
-    def __init__(self, shape,
-                 format=gl.GL_STENCIL_INDEX8, resizeable=True):
+    def __init__(self, width, height, format=gl.GL_STENCIL_INDEX8):
         # if format not in (gl.GL_STENCIL_INDEX,):
         #     raise ValueError("Format not allowed for color buffer")
-        RenderBuffer.__init__(self, shape, format, resizeable)
+        RenderBuffer.__init__(self, width, height, format)
 
 
 # ------------------------------------------------------- FrameBuffer class ---
@@ -179,114 +185,169 @@ class FrameBuffer(GLObject):
         The depth buffer to attach to this frame buffer
     stencil : StencilBuffer (optional)
         The stencil buffer to attach to this frame buffer
-    resizable : bool
-        Whether the buffers are resizable (default True)
     """
 
-    def __init__(self, color=None, depth=None, stencil=None, resizeable=True):
+    def __init__(self, color=None, depth=None, stencil=None):
         """
         """
 
         GLObject.__init__(self)
 
-        self._shape = None
-        self._color_buffer = color
-        self._depth_buffer = depth
-        self._stencil_buffer = stencil
-        self._need_update = False
+        self._width = 0
+        self._height = 0
+        self._color = color
+        self._depth = depth
+        self._stencil = stencil
         self._need_attach = True
-        self._resizeable = resizeable
         self._pending_attachments = []
 
         if color is not None:
-            self.color_buffer = color
+            self.color = color
         if depth is not None:
-            self.depth_buffer = depth
+            self.depth = depth
         if stencil is not None:
-            self.stencil_buffer = stencil
+            self.stencil = stencil
 
     @property
-    def color_buffer(self):
+    def color(self):
         """Color buffer attachment"""
 
-        return self._color_buffer
+        return self._color
 
-    @color_buffer.setter
-    def color_buffer(self, buffer):
+
+    @color.setter
+    def color(self, buffer):
         """Color buffer attachment"""
+
+        if self.width != 0 and self.width != buffer.width:
+            raise ValueError("Buffer width does not match")
+        elif self.height != 0 and self.height != buffer.height:
+            raise ValueError("Buffer height does not match")
+        self._width = buffer.width
+        self._height = buffer.height
+
 
         target = gl.GL_COLOR_ATTACHMENT0
-        self._color_buffer = buffer
+        self._color = buffer
         if isinstance(buffer, (ColorBuffer, Texture2D)) or buffer is None:
             self._pending_attachments.append((target, buffer))
         else:
             raise ValueError(
                 "Buffer must be a ColorBuffer, Texture2D or None")
+        self._need_attach = True
+
 
     @property
-    def depth_buffer(self):
+    def depth(self):
         """Depth buffer attachment"""
 
-        return self._depth_buffer
+        return self._depth
 
-    @depth_buffer.setter
-    def depth_buffer(self, buffer):
+
+    @depth.setter
+    def depth(self, buffer):
         """Depth buffer attachment"""
+
+        if self.width != 0 and self.width != buffer.width:
+            raise ValueError("Buffer width does not match")
+        elif self.height != 0 and self.height != buffer.height:
+            raise ValueError("Buffer height does not match")
+        self._width = buffer.width
+        self._height = buffer.height
 
         target = gl.GL_DEPTH_ATTACHMENT
-        self._depth_buffer = buffer
+        self._depth = buffer
         if isinstance(buffer, (DepthBuffer, Texture2D)) or buffer is None:
             self._pending_attachments.append((target, buffer))
         else:
             raise ValueError(
                 "Buffer must be a DepthBuffer, Texture2D or None")
+        self._need_attach = True
+
 
     @property
-    def stencil_buffer(self):
+    def stencil(self):
         """Stencil buffer attachment"""
 
-        return self._stencil_buffer
+        return self._stencil
 
-    @stencil_buffer.setter
-    def stencil_buffer(self, buffer):
+
+    @stencil.setter
+    def stencil(self, buffer):
         """Stencil buffer attachment"""
+
+        if self.width != 0 and self.width != buffer.width:
+            raise ValueError("Buffer width does not match")
+        elif self.height != 0 and self.height != buffer.height:
+            raise ValueError("Buffer height does not match")
+        self._width = buffer.width
+        self._height = buffer.height
 
         target = gl.GL_STENCIL_ATTACHMENT
-        self._stencil_buffer = buffer
+        self._stencil = buffer
         if isinstance(buffer, StencilBuffer) or buffer is None:
             self._pending_attachments.append((target, buffer))
         else:
             raise ValueError(
                 "Buffer must be a StencilBuffer, Texture2D or None")
+        self._need_attach = True
+
 
     @property
-    def shape(self):
-        """ Buffer shape """
+    def width(self):
+        """ Buffer width """
 
-        return self._shape
+        return self._width
 
-    def resize(self, shape):
+
+    @property
+    def height(self):
+        """ Buffer height """
+
+        return self._height
+
+
+    def resize(self, width, height):
         """ Resize the buffer (deferred operation)
 
         Parameters
         ----------
 
-        shape : tuple of 2 integers
-            New buffer shape (always two dimensional)
+        width : int
+            New buffer width
+        height : int
+            New buffer height
         """
 
-        if not self._resizeable:
-            raise RuntimeError("FrameBuffer is not resizeable")
+        self._width = width
+        self._height = height
 
-        if len(shape) != 2:
-            raise ValueError("New shape has wrong number of dimensions")
+        if isinstance(self.color, ColorBuffer):
+            self.color.resize(width, height)
+        elif isinstance(self.color, Texture2D):
+            color = np.resize(self.color, (height,width, self.color.shape[2]))
+            color = color.view(self.color.__class__)
+            self.color.delete()
+            self.color = color
 
-        if self.color is not None:
-            self.color.resize(shape)
-        if self.depth is not None:
-            self.depth.resize(shape)
-        if self.stencil is not None:
-            self.stencil.resize(shape)
+
+        if isinstance(self.depth, DepthBuffer):
+            self.depth.resize(width, height)
+        elif isinstance(self.depth, Texture2D):
+            depth = np.resize(self.depth, (height,width, self.depth.shape[2]))
+            depth = depth.view(self.depth.__class__)
+            self.depth.delete()
+            self.depth = depth
+
+        if isinstance(self.stencil, StencilBuffer):
+            self.stencil.resize(width, height)
+        elif isinstance(self.stencil, Texture2D):
+            stencil = np.resize(self.stencil, (height,width, self.stencil.shape[2]))
+            stencil = stencil.view(self.stencil.__class__)
+            self.stencil.delete()
+            self.stencil = stencil
+
+
 
     def _create(self):
         """ Create framebuffer on GPU """
@@ -294,11 +355,13 @@ class FrameBuffer(GLObject):
         log.debug("GPU: Create framebuffer")
         self._handle = gl.glGenFramebuffers(1)
 
+
     def _delete(self):
         """ Delete buffer from GPU """
 
         log.debug("GPU: Delete framebuffer")
         gl.glDeleteFramebuffer(self._handle)
+
 
     def _activate(self):
         """ Activate framebuffer on GPU """
@@ -309,16 +372,16 @@ class FrameBuffer(GLObject):
             self._attach()
             self._need_attach = False
 
+
     def _deactivate(self):
         """ Deactivate framebuffer on GPU """
 
         log.debug("GPU: Deactivate render framebuffer")
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
 
+
     def _attach(self):
         """ Attach render buffers to framebuffer """
-
-        # todo: this can currently only attach to texture mipmap level 0
 
         log.debug("GPU: Attach render buffers")
         while self._pending_attachments:
@@ -340,24 +403,24 @@ class FrameBuffer(GLObject):
             else:
                 raise ValueError("Invalid attachment")
 
-        if 1:
-            res = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER)
-            if res == gl.GL_FRAMEBUFFER_COMPLETE:
-                pass
-            elif res == 0:
-                raise RuntimeError('Target not equal to GL_FRAMEBUFFER')
-            elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-                raise RuntimeError(
-                    'FrameBuffer attachments are incomplete.')
-            elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-                raise RuntimeError(
-                    'No valid attachments in the FrameBuffer.')
-            elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-                raise RuntimeError(
-                    'attachments do not have the same width and height.')
-            elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
-                raise RuntimeError('Internal format of attachment '
-                                   'is not renderable.')
-            elif res == gl.GL_FRAMEBUFFER_UNSUPPORTED:
-                raise RuntimeError('Combination of internal formats used '
-                                   'by attachments is not supported.')
+
+        res = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER)
+        if res == gl.GL_FRAMEBUFFER_COMPLETE:
+            pass
+        elif res == 0:
+            raise RuntimeError('Target not equal to GL_FRAMEBUFFER')
+        elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            raise RuntimeError(
+                'FrameBuffer attachments are incomplete.')
+        elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            raise RuntimeError(
+                'No valid attachments in the FrameBuffer.')
+        elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+            raise RuntimeError(
+                'attachments do not have the same width and height.')
+        elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
+            raise RuntimeError('Internal format of attachment '
+                               'is not renderable.')
+        elif res == gl.GL_FRAMEBUFFER_UNSUPPORTED:
+            raise RuntimeError('Combination of internal formats used '
+                               'by attachments is not supported.')

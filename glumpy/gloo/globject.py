@@ -67,8 +67,8 @@ class GLObject(object):
     def delete(self):
         """ Delete the object from GPU memory """
 
-        if self.need_delete:
-            self._delete()
+        #if self.need_delete:
+        self._delete()
         self._handle = -1
         self._need_setup = True
         self._need_create = True

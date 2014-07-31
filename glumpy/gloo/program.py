@@ -361,7 +361,7 @@ class Program(GLObject):
         elif name in self._attributes.keys():
             self._attributes[name].set_data(data)
         else:
-            raise ValueError("Unknown uniform or attribute")
+            raise IndexError("Unknown uniform or attribute")
 
 
     def __getitem__(self, name):
@@ -374,6 +374,11 @@ class Program(GLObject):
         else:
             raise IndexError("Unknown uniform or attribute")
 
+
+    def keys(self):
+        """ Uniforme and attribute names """
+
+        return self._uniforms.keys() + self._attributes.keys()
 
 
     def _activate(self):

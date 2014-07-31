@@ -167,6 +167,6 @@ render["texture"].wrapping = gl.GL_CLAMP_TO_EDGE
 render['pingpong'] = pingpong
 
 framebuffer = gloo.FrameBuffer(color=compute["texture"],
-                               depth=gloo.DepthBuffer((w, h)))
+                               depth=gloo.DepthBuffer(w, h))
 gl.glClearColor(0, 0, 0, 1)
 app.run(framerate=0)
