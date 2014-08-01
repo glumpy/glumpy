@@ -154,7 +154,7 @@ if 1:
     limits1 = -5.1, +5.1, -5.1, +5.1
     limits2 = 1.0, 5.0, 0.0, 2*np.pi
     major_grid = np.array([ 1.00, np.pi/6])
-     minor_grid = np.array([ 0.25, np.pi/60])
+    minor_grid = np.array([ 0.25, np.pi/60])
 
 # Cartesian projection limits
 if 0:
