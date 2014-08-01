@@ -7,14 +7,16 @@
 // ------------------------------------
 const float M_PI = 3.14159265358979323846;
 
+// Uniforms
+// ------------------------------------
 
 // Line antialias area (usually 1 pixel)
 uniform float u_antialias;
 
-// Linear limits
+// Cartesian limits
 uniform vec4 u_limits1;
 
-// Spheric limits
+// Projected limits
 uniform vec4 u_limits2;
 
 // Major grid line width (1.50 pixel)
@@ -29,17 +31,25 @@ uniform vec4 u_major_grid_color;
 // Minor grid line color
 uniform vec4 u_minor_grid_color;
 
-// Texture holding normalized grid position
+// Texture holding grid position (in projected referential)
 uniform sampler2D u_grid;
 
-// Texture coordinates (from (-1,-1) to (+1,+1)
+
+// Varyings
+// ------------------------------------
+
+// Texture coordinates (from (-0.5,-0.5) to (+0.5,+0.5)
 varying vec2 v_texcoord;
 
 // Quad size
 varying vec2 v_size;
 
 
-// Forward transform
+
+// Functions
+// ------------------------------------
+
+// Forward transform (polar)
 // ------------------------------------
 vec2 transform_forward(vec2 P)
 {
@@ -48,7 +58,7 @@ vec2 transform_forward(vec2 P)
     return vec2(x,y);
 }
 
-// Inverse transform
+// Inverse transform (polar)
 // ------------------------------------
 vec2 transform_inverse(vec2 P)
 {
@@ -60,7 +70,7 @@ vec2 transform_inverse(vec2 P)
 }
 
 
-// [0,1]x[0,1] -> [xmin,xmax]x[ymin,ymax]
+// [-0.5,-0.5]x[0.5,0.5] -> [xmin,xmax]x[ymin,ymax]
 vec2 scale_forward(vec2 P, vec4 limits)
 {
     // limits = xmin,xmax,ymin,ymax
@@ -70,15 +80,16 @@ vec2 scale_forward(vec2 P, vec4 limits)
     return P;
 }
 
-// [xmin,xmax]x[ymin,ymax] -> [0,1]x[0,1]
+// [xmin,xmax]x[ymin,ymax] -> [-0.5,-0.5]x[0.5,0.5]
 vec2 scale_inverse(vec2 P, vec4 limits)
 {
     // limits = xmin,xmax,ymin,ymax
     P -= vec2(limits[0], limits[2]);
     P /= vec2(limits[1]-limits[0], limits[3]-limits[2]);
-    return P-vec2(.5,.5);
+    return P - vec2(.5,.5);
 }
 
+// Antialias stroke alpha coeff
 float stroke_alpha(float distance, float linewidth, float antialias)
 {
     float t = linewidth/2.0 - antialias;
@@ -95,14 +106,15 @@ float stroke_alpha(float distance, float linewidth, float antialias)
         return alpha;
 }
 
-
+// Grid
 void main()
 {
     vec2 NP1 = v_texcoord;
     vec2 P1 = scale_forward(NP1, u_limits1);
     vec2 P2 = transform_inverse(P1);
 
-
+    // Test if we are within limits but we do not discard yet because we want
+    // to draw border. Discarding would mean half of the exterior not drawn.
     bvec2 outside = bvec2(false);
     if( P2.x < u_limits2[0] ) outside.x = true;
     if( P2.x > u_limits2[1] ) outside.x = true;
@@ -155,6 +167,7 @@ void main()
         }
     }
 
+    // Mix major/minor colors to get dominant color
     vec4 color = u_major_grid_color;
     float alpha1 = stroke_alpha( M, u_major_grid_width, u_antialias);
     float alpha2 = stroke_alpha( m, u_minor_grid_width, u_antialias);
@@ -164,7 +177,10 @@ void main()
         alpha = alpha2;
         color = u_minor_grid_color;
     }
-    //vec4 texcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
-    //gl_FragColor = mix(texcolor, color, alpha);
+
+    // For the same price you could project a texture
+    // vec4 texcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
+    // gl_FragColor = mix(texcolor, color, alpha);
+
     gl_FragColor = vec4(color.rgb, color.a*alpha);
 }
