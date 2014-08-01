@@ -38,8 +38,8 @@ void main (void)
 }
 """
 
-rows,cols = 3,3
-window = app.Window(width=1400, height=1400)
+rows,cols = 2,2
+window = app.Window(width=1024, height=1024)
 
 
 def find_closest_direct(I, start, end, count):
@@ -56,9 +56,9 @@ def compute_grid():
     xmin, xmax = limits2[:2]
     t1 = major_grid[0]
     t2 = minor_grid[0]
-    I3 = np.linspace(xmin, xmax, (xmax-xmin)/t1, endpoint=False)
+    I3 = np.linspace(xmin, xmax, (xmax-xmin)/t1+1, endpoint=True)
     Z[..., 0] = I3[find_closest_direct(I3, start=xmin, end=xmax, count=n)]
-    I4 = np.linspace(xmin, xmax, (xmax-xmin)/t2, endpoint=False)
+    I4 = np.linspace(xmin, xmax, (xmax-xmin)/t2+1, endpoint=True)
     Z[..., 1] = I4[find_closest_direct(I4, start=xmin, end=xmax, count=n)]
 
     ymin, ymax = limits2[2:]
@@ -112,7 +112,7 @@ program['u_major_grid_color'] = 0, 0, 0, 1.0
 program['u_minor_grid_color'] = 0, 0, 0, 0.5
 
 limits1 = -5, +5, -5, +5
-limits2 = 0, 5, 0, 3*np.pi
+limits2 = 1, 5, 0, 2*np.pi
 
 major_grid = np.array([ 1.0, np.pi/6])
 minor_grid = np.array([ 0.2, np.pi/60])

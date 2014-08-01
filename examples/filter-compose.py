@@ -9,7 +9,7 @@ from makecube import makecube
 from glumpy import gl, app, glm, gloo, filters
 
 
-cube_vertex = """
+vertex = """
 uniform mat4 model, view, projection;
 attribute vec3 position;
 attribute vec2 texcoord;
@@ -21,7 +21,7 @@ void main()
 }
 """
 
-cube_fragment = """
+fragment = """
 uniform sampler2D texture;
 varying vec2 v_texcoord;
 void main()
@@ -62,9 +62,8 @@ vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
     return filter( texture2D(filtered, texcoord) );
 }
  """)
-
 compose = filters.Filter(512,512, sepia(pixelate))
-compose["level"] = 256.0
+compose["level"] = 128.0
 
 
 window = app.Window(1024,1024)
@@ -104,7 +103,7 @@ faces    = I.view(gloo.IndexBuffer)
 outline  = O.view(gloo.IndexBuffer)
 
 # Build cube
-cube = gloo.Program(cube_vertex, cube_fragment)
+cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
 view = np.eye(4, dtype=np.float32)
 glm.translate(view, 0, 0, -5)

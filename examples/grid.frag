@@ -102,10 +102,12 @@ void main()
     vec2 P1 = scale_forward(NP1, u_limits1);
     vec2 P2 = transform_inverse(P1);
 
-    if( P2.x < u_limits2[0] ) discard;
-    if( P2.x > u_limits2[1] ) discard;
-    if( P2.y < u_limits2[2] ) discard;
-    if( P2.y > u_limits2[3] ) discard;
+
+    bvec2 outside = bvec2(false);
+    if( P2.x < u_limits2[0] ) outside.x = true;
+    if( P2.x > u_limits2[1] ) outside.x = true;
+    if( P2.y < u_limits2[2] ) outside.y = true;
+    if( P2.y > u_limits2[3] ) outside.y = true;
 
     vec2 NP2 = scale_inverse(P2,u_limits2);
 
@@ -131,6 +133,28 @@ void main()
     float M = min(Mx,My);
     float m = min(mx,my);
 
+    if( outside.x && outside.y ) {
+        if (Mx > 0.5*(u_major_grid_width + u_antialias)) {
+            discard;
+        } else if (My > 0.5*(u_major_grid_width + u_antialias)) {
+            discard;
+        } else {
+            M = max(Mx,My);
+        }
+    } else if( outside.x ) {
+        if (Mx > 0.5*(u_major_grid_width + u_antialias)) {
+            discard;
+        } else {
+            M = m = Mx;
+        }
+    } else if( outside.y ) {
+        if (My > 0.5*(u_major_grid_width + u_antialias)) {
+            discard;
+        } else {
+            M = m = My;
+        }
+    }
+
     vec4 color = u_major_grid_color;
     float alpha1 = stroke_alpha( M, u_major_grid_width, u_antialias);
     float alpha2 = stroke_alpha( m, u_minor_grid_width, u_antialias);
@@ -142,6 +166,5 @@ void main()
     }
     //vec4 texcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
     //gl_FragColor = mix(texcolor, color, alpha);
-
     gl_FragColor = vec4(color.rgb, color.a*alpha);
 }
