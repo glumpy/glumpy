@@ -119,13 +119,13 @@ float arrow_curved(vec2 texcoord,
     float d4 = segment_distance(texcoord, start, end - vec2(linewidth,0.0));
 
     // Outside (because of circles)
-    if( (texcoord.y - (1.5*height*head + antialias)) > 0.0 )
+    if( texcoord.y > +(2.0*head + antialias) )
          return 1000.0;
-    if( (texcoord.y + (1.5*height*head + antialias)) < 0.0 )
+    if( texcoord.y < -(2.0*head + antialias) )
          return 1000.0;
-    if( (texcoord.x + (body/2.0 + antialias)) < 0.0 )
+    if( texcoord.x < -(body/2.0 + antialias) )
          return 1000.0;
-    if( (texcoord.x - (body + antialias)) > 0.0 )
+    if( texcoord.x > c1.x ) //(body + antialias) )
          return 1000.0;
 
     return min( d4, -min(d3,min(d1,d2)));
@@ -233,9 +233,7 @@ void main()
     float linewidth = 20.0;
     float antialias =  1.0;
 
-    float body = 20.0*linewidth;
-    float head = 0.2 * body;
-    gl_FragColor = vec4(1,1,1,1);
+    float body = 15.0*linewidth;
 
     float d = arrow_curved(v_texcoord, body, 0.25*body, linewidth, antialias);
     // float d = arrow_triangle_90(v_texcoord, body, 0.15*body, linewidth, antialias);
@@ -244,85 +242,10 @@ void main()
     // float d = arrow_angle_90(v_texcoord, body, 0.15*body, linewidth, antialias);
     // float d = arrow_angle_60(v_texcoord, body, 0.20*body, linewidth, antialias);
     // float d = arrow_angle_30(v_texcoord, body, 0.25*body, linewidth, antialias);
+
     gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
+    // gl_FragColor = stroke(d, linewidth, antialias, vec4(0,0,0,1));
 
-
-/*
-    // Latex
-    float height = 0.5;
-    vec2 p1 = end - head_length*vec2(+1.0,+height);
-    vec2 p2 = end - head_length*vec2(+1.0,-height);
-    vec2 p3 = end;
-    vec2 c1  = circle_from_2_points(p1, p3, 1.25*length).zw;
-    float d1 = length(v_texcoord - c1) - 1.25*length;
-    vec2 c2  = circle_from_2_points(p2, p3, 1.25*length).xy;
-    float d2 = length(v_texcoord - c2) - 1.25*length;
-    vec2 c3  = circle_from_2_points(p1, p2, max(length-head_length, 1.0*length)).xy;
-    float d3 = length(v_texcoord - c3) - max(length-head_length, 1.0*length);
-    float d4 = segment_distance(v_texcoord, start, end - vec2(linewidth,0.0));
-    float d = min(d4, -min(d3,min(d1,d2)));
-
-    // d = max(d,v_texcoord.y+linewidth/2.0);
-    gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
-*/
-
-/*
-    // Angle 60
-    float r = .5;
-    float d;
-    if( v_texcoord.x > length/2.0) {
-        float d1 = line_distance(v_texcoord, end, end - head_length*vec2(+1.0,-r));
-        float d2 = line_distance(v_texcoord, end - head_length*vec2(+1.0,+r), end);
-        float d3 = end.x - v_texcoord.x;
-        d = max(max(d1,d2), d3);
-    } else {
-        float d1 = segment_distance(v_texcoord, end - head_length*vec2(+1.0,-r), end);
-        float d2 = segment_distance(v_texcoord, end - head_length*vec2(+1.0,+r), end);
-        float d3 = segment_distance(v_texcoord, start, end - vec2(linewidth,0.0));
-        d = min(min(d1,d2), d3);
-    }
-    gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
-*/
-
-/*
-    // Latex
-    float d1 = line_distance(v_texcoord, end-head_length*vec2(+1.0,-0.5), end);
-    float d2 = line_distance(v_texcoord, end-head_length*vec2(+1.0,-0.5), end-vec2(3.*head_length/4.,0.0));
-    float d3 = line_distance(v_texcoord, end-head_length*vec2(+1.0,+0.5), end);
-    float d4 = line_distance(v_texcoord, end-head_length*vec2(+1.0,+0.5), end-vec2(3.*head_length/4.,0.0));
-    float d5 = segment_distance(v_texcoord, start, end - vec2(linewidth,0.0));
-    float d = min(d5, max( max(-d1, d3), - max(-d2,d4)));
-    gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
-*/
-
-/*
-    // Angle 90
-    float d1 = segment_distance(v_texcoord, end - head_length*vec2(+1.0,-1.0), end);
-    float d2 = segment_distance(v_texcoord, end - head_length*vec2(+1.0,+1.0), end);
-    float d3 = segment_distance(v_texcoord, start, end - vec2(linewidth,0.0));
-    float d = min(min(d1, d2), d3);
-    gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
-*/
-
-/*
-    // Triangle 90
-    float d1 = line_distance(v_texcoord, end, end - head_length*vec2(+1.0,-1.0));
-    float d2 = line_distance(v_texcoord, end - head_length*vec2(+1.0,+1.0), end);
-    float d3 = v_texcoord.x - end.x + head_length;
-    float d4 = segment_distance(v_texcoord, start, end - vec2(linewidth,0.0));
-    float d = min(max(max(d1, d2), -d3), d4);
-    gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
-*/
-
-/*
-    // Triangle 45
-    float d1 = line_distance(v_texcoord, end, end - head_length*vec2(+1.0,-0.5));
-    float d2 = line_distance(v_texcoord, end - head_length*vec2(+1.0,+0.5), end);
-    float d3 = v_texcoord.x - end.x + head_length;
-    float d4 = segment_distance(v_texcoord, start, end - vec2(linewidth,0.0));
-    float d = min(max(max(d1, d2), -d3), d4);
-    gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
-*/
 }
 """
 
