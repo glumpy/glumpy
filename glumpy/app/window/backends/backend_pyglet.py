@@ -249,7 +249,7 @@ def process(dt):
         window._native_window.dispatch_events()
 
         # Dispatch the main draw event
-        window.dispatch_event('on_draw')
+        window.dispatch_event('on_draw', dt)
 
         # Dispatch the idle event
         window.dispatch_event('on_idle', dt)

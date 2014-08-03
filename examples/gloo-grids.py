@@ -109,7 +109,7 @@ window = app.Window(width=1024, height=1024)
 
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_TRIANGLES, indices)
 

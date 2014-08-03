@@ -82,7 +82,7 @@ class Window(Viewport):
           'The window was hidden.'
           pass
 
-      def on_close(self,):
+      def on_close(self):
           'The user closed the window.'
           pass
 
@@ -90,11 +90,11 @@ class Window(Viewport):
           'The window was resized to (width,height)'
           pass
 
-      def on_draw(self):
+      def on_draw(self, dt):
           'The window contents must be redrawn.'
           pass
 
-      def on_idle(self):
+      def on_idle(self, dt):
           'The window is inactive.'
           pass
     """

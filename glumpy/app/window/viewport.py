@@ -354,9 +354,9 @@ class Viewport(event.EventDispatcher):
         gl.glPopAttrib( )
 
 
-    def on_draw(self):
+    def on_draw(self, dt):
         for child in self._children:
-            child.dispatch_event("on_draw")
+            child.dispatch_event("on_draw", dt)
 
     def on_resize(self, width, height):
         if self.parent == None:
@@ -366,9 +366,9 @@ class Viewport(event.EventDispatcher):
         self._compute_viewport()
         for child in self._children:
             child.dispatch_event("on_resize", width, height)
-        if self.parent == None:
-            self.dispatch_event('on_draw')
-            self.swap()
+#        if self.parent == None:
+#            self.dispatch_event('on_draw')
+#            self.swap()
 
 
     def on_key_press(self, key, modifiers):
