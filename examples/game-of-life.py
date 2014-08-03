@@ -104,7 +104,7 @@ void main(void)
 window = app.Window(width=512, height=512)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global pingpong
 
     width,height = 512,512

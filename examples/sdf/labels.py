@@ -14,7 +14,7 @@ from glumpy.font import Font
 window = gp.Window(width=700, height=700)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     C.draw()
 

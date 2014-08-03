@@ -57,7 +57,7 @@ program['a_orientation'] = np.random.uniform(0, 2*np.pi, n)
 
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global theta, phi, translate
 
     theta += .5

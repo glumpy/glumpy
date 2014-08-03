@@ -53,7 +53,7 @@ pixelate["level"] = 256.0
 window = app.Window(1024,1024)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global phi, theta
 
     with pixelate:

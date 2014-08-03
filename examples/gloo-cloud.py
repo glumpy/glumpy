@@ -106,7 +106,7 @@ program['u_projection'] = np.eye(4, dtype=np.float32)
 program['u_view'] = view
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global theta, phi, translate
 
     theta += .5

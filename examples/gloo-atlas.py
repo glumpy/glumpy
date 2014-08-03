@@ -34,7 +34,7 @@ fragment = """
 window = app.Window(width=800, height=800)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_TRIANGLE_STRIP)
 

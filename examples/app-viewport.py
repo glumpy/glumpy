@@ -22,12 +22,12 @@ left.add(down)
 
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClearColor(1,1,1,1)
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
 @left.event
-def on_draw():
+def on_draw(dt):
     left.lock()
     if left.active: gl.glClearColor(0.75, 0.75, 0.75, 1.0)
     else:           gl.glClearColor(1.0, 0.0, 0.0, 1.0)
@@ -35,7 +35,7 @@ def on_draw():
     left.unlock()
 
 @right.event
-def on_draw():
+def on_draw(dt):
     right.lock()
     if right.active: gl.glClearColor(0.75, 0.75, 0.75, 1.0)
     else:            gl.glClearColor(0.0, 0.0, 1.0, 1.0)
@@ -43,7 +43,7 @@ def on_draw():
     right.unlock()
 
 @down.event
-def on_draw():
+def on_draw(dt):
     down.lock()
     if down.active: gl.glClearColor(0.75, 0.75, 0.75, 1.0)
     else:           gl.glClearColor(0.0, 1.0, 0.0, 1.0)

@@ -68,7 +68,7 @@ GaussianBlur = filters.Filter(512, 512, VBlur, HBlur)
 
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global phi, theta
 
     with GaussianBlur:

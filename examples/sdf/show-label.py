@@ -92,7 +92,7 @@ def label(text, font, anchor_x='right', anchor_y='baseline'):
 window = app.Window(width=700, height=700)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global theta, dtheta
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_TRIANGLES, I)

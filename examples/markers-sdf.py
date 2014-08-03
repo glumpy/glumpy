@@ -132,7 +132,7 @@ void main()
 window = app.Window(width=2*512, height=512)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_POINTS)
     program["a_orientation"][-1] += np.pi/1024.0

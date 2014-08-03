@@ -32,7 +32,7 @@ void main()
 window = app.Window(width=1024, height=512)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global index
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     oscilloscope.draw(gl.GL_LINE_STRIP)

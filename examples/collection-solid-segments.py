@@ -13,7 +13,7 @@ from glumpy.graphics.collection import SolidSegmentCollection
 window = gp.app.Window(width=1200, height=600)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     C.draw()
 

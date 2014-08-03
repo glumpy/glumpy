@@ -69,7 +69,7 @@ def checkerboard(grid_num=8, grid_size=32):
 window = app.Window(width=1024, height=1024)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     global phi, theta
 
     framebuffer.activate()

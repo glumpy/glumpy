@@ -10,7 +10,7 @@ import glumpy.app as app
 window = app.Window()
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
 app.run()

@@ -20,7 +20,7 @@ C.append(n, position = np.random.uniform(-1,1,(n,3)),
 window = app.Window(1024,1024)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     C.draw()
     C['orientation'] += np.pi/180.0

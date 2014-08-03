@@ -97,7 +97,7 @@ def update_grid():
 window = app.Window(width=1024, height=512)
 
 @window.event
-def on_draw():
+def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_TRIANGLE_STRIP)
 
