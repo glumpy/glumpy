@@ -247,11 +247,24 @@ uniform vec2 iResolution;
 varying vec2 v_texcoord;
 void main()
 {
-    const float linewidth = 20.0;
-    const float antialias =  1.0;
-    float body = 20.0*linewidth;
-    vec2 texcoord = gl_FragCoord.xy - iResolution.xy/2.0;
+    const float M_PI = 3.14159265358979323846;
+    const float SQRT_2 = 1.4142135623730951;
 
+    const float rows = 12.0;
+    const float cols = 12.0;
+    const float linewidth = 1.0;
+    const float antialias =  1.0;
+    float body = min(iResolution.x/cols, iResolution.y/rows) / SQRT_2;
+    vec2 texcoord = gl_FragCoord.xy;
+    vec2 size   = iResolution.xy / vec2(cols,rows);
+    vec2 center = (floor(texcoord/size) + vec2(0.5,0.5)) * size;
+    texcoord -= center;
+
+    float theta = M_PI/3.0;
+    float cos_theta = cos(theta);
+    float sin_theta = sin(theta);
+    texcoord = vec2(cos_theta*texcoord.x - sin_theta*texcoord.y,
+                    sin_theta*texcoord.x + cos_theta*texcoord.y);
 
     float d = arrow_curved(texcoord, body, 0.25*body, linewidth, antialias);
     // float d = arrow_stealth(texcoord, body, 0.25*body, linewidth, antialias);
