@@ -366,9 +366,9 @@ class Viewport(event.EventDispatcher):
         self._compute_viewport()
         for child in self._children:
             child.dispatch_event("on_resize", width, height)
-#        if self.parent == None:
-#            self.dispatch_event('on_draw')
-#            self.swap()
+        if self.parent == None:
+            self.dispatch_event('on_draw', 0.0)
+            self.swap()
 
 
     def on_key_press(self, key, modifiers):
