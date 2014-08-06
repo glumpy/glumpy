@@ -21,7 +21,6 @@ window = app.Window(1024,1024)
 
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     C.draw()
     C['orientation'] += np.pi/180.0
 #    del C[0]
@@ -29,9 +28,4 @@ def on_draw(dt):
 #        app.exit()
 
 gl.glClearColor(1,1,1,1)
-gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-gl.glEnable(gl.GL_POINT_SPRITE)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-gl.glEnable(gl.GL_BLEND)
-
 app.run()

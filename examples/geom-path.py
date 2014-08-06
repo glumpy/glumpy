@@ -316,17 +316,11 @@ window = gp.app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_LINE_STRIP_ADJACENCY_EXT, I)
 
 @window.event
 def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
     program['projection'] = gp.glm.ortho(0, width, 0, height, -1, +1)
 
 gl.glClearColor(1.0, 1.0, 1.0, 1.0)
-gl.glDisable(gl.GL_DEPTH_TEST)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
 gp.app.run()

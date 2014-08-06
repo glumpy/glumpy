@@ -12,7 +12,6 @@ window = app.Window(width=512, height=512)
 
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     label.draw(x=256, y=256, color=(1,1,1,1))
 
 font = text.TextureFont("Vera.ttf", 64)

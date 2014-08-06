@@ -109,6 +109,8 @@ program['u_view'] = view
 def on_draw(dt):
     global theta, phi, translate
 
+    program.draw(gl.GL_POINTS)
+
     theta += .5
     phi += .5
     model = np.eye(4, dtype=np.float32)
@@ -116,8 +118,6 @@ def on_draw(dt):
     glm.rotate(model, phi, 0, 1, 0)
     program['u_model'] = model
 
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-    program.draw(gl.GL_POINTS)
 
 @window.event
 def on_resize(width,height):

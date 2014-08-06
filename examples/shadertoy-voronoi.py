@@ -136,9 +136,8 @@ window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_TRIANGLE_STRIP)
-    program["iGlobalTime"] = program["iGlobalTime"] + 1/60.0
+    program["iGlobalTime"] += dt
 
 @window.event
 def on_resize(width, height):
@@ -151,6 +150,7 @@ def on_mouse_scroll(x, y, dx, dy):
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
+program["iGlobalTime"] = 0
 program["scale"] = 10
 
 gl.glClearColor(1,1,1,1)

@@ -38,9 +38,8 @@ window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-    program.draw(gl.GL_TRIANGLE_STRIP)
 
+    program.draw(gl.GL_TRIANGLE_STRIP)
     program["iGlobalTime"] += dt
     today = datetime.datetime.now()
     seconds = (today.hour*60*60 + today.minute*60 + today.second)
@@ -56,9 +55,9 @@ def on_mouse_drag(x, y, dx, dy, button):
                app.window.mouse.MIDDLE : 2, app.window.mouse.RIGHT : 3 }
     program["iMouse"] = x, y, buttons[button], 0
 
-iGlobalTime = 0
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
+program["iGlobalTime"] = 0
 gl.glClearColor(1,1,1,1)
 gl.glEnable(gl.GL_BLEND)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)

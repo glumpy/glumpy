@@ -132,7 +132,6 @@ window = app.Window(width=2*512, height=2*512)
 
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program.draw(gl.GL_TRIANGLE_STRIP)
 
 @window.event

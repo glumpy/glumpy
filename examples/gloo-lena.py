@@ -38,7 +38,6 @@ window = app.Window(width=512, height=512, aspect=1)
 
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     window.lock()
     program.draw(gl.GL_TRIANGLE_STRIP)
     window.unlock()

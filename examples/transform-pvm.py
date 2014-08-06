@@ -38,8 +38,6 @@ window = gp.Window(width=1024, height=1024)
 def on_draw(dt):
     global phi, theta
 
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-
     # Filled cube
     gl.glDisable(gl.GL_BLEND)
     gl.glEnable(gl.GL_DEPTH_TEST)

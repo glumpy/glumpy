@@ -362,7 +362,8 @@ def process(dt):
         window.activate()
 
         # Clear window using window clear flags
-        gl.glClear(window._clearflags)
+        if window._clearmode:
+            gl.glClear(window._clearflags)
 
         # Dispatch the main draw event
         window.dispatch_event('on_draw', dt)

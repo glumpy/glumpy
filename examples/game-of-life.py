@@ -113,6 +113,8 @@ def on_draw(dt):
     compute["pingpong"] = pingpong
     render["pingpong"] = pingpong
 
+    gl.glDisable(gl.GL_BLEND)
+
     framebuffer.activate()
     gl.glViewport(0, 0, width, height)
     compute.draw(gl.GL_TRIANGLE_STRIP)
@@ -168,5 +170,6 @@ render['pingpong'] = pingpong
 
 framebuffer = gloo.FrameBuffer(color=compute["texture"],
                                depth=gloo.DepthBuffer(w, h))
+
 gl.glClearColor(0, 0, 0, 1)
 app.run(framerate=0)

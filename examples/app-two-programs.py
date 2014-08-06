@@ -42,7 +42,6 @@ program2['a_position'] = np.zeros((1,2),dtype=np.float32) - 0.5
 window = app.Window()
 @window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     program1.draw(gl.GL_POINTS)
     program2.draw(gl.GL_POINTS)
 
