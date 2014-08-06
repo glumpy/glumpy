@@ -4,6 +4,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import sys
+from glumpy import gl
 from glumpy.log import log
 from glumpy.app.window import key
 from glumpy.app.window import mouse
@@ -148,6 +149,12 @@ class Window(Viewport):
         self._timer_stack = []
         self._timer_date = []
         self._backend = None
+
+        self._clearflags = gl.GL_COLOR_BUFFER_BIT
+        if config._depth_size:
+            self._clearflags |= gl.GL_DEPTH_BUFFER_BIT
+        if config._stencil_size:
+            self._clearflags |= gl.GL_STENCIL_BUFFER_BIT
 
 
     @property

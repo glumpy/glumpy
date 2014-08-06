@@ -4,6 +4,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import sys
+from glumpy import gl
 from glumpy.log import log
 from glumpy.app import configuration
 from glumpy.app.window import window
@@ -368,6 +369,9 @@ def process(dt):
 
     for window in __windows__:
         window.activate()
+
+        # Clear window using window clear flags
+        gl.glClear(window._clearflags)
 
         # Dispatch the main draw event
         window.dispatch_event('on_draw', dt)

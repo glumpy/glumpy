@@ -332,7 +332,7 @@ class Program(GLObject):
         if isinstance(data, VertexBuffer):
             for name in data.dtype.names:
                 if name in self._attributes.keys():
-                    self._attributes[name].set_data(data[name])
+                    self._attributes[name].set_data(data.ravel()[name])
 
 
     def __setitem__(self, name, data):
