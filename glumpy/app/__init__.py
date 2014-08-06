@@ -281,4 +281,4 @@ def run(clock=None, framerate=None, clear=True):
         Whether to clear window automatically
     """
 
-    __run__(clock, framerate, __backend__)
+    __run__(clock=clock, framerate=framerate, backend=__backend__, clear=clear)

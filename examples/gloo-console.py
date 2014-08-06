@@ -141,10 +141,6 @@ class Console(object):
         self._rows, self._cols = rows, cols
         self._cursor = 0,0
 
-    def on_init(self):
-        gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-        gl.glEnable(gl.GL_POINT_SPRITE)
-
     def on_resize(self, width, height):
         self._program["projection"] = glm.ortho(0, width, height, 0, -1, +1)
 
@@ -156,26 +152,24 @@ class Console(object):
         self._cursor = 0, 0
 
 
-    def write(self, text="", color=(.35,.35,.35,1)):
+    def write(self, text=""):
         row, col = self._cursor
 
         for line in text.split('\n'):
-
-            # Crop text if necessary
-            line = line[:self._cols]
-
             # Clear line
             self._data["glyph"][row] = 0
-            self._data["color"][row] = color
+
 
             if len(line):
+                # Crop text if necessary
+                line = line[:self._cols]
+
                 # Write text
                 I = np.array([ord(c)-32 for c in line])
                 self._data["glyph"][row,:len(line)] = font_6x8[I]
 
-            row += 1
-
             # Update cursor and scroll if necessary
+            row += 1
             if row > self._rows-1:
                 self.scroll()
                 row = self._rows-1
@@ -192,18 +186,17 @@ class Console(object):
 
 window = app.Window(width=800, height=600)
 console = Console(24,80,scale=2)
-
+#console.write("Glumpy 2.0 (reboot !)")
+#console.write("Copyright (c) 2014 Nicolas P. Rougier")
+#console.write("Released under the (new) BSD license")
 
 @window.event
 def on_draw(dt):
-    console.clear()
-    console.write("Glumpy 2.0 (reboot !)", color=(0,0,0,1))
-    console.write("Copyright (c) 2014 Nicolas P. Rougier")
-    console.write("Released under the (new) BSD license")
+#    console.clear()
+    console._cursor = 0,0
     console.write("Estimated FPS: %.2f" % app.fps())
-    console.write("Last dt: %.5f" % dt)
+#    console.write("Last dt: %.5f" % dt)
     console.draw()
-
 
 window.attach(console)
 gl.glClearColor(1,1,1,1)
