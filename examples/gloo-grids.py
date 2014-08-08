@@ -110,6 +110,7 @@ window = app.Window(width=1024, height=1024)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     program.draw(gl.GL_TRIANGLES, indices)
 
 @window.event

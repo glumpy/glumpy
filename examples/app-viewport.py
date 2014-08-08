@@ -24,7 +24,7 @@ left.add(down)
 @window.event
 def on_draw(dt):
     gl.glClearColor(1,1,1,1)
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+    window.clear()
 
 @left.event
 def on_draw(dt):

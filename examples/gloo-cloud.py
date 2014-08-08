@@ -109,6 +109,7 @@ program['u_view'] = view
 def on_draw(dt):
     global theta, phi, translate
 
+    window.clear()
     program.draw(gl.GL_POINTS)
 
     theta += .5

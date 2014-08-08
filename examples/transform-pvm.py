@@ -38,6 +38,8 @@ window = gp.Window(width=1024, height=1024)
 def on_draw(dt):
     global phi, theta
 
+    window.clear()
+
     # Filled cube
     gl.glDisable(gl.GL_BLEND)
     gl.glEnable(gl.GL_DEPTH_TEST)

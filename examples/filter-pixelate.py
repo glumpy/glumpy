@@ -57,7 +57,7 @@ def on_draw(dt):
     global phi, theta
 
     with pixelate:
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        window.clear()
         gl.glEnable(gl.GL_DEPTH_TEST)
         cube.draw(gl.GL_TRIANGLES, faces)
     theta += 0.5
@@ -70,7 +70,6 @@ def on_draw(dt):
 
 @window.event
 def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
     cube['projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
     pixelate.viewport = 0, 0, width, height
 

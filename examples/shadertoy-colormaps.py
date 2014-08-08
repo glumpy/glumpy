@@ -250,8 +250,8 @@ window = app.Window(width=1600, height=800)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
-
     program["iGlobalTime"] += dt
     today = datetime.datetime.now()
     seconds = (today.hour*60*60 + today.minute*60 + today.second)

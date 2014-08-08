@@ -195,7 +195,7 @@ class Window(object):
 
 
 # ----------------------------------------------------------------- __run__ ---
-def __run__(clock=None, framerate=None, backend=None, clear=True):
+def __run__(clock=None, framerate=None, backend=None):
     """ Run the main loop
 
     Parameters
@@ -255,9 +255,6 @@ def __run__(clock=None, framerate=None, backend=None, clear=True):
         # Dispatch an initial resize event
         window.dispatch_event('on_resize', window._width, window._height)
 
-        # Set window clear mode
-        window._clearmode = clear
-
     # Run until no more window
     count = len(backend.windows())
     while count:
@@ -266,7 +263,7 @@ def __run__(clock=None, framerate=None, backend=None, clear=True):
 
 
 # --------------------------------------------------------------------- run ---
-def run(clock=None, framerate=None, clear=True):
+def run(clock=None, framerate=None):
     """ Run the main loop
 
     Parameters
@@ -276,9 +273,6 @@ def run(clock=None, framerate=None, clear=True):
 
     framerate : int
         frames per second
-
-    clear : bool
-        Whether to clear window automatically
     """
 
-    __run__(clock=clock, framerate=framerate, backend=__backend__, clear=clear)
+    __run__(clock=clock, framerate=framerate, backend=__backend__)

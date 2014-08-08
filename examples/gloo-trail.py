@@ -17,8 +17,6 @@ import glumpy.gloo as gloo
 vertex = """
 #version 120
 
-uniform mat4  u_model;
-uniform mat4  u_view;
 uniform mat4  u_projection;
 uniform float u_linewidth;
 uniform float u_antialias;
@@ -36,12 +34,12 @@ void main (void)
     v_fg_color = a_fg_color;
     if( a_fg_color.a > 0.0)
     {
-        gl_Position = u_projection * u_view * u_model * vec4(a_position,1.0);
+        gl_Position = u_projection * vec4(a_position,1.0);
         gl_PointSize = v_size + u_linewidth + 2*1.5*u_antialias;
     }
     else
     {
-        gl_Position = u_projection * u_view * u_model * vec4(-1,-1,0,1);
+        gl_Position = u_projection * vec4(-1,-1,0,1);
         gl_PointSize = 0.0;
     }
 }
@@ -88,13 +86,12 @@ window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     program.draw(gl.GL_POINTS)
 
 @window.event
 def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
-    projection = glm.ortho(0, width, 0, height, -1, +1)
-    program['u_projection'] = projection
+    program['u_projection'] = glm.ortho(0, width, 0, height, -1, +1)
 
 @window.timer(1/60.)
 def timer(fps):
@@ -120,8 +117,6 @@ program = gloo.Program(vertex, fragment)
 program.bind(data)
 program['u_antialias'] = 1.00
 program['u_linewidth'] = 1.00
-program['u_model'] = np.eye(4, dtype=np.float32)
-program['u_view'] = np.eye(4, dtype=np.float32)
 
 
 gl.glClearColor(0.2, 0.2, 0.2, 1.0)

@@ -4,7 +4,6 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import datetime
 import numpy as np
 from glumpy import app, gl, gloo, glm
 
@@ -85,31 +84,26 @@ void main (void)
 
 fragment = """
 #version 120
-
-// Decode a 6x8 glyph (stored in bytes 0-5)
-bool glyph(vec2 P, vec3 bytes_012, vec3 bytes_345)
+float segment(float edge0, float edge1, float x)
 {
-    if((P.x < 0.0) || (P.x > 5.0)) return false;
-    if((P.y < 0.0) || (P.y > 7.0)) return false;
-
-    float bytes[6];
-    bytes[0] = bytes_012.x; bytes[1] = bytes_012.y; bytes[2] = bytes_012.z;
-    bytes[3] = bytes_345.x; bytes[4] = bytes_345.y; bytes[5] = bytes_345.z;
-
-    float index  = floor( (P.y*6.0+P.x)/8.0 );
-    float offset = floor( mod(P.y*6.0+P.x,8.0));
-    if( floor(mod(bytes[int(index)] / (128.0/pow(2.0,offset)), 2.0)) > 0.0 )
-        return true;
-    return false;
+    return step(edge0,x) * (1.0-step(edge1,x));
 }
-
 varying vec4 v_color;
 varying vec3 v_bytes_012, v_bytes_345;
-
 void main(void)
 {
     vec2 uv = floor(gl_PointCoord.xy * 8.0);
-    if( glyph(uv, v_bytes_012, v_bytes_345) )
+    if(uv.x > 5.0) discard;
+    if(uv.y > 7.0) discard;
+    float index  = floor( (uv.y*6.0+uv.x)/8.0 );
+    float offset = floor( mod(uv.y*6.0+uv.x,8.0));
+    float byte = segment(0.0,1.0,index) * v_bytes_012.x
+               + segment(1.0,2.0,index) * v_bytes_012.y
+               + segment(2.0,3.0,index) * v_bytes_012.z
+               + segment(3.0,4.0,index) * v_bytes_345.x
+               + segment(4.0,5.0,index) * v_bytes_345.y
+               + segment(5.0,6.0,index) * v_bytes_345.z;
+    if( floor(mod(byte / (128.0/pow(2.0,offset)), 2.0)) > 0.0 )
         gl_FragColor = v_color;
     else
         discard;
@@ -135,17 +129,19 @@ class Console(object):
         C,R = np.meshgrid(np.arange(cols), np.arange(rows))
         self._data["position"][...,0] = 2.0 + (0.5+C)*6
         self._data["position"][...,1] = 1.0 + (0.5+R)*10
-
         self._program['scale'] = int(max(scale,1))
         self._data["color"] = 0.35, 0.35, 0.35, 1.00
         self._rows, self._cols = rows, cols
         self._cursor = 0,0
 
+
     def on_resize(self, width, height):
         self._program["projection"] = glm.ortho(0, width, height, 0, -1, +1)
 
+
     def draw(self):
         self._program.draw(gl.GL_POINTS)
+
 
     def clear(self):
         self._data["glyph"] = 0
@@ -159,11 +155,9 @@ class Console(object):
             # Clear line
             self._data["glyph"][row] = 0
 
-
             if len(line):
                 # Crop text if necessary
                 line = line[:self._cols]
-
                 # Write text
                 I = np.array([ord(c)-32 for c in line])
                 self._data["glyph"][row,:len(line)] = font_6x8[I]
@@ -185,18 +179,21 @@ class Console(object):
 
 
 window = app.Window(width=800, height=600)
-console = Console(24,80,scale=2)
-#console.write("Glumpy 2.0 (reboot !)")
-#console.write("Copyright (c) 2014 Nicolas P. Rougier")
-#console.write("Released under the (new) BSD license")
+console = Console(rows=24,cols=80,scale=2)
 
 @window.event
 def on_draw(dt):
-#    console.clear()
-    console._cursor = 0,0
-    console.write("Estimated FPS: %.2f" % app.fps())
-#    console.write("Last dt: %.5f" % dt)
+    window.clear()
     console.draw()
+
+@window.timer(1/30.0)
+def timer(fps):
+    console.clear()
+    console.write("Window size: %dx%d" % (window.width, window.height))
+    console.write("Console size: %dx%d" % (console._rows, console._cols))
+    console.write("Backend: %s (%s)" % (window._backend.__name__,
+                                        window._backend.__version__))
+    console.write("Actual FPS: %.2f frames/second" % (app.fps()))
 
 window.attach(console)
 gl.glClearColor(1,1,1,1)

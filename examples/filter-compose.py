@@ -73,7 +73,7 @@ def on_draw(dt):
     global phi, theta
 
     with compose:
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        window.clear()
         gl.glEnable(gl.GL_DEPTH_TEST)
         cube.draw(gl.GL_TRIANGLES, faces)
     theta += 0.5

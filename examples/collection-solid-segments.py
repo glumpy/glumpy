@@ -14,6 +14,7 @@ window = gp.app.Window(width=1200, height=600)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     C.draw()
 
 @window.event

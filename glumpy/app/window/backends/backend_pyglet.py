@@ -246,10 +246,6 @@ def process(dt):
         # Activate window
         window.activate()
 
-        # Clear window using window clear flags
-        if window._clearmode:
-            gl.glClear(window._clearflags)
-
         # Dispatch any pending event
         window._native_window.dispatch_events()
 

@@ -132,6 +132,7 @@ window = app.Window(width=2*512, height=2*512)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
 
 @window.event

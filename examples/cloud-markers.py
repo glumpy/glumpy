@@ -68,7 +68,7 @@ def on_draw(dt):
     program['u_model'] = model
     program['a_orientation'] += np.random.uniform(0, np.pi/256, n)
 
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+    window.clear()
     program.draw(gl.GL_POINTS)
 
 @window.event
@@ -79,9 +79,5 @@ def on_resize(width,height):
 
 gl.glClearColor(1.0, 1.0, 1.0, 1.0)
 gl.glEnable(gl.GL_DEPTH_TEST)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-gl.glEnable(gl.GL_POINT_SPRITE)
 
 app.run()

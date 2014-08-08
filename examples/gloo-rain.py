@@ -87,6 +87,7 @@ window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     program.draw(gl.GL_POINTS)
 
 @window.event

@@ -44,6 +44,8 @@ window = gp.Window(width=1024, height=1024)
 def on_draw(dt):
     global phi, theta
 
+    window.clear()
+
     # Filled cube
     gl.glDisable(gl.GL_BLEND)
     gl.glEnable(gl.GL_DEPTH_TEST)
@@ -70,7 +72,6 @@ def on_draw(dt):
 
 @window.event
 def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
     cube['u_projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
 
 

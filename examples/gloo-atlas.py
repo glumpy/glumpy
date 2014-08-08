@@ -35,12 +35,8 @@ window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
-
-@window.event
-def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
-
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]

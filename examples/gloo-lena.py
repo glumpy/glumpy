@@ -38,6 +38,7 @@ window = app.Window(width=512, height=512, aspect=1)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     window.lock()
     program.draw(gl.GL_TRIANGLE_STRIP)
     window.unlock()

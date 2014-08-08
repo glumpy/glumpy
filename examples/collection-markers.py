@@ -21,6 +21,7 @@ window = app.Window(1024,1024)
 
 @window.event
 def on_draw(dt):
+    window.clear()
     C.draw()
     C['orientation'] += np.pi/180.0
 #    del C[0]

@@ -36,6 +36,8 @@ window = gp.Window(width=1024, height=1024)
 
 @window.event
 def on_draw(dt):
+    window.clear()
+
     # Filled cube
     gl.glDisable(gl.GL_BLEND)
     gl.glEnable(gl.GL_DEPTH_TEST)

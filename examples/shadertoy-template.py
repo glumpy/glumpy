@@ -29,7 +29,7 @@ uniform vec4      iDate;       // Date as (year, month, day, time in seconds)
 void main(void)
 {
     vec2 uv = gl_FragCoord.xy / iResolution.xy;
-    gl_FragColor = vec4(uv,0.5*sin(1+iGlobalTime),1.0);
+    gl_FragColor = vec4(uv,0.5*sin(1.0+iGlobalTime),1.0);
 }
 """
 
@@ -38,7 +38,7 @@ window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
-
+    window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
     program["iGlobalTime"] += dt
     today = datetime.datetime.now()

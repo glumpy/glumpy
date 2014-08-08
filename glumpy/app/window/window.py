@@ -165,6 +165,9 @@ class Window(Viewport):
     def height(self):
         return self._height
 
+    def clear(self):
+        """ Clear the whole window """
+        gl.glClear(self._clearflags)
 
     def show(self):
         """ Make the window visible """
