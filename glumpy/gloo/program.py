@@ -329,6 +329,7 @@ class Program(GLObject):
 
     def bind(self, data):
         """ """
+
         if isinstance(data, VertexBuffer):
             for name in data.dtype.names:
                 if name in self._attributes.keys():

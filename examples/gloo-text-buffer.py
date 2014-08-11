@@ -42,7 +42,7 @@ void main (void)
 
     v_foreground = foreground;
     if( (index >= selection.x) && (index < selection.y)) {
-        v_background = vec4(0.00,0.00,1.00,0.10);
+        v_background = vec4(v_foreground.rgb, 0.1);
     } else {
         v_background = background;
     }
@@ -219,7 +219,7 @@ class TextBuffer(object):
         self._vbuffer["glyph"][start:end] = 0
         self._vbuffer["foreground"][start:end] = 0,0,0,1
         self._vbuffer["background"][start:end] = 0,0,0,0
-#        self.clear_selection()
+        self.clear_selection()
 
 
     def clear_selection(self):
@@ -231,8 +231,8 @@ class TextBuffer(object):
         self._program["selection"] = -1,-1
 
 
-    def put(self, row, col, text, foreground=(0,0,0,1), background=(0,0,0,0), style=0):
-
+    def put(self, row, col, text, foreground, background, style):
+        """ Put text at (row,col) """
 
         font = TextBuffer.__font__
 
@@ -246,9 +246,9 @@ class TextBuffer(object):
         # Decode text
         if isinstance(text, (str,unicode)):
             text = unicode(text)
-            codes = np.array([ord(c) for c in text])
+            codes = np.array([ord(c) for c in text]).astype(np.uint32)
         else:
-            codes = text.ravel()
+            codes = text.astype(np.uint32).ravel()
 
         # Crop if necessary
         n = len(codes)
@@ -278,37 +278,67 @@ class TextBuffer(object):
 # -----------------------------------------------------------------------------
 class Console(TextBuffer):
 
-    def __init__(self, rows=24, cols=80, x=0, y=0, scale=2):
+    def __init__(self, rows=24, cols=80, x=3, y=3, scale=2, cache=100):
         TextBuffer.__init__(self, rows, cols, x, y, scale)
 
         # We use a ring buffer to avoid to have to move things around
         self._buffer_start = 0
         self._buffer_end = 0
-        self._buffer = 32*np.ones((1000+rows,cols), dtype=np.uint32)
+        cache = min(cache, rows)
+        self._buffer = np.ones((cache+rows,cols),
+                               dtype=[("code",       np.uint16,  1),
+                                      ("style",      np.uint16,  1),
+                                      ("foreground", np.float32, 4),
+                                      ("background", np.float32, 4)])
+        self._buffer["code"] = 32 # space
         self._scroll = -self.rows
 
+        self._default_foreground = 0,0,0,1 # Black
+        self._default_background = 0,0,0,0 # Transparent black
+        self._default_style      = 0       # Regular
 
-    def write(self, text):
+        self._buffer["style"]      = self._default_style
+        self._buffer["foreground"] = self._default_foreground
+        self._buffer["background"] = self._default_background
+
+
+
+    def write(self, text=u"", foreground=None, background=None, style=None):
         """ Write at current position into the buffer and rotate buffer """
 
+        # Set defaults
+        if foreground is None:
+            foreground = self._default_foreground
+        if background is None:
+            background = self._default_background
+        if style is None:
+            style = self._default_style
+
         n = len(self._buffer)
+        empty = (32,0,(0,0,0,1),(0,0,0,0))
 
         # Clear line
-        self._buffer[self._buffer_end] = 32
+        self._buffer[self._buffer_end] = empty
 
         # Write line
-        self._buffer[self._buffer_end,:len(text)] = [ord(c) for c in text]
+        self._buffer["code"][self._buffer_end,:len(text)] = [ord(c) for c in text]
+        self._buffer["foreground"][self._buffer_end,:len(text)] = foreground
+        self._buffer["background"][self._buffer_end,:len(text)] = background
+        self._buffer["style"][self._buffer_end,:len(text)] = style
 
         # Clear line beyond row lines in case use want to have only the first
         # line on top (or else we would display buffer start)
-        self._buffer[(self._buffer_end+self.rows) % n] = 32
+        self._buffer[(self._buffer_end+self.rows) % n] = empty
 
         self._buffer_end = (self._buffer_end + 1) % n
         if self._buffer_end == self._buffer_start:
             self._buffer_start = (self._buffer_start + 1) % n
-
         # Update text buffer
-        self.put(0, 0, self.view(int(self._scroll)))
+        # self.put(0, 0, self.view(int(self._scroll))["code"])
+        V = self.view(int(self._scroll))
+
+        self.put(0, 0, text=V["code"],
+                 foreground=V["foreground"], background=V["background"], style=V["style"])
 
         # Update selection if any
         if self._selection is not None:
@@ -351,11 +381,6 @@ class Console(TextBuffer):
             else:
                 self._program["selection"] = start-s, end-s
 
-    def on_mouse_release(self, x, y, button):
-        """ Selection end """
-
-        pass
-
 
     def on_mouse_scroll(self, x, y, dx, dy):
         # Count how many lines have been writen so far
@@ -366,7 +391,9 @@ class Console(TextBuffer):
         self._scroll = min(max(self._scroll-dy,-n),-1)
 
         # Update text buffer
-        self.put(0, 0, self.view(int(self._scroll)))
+        V = self.view(int(self._scroll))
+        self.put(0, 0, text=V["code"],
+                 foreground=V["foreground"], background=V["background"], style=V["style"])
 
         # Update selection if any
         if self._selection is not None:
@@ -402,45 +429,37 @@ class Console(TextBuffer):
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
-    console = Console(rows=24, cols=80, x=3.0, y=3.0, scale=2)
+    console = Console()
     window = app.Window(width=console.cols*console.scale*6,
                         height=console.rows*console.scale*13)
 
     @window.event
     def on_draw(dt):
-        window.clear()
-        console.draw()
+        window.clear(), console.draw()
 
-#    import codecs
-#    f = codecs.open("UTF-8-demo.txt", "r", "utf-8")
-#    lines = f.readlines()
-#    for line in lines:
-#        console.write(line[:-1])
+    # import codecs
+    # f = codecs.open("UTF-8-demo.txt", "r", "utf-8")
+    # #f = codecs.open("TeX.txt", "r", "utf-8")
+    # lines = f.readlines()
+    # for line in lines:
+    #     console.write(line[:-1])
 
     @window.timer(1/30.0)
     def timer(fps):
-        """
-        console.put(0, 0, u"GLUMPY 2.0 - Copyright (c) 2014 Nicolas P. Rougier",
-                      foreground = (0,0,1,1))
-        console.put(1, 0, u"──────────────────────────────────────────────────",
-                      foreground = (0,0,1,1))
-        console.put(2, 0, u" → Window size: %dx%d" % (window.width, window.height),
-                      foreground = (0,0,0,.75))
-        console.put(3, 0, u" → Backend: %s (%s)" % (window._backend.__name__,
-                                                 window._backend.__version__),
-                      foreground = (0,0,0,.75))
-        console.put(4, 0, u" → Console size: %dx%d" % (console.rows, console.cols),
-                      foreground = (0,0,0,.75))
-        console.put(5, 0, u" → Actual FPS: %.2f frames/second  " % (app.fps()),
-                      foreground = (0,0,0,.75))
-        """
         console.clear()
+        console.write(u"──────────────────────────────────────────────────")
         console.write(u"GLUMPY 2.0 - Copyright (c) 2014 Nicolas P. Rougier")
-        console.write(u" → Window size: %dx%d" % (window.width, window.height))
+        console.write(u"")
+        console.write(u" → Window size: %dx%d" % (window.width, window.height),
+                      foreground = (0,0,0,.5))
         console.write(u" → Backend: %s (%s)" % (window._backend.__name__,
-                                              window._backend.__version__))
-        console.write(u" → Console size: %dx%d" % (console.rows, console.cols))
-        console.write(u" → Actual FPS: %.2f frames/second  " % (app.fps()))
+                                              window._backend.__version__),
+                      foreground = (0,0,0,.5))
+        console.write(u" → Console size: %dx%d" % (console.rows, console.cols),
+                      foreground = (0,0,0,.5))
+        console.write(u" → Actual FPS: %.2f frames/second  " % (app.fps()),
+                      foreground = (0,0,0,.5))
+        console.write(u"──────────────────────────────────────────────────")
 
     window.attach(console)
     gl.glClearColor(1,1,1,1)

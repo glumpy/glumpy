@@ -62,8 +62,12 @@ void main()
 window = app.Window(width=800, height=800)
 
 @window.event
+def on_init():
+    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE)
+
+@window.event
 def on_draw(dt):
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+    window.clear()
     galaxy.update(100000) # in years !
     program['a_size'] = galaxy['size']
     program['a_position'] = galaxy['position'] / 13000.0
@@ -113,8 +117,6 @@ gl.glClearColor(0.0, 0.0, 0.03, 1.0)
 gl.glDisable(gl.GL_DEPTH_TEST)
 gl.glEnable(gl.GL_BLEND)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE);
-gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-gl.glEnable(gl.GL_POINT_SPRITE)
 
 # Start
 # --------------------------------------
