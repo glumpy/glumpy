@@ -269,7 +269,7 @@ void main()
 """
 
 
-window = app.Window(width=800, height=800)
+window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -284,7 +284,4 @@ program = gloo.Program(vertex, fragment, count=4)
 
 dx,dy = 1,1
 program['position'] = (-dx,-dy), (-dx,+dy), (+dx,-dy), (+dx,+dy)
-gl.glClearColor(1,1,1,1)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 app.run()

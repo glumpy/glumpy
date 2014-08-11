@@ -58,7 +58,6 @@ def on_mouse_drag(x, y, dx, dy, button):
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program["iGlobalTime"] = 0
-gl.glClearColor(1,1,1,1)
 gl.glEnable(gl.GL_BLEND)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 app.run(framerate=60)

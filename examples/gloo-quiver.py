@@ -286,29 +286,23 @@ void main()
 """
 
 
-window = app.Window(width=800, height=800)
+window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
 
-
 @window.event
 def on_resize(width, height):
     program["iResolution"] = width, height
-
 
 @window.event
 def on_mouse_motion(x, y, dx, dy):
     program["iMouse"] = x,window.height-y
 
-
 program = gloo.Program(vertex, fragment, count=4)
-
 dx,dy = 1,1
 program['position'] = (-dx,-dy), (-dx,+dy), (+dx,-dy), (+dx,+dy)
-gl.glClearColor(1,1,1,1)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+
 app.run()

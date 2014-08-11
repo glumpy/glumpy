@@ -431,7 +431,8 @@ class Console(TextBuffer):
 if __name__ == '__main__':
     console = Console()
     window = app.Window(width=console.cols*console.scale*6,
-                        height=console.rows*console.scale*13)
+                        height=console.rows*console.scale*13,
+                        color = (1,1,1,1))
 
     @window.event
     def on_draw(dt):
@@ -462,5 +463,4 @@ if __name__ == '__main__':
         console.write(u"──────────────────────────────────────────────────")
 
     window.attach(console)
-    gl.glClearColor(1,1,1,1)
     app.run()

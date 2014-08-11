@@ -105,7 +105,7 @@ def compute_grid():
 
 
 rows,cols = 2,2
-window = app.Window(width=1024, height=1024)
+window = app.Window(width=1024, height=1024, color=(1,1,1,1))
 
 
 @window.event
@@ -170,9 +170,4 @@ Z = np.zeros((1,2*1024,4), dtype=np.float32)
 program['u_grid'] = Z
 program['u_grid'].interpolation = gl.GL_NEAREST
 
-
-gl.glClearColor(1.0, 1.0, 1.0, 1.0)
-gl.glDisable(gl.GL_DEPTH_TEST)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 app.run()

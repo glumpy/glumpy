@@ -13,12 +13,11 @@ import importlib
 
 from glumpy import gl
 from glumpy.log import log
-from glumpy.app import parser
-from glumpy.app import configuration
-from glumpy.app import clock as _clock
+from . import parser
+from . import configuration
+from . import clock as _clock
 from glumpy.app.window import backends
 from glumpy.app.window.viewport import Viewport
-
 
 # Default clock
 __clock__ = None
@@ -152,9 +151,9 @@ class Window(object):
                 log.critical("No suitable backend found")
                 raise NotImplementedError
 
-        # Get configuration
         config = configuration.get_default()
-        kwargs['config'] = kwargs.get('config', config)
+        if "config" not in kwargs.keys():
+            kwargs['config'] = config
 
         # Get command line size
         # if options.size:
@@ -180,6 +179,8 @@ class Window(object):
         window = __backend__.Window(*args, **kwargs)
         window._backend = __backend__
         config = configuration.gl_get_configuration()
+        window._config = config
+
         log.info("Using %s (%s %d.%d)" %
                  (__backend__.name(), config.api,
                   config.major_version, config.minor_version))

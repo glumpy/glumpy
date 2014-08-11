@@ -128,7 +128,7 @@ def update_grid(w, h):
 
 
 
-window = app.Window(width=2*512, height=2*512)
+window = app.Window(width=2*512, height=2*512, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -183,9 +183,5 @@ program['u_grid'] = Z
 program['u_grid'].interpolation = gl.GL_NEAREST
 translate = [0, 0]
 scale = 1
-
-gl.glClearColor(1, 1, 1, 1)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
 app.run()

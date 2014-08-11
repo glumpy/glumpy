@@ -40,5 +40,4 @@ def on_resize(width, height):
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
-gl.glClearColor(1,1,1,1)
 app.run(framerate=60)

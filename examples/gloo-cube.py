@@ -5,11 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-import glumpy as gp
-import glumpy.gl as gl
-import glumpy.glm as glm
-
 from makecube import makecube
+from glumpy import app, gl, glm, gloo
 
 
 vertex = """
@@ -38,7 +35,7 @@ void main()
 }
 """
 
-window = gp.Window(width=1024, height=1024)
+window = app.Window(width=1024, height=1024, color=(0.30, 0.30, 0.35, 1.00))
 
 @window.event
 def on_draw(dt):
@@ -77,12 +74,12 @@ def on_resize(width, height):
 
 # Build cube data
 V, I, O = makecube()
-vertices = V.view(gp.gloo.VertexBuffer)
-faces    = I.view(gp.gloo.IndexBuffer)
-outline  = O.view(gp.gloo.IndexBuffer)
+vertices = V.view(gloo.VertexBuffer)
+faces    = I.view(gloo.IndexBuffer)
+outline  = O.view(gloo.IndexBuffer)
 
 
-cube = gp.gloo.Program(vertex, fragment)
+cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
 view = np.eye(4, dtype=np.float32)
 model = np.eye(4, dtype=np.float32)
@@ -93,12 +90,10 @@ cube['u_view'] = view
 phi, theta = 0, 0
 
 # OpenGL initalization
-gl.glClearColor(0.30, 0.30, 0.35, 1.00)
 gl.glEnable(gl.GL_DEPTH_TEST)
 gl.glPolygonOffset(1, 1)
 gl.glEnable(gl.GL_LINE_SMOOTH)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 gl.glLineWidth(0.75)
 
 # Run
-gp.run()
+app.run()

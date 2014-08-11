@@ -8,6 +8,7 @@ from glumpy import gl
 from glumpy.log import log
 from glumpy.app.window import key
 from glumpy.app.window import mouse
+from glumpy.app import configuration
 from glumpy.app.window.viewport import Viewport
 
 
@@ -100,8 +101,8 @@ class Window(Viewport):
           pass
     """
 
-    def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None):
+    def __init__(self, width=256, height=256, title=None, visible=True, aspect=None,
+                 decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
         """
         Create a window.
 
@@ -149,6 +150,7 @@ class Window(Viewport):
         self._timer_stack = []
         self._timer_date = []
         self._backend = None
+        self.color = color
 
         self._clearflags = gl.GL_COLOR_BUFFER_BIT
         if config._depth_size:
@@ -165,8 +167,18 @@ class Window(Viewport):
     def height(self):
         return self._height
 
+    @property
+    def fps(self):
+        return self._clock.get_fps()
+
+    @property
+    def config(self):
+        return self._config
+
     def clear(self):
         """ Clear the whole window """
+
+        gl.glClearColor(*self.color)
         gl.glClear(self._clearflags)
 
     def show(self):

@@ -150,7 +150,7 @@ class Configuration(object):
         return self._depth_size
 
     @depth_size.setter
-    def depths_size(self, value):
+    def depth_size(self, value):
         self._depth_size = value
 
     # -------------------------------------------------------- stencil size ---
@@ -309,6 +309,7 @@ def gl_get_configuration():
     version = gl.glGetString(gl.GL_VERSION)
     version = version.split(" ")[0]
     major,minor = version.split('.')
+    configuration._version = version
     configuration._major_version = int(major)
     configuration._minor_version = int(minor)
     configuration._profile = "unknown"

@@ -4,18 +4,13 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import sys
 import numpy as np
-import glumpy as gp
-
-import glumpy.gl as gl
-import glumpy.glm as glm
-import glumpy.gloo as gloo
+from glumpy import app, gl, gloo, glm
 
 
 # Add an option for choosing marker
-gp.app.parser.get_default().add_argument(
-    "--marker", "-m", help="Marker to display", default="disc",
+app.parser.get_default().add_argument(
+    "--marker", "-m", help="Marker to display", default="clobber",
     choices=("disc", "clobber", "asterisk", "infinity", "check", "T", "ring",
              "chevron-left", "chevron-right", "chevron-up", "chevron-down",
              "arrow-left", "arrow-right", "arrow-up", "arrow-down",
@@ -27,7 +22,7 @@ gp.app.parser.get_default().add_argument(
 
 
 # Create window
-window = gp.Window(width=2*512, height=512)
+window = app.Window(width=2*512, height=512, color=(1,1,1,1))
 
 # What to draw when necessary
 @window.event
@@ -39,7 +34,6 @@ def on_draw(dt):
 # Setup ortho matrix on resize
 @window.event
 def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
     projection = glm.ortho(0, width, 0, height, -1, +1)
     program['u_projection'] = projection
 
@@ -52,7 +46,7 @@ data = np.zeros(n, dtype=[('a_position',    np.float32, 3),
                           ('a_size',        np.float32, 1),
                           ('a_orientation', np.float32, 1),
                           ('a_linewidth',   np.float32, 1)])
-data = data.view(gp.gloo.VertexBuffer)
+data = data.view(gloo.VertexBuffer)
 data['a_linewidth'] = 1
 data['a_fg_color'] = 0, 0, 0, 1
 data['a_bg_color'] = 1, 1, 1, 0
@@ -77,21 +71,13 @@ data['a_bg_color'][n-1]    = .95, .95, .95, 1
 data['a_orientation'][n-1] = 0
 
 # Parse options to get marker
-options = gp.app.parser.get_options()
-program = gp.gloo.Program(("shaders/markers/marker.vert",),
-                          ("shaders/markers/marker-%s.frag" % options.marker,
-                           "shaders/markers/antialias.glsl",
-                           "shaders/markers/marker.frag"))
+options = app.parser.get_options()
+program = gloo.Program(("shaders/markers/marker.vert",),
+                       ("shaders/markers/marker-%s.frag" % options.marker,
+                        "shaders/markers/antialias.glsl",
+                        "shaders/markers/marker.frag"))
 program.bind(data)
 program['u_antialias'] = 1.00
 program['u_model'] = np.eye(4)
 program['u_view'] = np.eye(4)
-
-gl.glClearColor(1.0, 1.0, 1.0, 1.0)
-gl.glDisable(gl.GL_DEPTH_TEST)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
-gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-gl.glEnable(gl.GL_POINT_SPRITE)
-
-gp.run()
+app.run()

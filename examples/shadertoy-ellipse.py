@@ -110,7 +110,8 @@ void main(void)
 """
 
 
-window = app.Window(width=800, height=800)
+window = app.Window(width=800, height=800,
+                    color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -123,8 +124,6 @@ def on_resize(width, height):
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
-
-gl.glClearColor(1,1,1,1)
 gl.glEnable(gl.GL_BLEND)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 app.run(framerate=60)

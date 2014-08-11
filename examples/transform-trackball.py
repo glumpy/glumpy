@@ -32,7 +32,8 @@ void main()
 }
 """
 
-window = gp.Window(width=1024, height=1024)
+window = gp.Window(width=1024, height=1024,
+                   color=(0.30, 0.30, 0.35, 1.00))
 
 @window.event
 def on_draw(dt):
@@ -67,7 +68,6 @@ cube['transform'] = transform
 window.attach(transform)
 
 # OpenGL initalization
-gl.glClearColor(0.30, 0.30, 0.35, 1.00)
 gl.glEnable(gl.GL_DEPTH_TEST)
 gl.glPolygonOffset(1, 1)
 gl.glEnable(gl.GL_LINE_SMOOTH)

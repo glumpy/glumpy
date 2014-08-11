@@ -5,10 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.glm as glm
-import glumpy.gloo as gloo
+from glumpy import app, gloo, glm, gl
 
 vertex = """
     attribute vec2 a_texcoord;
@@ -111,7 +108,7 @@ def find_closest(A, target):
 
 
 
-window = app.Window(width=512, height=512)
+window = app.Window(width=512, height=512, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -156,9 +153,5 @@ program['u_scale'] = 1.0
 program['u_size'] = 512,512
 translate = [0, 0]
 scale = 1
-
-gl.glClearColor(1, 1, 1, 1)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
 app.run()

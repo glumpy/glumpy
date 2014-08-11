@@ -170,6 +170,4 @@ render['pingpong'] = pingpong
 
 framebuffer = gloo.FrameBuffer(color=compute["texture"],
                                depth=gloo.DepthBuffer(w, h))
-
-gl.glClearColor(0, 0, 0, 1)
 app.run(framerate=0)

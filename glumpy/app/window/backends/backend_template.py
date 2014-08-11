@@ -84,9 +84,18 @@ class Window(event.EventDispatcher):
 
 
     def __init__( self, width=512, height=512, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None):
-        window.Window.__init__(self, width, height, title, visible, aspect,
-                               decoration, fullscreen, config, context)
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+
+        window.Window.__init__(self, width=width,
+                                     height=height,
+                                     title=title,
+                                     visible=visible,
+                                     aspect=aspect,
+                                     decoration=decoration,
+                                     fullscreen=fullscreen,
+                                     config=config,
+                                     context=context,
+                                     color=color)
 
         # Create the native window here
         # Each on the events below must be called at some point

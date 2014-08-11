@@ -5,10 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-
-import glumpy
-import glumpy.gl as gl
-import glumpy.app as app
+from  glumpy import app
 from glumpy.graphics.collection import MarkerCollection
 
 n = 1000
@@ -17,7 +14,7 @@ C.append(n, position = np.random.uniform(-1,1,(n,3)),
             bg_color = np.random.uniform(0,1,(n,4)),
             size = 32, fg_color=(0,0,0,1))
 
-window = app.Window(1024,1024)
+window = app.Window(1024,1024, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -28,5 +25,4 @@ def on_draw(dt):
 #    if not len(C):
 #        app.exit()
 
-gl.glClearColor(1,1,1,1)
 app.run()

@@ -5,12 +5,11 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-import glumpy as gp
-import glumpy.gl as gl
+from glumpy import app, glm
 from glumpy.graphics.collection import SolidSegmentCollection
 
 
-window = gp.app.Window(width=1200, height=600)
+window = app.Window(width=1200, height=600, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -19,8 +18,7 @@ def on_draw(dt):
 
 @window.event
 def on_resize(width, height):
-    C['projection'] = gp.glm.ortho(0, width, 0, height, -1, +1)
-
+    C['projection'] = glm.ortho(0, width, 0, height, -1, +1)
 
 n = 100
 P0 = np.ones((n,2))*50
@@ -36,5 +34,4 @@ C['antialias'] = 1
 C['model'] = np.eye(4, dtype=np.float32)
 C['view'] = np.eye(4, dtype=np.float32)
 
-gl.glClearColor(1.0, 1.0, 1.0, 1.0)
-gp.app.run()
+app.run()

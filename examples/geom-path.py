@@ -312,7 +312,7 @@ program["antialias"] = 1.0
 program["miter_limit"] = 4.0
 program["color"] = 0,0,0,1
 
-window = gp.app.Window(width=800, height=800)
+window = gp.app.Window(width=800, height=800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -323,5 +323,4 @@ def on_draw(dt):
 def on_resize(width, height):
     program['projection'] = gp.glm.ortho(0, width, 0, height, -1, +1)
 
-gl.glClearColor(1.0, 1.0, 1.0, 1.0)
 gp.app.run()

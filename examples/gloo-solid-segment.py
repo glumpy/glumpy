@@ -131,7 +131,7 @@ void main()
 """
 
 
-window = app.Window(width=800, height=800)
+window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -155,13 +155,5 @@ program['P0'] = (150,150), (150,150), (150,150), (150,150)
 program['P1'] = (650,650), (650,650), (650,650), (650,650)
 program['index'] = 0,1,2,3
 program['fg_color'] = 0,0,0,1
-
-
-gl.glClearColor(1.0, 1.0, 1.0, 1.0)
-gl.glDisable(gl.GL_DEPTH_TEST)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
-gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-gl.glEnable(gl.GL_POINT_SPRITE)
 
 app.run(framerate=60)

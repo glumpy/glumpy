@@ -129,31 +129,43 @@ def set_configuration(config):
     glfw.glfwWindowHint(glfw.GLFW_SAMPLES, config.samples)
     glfw.glfwWindowHint(glfw.GLFW_STEREO, config.stereo)
 
-    glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,
-                        config.major_version)
-    glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,
-                        config.minor_version)
-
-    if config.major_version >= 3 and config.profile == "core":
-        glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
-                            glfw.GLFW_OPENGL_CORE_PROFILE)
-        glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, True)
-    elif config.major_version >= 3 and config.profile == "compatibility":
-        glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
-                            glfw.GLFW_OPENGL_COMPAT_PROFILE)
+    if config.api in ("ES", "es"):
+        glfw.glfwWindowHint(glfw.GLFW_CLIENT_API,
+                            glfw.GLFW_OPENGL_ES_API)
     else:
-        glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
-                            glfw.GLFW_OPENGL_ANY_PROFILE)
+        glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,
+                            config.major_version)
+        glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,
+                            config.minor_version)
+
+        if config.major_version >= 3 and config.profile == "core":
+            glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
+                                glfw.GLFW_OPENGL_CORE_PROFILE)
+            glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, True)
+        elif config.major_version >= 3 and config.profile == "compatibility":
+            glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
+                                glfw.GLFW_OPENGL_COMPAT_PROFILE)
+        else:
+            glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
+                                glfw.GLFW_OPENGL_ANY_PROFILE)
 
 
 # ------------------------------------------------------------------ Window ---
 class Window(window.Window):
 
     def __init__( self, width=512, height=512, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
 
-        window.Window.__init__(self, width, height, title, visible, aspect,
-                               decoration, fullscreen, config, context)
+        window.Window.__init__(self, width=width,
+                                     height=height,
+                                     title=title,
+                                     visible=visible,
+                                     aspect=aspect,
+                                     decoration=decoration,
+                                     fullscreen=fullscreen,
+                                     config=config,
+                                     context=context,
+                                     color=color)
 
         # Whether hidpi is active
         self._hidpi = False
@@ -272,7 +284,6 @@ class Window(window.Window):
                 x, y = 2*x, 2*y
             self.dispatch_event('on_mouse_scroll', x, y, xoffset, yoffset)
         glfw.glfwSetScrollCallback( self._native_window, on_scroll )
-
 
         self._width, self._height = self.get_size()
         __windows__.append(self)

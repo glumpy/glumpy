@@ -107,10 +107,18 @@ class Window(window.Window):
 
 
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
 
-        window.Window.__init__(self, width, height, title, visible, aspect,
-                               decoration, fullscreen, config, context)
+        window.Window.__init__(self, width=width,
+                                     height=height,
+                                     title=title,
+                                     visible=visible,
+                                     aspect=aspect,
+                                     decoration=decoration,
+                                     fullscreen=fullscreen,
+                                     config=config,
+                                     context=context,
+                                     color=color)
 
         if config is None:
             config = configuration.Configuration()

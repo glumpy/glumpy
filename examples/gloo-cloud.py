@@ -85,7 +85,7 @@ void main()
 """
 
 theta, phi = 0,0
-window = app.Window(width=800, height=800)
+window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 
 n = 1000000
@@ -126,11 +126,5 @@ def on_resize(width,height):
     projection = glm.perspective(45.0, width / float(height), 1.0, 1000.0)
     program['u_projection'] = projection
 
-gl.glClearColor(1.0, 1.0, 1.0, 1.0)
 gl.glEnable(gl.GL_DEPTH_TEST)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-gl.glEnable(gl.GL_POINT_SPRITE)
-
 app.run()

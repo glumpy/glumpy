@@ -82,7 +82,8 @@ void main()
 """
 
 
-window = app.Window(width=800, height=800)
+window = app.Window(width=800, height=800,
+                    color=(0.2, 0.2, 0.2, 1.0))
 
 @window.event
 def on_draw(dt):
@@ -117,13 +118,5 @@ program = gloo.Program(vertex, fragment)
 program.bind(data)
 program['u_antialias'] = 1.00
 program['u_linewidth'] = 1.00
-
-
-gl.glClearColor(0.2, 0.2, 0.2, 1.0)
-gl.glDisable(gl.GL_DEPTH_TEST)
-gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
-gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-gl.glEnable(gl.GL_POINT_SPRITE)
 
 app.run(framerate=60)

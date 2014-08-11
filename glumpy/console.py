@@ -116,7 +116,13 @@ void main(void)
 class Console(object):
     """ Fast and failsafe GL console """
 
-    def __init__(self, rows, cols, scale=2):
+    def __init__(self, rows, cols, scale=2, color=(0,0,0,1)):
+
+        # Harcoded because of font above and shder program
+        self._cwidth = 6
+        self._cheight = 8
+        self._scale = int(max(scale,1))
+
         dtype = [("position", np.float32, 2),
                  ("glyph",    np.float32, 6)]
         self._program = gloo.Program(__vertex__, __fragment__)
@@ -128,14 +134,33 @@ class Console(object):
 
         # Initialize glyph position (they won't move)
         C,R = np.meshgrid(np.arange(cols), np.arange(rows))
-        self._data['position'][...,0] = 4.0 + 6*C
-        self._data['position'][...,1] = 4.0 + 9*R
+        self._data['position'][...,0] = 4.0 + self.cwidth*C
+        self._data['position'][...,1] = 4.0 + self.cheight*R
 
-        self._program['scale'] = int(max(scale,1))
-        self._program['color'] = 0, 0, 0, 1
+        self._program['scale'] = self._scale
+        self._program['color'] = color
         self._rows, self._cols = rows, cols
         self._row = 0
 
+    @property
+    def scale(self):
+        return self._scale
+
+    @property
+    def rows(self):
+        return self._rows
+
+    @property
+    def cols(self):
+        return self._cols
+
+    @property
+    def cwidth(self):
+        return self._cwidth
+
+    @property
+    def cheight(self):
+        return self._cheight+1
 
     def on_resize(self, width, height):
         """ Update console projection """
