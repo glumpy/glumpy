@@ -4,9 +4,10 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+""" This example shows standard orthographic projection transform. """
+
 import numpy as np
-import glumpy as gp
-import glumpy.gl as gl
+from  glumpy import app, gl, glm, gloo
 from glumpy.transforms import OrthographicProjection, Position2D
 
 
@@ -25,7 +26,7 @@ void main()
 }
 """
 
-window = gp.Window(width=800, height=800)
+window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
@@ -36,8 +37,8 @@ def on_draw(dt):
 def on_resize(w, h):
     program['position'] = [(w-100,h-100), (w-100,h), (w,h-100), (w,h)]
 
-transform = gp.transforms.OrthographicProjection(Position2D("position"))
-program = gp.gloo.Program(vertex, fragment, count=4)
+transform = OrthographicProjection(Position2D("position"))
+program = gloo.Program(vertex, fragment, count=4)
 program["transform"] = transform
 window.attach(transform)
-gp.run()
+app.run()

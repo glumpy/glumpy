@@ -4,12 +4,13 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+""" This example shows reactive trackball transform """
+
 import numpy as np
-import glumpy as gp
-import glumpy.gl as gl
-import glumpy.glm as glm
-from makecube import makecube
+from glumpy import app, gl, glm, gloo
 from glumpy.transforms import Trackball, Position3D
+from makecube import makecube
+
 
 
 vertex = """
@@ -32,8 +33,8 @@ void main()
 }
 """
 
-window = gp.Window(width=1024, height=1024,
-                   color=(0.30, 0.30, 0.35, 1.00))
+window = app.Window(width=1024, height=1024,
+                    color=(0.30, 0.30, 0.35, 1.00))
 
 @window.event
 def on_draw(dt):
@@ -57,11 +58,11 @@ def on_draw(dt):
 
 # Build cube data
 V, I, O = makecube()
-vertices = V.view(gp.gloo.VertexBuffer)
-faces    = I.view(gp.gloo.IndexBuffer)
-outline  = O.view(gp.gloo.IndexBuffer)
+vertices = V.view(gloo.VertexBuffer)
+faces    = I.view(gloo.IndexBuffer)
+outline  = O.view(gloo.IndexBuffer)
 
-cube = gp.gloo.Program(vertex, fragment)
+cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
 transform = Trackball(Position3D("position"))
 cube['transform'] = transform
@@ -75,4 +76,4 @@ gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 gl.glLineWidth(0.75)
 
 # Run
-gp.run()
+app.run()

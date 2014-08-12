@@ -4,10 +4,10 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+""" This example show a very simple oscilloscope. """
+
 import numpy as np
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.gloo as gloo
+from glumpy import app, gl, glm, gloo
 
 
 vertex = """

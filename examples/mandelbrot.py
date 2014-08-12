@@ -4,11 +4,12 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+""" Mandelbrot set with pan & zoom """
+
+import glumpy
 import numpy as np
-import glumpy as gp
-import glumpy.gl as gl
+from glumpy import app, gl, glm, gloo
 from glumpy.transforms import PanZoom, Position2D
-from glumpy import filters
 
 
 vertex = """
@@ -23,8 +24,15 @@ vertex = """
 """
 
 fragment = """
-uniform sampler1D colormap;
 varying vec2 v_texcoord;
+
+vec3 hot(float t)
+{
+    return vec3(smoothstep(0.00,0.33,t),
+                smoothstep(0.33,0.66,t),
+                smoothstep(0.66,1.00,t));
+}
+
 void main()
 {
     const int n = 300;
@@ -46,39 +54,45 @@ void main()
         float nu = log(log(sqrt(d))/log_2)/log_2;
         float index = float(i) + 1.0 - nu;
         float v = pow(index/float(n),0.5);
-        gl_FragColor = texture1D(colormap, v);
+        gl_FragColor = vec4(hot(v),1.0);
     } else {
-        gl_FragColor = texture1D(colormap, 1.0);
+        gl_FragColor = vec4(hot(0.0),1.0);
     }
 }
 """
 
-window = gp.Window(width=800, height=800)
+window = app.Window(width=800, height=800)
+console = glumpy.Console(rows=32,cols=80,color=(1,1,1,1))
+
+@window.timer(1/30.0)
+def timer(fps):
+    console.clear()
+    console.write("----------------------------------")
+    console.write(" Glumpy version %s" % (glumpy.__version__))
+    console.write(" Window size: %dx%d" % (window.width, window.height))
+    console.write(" Console size: %dx%d" % (console._rows, console._cols))
+    console.write(" Backend: %s (%s)" % (window._backend.__name__,
+                                        window._backend.__version__))
+    console.write(" Actual FPS: %.2f frames/second" % (window.fps))
+    console.write("----------------------------------")
 
 @window.event
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
+    console.draw()
 
 @window.event
 def on_key_press(key, modifiers):
-    if key == gp.app.window.key.SPACE:
+    if key == app.window.key.SPACE:
         transform.reset()
 
-program = gp.gloo.Program(vertex, fragment, count=4)
+program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1, 1), ( 1,-1), ( 1, 1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-colormap = np.zeros((512,3), np.float32)
-colormap[:,0] = np.interp(np.arange(512), [0, 171, 342, 512], [0,1,1,1])
-colormap[:,1] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,1,1])
-colormap[:,2] = np.interp(np.arange(512), [0, 171, 342, 512], [0,0,0,1])
-colormap[-1] = 0,0,0
-
-program['colormap'] = colormap
-program['colormap'].interpolation = gl.GL_LINEAR
 
 transform = PanZoom(Position2D("position"))
 program['transform'] = transform
 window.attach(transform)
-
-gp.run()
+window.attach(console)
+app.run()

@@ -4,8 +4,11 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+""" Voronoi shadertoy example from  www.shadertoy.com/view/ldl3W8 """
+
 import numpy as np
 from glumpy import app, gl, glm, gloo
+
 
 vertex = """
 attribute vec2 position;

@@ -4,6 +4,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+""" Shadertoy template to test a shadertoy from www.shadertoy.com """
+
 import datetime
 import numpy as np
 from glumpy import app, gl, gloo

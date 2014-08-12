@@ -4,7 +4,9 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+""" This example show how to choose a configuration. """
 from glumpy import app
+
 
 config = app.configuration.Configuration()
 config.depth_size = 0

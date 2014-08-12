@@ -4,6 +4,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+""" This example shows colormap functions (faster than 1d texture lookup) """
+
 import datetime
 import numpy as np
 from glumpy import app, gl, gloo

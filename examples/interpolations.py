@@ -4,15 +4,13 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import sys
-import numpy as np
-from PIL import Image
+""" This example shows spatial interpolation of images. """
 
 import glumpy
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.glm as glm
-import glumpy.gloo as gloo
+import numpy as np
+from PIL import Image
+from glumpy import app, gl, glm, gloo
+
 
 vertex = """
     attribute vec2 position;
@@ -127,6 +125,5 @@ dx, dy = 0.05, 0.05
 x = min(max(x/1024.0, dx), 1.0-dx)
 y = min(max(y/1024.0, dy), 1.0-dy)
 vertices['texcoord'][1:] = (x-dx,y-dy), (x-dy,y+dy), (x+dx, y-dy), (x+dx,y+dy)
-
 
 app.run()

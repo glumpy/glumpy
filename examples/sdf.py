@@ -7,12 +7,7 @@
 import sys
 import numpy as np
 from PIL import Image
-
-import glumpy
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.glm as glm
-import glumpy.gloo as gloo
+from glumpy import app, gl, glm, gloo
 
 
 vertex = """
@@ -80,7 +75,7 @@ void main()
 """
 
 
-window = app.Window(width=512, height=512)
+window = app.Window(width=512, height=512, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):

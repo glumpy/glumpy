@@ -4,11 +4,11 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+""" This example shows reactive pan-zoom transform (2D). """
+
 import numpy as np
 from PIL import Image
-
-import glumpy as gp
-import glumpy.gl as gl
+from glumpy import app, gl, glm, gloo
 from glumpy.transforms import PanZoom, Position2D
 
 
@@ -33,7 +33,7 @@ fragment = """
     }
 """
 
-window = gp.Window(width=800, height=800)
+window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
@@ -42,10 +42,10 @@ def on_draw(dt):
 
 @window.event
 def on_key_press(key, modifiers):
-    if key == gp.app.window.key.SPACE:
+    if key == app.window.key.SPACE:
         transform.reset()
 
-program = gp.gloo.Program(vertex, fragment, count=4)
+program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['texture'] = np.array(Image.open("lena.png"))
@@ -54,4 +54,4 @@ transform = PanZoom(Position2D("position"))
 program['transform'] = transform
 window.attach(transform)
 
-gp.run()
+app.run()

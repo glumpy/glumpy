@@ -4,6 +4,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+""" Adaptation of https://www.shadertoy.com/view/4sS3zz """
+
 import numpy as np
 from glumpy import app, gl, glm, gloo
 

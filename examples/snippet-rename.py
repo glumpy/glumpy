@@ -4,8 +4,10 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-import glumpy
-import glumpy.gloo as gloo
+""" This example shows variable renaming in a snippet. """
+
+from glumpy import app, gl, glm, gloo
+
 
 vertex = (
 """
