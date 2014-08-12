@@ -160,7 +160,7 @@ class Console(object):
 
     @property
     def cheight(self):
-        return self._cheight+1
+        return self._cheight + 2
 
     def on_resize(self, width, height):
         """ Update console projection """

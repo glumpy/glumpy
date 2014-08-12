@@ -13,11 +13,13 @@ import importlib
 
 from glumpy import gl
 from glumpy.log import log
+from glumpy.ext.inputhook import inputhook_manager, stdin_ready
+from glumpy.app.window import backends
+from glumpy.app.window.viewport import Viewport
+
 from . import parser
 from . import configuration
 from . import clock as _clock
-from glumpy.app.window import backends
-from glumpy.app.window.viewport import Viewport
 
 # Default clock
 __clock__ = None
@@ -27,8 +29,6 @@ __windows__ = []
 
 # Current backend
 __backend__ = None
-
-
 
 
 
@@ -196,8 +196,8 @@ class Window(object):
 
 
 # ----------------------------------------------------------------- __run__ ---
-def __run__(clock=None, framerate=None, backend=None):
-    """ Run the main loop
+def __init__(clock=None, framerate=None, backend=None):
+    """ Initialize the main loop
 
     Parameters
     ----------
@@ -210,6 +210,7 @@ def __run__(clock=None, framerate=None, backend=None):
     backend : python module
         Backend module
     """
+
     global __clock__
 
     options = parser.get_options()
@@ -256,15 +257,12 @@ def __run__(clock=None, framerate=None, backend=None):
         # Dispatch an initial resize event
         window.dispatch_event('on_resize', window._width, window._height)
 
-    # Run until no more window
-    count = len(backend.windows())
-    while count:
-        count = backend.process(__clock__.tick())
+    return __clock__
 
 
 
 # --------------------------------------------------------------------- run ---
-def run(clock=None, framerate=None):
+def run(clock=None, framerate=None, interactive=False):
     """ Run the main loop
 
     Parameters
@@ -276,4 +274,19 @@ def run(clock=None, framerate=None):
         frames per second
     """
 
-    __run__(clock=clock, framerate=framerate, backend=__backend__)
+    clock = __init__(clock=clock, framerate=framerate, backend=__backend__)
+
+    if interactive:
+        # Set interactive python session
+        os.environ['PYTHONINSPECT'] = '1'
+
+        def run():
+            while not stdin_ready():
+                __backend__.process(clock.tick())
+            return 0
+        inputhook_manager.set_inputhook(run)
+
+    else:
+        count = len(__backend__.windows())
+        while count:
+            count = __backend__.process(clock.tick())
