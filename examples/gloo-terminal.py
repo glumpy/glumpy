@@ -12,87 +12,88 @@ vertex = """
 
 // Uniforms
 // --------
+uniform sampler2D tex_data;
+uniform vec2 tex_size;
+uniform float char_width;
+uniform float char_height;
+uniform float rows;
+uniform float cols;
+uniform float scale;
 uniform vec4 foreground;
 uniform vec4 background;
-uniform mat4 projection;
-uniform vec2 position;
 uniform vec2 selection;
-uniform vec2 size;
-uniform float scale;
+uniform mat4 projection;
 
 // Attributes
 // ----------
-attribute vec2 colrow;
-// attribute vec4 foreground;
-// attribute vec4 background;
-attribute vec4 bytes_0123, bytes_4567;
-attribute vec2 bytes_89;
+attribute float pindex;
+attribute float gindex;
 
 // Varyings
 // --------
-varying vec4 v_foreground, v_background;
-varying vec4 v_bytes_0123, v_bytes_4567;
-varying vec2 v_bytes_89;
+varying vec2 v_texcoord;
+varying vec4 v_foreground;
+varying vec4 v_background;
 
+// Main
+// ----
 void main (void)
 {
-    float index = colrow.y * size.y + colrow.x;
-
-    vec2 P = (position + colrow * vec2(6.0,13.0)) * scale;
+    // Compute char position from pindex
+    float x = mod(pindex, cols);
+    float y = floor(pindex/cols);
+    vec2 P = (vec2(x,y) * vec2(char_width, char_height)) * scale;
+    P += vec2(char_height, char_height)*scale/2.0;
+    P += vec2(2.0, 2.0);
     gl_Position = projection*vec4(P, 0.0, 1.0);
-    gl_PointSize = 13.0 * scale;
+    gl_PointSize = char_height * scale;
 
-    v_foreground = foreground;
-    if( (index >= selection.x) && (index < selection.y)) {
+    // Compute color (selection)
+    if( (pindex >= selection.x) && (pindex < selection.y))
         v_background = vec4(v_foreground.rgb, 0.1);
-    } else {
+    else
         v_background = background;
-    }
-    v_bytes_0123 = bytes_0123;
-    v_bytes_4567 = bytes_4567;
-    v_bytes_89   = bytes_89;
+
+    // Compute glyph tex coord from gindex
+    float n = tex_size.x/char_width;
+    x = 0.5 +  mod(gindex, n) * char_width;
+    y = 0.5 + floor(gindex/n) * char_height;
+    v_texcoord = vec2(x/tex_size.x, y/tex_size.y);
 }
 """
 
 fragment = """
 #version 120
 
-float segment(float edge0, float edge1, float x)
-{
-    return step(edge0,x) * (1.0-step(edge1,x));
-}
+// Uniforms
+// --------
+uniform sampler2D tex_data;
+uniform vec2 tex_size;
+uniform float char_width;
+uniform float char_height;
+uniform float rows;
+uniform float cols;
+uniform float scale;
+uniform vec2 selection;
+uniform vec4 foreground;
+
 
 // Varyings
 // --------
-varying vec4 v_foreground, v_background;
-varying vec4 v_bytes_0123, v_bytes_4567;
-varying vec2 v_bytes_89;
+varying vec2 v_texcoord;
+varying vec4 v_background;
 
+
+// Main
+// ----
 void main(void)
 {
-    vec2 uv = floor(gl_PointCoord.xy * 13.0);
-    if(uv.x > 5.0) discard;
-    if(uv.y > 12.0) discard;
-    float index = floor( (uv.y*6.0+uv.x)/8.0 );
-    float offset = floor( mod(uv.y*6.0+uv.x,8.0));
-    float byte = segment(0.0,1.0,index) * v_bytes_0123.x
-               + segment(1.0,2.0,index) * v_bytes_0123.y
-               + segment(2.0,3.0,index) * v_bytes_0123.z
-               + segment(3.0,4.0,index) * v_bytes_0123.w
-               + segment(4.0,5.0,index) * v_bytes_4567.x
-               + segment(5.0,6.0,index) * v_bytes_4567.y
-               + segment(6.0,7.0,index) * v_bytes_4567.z
-               + segment(7.0,8.0,index) * v_bytes_4567.w
-               + segment(8.0,9.0,index) * v_bytes_89.x
-               + segment(9.0,10.0,index)* v_bytes_89.y;
+    vec2 uv = floor(gl_PointCoord.xy * char_height);
+    if(uv.x > (char_width-1.0)) discard;
+    if(uv.y > (char_height-1.0)) discard;
 
-    // Logical AND test
-    if( floor(mod(byte / (128.0/pow(2.0,offset)), 2.0)) > 0.0 )
-        gl_FragColor = v_foreground;
-    else if( v_background.a > 0.0 )
-        gl_FragColor = v_background;
-    else
-        discard;
+    float v = texture2D(tex_data, v_texcoord+uv/tex_size).r;
+    gl_FragColor = v * foreground + (1.0-v) * v_background.a;
 }
 """
 
@@ -101,76 +102,83 @@ class TextBuffer(object):
     """
     """
 
-    # Load fonts
-    __regular__ = np.load("6x13-regular.npy")
-    __italic__  = np.load("6x13-italic.npy")
-    __bold__    = np.load("6x13-bold.npy")
-    __font__    = None
-
     def __init__(self, rows=24, cols=80, x=0, y=0, scale=2):
+
+        # Build program first
+        self._program = gloo.Program(vertex, fragment)
 
         # Build a font array that holds regular, italic & bold font
         # Regular:      0 to   65536-1
         # Italic :  65536 to 2*65536-1
         # Bold :  2*65536 to 3*65536-1
-        if TextBuffer.__font__ is None:
-            n1 = len(TextBuffer.__regular__)
-            n2 = len(TextBuffer.__italic__)
-            n3 = len(TextBuffer.__bold__)
-            n = n1+n2+n3
-            dtype = [ ("code", np.uint32,  1),
-                      ("data",  np.uint8, 10) ]
-            TextBuffer.__font__ = np.zeros(n, dtype)
-            TextBuffer.__font__[:n1] = TextBuffer.__regular__
-            TextBuffer.__font__[n1:n1+n2] = TextBuffer.__italic__
-            TextBuffer.__font__[n1:n1+n2]["code"] += 1*65536
-            TextBuffer.__font__[n1+n2:n1+n2+n3] = TextBuffer.__bold__
-            TextBuffer.__font__[n1+n2:n1+n2+n3]["code"] += 2*65536
+        regular = np.load("6x13-regular.npy")
+        italic  = np.load("6x13-italic.npy")
+        bold    = np.load("6x13-bold.npy")
+        n1 = len(regular)
+        n2 = len(italic)
+        n3 = len(bold)
+        n = n1+n2+n3
+        dtype = [ ("code", np.uint32, 1),
+                  ("data", np.uint8, 10)]
+        font = np.zeros(n, dtype)
+        font[:n1] = regular
+        font[n1:n1+n2] = italic
+        font[n1:n1+n2]["code"] += 1*65536
+        font[n1+n2:n1+n2+n3] = bold
+        font[n1+n2:n1+n2+n3]["code"] += 2*65536
 
-        print len(TextBuffer.__font__)
+        # Build a texture out of glyph arrays (need to unpack bits)
+        # This code is specific for a character size of 6x13
+        n = len(font)
+        G = np.unpackbits(font["data"].ravel())
+        G = G.reshape(n,80)[:,:78].reshape(n,13,6)
+        width, height = 6*128, 13*((n//128)+1)
+        data = np.zeros((height,width), np.ubyte)
+        for i in range(n):
+            r = 13*(i//128)
+            c = 6*(i % 128)
+            data[r:r+13,c:c+6] = G[i]*255
 
-        self._position = x+6.5,y+6.5
+        # Store char codes
+        self._codes = font["code"]
+
+        # Fill program uniforms
+        self._program["tex_data"] = data.view(gloo.Texture2D)
+        self._program["tex_data"].interpolation = gl.GL_NEAREST
+        self._program["tex_data"].wrapping = gl.GL_CLAMP
+        self._program["tex_size"] = width, height
+        self._program["char_width"] = 6.0
+        self._program["char_height"]= 13.0
+        self._program["rows"] = rows
+        self._program["cols"] = cols
+        self._program["scale"]= int(max(1.0, scale))
+        self._program["foreground"] = 0, 0, 0, 1
+        self._program["background"] = 0, 0, 0, 0
+        self._program['selection'] = -1,-1
+
+        # Build vertex buffer
+        self._vbuffer = np.zeros(rows*cols, [("pindex", np.float32, 1),
+                                             ("gindex", np.float32, 1)])
+        self._vbuffer = self._vbuffer.view(gloo.VertexBuffer)
+        self._vbuffer["pindex"] = np.arange(rows*cols)
+        self._vbuffer["gindex"] = 1 # index of space in our font
+        self._program.bind(self._vbuffer)
+
         self._rows = rows
         self._cols = cols
         self._scale = int(max(scale,1))
         self._selection = None
-
-        self._program = gloo.Program(vertex, fragment)
-        self._vbuffer = np.zeros(rows*cols, [("colrow",     np.float32, 2),
-                                             ("glyph",      np.float32,10)])
-        self._vbuffer= self._vbuffer.view(gloo.VertexBuffer)
-        self._program.bind(self._vbuffer.view([("colrow",     np.float32, 2),
-                                               ("bytes_0123", np.float32, 4),
-                                               ("bytes_4567", np.float32, 4),
-                                               ("bytes_89",   np.float32, 2) ]))
-        self._program['scale'] = self._scale
-        self._program['size'] = rows, cols
-        if self._selection is not None:
-            self._program['selection'] = self._selection
-        else:
-            self._program['selection'] = -1,-1
-        self._program['position'] = self._position
-
-        # Initialize glyph position (they won't be moved individually)
-        C,R = np.meshgrid(np.arange(self._cols), np.arange(self._rows))
-        self._vbuffer["colrow"][...,0] = C.ravel()
-        self._vbuffer["colrow"][...,1] = R.ravel()
-        self._program["foreground"] = 0, 0, 0, 1
-        self._program["background"] = 0, 0, 0, 0
 
 
     def on_init(self):
         gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
         gl.glEnable(gl.GL_POINT_SPRITE)
 
-
     def on_resize(self, width, height):
         self._program["projection"] = glm.ortho(0, width, height, 0, -1, +1)
 
-
     def draw(self):
         self._program.draw(gl.GL_POINTS)
-
 
     def __contains__(self, (x,y)):
         width = self._cols*self._scale*6
@@ -179,20 +187,17 @@ class TextBuffer(object):
             return True
         return False
 
-
     @property
     def scale(self):
         """ Font scale """
 
         return self._scale
 
-
     @property
     def rows(self):
         """ Number of rows """
 
         return self._rows
-
 
     @property
     def cols(self):
@@ -215,7 +220,7 @@ class TextBuffer(object):
         Clear the text buffer
         """
 
-        self._vbuffer["glyph"][start:end] = 0
+        self._vbuffer["gindex"] = 1 # index of space in our font
         self.clear_selection()
 
 
@@ -228,16 +233,11 @@ class TextBuffer(object):
         self._program["selection"] = -1,-1
 
 
-    def put(self, row, col, text, foreground=(0,0,0,1), background=(0,0,0,0), style=0):
+    def put(self, row, col, text, style=0):
         """ Put text at (row,col) """
 
-        font = TextBuffer.__font__
-
-        # Make sure argument are of the right type
-        #foreground = np.atleast_2d(foreground)
-        #background = np.atleast_2d(background)
+        # Make style argument is of the right type
         style = np.atleast_1d(style)
-
         index = row*self.cols + col
 
         # Decode text
@@ -254,20 +254,15 @@ class TextBuffer(object):
             n = imax - index
             codes = codes[:n]
             style = style[:n]
-            #foreground = foreground[:n]
-            #background = background[:n]
 
         # Tweak code to take style into account
         codes += style*65536
 
         # Replace unknown glyphs with glyph 0
-        codes *= np.in1d(codes, font["code"])
+        codes *= np.in1d(codes, self._codes)
 
         # Put glyphs data into buffer
-        glyphs = font["data"][np.searchsorted(font["code"], codes)]
-        self._vbuffer["glyph"][index:index+n] = glyphs
-        #self._vbuffer["foreground"][index:index+n] = foreground
-        #self._vbuffer["background"][index:index+n] = background
+        self._vbuffer["gindex"][index:index+n] = np.searchsorted(self._codes, codes)
 
 
 
@@ -319,8 +314,8 @@ class Console(TextBuffer):
             self._buffer_start = (self._buffer_start + 1) % n
 
         # Update text buffer
-        #V = self.view(int(self._scroll))
-        #self.put(0, 0, text=V["code"])
+        # V = self.view(int(self._scroll))
+        # self.put(0, 0, text=V["code"])
 
         # Update selection if any
         if self._selection is not None:
@@ -331,12 +326,6 @@ class Console(TextBuffer):
                 self._program["selection"] = end, start
             else:
                 self._program["selection"] = start, end
-
-    def draw(self):
-        # Update text buffer
-        V = self.view(int(self._scroll))
-        self.put(0, 0, text=V["code"])
-        TextBuffer.draw(self)
 
 
     def on_mouse_press(self, x, y, button):
@@ -389,6 +378,11 @@ class Console(TextBuffer):
             end   -= (int(self._scroll)+self.rows)*self.cols
             self._program["selection"] = start, end
 
+    def draw(self):
+        V = self.view(int(self._scroll))
+        self.put(0, 0, text=V["code"])
+        TextBuffer.draw(self)
+
 
     def clear(self):
         TextBuffer.clear(self)
@@ -416,7 +410,7 @@ class Console(TextBuffer):
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
-    console = Console()
+    console = Console(24,80,scale=2)
     window = app.Window(width=console.cols*console.scale*6,
                         height=console.rows*console.scale*13,
                         color = (1,1,1,1))
@@ -435,7 +429,7 @@ if __name__ == '__main__':
     # @window.timer(1/30.0)
     def timer(fps):
         console.clear()
-        console.write(u"──────────────────────────────────────────────────")
+        console.write(u"─────────────────────────────────────────────────────")
         console.write(u"GLUMPY 2.0 - Copyright (c) 2014 Nicolas P. Rougier")
         console.write(u"")
         console.write(u" → Window size: %dx%d" % (window.width, window.height))
@@ -443,7 +437,10 @@ if __name__ == '__main__':
                                               window._backend.__version__))
         console.write(u" → Console size: %dx%d" % (console.rows, console.cols))
         console.write(u" → Actual FPS: %.2f frames/second  " % (app.fps()))
-        console.write(u"──────────────────────────────────────────────────")
+        console.write(u"───────────────────────────────────────────────────────")
+        #for line in repr(window.config).split("\n"):
+        #    console.write(u" "+line)
+        #console.write(u"───────────────────────────────────────────────────────")
 
     window.attach(console)
     app.run()

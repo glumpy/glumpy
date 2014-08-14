@@ -30,7 +30,8 @@ class Texture(GPUData,GLObject):
     def __init__(self, target):
         GLObject.__init__(self)
         self._target = target
-        self._interpolation = gl.GL_LINEAR, gl.GL_LINEAR
+        # self._interpolation = gl.GL_LINEAR, gl.GL_LINEAR
+        self._interpolation = gl.GL_NEAREST, gl.GL_NEAREST
         self._wrapping = gl.GL_CLAMP_TO_EDGE
 
     def _check_shape(self, shape, ndims):

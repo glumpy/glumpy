@@ -30,6 +30,5 @@ def timer(fps):
         console.write(" "+line)
     console.write("-------------------------------------------------------")
 
-config = window.config
 window.attach(console)
 glumpy.run()
