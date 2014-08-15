@@ -7,10 +7,55 @@
 import numpy as np
 from glumpy import app, gl, glm, gloo
 
+point_vertex = """
+#version 120
 
-vertex = """
 uniform mat4 projection;
-uniform vec2 iResolution;
+attribute vec2 position;
+void main (void)
+{
+    gl_Position = projection * vec4(position, 0.0, 1.0);
+    gl_PointSize = 8.0;
+}
+"""
+
+point_fragment = """
+#version 120
+const float SQRT_2 = 1.4142135623730951;
+
+vec4 filled(float distance, float linewidth, float antialias, vec4 fill)
+{
+    vec4 frag_color;
+    float t = linewidth/2.0 - antialias;
+    float signed_distance = distance;
+    float border_distance = abs(signed_distance) - t;
+    float alpha = border_distance/antialias;
+    alpha = exp(-alpha*alpha);
+    // Within linestroke
+    if( border_distance < 0.0 )
+        frag_color = fill;
+    // Within shape
+    else if( signed_distance < 0.0 )
+        frag_color = fill;
+    else
+        // Outside shape
+        if( border_distance > (linewidth/2.0 + antialias) )
+            discard;
+        else // Line stroke exterior border
+            frag_color = vec4(fill.rgb, alpha * fill.a);
+
+    return frag_color;
+}
+
+void main (void)
+{
+    float d = (length(gl_PointCoord.xy - 0.5)) * 8.0 - 2.0;
+    gl_FragColor = filled(d, 1.0, 1.0, vec4(0,0,0,1));
+}
+"""
+
+cone_vertex = """
+uniform mat4 projection;
 attribute vec2 translate;
 attribute vec3 position;
 attribute vec3 color;
@@ -22,7 +67,7 @@ void main()
 }
 """
 
-fragment = """
+cone_fragment = """
 varying vec3 v_color;
 void main()
 {
@@ -35,16 +80,22 @@ window = app.Window(width=1024, height=1024)
 @window.event
 def on_draw(dt):
     window.clear()
+    gl.glEnable(gl.GL_DEPTH_TEST)
     cones.draw(gl.GL_TRIANGLES, I)
+    gl.glDisable(gl.GL_DEPTH_TEST)
+    gl.glEnable(gl.GL_BLEND)
+    points.draw(gl.GL_POINTS)
 
 @window.event
 def on_resize(width, height):
-    cones['projection'] = glm.ortho(0, width, 0, height, -5, +5000)
-    cones['iResolution'] = width, height
+    cones['projection'] = glm.ortho(0, width, 0, height, -5, +500)
+    points['projection'] = glm.ortho(0, width, 0, height, -1, +1)
+
 
 @window.event
 def on_mouse_motion(x,y,dx,dy):
     C["translate"][0] = x, window.height-y
+    points["position"][0] = x, window.height-y
 
 
 def makecone(n=32, radius=1024):
@@ -61,8 +112,11 @@ def makecone(n=32, radius=1024):
     return V, I.ravel()
 
 
-n = 4*512 # number of cones (= number of point)
-p = 32  # faces per cones
+n = 1024 # number of cones (= number of point)
+p = 32   # faces per cones
+
+cones = gloo.Program(cone_vertex, cone_fragment)
+points = gloo.Program(point_vertex, point_fragment, count=n)
 C = np.zeros((n,1+p), [("translate", np.float32, 2),
                        ("position",  np.float32, 3),
                        ("color",     np.float32, 3)]).view(gloo.VertexBuffer)
@@ -72,19 +126,15 @@ for i in range(n):
     #x,y = np.random.uniform(0,1024,2)
     x,y = np.random.normal(512,256,2)
     vertices, indices = makecone(p, radius=512)
-
     if i > 0:
         l = np.random.uniform(0.25,1.00)
         C["color"][i] = l,l,l
     else:
         C["color"][0] = 1,1,0
-
     C["translate"][i] = x,y
+    points["position"][i] = x,y
     C["position"][i] = vertices
     I[i] += indices.ravel()
-cones = gloo.Program(vertex, fragment)
 cones.bind(C)
 
-
-gl.glEnable(gl.GL_DEPTH_TEST)
 app.run()

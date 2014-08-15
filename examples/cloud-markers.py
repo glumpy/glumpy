@@ -26,7 +26,7 @@ app.parser.get_default().add_argument(
              "square", "empty-square", "diamond", "empty-diamond"))
 
 theta, phi = 0,0
-window = app.Window(width=800, height=800)
+window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 
 n = 500000
@@ -59,7 +59,6 @@ program['a_orientation'] = np.random.uniform(0, 2*np.pi, n)
 @window.event
 def on_draw(dt):
     global theta, phi, translate
-
     theta += .5
     phi += .5
     model = np.eye(4, dtype=np.float32)
