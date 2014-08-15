@@ -21,8 +21,6 @@ varying float v_lifetime;
 void main () {
     gl_Position.xy = start + (time * end) + center;
     gl_Position.y -= 1.0 * time * time;
-    gl_Position.w = 1.0;
-
     v_lifetime = clamp(1.0 - (time / lifetime), 0.0, 1.0);
     gl_PointSize = (v_lifetime * v_lifetime) * 60.0;
 }
@@ -45,10 +43,9 @@ window = app.Window(1024,1024)
 program = gloo.Program(vertex, fragment, count=n)
 
 def explosion():
-    r,g,b = np.random.uniform(0.1,0.9,3)
-    a = 1.0 / n ** 0.05
     program['center'] = np.random.uniform(-0.5,+0.5)
-    program['color'] = r,g,b,a
+    program['color'] = np.random.uniform(0.1,0.9,4)
+    program['color'][3] = 1.0 / n ** 0.05
     program['lifetime'] = np.random.normal(4.0, 0.5, n)
     program['start'] = np.random.normal(0.0, 0.2, (n,2))
     program['end'] = np.random.normal(0.0, 1.2, (n,2))
@@ -63,8 +60,8 @@ def on_draw(dt):
     window.clear()
     program.draw(gl.GL_POINTS)
     program['time'] += dt
-    if program['time'] > 1.5:
+    if program['time'] > 1.75:
         explosion()
 
 explosion()
-app.run()
+app.run(framerate=60)

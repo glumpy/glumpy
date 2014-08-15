@@ -10,9 +10,7 @@
 # Keywords: framebuffer, GPU computing, cellular automata
 # -----------------------------------------------------------------------------
 import numpy as np
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.gloo as gloo
+from glumpy import app, gl, glm, gloo
 
 
 render_vertex = """
