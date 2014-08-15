@@ -4,6 +4,7 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+import glumpy
 import numpy as np
 from glumpy import app, gl, gloo, glm
 
@@ -111,9 +112,9 @@ class TextBuffer(object):
         # Regular:      0 to   65536-1
         # Italic :  65536 to 2*65536-1
         # Bold :  2*65536 to 3*65536-1
-        regular = np.load("6x13-regular.npy")
-        italic  = np.load("6x13-italic.npy")
-        bold    = np.load("6x13-bold.npy")
+        regular = glumpy.data.get("6x13-regular.npy")
+        italic  = glumpy.data.get("6x13-italic.npy")
+        bold    = glumpy.data.get("6x13-bold.npy")
         n1 = len(regular)
         n2 = len(italic)
         n3 = len(bold)

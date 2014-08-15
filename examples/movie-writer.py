@@ -66,6 +66,7 @@ def on_draw(dt):
     cube.draw(gl.GL_LINES, outline)
     gl.glDepthMask(gl.GL_TRUE)
 
+    # Write one frame
     if writer is not None:
         if duration > 0:
             gl.glReadPixels(0, 0, window.width, window.height,
