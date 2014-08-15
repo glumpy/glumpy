@@ -5,54 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, glm, gloo
-
-point_vertex = """
-#version 120
-
-uniform mat4 projection;
-attribute vec2 position;
-void main (void)
-{
-    gl_Position = projection * vec4(position, 0.0, 1.0);
-    gl_PointSize = 8.0;
-}
-"""
-
-point_fragment = """
-#version 120
-const float SQRT_2 = 1.4142135623730951;
-
-vec4 filled(float distance, float linewidth, float antialias, vec4 fill)
-{
-    vec4 frag_color;
-    float t = linewidth/2.0 - antialias;
-    float signed_distance = distance;
-    float border_distance = abs(signed_distance) - t;
-    float alpha = border_distance/antialias;
-    alpha = exp(-alpha*alpha);
-    // Within linestroke
-    if( border_distance < 0.0 )
-        frag_color = fill;
-    // Within shape
-    else if( signed_distance < 0.0 )
-        frag_color = fill;
-    else
-        // Outside shape
-        if( border_distance > (linewidth/2.0 + antialias) )
-            discard;
-        else // Line stroke exterior border
-            frag_color = vec4(fill.rgb, alpha * fill.a);
-
-    return frag_color;
-}
-
-void main (void)
-{
-    float d = (length(gl_PointCoord.xy - 0.5)) * 8.0 - 2.0;
-    gl_FragColor = filled(d, 1.0, 1.0, vec4(0,0,0,1));
-}
-"""
+from glumpy import app, gl, glm, gloo, filters
 
 cone_vertex = """
 uniform mat4 projection;
@@ -75,28 +28,50 @@ void main()
 }
 """
 
+
+
+borders = filters.Filter(1024, 1024, """
+const float epsilon = 1e-3;
+vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+{
+    vec4 center = texture2D(filtered, texcoord);
+    vec4 left   = texture2D(filtered, texcoord + vec2(-1.0, 0.0)/texsize);
+    vec4 right  = texture2D(filtered, texcoord + vec2(+1.0, 0.0)/texsize);
+    vec4 down   = texture2D(filtered, texcoord + vec2( 0.0,-1.0)/texsize);
+    vec4 up     = texture2D(filtered, texcoord + vec2( 0.0,+1.0)/texsize);
+    vec4 black  = vec4(0,0,0,1);
+    float level = 0.5;
+
+    if (length(center-left) > epsilon) {
+        return mix(black,right, level);
+    } else if (length(center-right) > epsilon) {
+        return mix(black, left, level);
+    } else if (length(center-down) > epsilon) {
+        return mix(black, up,  level);
+    } else if (length(center-up) > epsilon) {
+        return mix(black, down, level);
+    }
+    return center;
+} """)
+
+
 window = app.Window(width=1024, height=1024)
 
 @window.event
 def on_draw(dt):
-    window.clear()
-    gl.glEnable(gl.GL_DEPTH_TEST)
-    cones.draw(gl.GL_TRIANGLES, I)
-    gl.glDisable(gl.GL_DEPTH_TEST)
-    gl.glEnable(gl.GL_BLEND)
-    points.draw(gl.GL_POINTS)
+    with borders:
+        window.clear()
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        cones.draw(gl.GL_TRIANGLES, I)
 
 @window.event
 def on_resize(width, height):
     cones['projection'] = glm.ortho(0, width, 0, height, -5, +500)
-    points['projection'] = glm.ortho(0, width, 0, height, -1, +1)
-
+    borders.viewport = 0,0,width,height
 
 @window.event
 def on_mouse_motion(x,y,dx,dy):
     C["translate"][0] = x, window.height-y
-    points["position"][0] = x, window.height-y
-
 
 def makecone(n=32, radius=1024):
     height = radius / np.tan(45 * np.pi / 180.0)
@@ -112,11 +87,10 @@ def makecone(n=32, radius=1024):
     return V, I.ravel()
 
 
-n = 1024 # number of cones (= number of point)
-p = 32   # faces per cones
+n = 512 # number of cones (= number of point)
+p = 32  # faces per cones
 
 cones = gloo.Program(cone_vertex, cone_fragment)
-points = gloo.Program(point_vertex, point_fragment, count=n)
 C = np.zeros((n,1+p), [("translate", np.float32, 2),
                        ("position",  np.float32, 3),
                        ("color",     np.float32, 3)]).view(gloo.VertexBuffer)
@@ -127,12 +101,10 @@ for i in range(n):
     x,y = np.random.normal(512,256,2)
     vertices, indices = makecone(p, radius=512)
     if i > 0:
-        l = np.random.uniform(0.25,1.00)
-        C["color"][i] = l,l,l
+        C["color"][i] = np.random.uniform(0.25,1.00,3)
     else:
         C["color"][0] = 1,1,0
     C["translate"][i] = x,y
-    points["position"][i] = x,y
     C["position"][i] = vertices
     I[i] += indices.ravel()
 cones.bind(C)
