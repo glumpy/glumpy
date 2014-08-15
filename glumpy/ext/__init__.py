@@ -6,3 +6,5 @@
 from . import sdf
 from . import glfw
 from . import freetype
+from . import ffmpeg_reader
+from . import ffmpeg_writer

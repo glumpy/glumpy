@@ -28,8 +28,6 @@ void main()
 }
 """
 
-
-
 borders = filters.Filter(1024, 1024, """
 const float epsilon = 1e-3;
 vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
@@ -87,7 +85,7 @@ def makecone(n=32, radius=1024):
     return V, I.ravel()
 
 
-n = 512 # number of cones (= number of point)
+n = 512 # number of cones (= number of points)
 p = 32  # faces per cones
 
 cones = gloo.Program(cone_vertex, cone_fragment)

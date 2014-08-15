@@ -7,6 +7,7 @@
 import numpy as np
 from makecube import makecube
 from glumpy import app, gl, glm, gloo
+from glumpy.ext.ffmpeg_writer import FFMPEG_VideoWriter
 
 
 vertex = """
@@ -35,12 +36,18 @@ void main()
 }
 """
 
-window = app.Window(width=1024, height=1024, color=(0.30, 0.30, 0.35, 1.00))
+
+width, height = 512,512
+window = app.Window(width, height, color=(0.30, 0.30, 0.35, 1.00))
+duration = 5.0
+framerate = 60
+writer = FFMPEG_VideoWriter("cube.mp4", (width, height), fps=framerate)
+fbuffer = np.zeros((window.height, window.height, 3), dtype=np.uint8)
 
 
 @window.event
 def on_draw(dt):
-    global phi, theta, duration
+    global phi, theta, writer, duration
 
     window.clear()
 
@@ -59,6 +66,16 @@ def on_draw(dt):
     cube.draw(gl.GL_LINES, outline)
     gl.glDepthMask(gl.GL_TRUE)
 
+    if writer is not None:
+        if duration > 0:
+            gl.glReadPixels(0, 0, window.width, window.height,
+                            gl.GL_RGB, gl.GL_UNSIGNED_BYTE, fbuffer)
+            writer.write_frame(fbuffer)
+            duration -= dt
+        else:
+            writer.close()
+            writer = None
+
     # Make cube rotate
     theta += 0.5 # degrees
     phi += 0.5 # degrees
@@ -72,13 +89,11 @@ def on_draw(dt):
 def on_resize(width, height):
     cube['u_projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
 
-
 # Build cube data
 V, I, O = makecube()
 vertices = V.view(gloo.VertexBuffer)
 faces    = I.view(gloo.IndexBuffer)
 outline  = O.view(gloo.IndexBuffer)
-
 
 cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
@@ -97,4 +112,4 @@ gl.glEnable(gl.GL_LINE_SMOOTH)
 gl.glLineWidth(0.75)
 
 # Run
-app.run()
+app.run(framerate=framerate)
