@@ -4,12 +4,12 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import glumpy
+from glumpy import app, __version__
 
-console = glumpy.Console(rows=32,cols=80)
-window = glumpy.Window(width = console.cols*console.cwidth*console.scale,
-                       height = console.rows*console.cheight*console.scale,
-                       color = (1,1,1,1))
+console = app.Console(rows=32,cols=80)
+window = app.Window(width = console.cols*console.cwidth*console.scale,
+                    height = console.rows*console.cheight*console.scale,
+                    color = (1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -19,7 +19,7 @@ def on_draw(dt):
 def timer(fps):
     console.clear()
     console.write("-------------------------------------------------------")
-    console.write(" Glumpy version %s" % (glumpy.__version__))
+    console.write(" Glumpy version %s" % (__version__))
     console.write(" Window size: %dx%d" % (window.width, window.height))
     console.write(" Console size: %dx%d" % (console._rows, console._cols))
     console.write(" Backend: %s (%s)" % (window._backend.__name__,
@@ -31,4 +31,4 @@ def timer(fps):
     console.write("-------------------------------------------------------")
 
 window.attach(console)
-glumpy.run()
+app.run()

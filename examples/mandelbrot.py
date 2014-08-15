@@ -6,9 +6,8 @@
 # -----------------------------------------------------------------------------
 """ Mandelbrot set with pan & zoom """
 
-import glumpy
 import numpy as np
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, __version__
 from glumpy.transforms import PanZoom, Position2D
 
 
@@ -62,13 +61,13 @@ void main()
 """
 
 window = app.Window(width=800, height=800)
-console = glumpy.Console(rows=32,cols=80,color=(1,1,1,1))
+console = app.Console(rows=32,cols=80,color=(1,1,1,1))
 
 @window.timer(1/30.0)
 def timer(fps):
     console.clear()
     console.write("----------------------------------")
-    console.write(" Glumpy version %s" % (glumpy.__version__))
+    console.write(" Glumpy version %s" % (__version__))
     console.write(" Window size: %dx%d" % (window.width, window.height))
     console.write(" Console size: %dx%d" % (console._rows, console._cols))
     console.write(" Backend: %s (%s)" % (window._backend.__name__,

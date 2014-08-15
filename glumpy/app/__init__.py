@@ -20,6 +20,7 @@ from glumpy.app.window.viewport import Viewport
 from . import parser
 from . import configuration
 from . import clock as _clock
+from . console import Console
 
 # Default clock
 __clock__ = None
