@@ -28,7 +28,13 @@ fragment = """
     }
 """
 
-reader = FFMPEG_VideoReader("ImaginaryForces.mp4")
+# Add an option for choosing movie to be played
+app.parser.get_default().add_argument(
+    'movie', metavar='movie file', type=str, nargs='+', help='Movie to play')
+options = app.parser.get_options()
+
+filename = options.movie[0]
+reader = FFMPEG_VideoReader(filename)
 width,height = reader.infos["video_size"]
 duration = reader.infos["duration"]
 
