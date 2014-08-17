@@ -4,7 +4,6 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import datetime
 import numpy as np
 from glumpy import app, gl, gloo
 from glumpy.ext.ffmpeg_reader import FFMPEG_VideoReader
@@ -21,11 +20,11 @@ vertex = """
 """
 
 fragment = """
-    uniform sampler2D texture;
+    uniform sampler2D frame;
     varying vec2 v_texcoord;
     void main()
     {
-        gl_FragColor = texture2D(texture, v_texcoord);
+        gl_FragColor = texture2D(frame, v_texcoord);
     }
 """
 
@@ -41,11 +40,11 @@ def on_draw(dt):
     global time
     window.clear()
     time = np.mod(time+dt, duration)
-    program['texture'][...] = reader.get_frame(time)
+    program['frame'][...] = reader.get_frame(time)
     program.draw(gl.GL_TRIANGLE_STRIP)
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-program['texture'] = np.zeros((height,width,3), dtype=np.uint8)
+program['frame'] = np.zeros((height,width,3), dtype=np.uint8)
 app.run()

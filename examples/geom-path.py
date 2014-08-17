@@ -8,8 +8,7 @@
 # and caps.
 # -----------------------------------------------------------------------------
 import numpy as np
-import glumpy as gp
-import glumpy.gl as gl
+from glumpy import app, gl, glm, gloo
 
 
 vertex = """
@@ -285,10 +284,10 @@ def star(inner=0.45, outer=1.0, n=5):
     P[:,1]= R*np.sin(T)
     return P
 
-vertex   = gp.gloo.VertexShader(vertex)
-fragment = gp.gloo.FragmentShader(fragment)
-geometry = gp.gloo.GeometryShader(geometry, 4, gl.GL_LINES_ADJACENCY_EXT, gl.GL_TRIANGLE_STRIP)
-program = gp.gloo.Program(vertex, fragment, geometry)
+vertex   = gloo.VertexShader(vertex)
+fragment = gloo.FragmentShader(fragment)
+geometry = gloo.GeometryShader(geometry, 4, gl.GL_LINES_ADJACENCY_EXT, gl.GL_TRIANGLE_STRIP)
+program = gloo.Program(vertex, fragment, geometry)
 
 P = (star(n=5)*350 + (400,400)).astype(np.float32)
 
@@ -303,7 +302,7 @@ if closed:
 else:
     I = (np.arange(len(P)+2)-1)
     I[0], I[-1] = 0, len(P)-1
-I = I.astype(np.uint32).view(gp.gloo.IndexBuffer)
+I = I.astype(np.uint32).view(gloo.IndexBuffer)
 
 
 program["position"] = P
@@ -312,7 +311,7 @@ program["antialias"] = 1.0
 program["miter_limit"] = 4.0
 program["color"] = 0,0,0,1
 
-window = gp.app.Window(width=800, height=800, color=(1,1,1,1))
+window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -321,6 +320,6 @@ def on_draw(dt):
 
 @window.event
 def on_resize(width, height):
-    program['projection'] = gp.glm.ortho(0, width, 0, height, -1, +1)
+    program['projection'] = glm.ortho(0, width, 0, height, -1, +1)
 
-gp.app.run()
+app.run()

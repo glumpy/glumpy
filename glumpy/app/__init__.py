@@ -190,7 +190,7 @@ class Window(object):
         if options.display_fps:
             @window.timer(1.0)
             def timer(elapsed):
-                print "Estimated FPS:", fps()
+                print("Estimated FPS:", fps())
 
         return window
 

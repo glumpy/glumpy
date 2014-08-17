@@ -68,9 +68,9 @@ def on_draw(dt):
 
 # Build cube data
 V, I, O = makecube()
-vertices = V.view(gp.gloo.VertexBuffer)
-faces    = I.view(gp.gloo.IndexBuffer)
-outline  = O.view(gp.gloo.IndexBuffer)
+vertices = V.view(gloo.VertexBuffer)
+faces    = I.view(gloo.IndexBuffer)
+outline  = O.view(gloo.IndexBuffer)
 
 cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)

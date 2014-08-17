@@ -16,4 +16,3 @@ from . import app
 from . import gloo
 from . import data
 from . import transforms
-from . console import Console
