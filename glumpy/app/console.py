@@ -4,9 +4,7 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-""" Fast and failsafe GL console
-"""
-
+""" Fast and failsafe GL console """
 import numpy as np
 from glumpy import gl, glm, gloo
 
@@ -112,13 +110,12 @@ void main(void)
 """
 
 
-
 class Console(object):
     """ Fast and failsafe GL console """
 
     def __init__(self, rows, cols, scale=2, color=(0,0,0,1)):
 
-        # Harcoded because of font above and shder program
+        # Harcoded because of font above and shader program
         self._cwidth = 6
         self._cheight = 8
         self._scale = int(max(scale,1))
@@ -142,25 +139,31 @@ class Console(object):
         self._rows, self._cols = rows, cols
         self._row = 0
 
+
     @property
     def scale(self):
         return self._scale
+
 
     @property
     def rows(self):
         return self._rows
 
+
     @property
     def cols(self):
         return self._cols
+
 
     @property
     def cwidth(self):
         return self._cwidth
 
+
     @property
     def cheight(self):
         return self._cheight + 2
+
 
     def on_resize(self, width, height):
         """ Update console projection """
@@ -173,11 +176,13 @@ class Console(object):
 
         self._program.draw(gl.GL_POINTS)
 
+
     def clear(self):
         """ Clear console """
 
         self._data["glyph"] = 0
         self._row = 0
+
 
     def write(self, text=""):
         """ Write text and scroll """
