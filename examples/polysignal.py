@@ -35,17 +35,14 @@ varying vec2 v_position;
 varying vec4 v_ab;
 
 void main() {
-    float ncols = u_size.x;
-    float nrows = u_size.y;
-
     // Compute the x coordinate from the time index
     float x = -1.0 + 2.0*a_index.z / (u_n-1.0);
     vec2 position = vec2(x, a_position);
 
     // Find the affine transformation for the subplots
     vec2 a = 0.95 / u_size;
-    vec2 b = vec2(-1.0 + 2.0*(a_index.x+0.5) / ncols,
-                  -1.0 + 2.0*(a_index.y+0.5) / nrows);
+    vec2 b = vec2(-1.0 + 2.0*(a_index.x+0.5) / u_size.x,
+                  -1.0 + 2.0*(a_index.y+0.5) / u_size.y);
 
     // Apply the static subplot transformation + scaling
     gl_Position = vec4(a*u_scale*position+b, 0.0, 1.0);
