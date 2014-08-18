@@ -9,6 +9,7 @@
 import numpy as np
 from glumpy import app, gloo, gl, glm
 
+
 vertex = """
 // y coordinate of the position.
 attribute float a_position;
