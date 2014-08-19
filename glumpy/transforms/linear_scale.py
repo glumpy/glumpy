@@ -4,24 +4,11 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-import numpy as np
 from . import Transform
+from glumpy.shaders import get_code
 
 
 class LinearScale(Transform):
-
-    # uniform vec3 scale
-    shaderfile = "linear-scale-forward.glsl"
-
-
     def __init__(self, *args, **kwargs):
-        Transform.__init__(self, *args, **kwargs)
-
-
-    @property
-    def scale(self):
-        return self['scale']
-
-    @scale.setter
-    def scale(self, value):
-        self['scale'] = value
+        code = get_code("linear-scale-forward.glsl")
+        Transform.__init__(self, code, *args, **kwargs)

@@ -13,25 +13,15 @@ from glumpy.app.window.event import EventDispatcher
 
 class Transform(Snippet,EventDispatcher):
 
-    shaderfile = None
-
-    def __init__(self, *args, **kwargs):
-        code = get_code(self.__class__.shaderfile)
-        Snippet.__init__(self, code)
+    def __init__(self, code, *args, **kwargs):
+        Snippet.__init__(self, code, None, *args, **kwargs)
         EventDispatcher.__init__(self)
 
-        self._args = list(args)
-        for symbol in kwargs.keys():
-            self._aliases[symbol] = kwargs[symbol]
 
     def attach(self, program):
         """ A new program is attached """
 
         Snippet.attach(self,program)
-        # WARN: Do we need to build hooks ?
-        # program._build_hooks()
-        program._build_uniforms()
-        program._build_attributes()
         self.dispatch_event("on_attach", program)
 
 

@@ -116,8 +116,8 @@ def get_functions(code):
         name = match.group('name')
         args = match.group('args')
         fcode = match.group('code')
-        functions.append( (rtype, name, args, fcode) )
-
+        if name not in ("if", "while"):
+            functions.append( (rtype, name, args, fcode) )
     return functions
 
 def parse(code):
@@ -131,9 +131,12 @@ def parse(code):
     hooks     = get_hooks(code) if code else []
     functions = get_functions(code) if code else []
 
-    return { 'externs'   : externs,   'consts'    : consts,
-             'uniforms'  : uniforms,  'attributes': attributes,
-             'varyings'  : varyings,  'hooks'     : hooks,
+    return { 'externs'   : externs,
+             'consts'    : consts,
+             'uniforms'  : uniforms,
+             'attributes': attributes,
+             'varyings'  : varyings,
+             'hooks'     : hooks,
              'functions' : functions }
 
 

@@ -6,15 +6,14 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from . transform import Transform
+from glumpy.shaders import get_code
 
 
 class PanZoom(Transform):
 
-    # uniform vec2 scale
-    # uniform vec2 translate
-    shaderfile = "panzoom.glsl"
-
     def __init__(self, *args, **kwargs):
+        if "code" not in kwargs.keys():
+            kwargs["code"] = get_code("panzoom.glsl")
         Transform.__init__(self, *args, **kwargs)
 
         self.scale     = np.array([1.,1.])

@@ -27,11 +27,8 @@ uniform float iGlobalTime;
 // --- Your function here ---
 float function( float x )
 {
-    float d = 3.0 - 2.0*(1.0+cos(iGlobalTime/10.0))/2.0;
+    float d = 3.0 - 2.0*(1.0+cos(iGlobalTime/5.0))/2.0;
     return sin(pow(x,d))*sin(x);
-    // return sin(x*x*x)*sin(x);
-    // return sin(x*x*x)*sin(x) + 0.1*sin(x*x);
-    // return sin(x);
 }
 // --- Your function here ---
 
@@ -74,12 +71,20 @@ void main(void)
 """
 
 window = app.Window(width=2350, height=600, color=(1,1,1,1))
+pause = False
 
 @window.event
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
-    program["iGlobalTime"] += dt
+    if not pause:
+        program["iGlobalTime"] += dt
+
+@window.event
+def on_key_press(key, modifiers):
+    global pause
+    if key == ord(' '):
+        pause = not pause
 
 @window.event
 def on_resize(width, height):

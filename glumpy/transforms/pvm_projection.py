@@ -8,14 +8,14 @@ import numpy as np
 from glumpy import gl
 from glumpy import glm
 from . transform import Transform
+from glumpy.shaders import get_code
 
 
 class PVMProjection(Transform):
 
-    shaderfile = "pvm.glsl"
-
     def __init__(self, *args, **kwargs):
-        Transform.__init__(self, *args, **kwargs)
+        code = get_code("pvm.glsl")
+        Transform.__init__(self, code, *args, **kwargs)
 
         self._fovy = 40
         self._znear, self._zfar = 2.0, 100.0
@@ -24,12 +24,10 @@ class PVMProjection(Transform):
         self._projection = np.eye(4, dtype=np.float32)
         glm.translate(self._view, 0, 0, -5)
 
-
     def on_attach(self, program):
         program["view"] = self._view
         program["model"] = self._model
         program["projection"] = self._projection
-
 
     def on_resize(self, width, height):
         fovy = self._fovy

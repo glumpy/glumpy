@@ -16,9 +16,9 @@ class NormalizedAspect(LinearScale):
     def on_resize(self, width, height):
         aspect = float(width)/float(height)
         if aspect > 1.0:
-            self.scale = 1.0/aspect, 1.0, 1.0
+            self["scale"] = 1.0/aspect, 1.0, 1.0
         else:
-            self.scale = 1.0, aspect/1.0, 1.0
+            self["scale"] = 1.0, aspect/1.0, 1.0
 
 
 vertex = """

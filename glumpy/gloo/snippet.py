@@ -32,7 +32,7 @@ class Snippet(object):
     # (Transient) internal id counter for automatic snippets naming
     _id_counter = 0
 
-    def __init__(self, code=None, default=None):
+    def __init__(self, code=None, default=None, *args, **kwargs):
 
         # Original source code
         self._source_code = code
@@ -44,29 +44,39 @@ class Snippet(object):
         self._default = default
 
         # No args yet
-        self._args = []
+        self._args = list(args)
 
         # No chained snippet yet
         self._next = None
 
         # Symbol & alias tables
-        self._symbols = {}
         self._aliases = {}
+        for symbol in kwargs.keys():
+            self._aliases[symbol] = kwargs[symbol]
+        self._symbols = {}
+
 
         # Attached programs
         self._programs = []
 
 
-    def lookup(self, name):
+    def lookup(self, name, deepsearch=True):
         """ Search for a specific symbol """
 
-        if name in self._symbols.keys():
-            return self._symbols[name]
-        elif name in self._aliases.keys():
-            return self._aliases[name]
-        else:
-            # return name
+        if deepsearch:
+            for snippet in self.snippets:
+                if name in snippet._symbols.keys():
+                    return snippet._symbols[name]
+                elif name in snippet._aliases.keys():
+                    return snippet._aliases[name]
             return None
+        else:
+            if name in self._symbols.keys():
+                return self._symbols[name]
+            elif name in self._aliases.keys():
+                return self._aliases[name]
+            else:
+                return None
 
 
     @property
@@ -84,6 +94,10 @@ class Snippet(object):
         for snippet in list(self._args) + [self.next]:
             if isinstance(snippet, Snippet):
                 snippet.attach(program)
+        # WARN: Do we need to build hooks ?
+        # program._build_hooks()
+        program._build_uniforms()
+        program._build_attributes()
 
 
     def detach(self, program):
@@ -109,10 +123,11 @@ class Snippet(object):
                 funnames.append(name)
             for name,_ in snippet._objects["uniforms"]:
                 varnames.append(name)
-            for varname,_ in snippet._objects["attributes"]:
-                names.append(name)
-            for varname,_ in snippet._objects["varyings"]:
-                names.append(name)
+            for name,_ in snippet._objects["attributes"]:
+                varnames.append(name)
+            for name,_ in snippet._objects["varyings"]:
+                varnames.append(name)
+
         def find_duplicates(l):
             seen = set()
             seen_add = seen.add
@@ -144,7 +159,6 @@ class Snippet(object):
                + self._objects["attributes"] \
                + self._objects["varyings"]
         for name,_ in vars:
-
             mangled_name = None
             if name in self._aliases.keys():
                 mangled_name = self._aliases[name]
@@ -157,7 +171,7 @@ class Snippet(object):
             else:
                 self._symbols[name] = name
 
-        # Get rig of externs
+        # Get rid of externs
         code = re.sub(r"\s*extern[^;]*;", lambda _ : "", code)
 
         # Get code from args
@@ -193,7 +207,7 @@ class Snippet(object):
             else:
                 _,name,_,_ = self._objects["functions"][0]
 
-            s = self.lookup(name) or name
+            s = self.lookup(name, deepsearch=False) or name
             if len(self._args):
                 s += " ( " + ", ".join([str(arg) for arg in self._args]) + " )"
             else:
@@ -304,6 +318,9 @@ class Snippet(object):
 
     def __rdiv__(self, other):
         return self.__op__("/", other)
+
+    def __rshift__(self, other):
+        return self.__op__(";", other)
 
     def __str__(self):
         return self._generate_call()
@@ -430,14 +447,34 @@ vec4 inverse(vec4 position)
 }
 """
 
-    Scale = Snippet(scale)
-    Translate = Snippet(translate)
-    Position4D = "position"
-    Position3D = "vec4(position.xyz, 1.0)"
-    Position2D = "vec4(position.xy, 0.0, 1.0)"
+    # Scale = Snippet(scale)
+    # Translate = Snippet(translate)
+    # Position4D = "position"
+    # Position3D = "vec4(position.xyz, 1.0)"
+    # Position2D = "vec4(position.xy, 0.0, 1.0)"
 
-    R = Translate(Position3D)
-    R = Translate.forward(Translate.forward(Position3D))
-    # R = Translate.forward(Position3D)
-    print R.code
-    print R.call
+    # R = Translate(Position3D)
+    # # R = Translate.forward(Translate.forward(Position3D))
+    # # R = Translate.forward(Position3D)
+    # print R.code
+    # print R.call
+
+
+    T = Snippet("""
+varying float v_index;
+vec2 transform(float index)
+{
+    v_index = index;
+}
+""")
+    TT = T(T(v_index="toto"), v_index="titi")
+
+    print T.code
+    print TT.code
+
+    print TT.lookup("v_index")
+    print TT.args[0].lookup("v_index")
+
+    S = Snippet("""varying float v_index;""")(v_index = T.lookup("v_index"))
+
+    # print C.code

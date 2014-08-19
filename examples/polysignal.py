@@ -8,6 +8,8 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gloo, gl, glm
+from glumpy.transforms import Transform
+
 
 
 vertex = """
