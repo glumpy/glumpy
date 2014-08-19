@@ -40,7 +40,10 @@ vec4 inverse(vec4 position)
 """)
 
 #print translate(position2D("position"), translate="offset").code
-window = glumpy.Window()
+window = app.Window()
+
+print
+print "--- Without aliases ---"
 
 program = gloo.Program(vertex, fragment)
 program["transform"] = translate(position2D("position"))
@@ -49,8 +52,7 @@ program["translate"] = 1
 program["color"] = "vec4(0,0,0,1)"
 print program._verts[0].code
 
-print "---"
-
+print "--- With aliases ---"
 program = gloo.Program(vertex, fragment)
 program["transform"] = translate(position2D("position"), translate="offset")
 program["transform"]["offset"] = 1
