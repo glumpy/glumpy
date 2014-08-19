@@ -85,6 +85,15 @@ class Snippet(object):
 
         return self._programs
 
+    @property
+    def symbols(self):
+        """ Table of symbols """
+
+        # Do we also return aliases ?
+        symbols = self._symbols.copy()
+        symbols.update(self._aliases)
+        return symbols
+
 
     def attach(self, program):
         """ Attach this snippet to a program """

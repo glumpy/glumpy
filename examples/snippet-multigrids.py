@@ -102,9 +102,8 @@ rows, cols = 2,2
 m = rows*cols - 1 + rows*cols # 7
 
 program = gloo.Program(vertex, fragment)
-program["index1"] = np.repeat([ 0, 0, 0, 0, 1, 2, 3],n)
+program["index1"] = np.repeat([ 2, 2, 2, 2, 0, 1, 3],n)
 program["index2"] = np.repeat([ 0, 1, 2, 3,-1,-1,-1],n)
-
 program["color"] = np.repeat(np.random.uniform(0.5,0.9,(m,3)),n,axis=0)
 program["px"]    = np.tile(np.linspace(-1,1,n),m)
 program["py"]    = 0.5*np.random.uniform(-1,1,m*n)
@@ -114,6 +113,6 @@ program["grid"]["cols"]  = cols
 program["grid"]["xscale"] = 1.0
 cell1 = program["grid"].args[0]
 cell2 = program["grid"].args[0].args[0]
-program["clip"] = Clip(**cell1._symbols) >> Clip(**cell2._symbols)
+program["clip"] = Clip(**cell1.symbols) >> Clip(**cell2.symbols)
 
 app.run()
