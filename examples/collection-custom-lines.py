@@ -22,6 +22,7 @@ vertex = """
 // -----------------------------------------------
 
 uniform float rows, cols;
+varying float v_x;
 varying vec4 v_color;
 void main()
 {
@@ -47,16 +48,20 @@ void main()
     float width = 0.95 / (1.0*cols);
     float height = 0.95 / (1.0*rows) * amplitude;
 
-    gl_Position = vec4(x + width*position.x, y + height*position.y, 0.0, 1.0);
+    v_x = xscale*position.x;
+    gl_Position = vec4(x + width*xscale*position.x, y + height*position.y, 0.0, 1.0);
 }
 """
 
 fragment = """
 // Collection varyings are not propagated to the fragment shader
 // -------------------------------------------------------------
+varying float v_x;
 varying vec4 v_color;
 void main(void)
 {
+    if( v_x < -0.95) discard;
+    if( v_x > +0.95) discard;
     gl_FragColor = v_color;
 }
 """
@@ -65,35 +70,47 @@ void main(void)
 rows,cols = 16,20
 n, p = rows*cols, 1000
 lines = LineCollection(dtypes = [("amplitude", np.float32, 1),
-                                 ("selected",  np.float32, 1)],
+                                 ("selected",  np.float32, 1),
+                                 ("xscale",    np.float32, 1)],
                        scopes = {"amplitude" : "shared",
-                                 "selected" : "shared"},
+                                 "selected" : "shared",
+                                 "xscale" : "shared"},
                        vertex=vertex, fragment=fragment )
 lines["rows"] = rows
 lines["cols"] = cols
-
 lines.append(np.random.uniform(-1,1,(n*p,3)), itemsize=p)
 lines["position"][:,0] = np.tile(np.linspace(-1,+1,p),n)
 lines["amplitude"][:n] = np.random.uniform(0.25,0.75,n)
 lines["color"][:n] = np.random.uniform(0.25,0.75,(n,4))
 lines["selected"] = 0.0
+lines["xscale"][:n] = np.random.uniform(1,25,n)
 
 window = app.Window(800,600)
 @window.event
 def on_draw(dt):
     window.clear(), lines.draw()
+    Y = lines["position"][:,1].reshape(n,p)
+    Y[:,:-10] = Y[:,10:]
+    Y[:,-10:] = np.random.uniform(-1,1, (n,10))
 
+def get_index(x,y):
+    """ Find the index of the plot under mouse """
+    y = window.height-y
+    col = int(x/float(window.width)*cols) % cols
+    row = int(y/float(window.height)*rows) % rows
+    return row*cols + col
 
 @window.event
 def on_mouse_motion(x,y,dx,dy):
-
-    y = window.height-y
-
-    # Find the index of the plot under mouse
-    col = int(x/float(window.width)*cols) % cols
-    row = int(y/float(window.height)*rows) % rows
-    index = row*cols + col
+    index = get_index(x,y)
     lines["selected"] = 0
     lines["selected"][index] = 1
+
+@window.event
+def on_mouse_scroll(x, y, dx, dy):
+    index = get_index(x,y)
+    dx = np.sign(dy) * .05
+    lines["xscale"][index] *= np.exp(2.5*dx)
+    lines["xscale"][index] = min(max(1.0, lines["xscale"][index]),100)
 
 app.run()
