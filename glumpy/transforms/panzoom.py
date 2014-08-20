@@ -12,9 +12,8 @@ from glumpy.shaders import get_code
 class PanZoom(Transform):
 
     def __init__(self, *args, **kwargs):
-        if "code" not in kwargs.keys():
-            kwargs["code"] = get_code("panzoom.glsl")
-        Transform.__init__(self, *args, **kwargs)
+        code = get_code("panzoom.glsl")
+        Transform.__init__(self, code, *args, **kwargs)
 
         self.scale     = np.array([1.,1.])
         self.translate = np.array([0.,0.])
