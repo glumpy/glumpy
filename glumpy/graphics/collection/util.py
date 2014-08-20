@@ -77,14 +77,14 @@ def fetchcode(utype, prefix=""):
     """
     Generate the GLSL code needed to retrieve fake uniform values from a texture.
 
-    u_uniforms : sampler2D
+    uniforms : sampler2D
         Texture to fetch uniforms from
 
-    u_uniforms_shape: vec3
+    uniforms_shape: vec3
         Size of texture (width,height,count) where count is the number of float
         to be fetched.
 
-    a_uniform_index: float
+    collection_index: float
         Attribute giving the index of the uniforms to be fetched. This index
        relates to the index in the uniform array from python side.
     """
@@ -93,9 +93,9 @@ def fetchcode(utype, prefix=""):
     _utype = dtype_reduce(utype, level=1)
 
     header = """
-uniform   sampler2D u_uniforms;
-uniform   vec3      u_uniforms_shape;
-attribute float     a_uniform_index;
+uniform   sampler2D uniforms;
+uniform   vec3      uniforms_shape;
+attribute float     collection_index;
 
 """
 
@@ -107,10 +107,10 @@ attribute float     a_uniform_index;
 
     # Body generation (not so easy)
     body = """\nvoid fetch_uniforms() {
-    float rows   = u_uniforms_shape.x;
-    float cols   = u_uniforms_shape.y;
-    float count  = u_uniforms_shape.z;
-    float index  = a_uniform_index;
+    float rows   = uniforms_shape.x;
+    float cols   = uniforms_shape.y;
+    float count  = uniforms_shape.z;
+    float index  = collection_index;
     int index_x  = int(mod(index, (floor(cols/(count/4.0))))) * int(count/4.0);
     int index_y  = int(floor(index / (floor(cols/(count/4.0)))));
     float size_x = cols - 1.0;
@@ -130,7 +130,7 @@ attribute float     a_uniform_index;
         size = count
         while count:
             if store == 0:
-                body += "\n    _uniform = texture2D(u_uniforms, vec2(float(i++)/size_x,ty));\n"
+                body += "\n    _uniform = texture2D(uniforms, vec2(float(i++)/size_x,ty));\n"
                 store = 4
             if   store == 4: a = "xyzw"
             elif store == 3: a = "yzw"

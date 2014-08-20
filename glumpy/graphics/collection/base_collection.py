@@ -188,7 +188,7 @@ class BaseCollection(object):
             # we can append new fields
             vtype = eval(str(np.dtype(vtype)))
             # We add a uniform index to access uniform data
-            vtype.append( ('a_uniform_index', 'f4') )
+            vtype.append( ('collection_index', 'f4') )
             vtype = np.dtype(vtype)
 
             # Check utype is made of float32 only
@@ -206,7 +206,7 @@ class BaseCollection(object):
             self._compute_ushape(1)
             self._uniforms_list.reserve( self._ushape[1] / (count/4) )
 
-        # Last since utype may add a new field in vtype (a_uniform_index)
+        # Last since utype may add a new field in vtype (collecion_index)
         self._vertices_list  = ArrayList(dtype=vtype)
 
 
@@ -248,8 +248,8 @@ class BaseCollection(object):
         if self._program is not None:
             self._program.bind(self._vertices_buffer)
             if self._uniforms_list is not None:
-                self._program["u_uniforms"] = self._uniforms_texture
-                self._program["u_uniforms_shape"] = self._ushape
+                self._program["uniforms"] = self._uniforms_texture
+                self._program["uniforms_shape"] = self._ushape
 
 
 
@@ -312,12 +312,18 @@ class BaseCollection(object):
         # Getting individual item
         elif isinstance(key, int):
             vstart, vend = self._vertices_list._items[key]
-            istart, iend = self._indices_list._items[key]
-            ustart, uend = self._uniforms_list._items[key]
             vertices = V[vstart:vend]
-            indices  = I[istart:iend] if I is not None else None
-            uniform  = U[ustart:uend] if U is not None else None
-            return Item(self, key, vertices, indices, uniform)
+            indices = None
+            uniforms = None
+            if I is not None:
+                istart, iend = self._indices_list._items[key]
+                indices  = I[istart:iend]
+
+            if U is not None:
+                ustart, uend = self._uniforms_list._items[key]
+                uniforms  = U[ustart:uend]
+
+            return Item(self, key, vertices, indices, uniforms)
 
         # Error
         else:
@@ -403,10 +409,10 @@ class BaseCollection(object):
         if self._uniforms_list is not None:
             del self._uniforms_list[index]
 
-        # Update a_uniform_index at once
+        # Update collection_index at once
         if self._uniforms_list is not None:
             I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
-            self._vertices_list['a_uniform_index'] = I.astype(np.float32)
+            self._vertices_list['collection_index'] = I.astype(np.float32)
 
 
         # It is not strictly necessary to build new buffers each time an
@@ -510,7 +516,7 @@ class BaseCollection(object):
             # Update a_index at once
             if self._uniforms_list is not None:
                 I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
-                self._vertices_list['a_uniform_index'] = I.astype(np.float32)
+                self._vertices_list['collection_index'] = I.astype(np.float32)
 
             # It is not strictly necessary to build new buffers each time an
             # item is inserted, but it would complexify even more this already
@@ -582,10 +588,10 @@ class BaseCollection(object):
                 else:
                     self._uniforms_list.insert(index, uniforms, itemsize=1)
 
-        # Update a_uniform_index at once
+        # Update collection_index at once
         if self._uniforms_list is not None:
             I = np.repeat(np.arange(len(self)), self._vertices_list.itemsize)
-            self._vertices_list['a_uniform_index'] = I.astype(np.float32)
+            self._vertices_list['collection_index'] = I.astype(np.float32)
 
         # It is not strictly necessary to build new buffers each time an item
         # is inserted, but it would complexify even more this already complex
