@@ -67,7 +67,7 @@ void main(void)
 """
 
 
-rows,cols = 16,20
+rows,cols = 8,10
 n, p = rows*cols, 1000
 lines = LineCollection(dtypes = [("amplitude", np.float32, 1),
                                  ("selected",  np.float32, 1),
@@ -81,7 +81,8 @@ lines["cols"] = cols
 lines.append(np.random.uniform(-1,1,(n*p,3)), itemsize=p)
 lines["position"][:,0] = np.tile(np.linspace(-1,+1,p),n)
 lines["amplitude"][:n] = np.random.uniform(0.25,0.75,n)
-lines["color"][:n] = np.random.uniform(0.25,0.75,(n,4))
+lines["color"][:n] = np.random.uniform(0.5,1.0,(n,4))
+lines["color"][:n,3] = 1.0
 lines["selected"] = 0.0
 lines["xscale"][:n] = np.random.uniform(1,25,n)
 

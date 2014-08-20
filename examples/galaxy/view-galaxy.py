@@ -69,7 +69,7 @@ def on_init():
 def on_draw(dt):
     window.clear()
     galaxy.update(100000) # in years !
-    program['a_size'] = galaxy['size']
+    program['a_size'] = galaxy['size'] * max(window.width/800.0, window.height/800.0)
     program['a_position'] = galaxy['position'] / 13000.0
     program.draw(gl.GL_POINTS)
 
@@ -105,6 +105,8 @@ program['u_model'] = model
 program['u_view'] = view
 program['u_colormap'] = colors
 program['u_texture'] = np.array(Image.open("particle.png"))
+program['u_texture'].interpolation = gl.GL_LINEAR
+
 program['a_temperature'] = (galaxy['temperature'] - t0) / (t1-t0)
 program['a_brightness'] = galaxy['brightness']
 program['a_size'] = galaxy['size']

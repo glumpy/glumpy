@@ -8,13 +8,12 @@ import numpy as np
 from  glumpy import app
 from glumpy.graphics.collection import LineCollection
 
-
 rows,cols = 16,20
 n, p = rows*cols, 1000
-
 lines = LineCollection()
 lines.append(np.random.uniform(-1,1,(rows*cols*p,3)), itemsize=p)
 
+# Setting lines one by one (we could also do it at once)
 for row in range(rows):
     for col in range(cols):
         i = row*cols+col
