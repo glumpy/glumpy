@@ -7,7 +7,7 @@ import numpy as np
 from glumpy import gloo, data
 
 
-def cube(size=1.0):
+def cube(size=1.0, n=2):
     """
     Cube centered at origin
 
@@ -15,51 +15,78 @@ def cube(size=1.0):
     ----------
     size : float
        cube length size
+
+    n : int
+        Tesselation level
     """
+
+    n = max(2,n)
+
+    T = np.linspace(0,1,n,endpoint=True)
+    X,Y = np.meshgrid(T-0.5,T-0.5)
+    X = X.ravel()*size
+    Y = Y.ravel()*size
+    Z = np.ones_like(X)*0.5*size
+    U,V = np.meshgrid(T,T)
+    U = U.ravel()
+    V = V.ravel()
+
+    I = (np.arange((n-1)*(n),dtype=np.uint32).reshape(n-1,n))[:,:-1].T
+    I = np.repeat(I.ravel(),6).reshape(n-1,n-1,6)
+    I[:,:] += 0,1,n+1, 0,n+1,n
 
     vtype = [('position', np.float32, 3),
              ('texcoord', np.float32, 2),
              ('normal',   np.float32, 3)]
     itype = np.uint32
+    vertices = np.zeros((6,n*n), dtype=vtype)
 
-    # Vertices positions
-    p = np.array([[1, 1, 1], [-1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                  [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, -1]], dtype=np.float32)
-    p *= size/2.0, size/2.0, size/2.0
+    vertices["texcoord"][...,0] = U
+    vertices["texcoord"][...,1] = V
 
+    # Top
+    vertices["position"][0,:,0] = X
+    vertices["position"][0,:,1] = Y
+    vertices["position"][0,:,2] = Z
+    vertices["normal"][0] = 0,0,1
 
-    # Face Normals
-    n = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0],
-                  [-1, 0, 1], [0, -1, 0], [0, 0, -1]])
-    # Texture coords
-    t = np.array([[0, 0], [0, 1], [1, 1], [1, 0]])
+    # Bottom
+    vertices["position"][1,:,0] = X
+    vertices["position"][1,:,1] = Y
+    vertices["position"][1,:,2] = -Z
+    vertices["normal"][1] = 0,0,-1
 
-    faces_p = [0, 1, 2, 3,
-               0, 3, 4, 5,
-               0, 5, 6, 1,
-               1, 6, 7, 2,
-               7, 4, 3, 2,
-               4, 7, 6, 5]
-    faces_n = [0, 0, 0, 0,
-               1, 1, 1, 1,
-               2, 2, 2, 2,
-               3, 3, 3, 3,
-               4, 4, 4, 4,
-               5, 5, 5, 5]
-    faces_t = [0, 1, 2, 3,
-               0, 1, 2, 3,
-               0, 1, 2, 3,
-               3, 2, 1, 0,
-               0, 1, 2, 3,
-               0, 1, 2, 3]
+    # Front
+    vertices["position"][2,:,0] = Z
+    vertices["position"][2,:,1] = X
+    vertices["position"][2,:,2] = Y
+    vertices["normal"][2] = 1,0,0
 
-    vertices = np.zeros(24, vtype)
-    vertices['position'] = p[faces_p]
-    vertices['normal'] = n[faces_n]
-    vertices['texcoord'] = t[faces_t]
-    indices = np.resize(np.array([0,1,2,0,2,3], dtype=itype), 6*(2*3))
-    indices+= np.repeat(4 * np.arange(6, dtype=itype), 6)
+    # Back
+    vertices["position"][3,:,0] = -Z
+    vertices["position"][3,:,1] = X
+    vertices["position"][3,:,2] = Y
+    vertices["normal"][3] = -1,0,0
 
+    # Left
+    vertices["position"][4,:,0] = X
+    vertices["position"][4,:,1] = Z
+    vertices["position"][4,:,2] = Y
+    vertices["normal"][4] = 0,1,0
+
+    # Right
+    vertices["position"][5,:,0] = X
+    vertices["position"][5,:,1] = -Z
+    vertices["position"][5,:,2] = Y
+    vertices["normal"][5] = 0,-1,0
+
+    I = I.ravel()
+    indices = np.zeros((6,len(I)), dtype=itype)
+    indices[:] = I
+    indices += (np.arange(6)*n*n).reshape(6,1)
+
+    vertices = vertices.ravel()
+    indices = indices.ravel()
     return vertices.view(gloo.VertexBuffer), indices.view(gloo.IndexBuffer)
 
 
@@ -346,23 +373,23 @@ def sphere(radius=1.0, slices=32, stacks=32):
     return vertices.view(gloo.VertexBuffer), indices.view(gloo.IndexBuffer)
 
 
-def icosphere(radius=1.0, slices=24, stacks=24):
+def cubesphere(radius=1.0, n=32):
     """
-    Icosphere (without poles) centered at origin.
-
-    The sphere is subdivided around the Z axis into slices and along the Z axis
-    into stacks.
+    Cubesphere (cube warped into sphere) centered at origin.
 
     Parameters
     ----------
     radius : float
         The radius of the sphere.
-    slices : float
-        The number of subdivisions around the Z axis (similar to lines of longitude).
-    stacks : float
-        The number of subdivisions along the Z axis (similar to lines of latitude).
+    n : int
+        Tesselation level
     """
-    pass
+
+    vertices, indices = cube(1.0,n)
+    L = np.sqrt((vertices["position"]**2).sum(axis=1))
+    vertices["position"] /= L.reshape(len(vertices),1)/radius
+    vertices["normal"] = vertices["position"]
+    return vertices, indices
 
 
 

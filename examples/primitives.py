@@ -85,9 +85,10 @@ void main()
 }
 """
 
+
 window = app.Window(width=1024, height=1024, color=(1,1,1,1))
 
-def checkerboard(grid_num=8, grid_size=32):
+def checkerboard(grid_num=16, grid_size=32):
     row_even = grid_num / 2 * [0, 1]
     row_odd = grid_num / 2 * [1, 0]
     Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
@@ -120,22 +121,20 @@ def on_init():
 @window.event
 def on_key_press(key, modifiers):
     global vertices, indices, index
-
     if key == ord(' '):
         index = (index+1) % len(shapes)
         vertices, indices = shapes[index]
         program.bind(vertices)
 
-# Choose...
-shapes = [ primitives.cone(),
-           primitives.cylinder(),
-           primitives.pyramid(),
-           primitives.cube(1.5),
-           primitives.torus(),
-           primitives.sphere(),
-           primitives.teapot() ]
-
 index = 0
+shapes = [ primitives.cube(1.5),
+           primitives.sphere(),
+           primitives.cubesphere(),
+           primitives.cylinder(),
+           primitives.torus(),
+           primitives.cone(),
+           primitives.pyramid(),
+           primitives.teapot() ]
 vertices, indices = shapes[index]
 
 program = gloo.Program(vertex, fragment)
@@ -148,14 +147,12 @@ program['model'] = model
 program['view'] = view
 program['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
 program['texture'] = checkerboard()
-
 program["light1_position"] = 3, 0, 0+5
 program["light2_position"] = 0, 3, 0+5
 program["light3_position"] = -3, -3, +5
 program["light1_color"]    = 1, 0, 0
 program["light2_color"]    = 0, 1, 0
 program["light3_color"]    = 0, 0, 1
-
 phi, theta = 0, 0
 
 app.run()
