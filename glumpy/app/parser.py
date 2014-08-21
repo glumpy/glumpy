@@ -104,18 +104,18 @@ def set_default_options(parser):
                         help="Stencil buffer size")
 
     # GL API
-    parser.add_argument("--api",
+    parser.add_argument("--gl-api",
                         default="GL",
                         choices=["GL","ES"],
                         help="GL API")
 
     # GL profile
-    parser.add_argument("--profile",
+    parser.add_argument("--gl-profile",
                         default="none",
                         choices=["none","core", "compatibility"],
                         help="GL context profile (only relevant for GL > 3.0)")
 
     # GL version
-    parser.add_argument("--version",
+    parser.add_argument("--gl-version",
                         default="2.1",
                         help="GL version")
