@@ -67,7 +67,7 @@ void main(void)
 """
 
 
-rows,cols = 8,10
+rows,cols = 16,20
 n, p = rows*cols, 1000
 lines = LineCollection(dtypes = [("amplitude", np.float32, 1),
                                  ("selected",  np.float32, 1),
