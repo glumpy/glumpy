@@ -4,10 +4,10 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import gloo
+from glumpy import gloo, data
 
 
-def cube(size=2.0):
+def cube(size=1.0):
     """
     Cube centered at origin
 
@@ -179,7 +179,7 @@ def tube(top_radius=1.0, base_radius=1.0, height=2.0, slices=32, caps=(True,True
 
 
 
-def cylinder(radius=1.0, height=2.0, slices=32, caps=(True,True)):
+def cylinder(radius=0.5, height=2.0, slices=32, caps=(True,True)):
     """
     Z-axis aligned cylinder centered a origin.
 
@@ -239,13 +239,64 @@ def pyramid(radius=1.0, height=1.0, cap=True):
     cap : bool
         Whether to add cap at base
     """
-    vertices, incides = tube(0, radius, height, 4, caps=[False,cap])
+    vertices, indices = tube(0, radius, height, 4, caps=[False,cap])
     vertices["position"] += 0,0, height/2.0
     return vertices, indices
 
 
+def torus(inner_radius=0.25, outer_radius=1.0, sides=32, rings=48):
+    """
+    Z-axis aligned torus (doughnut) centered at origin.
 
-def sphere(radius=1.0, slices=24, stacks=24):
+    Parameters
+    ----------
+    inner_radius : float
+        Inner radius of the torus.
+    outer_radius : float
+        Outer radius of the torus.
+    sides : int
+        Number of sides for each radial section.
+    rings : int
+        Number of radial divisions for the torus.
+    """
+
+    vtype = [('position', np.float32, 3),
+             ('texcoord', np.float32, 2),
+             ('normal',   np.float32, 3)]
+    itype = np.uint32
+    sides += 1
+    rings += 1
+    n = rings * sides
+
+    vertices = np.zeros(n, dtype=vtype)
+    theta1 = np.tile  (np.linspace(0, 2 * np.pi, sides, endpoint=True), rings)
+    theta2 = np.repeat(np.linspace(0, 2 * np.pi, rings, endpoint=True), sides)
+    C = inner_radius*np.cos(theta1) - outer_radius
+
+    vertices["position"][:,0] = C*np.cos(theta2)
+    vertices["position"][:,1] = C*np.sin(theta2)
+    vertices["position"][:,2] = inner_radius*np.sin(theta1)
+    vertices["normal"][:,0] = (C+outer_radius)*np.cos(theta2)
+    vertices["normal"][:,1] = (C+outer_radius)*np.sin(theta2)
+    vertices["normal"][:,2] = vertices["position"][:,2]
+    vertices["texcoord"][:,0] = np.tile(np.linspace(0,1,sides,endpoint=True),rings)
+    vertices["texcoord"][:,1] = np.repeat(np.linspace(0,1,rings,endpoint=True),sides)
+
+    indices = []
+    for i in range(rings-1):
+        for j in range(sides-1):
+            indices.append(i*(sides) + j        )
+            indices.append(i*(sides) + j+1      )
+            indices.append(i*(sides) + j+sides+1)
+            indices.append(i*(sides) + j+sides  )
+            indices.append(i*(sides) + j+sides+1)
+            indices.append(i*(sides) + j        )
+
+    indices = np.array(indices, dtype=itype)
+    return vertices.view(gloo.VertexBuffer), indices.view(gloo.IndexBuffer)
+
+
+def sphere(radius=1.0, slices=32, stacks=32):
     """
     Sphere centered at origin.
 
@@ -261,8 +312,38 @@ def sphere(radius=1.0, slices=24, stacks=24):
     stacks : float
         The number of subdivisions along the Z axis (similar to lines of latitude).
     """
-    pass
 
+    vtype = [('position', np.float32, 3),
+             ('texcoord', np.float32, 2),
+             ('normal',   np.float32, 3)]
+    itype = np.uint32
+    slices += 1
+    stacks += 1
+    n = slices*stacks
+
+    vertices = np.zeros(n, dtype=vtype)
+    theta1 = np.repeat(np.linspace(0,     np.pi, stacks, endpoint=True), slices)
+    theta2 = np.tile  (np.linspace(0, 2 * np.pi, slices, endpoint=True), stacks)
+
+    vertices["position"][:,0] = np.sin(theta1) * np.cos(theta2) * radius
+    vertices["position"][:,1] =                  np.cos(theta1) * radius
+    vertices["position"][:,2] = np.sin(theta1) * np.sin(theta2) * radius
+    vertices["normal"] = vertices["position"]
+    vertices["texcoord"][:,0] = np.tile(np.linspace(0, 1, slices, endpoint=True), stacks)
+    vertices["texcoord"][:,1] = np.repeat(np.linspace(0, 1, stacks, endpoint=True), slices)
+
+    indices = []
+    for i in range(stacks-1):
+        for j in range(slices-1):
+            indices.append(i*(slices) + j        )
+            indices.append(i*(slices) + j+1      )
+            indices.append(i*(slices) + j+slices+1)
+            indices.append(i*(slices) + j+slices  )
+            indices.append(i*(slices) + j+slices+1)
+            indices.append(i*(slices) + j        )
+
+    indices = np.array(indices, dtype=itype)
+    return vertices.view(gloo.VertexBuffer), indices.view(gloo.IndexBuffer)
 
 
 def icosphere(radius=1.0, slices=24, stacks=24):
@@ -285,25 +366,6 @@ def icosphere(radius=1.0, slices=24, stacks=24):
 
 
 
-def torus(inner_radius=0.2, outer_radius=1.0, nsides=24, rings=24):
-    """
-    Z-axis aligned torus (doughnut) centered at origin.
-
-    Parameters
-    ----------
-    inner_radius : float
-        Inner radius of the torus.
-    outer_radius : float
-        Outer radius of the torus.
-    nsides : int
-        Number of sides for each radial section.
-    rings : int
-        Number of radial divisions for the torus.
-    """
-    pass
-
-
-
 
 def teapot(size=1.0):
     """
@@ -315,4 +377,21 @@ def teapot(size=1.0):
     size : float
         Relative size of the teapot.
     """
-    pass
+
+    vertices, indices = data.get("teapot.obj")
+    xmin = vertices["position"][:,0].min()
+    xmax = vertices["position"][:,0].max()
+    ymin = vertices["position"][:,1].min()
+    ymax = vertices["position"][:,1].max()
+    zmin = vertices["position"][:,2].min()
+    zmax = vertices["position"][:,2].max()
+
+    # Centering
+    vertices["position"][:,0] -= xmin + (xmax-xmin)/2
+    vertices["position"][:,1] -= ymin + (ymax-ymin)/2
+    vertices["position"][:,2] -= zmin + (zmax-zmin)/2
+
+    # Scaling
+    vertices["position"] *= 2.0*size/(zmax-zmin)
+
+    return vertices, indices

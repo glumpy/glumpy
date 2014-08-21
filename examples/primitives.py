@@ -36,10 +36,12 @@ uniform mat4 model;
 uniform mat4 normal;
 uniform mat4 projection;
 
-uniform vec3 light1_color;
 uniform vec3 light1_position;
-uniform vec3 light2_color;
 uniform vec3 light2_position;
+uniform vec3 light3_position;
+uniform vec3 light1_color;
+uniform vec3 light2_color;
+uniform vec3 light3_color;
 
 uniform sampler2D texture;
 
@@ -75,13 +77,15 @@ void main()
 {
     vec4 l1 = vec4(light1_color * lighting(light1_position), 1);
     vec4 l2 = vec4(light2_color * lighting(light2_position), 1);
+    vec4 l3 = vec4(light3_color * lighting(light3_position), 1);
+
     float r = texture2D(texture, v_texcoord).r;
     vec4 color = vec4(r,r,r,1);
-    gl_FragColor = color *( 0.25 + 0.75*(l1+l2));
+    gl_FragColor = color *( 0.25 + 0.75*(l1+l2+l3));
 }
 """
 
-window = app.Window(width=1024, height=1024)
+window = app.Window(width=1024, height=1024, color=(1,1,1,1))
 
 def checkerboard(grid_num=8, grid_size=32):
     row_even = grid_num / 2 * [0, 1]
@@ -113,9 +117,26 @@ def on_resize(width, height):
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
 
+@window.event
+def on_key_press(key, modifiers):
+    global vertices, indices, index
 
-# Build cube data
-vertices, indices = primitives.cube()
+    if key == ord(' '):
+        index = (index+1) % len(shapes)
+        vertices, indices = shapes[index]
+        program.bind(vertices)
+
+# Choose...
+shapes = [ primitives.cone(),
+           primitives.cylinder(),
+           primitives.pyramid(),
+           primitives.cube(1.5),
+           primitives.torus(),
+           primitives.sphere(),
+           primitives.teapot() ]
+
+index = 0
+vertices, indices = shapes[index]
 
 program = gloo.Program(vertex, fragment)
 program.bind(vertices)
@@ -128,10 +149,12 @@ program['view'] = view
 program['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
 program['texture'] = checkerboard()
 
-program["light1_position"] = +2, +2, 5
-program["light2_position"] = -2, -2, 5
-program["light1_color"]    = 1, 1, 0 # yellow
-program["light2_color"]    = 0, 0, 1 # blue
+program["light1_position"] = 3, 0, 0+5
+program["light2_position"] = 0, 3, 0+5
+program["light3_position"] = -3, -3, +5
+program["light1_color"]    = 1, 0, 0
+program["light2_color"]    = 0, 1, 0
+program["light3_color"]    = 0, 0, 1
 
 phi, theta = 0, 0
 
