@@ -263,7 +263,8 @@ def __init__(clock=None, framerate=None, backend=None):
 
 
 # --------------------------------------------------------------------- run ---
-def run(clock=None, framerate=None, interactive=False, duration = -1):
+def run(clock=None, framerate=None, interactive=False,
+        duration = sys.maxint, framecount = sys.maxint):
     """ Run the main loop
 
     Parameters
@@ -273,6 +274,12 @@ def run(clock=None, framerate=None, interactive=False, duration = -1):
 
     framerate : int
         frames per second
+
+    duration : float
+        Duration after which the app will be stopped
+
+    framecount : int
+        Number of frame to display before stopping.
     """
 
     clock = __init__(clock=clock, framerate=framerate, backend=__backend__)
@@ -289,7 +296,8 @@ def run(clock=None, framerate=None, interactive=False, duration = -1):
 
     else:
         count = len(__backend__.windows())
-        while count and duration > 0:
+        while count and duration > 0 and framecount > 0:
             dt = clock.tick()
             duration -= dt
+            framecount -= 1
             count = __backend__.process(dt)

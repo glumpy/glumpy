@@ -11,7 +11,6 @@ from glumpy.geometry import primitives
 vertex = """
 uniform mat4 view;
 uniform mat4 model;
-uniform mat4 u_normal;
 uniform mat4 projection;
 
 attribute vec3 normal;
