@@ -263,7 +263,7 @@ def __init__(clock=None, framerate=None, backend=None):
 
 
 # --------------------------------------------------------------------- run ---
-def run(clock=None, framerate=None, interactive=False):
+def run(clock=None, framerate=None, interactive=False, duration = -1):
     """ Run the main loop
 
     Parameters
@@ -289,5 +289,7 @@ def run(clock=None, framerate=None, interactive=False):
 
     else:
         count = len(__backend__.windows())
-        while count:
-            count = __backend__.process(clock.tick())
+        while count and duration > 0:
+            dt = clock.tick()
+            duration -= dt
+            count = __backend__.process(dt)

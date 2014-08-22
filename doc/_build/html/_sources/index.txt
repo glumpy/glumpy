@@ -5,7 +5,7 @@ Interactive scientific visualization in Python
 `Glumpy`_ is an `OpenGL`_-based interactive visualization library in Python. Its
 goal is to make it easy to create fast dynamic visualizations.
 
-.. _Glumpy: http://glumpy.org/
+.. _Glumpy: https://github.com/rougier/glumpy
 .. _OpenGL: http://www.opengl.org
 
 .. image:: _static/glumpy.png
