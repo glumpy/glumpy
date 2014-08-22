@@ -352,9 +352,9 @@ def sphere(radius=1.0, slices=32, stacks=32):
     theta1 = np.repeat(np.linspace(0,     np.pi, stacks, endpoint=True), slices)
     theta2 = np.tile  (np.linspace(0, 2 * np.pi, slices, endpoint=True), stacks)
 
-    vertices["position"][:,0] = np.sin(theta1) * np.cos(theta2) * radius
-    vertices["position"][:,1] =                  np.cos(theta1) * radius
-    vertices["position"][:,2] = np.sin(theta1) * np.sin(theta2) * radius
+    vertices["position"][:,1] = np.sin(theta1) * np.cos(theta2) * radius
+    vertices["position"][:,2] =                  np.cos(theta1) * radius
+    vertices["position"][:,0] = np.sin(theta1) * np.sin(theta2) * radius
     vertices["normal"] = vertices["position"]
     vertices["texcoord"][:,0] = np.tile(np.linspace(0, 1, slices, endpoint=True), stacks)
     vertices["texcoord"][:,1] = np.repeat(np.linspace(0, 1, stacks, endpoint=True), slices)
@@ -417,6 +417,20 @@ def teapot(size=1.0):
     vertices["position"][:,0] -= xmin + (xmax-xmin)/2
     vertices["position"][:,1] -= ymin + (ymax-ymin)/2
     vertices["position"][:,2] -= zmin + (zmax-zmin)/2
+
+    X = vertices["position"][:,0].copy()
+    Y = vertices["position"][:,1].copy()
+    Z = vertices["position"][:,2].copy()
+    NX = vertices["normal"][:,0].copy()
+    NY = vertices["normal"][:,1].copy()
+    NZ = vertices["normal"][:,2].copy()
+
+    vertices["position"][:,0] = X
+    vertices["position"][:,1] = Z
+    vertices["position"][:,2] = Y
+    vertices["normal"][:,0] = NX
+    vertices["normal"][:,1] = NZ
+    vertices["normal"][:,2] = NY
 
     # Scaling
     vertices["position"] *= 2.0*size/(zmax-zmin)

@@ -5,6 +5,10 @@
 # -----------------------------------------------------------------------------
 import os
 import numpy as np
+try:
+    from PIL import Image
+except:
+    Image = None
 from glumpy import gloo
 from glumpy.log import log
 
@@ -77,6 +81,12 @@ def objload(filename) :
     return vertices, indices
 
 
+def checkerboard(grid_num=16, grid_size=24):
+    row_even = grid_num / 2 * [0, 1]
+    row_odd = grid_num / 2 * [1, 0]
+    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
+    return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
+
 
 def get(name):
     """ Retrieve data content from a name """
@@ -88,6 +98,12 @@ def get(name):
         return np.load(filename)
     elif extension == 'obj':
         return objload(filename)
+    elif extension in ('png', 'jpg', 'jpeg', 'tif', 'tiff', 'tga'):
+        if Image is not None:
+            return np.array(Image.open(filename))
+        else:
+            log.warning("PIL/Pillow not installed, cannot load image")
+            return checkerboard(16,32)
 
     log.warning("Data not found(%s)" % name)
     return None

@@ -64,12 +64,6 @@ float lighting(vec3 light_position)
     float brightness = dot(n, surface_to_light) /
                       (length(surface_to_light) * length(n));
     brightness = max(min(brightness,1.0),0.0);
-
-    // Calculate final color of the pixel, based on:
-    // 1. The angle of incidence: brightness
-    // 2. The color/intensities of the light: light.intensities
-    // 3. The texture and texture coord: texture(tex, fragTexCoord)
-
     return brightness;
 }
 
@@ -81,6 +75,11 @@ void main()
 
     float r = texture2D(texture, v_texcoord).r;
     vec4 color = vec4(r,r,r,1);
+
+    // Calculate final color of the pixel, based on:
+    // 1. The angle of incidence: brightness
+    // 2. The color/intensities of the light: light.intensities
+    // 3. The texture and texture coord: texture(tex, fragTexCoord)
     gl_FragColor = color *( 0.25 + 0.75*(l1+l2+l3));
 }
 """
@@ -88,7 +87,7 @@ void main()
 
 window = app.Window(width=1024, height=1024, color=(1,1,1,1))
 
-def checkerboard(grid_num=16, grid_size=32):
+def checkerboard(grid_num=16, grid_size=24):
     row_even = grid_num / 2 * [0, 1]
     row_odd = grid_num / 2 * [1, 0]
     Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
