@@ -418,13 +418,13 @@ def teapot(size=1.0):
     vertices["position"][:,1] -= ymin + (ymax-ymin)/2
     vertices["position"][:,2] -= zmin + (zmax-zmin)/2
 
+    # Rotation to align on Z-axis
     X = vertices["position"][:,0].copy()
     Y = vertices["position"][:,1].copy()
     Z = vertices["position"][:,2].copy()
     NX = vertices["normal"][:,0].copy()
     NY = vertices["normal"][:,1].copy()
     NZ = vertices["normal"][:,2].copy()
-
     vertices["position"][:,0] = X
     vertices["position"][:,1] = Z
     vertices["position"][:,2] = Y
@@ -432,7 +432,7 @@ def teapot(size=1.0):
     vertices["normal"][:,1] = NZ
     vertices["normal"][:,2] = NY
 
-    # Scaling
+    # Scaling according to height
     vertices["position"] *= 2.0*size/(zmax-zmin)
 
     return vertices, indices
