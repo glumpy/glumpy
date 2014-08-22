@@ -1,5 +1,0 @@
-
-To build this tool, you need cython then do:
-
-> python setup.py build_ext --inplace
-
