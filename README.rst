@@ -1,3 +1,7 @@
+
+
+.. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/glumpy.png
+
 Description
 ===========
 
