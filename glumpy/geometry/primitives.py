@@ -7,6 +7,52 @@ import numpy as np
 from glumpy import gloo, data
 
 
+def plane(size=1.0, n=2):
+    """
+    Plane centered at origin, lying on the XY-plane
+
+    Parameters
+    ----------
+    size : float
+       plane length size
+
+    n : int
+        Tesselation level
+    """
+
+    n = max(2,n)
+
+    T = np.linspace(0,1,n,endpoint=True)
+    X,Y = np.meshgrid(T-0.5,T-0.5)
+    X = X.ravel()*size
+    Y = Y.ravel()*size
+    U,V = np.meshgrid(T,T)
+    U = U.ravel()
+    V = V.ravel()
+
+    I = (np.arange((n-1)*(n),dtype=np.uint32).reshape(n-1,n))[:,:-1].T
+    I = np.repeat(I.ravel(),6).reshape(n-1,n-1,6)
+    I[:,:] += 0,1,n+1, 0,n+1,n
+
+    vtype = [('position', np.float32, 3),
+             ('texcoord', np.float32, 2),
+             ('normal',   np.float32, 3)]
+    itype = np.uint32
+
+    vertices = np.zeros((6,n*n), dtype=vtype)
+    vertices["texcoord"][...,0] = U
+    vertices["texcoord"][...,1] = V
+    vertices["position"][0,:,0] = X
+    vertices["position"][0,:,1] = Y
+    vertices["position"][0,:,2] = 0
+    vertices["normal"][0] = 0,0,1
+
+    vertices = vertices.ravel()
+    indices = np.array(I, dtype=itype).ravel()
+    return vertices.view(gloo.VertexBuffer), indices.view(gloo.IndexBuffer)
+
+
+
 def cube(size=1.0, n=2):
     """
     Cube centered at origin

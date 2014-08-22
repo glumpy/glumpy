@@ -5,20 +5,18 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
+from math import pi, cos, sin
 from glumpy import app, gl, glm, gloo
-from glumpy.geometry import primitives
+from glumpy.geometry import primitives, normals, surface
 
-from glumpy.graphics.collection import LineCollection
 
 vertex = """
 uniform mat4 view;
 uniform mat4 model;
 uniform mat4 projection;
-
 attribute vec3 normal;
 attribute vec3 position;
 attribute vec2 texcoord;
-
 varying vec3 v_normal;
 varying vec3 v_position;
 varying vec2 v_texcoord;
@@ -73,7 +71,6 @@ void main()
     vec4 l1 = vec4(light1_color * lighting(light1_position), 1);
     vec4 l2 = vec4(light2_color * lighting(light2_position), 1);
     vec4 l3 = vec4(light3_color * lighting(light3_position), 1);
-
     float r = texture2D(texture, v_texcoord).r;
     vec4 color = vec4(r,r,r,1);
 
@@ -97,8 +94,10 @@ def checkerboard(grid_num=16, grid_size=24):
 @window.event
 def on_draw(dt):
     global phi, theta, duration
+
     window.clear()
     program.draw(gl.GL_TRIANGLES, indices)
+
     theta += 0.5
     phi += 0.5
     model = np.eye(4, dtype=np.float32)
@@ -112,31 +111,24 @@ def on_draw(dt):
 def on_resize(width, height):
     program['projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
 
-
 @window.event
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
 
 
-@window.event
-def on_key_press(key, modifiers):
-    global vertices, indices, index
-    if key == ord(' '):
-        index = (index+1) % len(shapes)
-        vertices, indices = shapes[index]
-        program.bind(vertices)
+def klein(u, v):
+    if u < pi:
+        x = 3 * cos(u) * (1 + sin(u)) + (2 * (1 - cos(u) / 2)) * cos(u) * cos(v)
+        z = -8 * sin(u) - 2 * (1 - cos(u) / 2) * sin(u) * cos(v)
+    else:
+        x = 3 * cos(u) * (1 + sin(u)) + (2 * (1 - cos(u) / 2)) * cos(v + pi)
+        z = -8 * sin(u)
+    y = -2 * (1 - cos(u) / 2) * sin(v)
+    return x/5., y/5., z/5.
 
-index = 0
-shapes = [ primitives.plane(1.5),
-           primitives.cube(1.5),
-           primitives.sphere(),
-           primitives.cubesphere(),
-           primitives.cylinder(),
-           primitives.torus(),
-           primitives.cone(),
-           primitives.pyramid(),
-           primitives.teapot() ]
-vertices, indices = shapes[index]
+
+vertices, indices = surface(klein)
+
 
 program = gloo.Program(vertex, fragment)
 program.bind(vertices)
@@ -148,6 +140,8 @@ program['model'] = model
 program['view'] = view
 program['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
 program['texture'] = checkerboard()
+program['texture'].wrapping = gl.GL_REPEAT
+
 program["light1_position"] = 3, 0, 0+5
 program["light2_position"] = 0, 3, 0+5
 program["light3_position"] = -3, -3, +5

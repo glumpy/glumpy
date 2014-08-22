@@ -214,10 +214,11 @@ class BaseCollection(object):
     def _compute_ushape(self, size=1):
         """ Compute uniform texture shape """
 
-        texsize = self._max_texture_size
+
+        linesize = self._max_texture_size
         count = self._uniforms_float_count
-        cols = texsize//(count/4)
-        rows = (size // cols)+1
+        cols = linesize // float(count/4)
+        rows = max(1,int(math.ceil(size / float(cols))))
         self._ushape = rows, cols*(count/4), count
         return self._ushape
 

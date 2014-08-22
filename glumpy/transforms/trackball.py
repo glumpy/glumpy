@@ -19,9 +19,9 @@ class Trackball(Transform):
         code = get_code("pvm.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
-        self._fovy = 30
+        self._fovy = 25
         self._znear, self._zfar = 2.0, 100.0
-        self._trackball = _trackball.Trackball(60,45)
+        self._trackball = _trackball.Trackball(45,45)
         self._viewport = None
         self._model = self._trackball.model
         self._projection = np.eye(4, dtype=np.float32)
@@ -57,6 +57,6 @@ class Trackball(Transform):
 
     def on_mouse_scroll(self, x, y, dx, dy):
 
-        self._fovy = np.minimum(np.maximum(self._fovy*(1+dy/100), 10.0), 179.0)
+        self._fovy = np.minimum(np.maximum(self._fovy*(1-dy/100), 10.0), 179.0)
         self['projection'] = glm.perspective(self._fovy, self._aspect,
                                              self._znear, self._zfar)
