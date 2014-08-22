@@ -24,6 +24,7 @@ if __name__ == "__main__":
           maintainer_email="Nicolas.Rougier@inria.fr",
           license = "BSD License",
           packages=['glumpy',
+                    'glumpy.ext',
                     'glumpy.app',
                     'glumpy.gloo',
 
@@ -68,5 +69,4 @@ if __name__ == "__main__":
 #                                 sources=["glumpy/ext/sdf/_sdf.pyx",
 #                                          "glumpy/ext/sdf/sdf.c"],
 #                                 include_dirs=[numpy.get_include()])],
-
 )

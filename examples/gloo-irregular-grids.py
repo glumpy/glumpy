@@ -7,7 +7,7 @@
 import sys
 import math
 import numpy as np
-from  glumpy import app, gl, glm, gloo
+from  glumpy import app, gl, glm, gloo, shaders
 
 
 vertex = """
@@ -138,7 +138,7 @@ indices = indices.ravel()
 indices = indices.view(gloo.IndexBuffer)
 
 
-program = gloo.Program(vertex, "irregular-grid.frag")
+program = gloo.Program(vertex, shaders.get_code("irregular-grid.frag"))
 program.bind(vertices)
 
 program["rows"] = rows

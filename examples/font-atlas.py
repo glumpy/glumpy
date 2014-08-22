@@ -5,13 +5,9 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-
-import glumpy
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.gloo as gloo
-import glumpy.text as text
+from glumpy import app, gl, gloo, glm, text, data
 from glumpy.log import log
+
 
 vertex = """
     attribute vec2 position;
@@ -40,22 +36,13 @@ def on_draw(dt):
     window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
 
-@window.event
-def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
-
-@window.event
-def on_key_press(key, modifiers):
-    if key == glumpy.key.ESCAPE:
-        window.close()
-
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 log.info("Caching texture fonts")
 
 for size in range(8,25):
-    font = text.TextureFont("Vera.ttf", size)
+    font = text.TextureFont(data.get("OpenSans-Regular.ttf"), size)
     font.load(""" !\"#$%&'()*+,-./0123456789:;<=>?"""
               """@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"""
               """`abcdefghijklmnopqrstuvwxyz{|}~""")

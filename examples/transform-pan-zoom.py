@@ -8,7 +8,7 @@
 
 import numpy as np
 from PIL import Image
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, data
 from glumpy.transforms import PanZoom, Position2D
 
 
@@ -48,7 +48,7 @@ def on_key_press(key, modifiers):
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-program['texture'] = np.array(Image.open("lena.png"))
+program['texture'] = data.get("lena.png")
 
 transform = PanZoom(Position2D("position"))
 program['transform'] = transform

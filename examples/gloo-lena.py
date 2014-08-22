@@ -6,12 +6,7 @@
 # -----------------------------------------------------------------------------
 import sys
 import numpy as np
-from PIL import Image
-
-import glumpy
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.gloo as gloo
+from glumpy import app, gloo, gl, glm, data
 
 vertex = """
     attribute vec2 position;
@@ -50,5 +45,5 @@ def on_resize(width, height):
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-program['texture'] = np.array(Image.open("lena.png"))
+program['texture'] = data.get("lena.png")
 app.run()

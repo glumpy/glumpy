@@ -6,7 +6,7 @@
 include setup.py
 include TODO.txt
 include Makefile
-include README.txt
+include README.rst
 include CHANGELOG.txt
 include LICENSE.txt
 include MANIFEST.IN

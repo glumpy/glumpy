@@ -5,11 +5,9 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """ This example shows spatial interpolation of images. """
-
-import glumpy
 import numpy as np
 from PIL import Image
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, data
 
 
 vertex = """
@@ -113,10 +111,10 @@ indices = np.zeros((17,6),np.uint32).view(gloo.IndexBuffer)
 indices[:] = [0,1,2,1,2,3]
 indices += 4*np.arange(17).reshape(17,1)
 
-data = np.array(Image.open("lena.png"))
-program['u_data'] = data
-program['u_shape'] = data.shape[1], data.shape[0]
-program['u_kernel'] = glumpy.data.get("spatial-filters.npy")
+lena = data.get("lena.png")
+program['u_data'] = lena
+program['u_shape'] = lena.shape[1], lena.shape[0]
+program['u_kernel'] = data.get("spatial-filters.npy")
 program['u_data'].interpolation = gl.GL_NEAREST
 program['u_data'].wrapping = gl.GL_CLAMP
 

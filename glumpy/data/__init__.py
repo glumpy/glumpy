@@ -94,7 +94,9 @@ def get(name):
     filename = _get_file(name)
     extension = os.path.basename(name).split('.')[-1]
 
-    if extension == 'npy':
+    if extension in ['ttf', 'otf']:
+        return filename
+    elif extension == 'npy':
         return np.load(filename)
     elif extension == 'obj':
         return objload(filename)
@@ -105,5 +107,5 @@ def get(name):
             log.warning("PIL/Pillow not installed, cannot load image")
             return checkerboard(16,32)
 
-    log.warning("Data not found(%s)" % name)
+    log.warning("Data not found (%s)" % name)
     return None
