@@ -8,6 +8,8 @@ goal is to make it easy to create fast dynamic visualizations.
 .. _Glumpy: http://glumpy.org/
 .. _OpenGL: http://www.opengl.org
 
+.. image:: _static/glumpy.png
+
 
 .. _user-docs:
 
