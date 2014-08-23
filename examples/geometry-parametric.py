@@ -5,9 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from math import pi, cos, sin
 from glumpy import app, gl, glm, gloo
-from glumpy.geometry import primitives, normals, surface
+from glumpy.geometry import surface
 
 
 vertex = """
@@ -117,6 +116,8 @@ def on_init():
 
 
 def klein(u, v):
+    from math import pi, cos, sin
+
     if u < pi:
         x = 3 * cos(u) * (1 + sin(u)) + (2 * (1 - cos(u) / 2)) * cos(u) * cos(v)
         z = -8 * sin(u) - 2 * (1 - cos(u) / 2) * sin(u) * cos(v)
