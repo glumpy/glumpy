@@ -5,7 +5,7 @@ responsive, and scalable. **Glumpy** offers a natural interface between numpy
 and modern OpenGL.
 
 
-## Dependencies
+### Dependencies
 
 glumpy is made on top of PyOpenGL (http://pyopengl.sourceforge.net/) and since
 glumpy is dedicated to numpy visualization, you obviously need numpy
@@ -14,7 +14,7 @@ glumpy is dedicated to numpy visualization, you obviously need numpy
 (https://www.ffmpeg.org) for writing/reading movies.
 
 
-## Example usage
+### Example usage
 
     from glumpy import app
 
