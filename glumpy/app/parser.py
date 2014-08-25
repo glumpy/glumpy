@@ -42,6 +42,11 @@ def set_default_options(parser):
                         choices = ('glfw', 'sdl2', 'pyside', 'pyglet', 'sdl',  'osxglut'),
                         help="Backend to use, one of ")
 
+    # Interactive mode
+    parser.add_argument("--interactive", "-i",
+                        action='store_true',
+                        help="Interactive mode")
+
     # Framerate option
     parser.add_argument("--framerate", "-f",
                         default=60,

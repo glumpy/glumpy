@@ -11,35 +11,24 @@ goal is to make it easy to create fast dynamic visualizations.
 .. image:: _static/glumpy.png
 
 
-.. _user-docs:
-
-User Documentation
-==================
+Documentation
+=============
 
 .. toctree::
     :maxdepth: 1
 
-    user-install
-    user-quickstart
+    installation
+    quickstart
+    options
+    modern-gl
+    architecture
 ..    user-howto
 ..    user-faq
 ..    user-args
 ..    user-support
 ..    user-notes
-
-.. _dev-docs:
-
-Developer Documentation
-=======================
-
-.. toctree::
-    :maxdepth: 1
-
-    dev-modern-gl
-    dev-architecture
 ..    dev-gloo
 ..    dev-api
-
 
 
 Indices and tables

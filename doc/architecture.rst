@@ -16,9 +16,23 @@ such as text, collections and widgets.
 The overall package organization is as follows:
 
 
-glumpy.gloo
-===========
+App
+===
+* **clock**         : Clock
+* **console**       : Debug console
+* **options**       : Command line options
+* **configuration** : Default configuration
+* **window**
 
+  * **backends** : Backend specific code
+  * **event**    : Event dispatcher
+  * **mouse**    : Mouse events
+  * **keyboard** : Keyboard events
+  * **window**   : Abstract window
+
+
+Gloo
+====
 * **globject** : Abstract object that lives on both CPU & GPU
 * **gpudata**  : GPU aware numpy array
 * **program**  : GPU Program
@@ -32,42 +46,19 @@ glumpy.gloo
 * **uniforms** : Collection of uniforms stored in 2D texture
 
 
-glumpy.app
-==========
-
-* **clock**         : Clock
-* **console**       : Debug console
-* **options**       : Command line options
-* **configuration** : Default configuration
-
-
-glumpy.app.window
-=================
-
-* **backends** : Backend specific code
-* **event**    : Event dispatcher
-* **mouse**    : Mouse events
-* **keyboard** : Keyboard events
-* **window**   : Abstract window
-
-
-glumpy.graphics
-===============
-
+Graphics
+========
 * **text**        : Text related objects
 * **widgets**     : Interactive widgets
+* **collections**
+
+  * **points**    : Points collection
+  * **lines**     : Lines collection
+  * **triangles** : Triangles collection
+  * **quads**     : Quads collection
 
 
-glumpy.graphics.collection
-==========================
-
-* **points**    : Points collection
-* **lines**     : Lines collection
-* **triangles** : Triangles collection
-* **quads**     : Quads collection
-
-
-glumpy
+Others
 ======
 
 * **geometry**   : Geometry related functions

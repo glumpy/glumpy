@@ -6,13 +6,13 @@
 import sys
 from glumpy import gl
 from glumpy.log import log
-from glumpy.app.window import key
-from glumpy.app.window import mouse
 from glumpy.app import configuration
-from glumpy.app.window.viewport import Viewport
+from . import key
+from . import mouse
+from . import event
 
 
-class Window(Viewport):
+class Window(event.EventDispatcher):
     """
     Platform independent window.
 
@@ -134,7 +134,7 @@ class Window(Viewport):
             Another window to share GL context with
         """
 
-        Viewport.__init__(self, size=(width,height), aspect=aspect)
+        event.EventDispatcher.__init__(self)
         self._mouse_x = 0
         self._mouse_y = 0
         self._button = mouse.NONE
@@ -180,6 +180,38 @@ class Window(Viewport):
 
         gl.glClearColor(*self.color)
         gl.glClear(self._clearflags)
+
+    def on_resize(self, width, height):
+        """" Default resize handler that set viewport """
+        gl.glViewport(0, 0, width, height)
+        self.dispatch_event('on_draw', 0.0)
+        self.swap()
+
+    def on_key_press(self, k, modifiers):
+        """" Default key handler that close window on escape """
+        if k == key.ESCAPE:
+            self.close()
+            return True
+        elif k == key.F10:
+            import os, sys
+            import numpy as np
+            from glumpy.ext import png
+            framebuffer = np.zeros((self.height, self.width * 3), dtype=np.uint8)
+            gl.glReadPixels(0, 0, self.width, self.height,
+                            gl.GL_RGB, gl.GL_UNSIGNED_BYTE, framebuffer)
+
+            basename = os.path.basename(os.path.realpath(sys.argv[0]))
+            dirname = os.path.dirname(os.path.realpath(sys.argv[0]))
+            basename = '.'.join(basename.split('.')[:-1])
+            filename = os.path.join(dirname,"%s.png" % basename)
+            png.from_array(framebuffer[::-1], 'RGB').save(filename)
+#            index = 0
+#            filename = "%s-%04d.png" % (basename,index)
+#            while os.path.exists(os.path.join(dirname, filename)):
+#                index += 1
+#                filename = "%s-%04d.png" % (basename, index)
+#            png.from_array(framebuffer, 'RGB').save(filename)
+            return True
 
     def show(self):
         """ Make the window visible """
@@ -255,3 +287,23 @@ class Window(Viewport):
             self._timer_date.append(0)
             return func
         return decorator
+
+
+
+Window.register_event_type('on_enter')
+Window.register_event_type('on_leave')
+Window.register_event_type('on_draw')
+Window.register_event_type('on_resize')
+Window.register_event_type('on_mouse_motion')
+Window.register_event_type('on_mouse_drag')
+Window.register_event_type('on_mouse_press')
+Window.register_event_type('on_mouse_release')
+Window.register_event_type('on_mouse_scroll')
+Window.register_event_type('on_character')
+Window.register_event_type('on_key_press')
+Window.register_event_type('on_key_release')
+Window.register_event_type('on_init')
+Window.register_event_type('on_show')
+Window.register_event_type('on_hide')
+Window.register_event_type('on_close')
+Window.register_event_type('on_idle')

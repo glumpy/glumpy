@@ -263,7 +263,7 @@ def __init__(clock=None, framerate=None, backend=None):
 
 
 # --------------------------------------------------------------------- run ---
-def run(clock=None, framerate=None, interactive=False,
+def run(clock=None, framerate=None, interactive=None,
         duration = sys.maxint, framecount = sys.maxint):
     """ Run the main loop
 
@@ -283,6 +283,10 @@ def run(clock=None, framerate=None, interactive=False,
     """
 
     clock = __init__(clock=clock, framerate=framerate, backend=__backend__)
+
+    if interactive is None:
+        options = parser.get_options()
+        interactive = options.interactive
 
     if interactive:
         # Set interactive python session

@@ -9,9 +9,13 @@ from glumpy import gloo
 
 
 
-def surface(func):
+def surface(func, umin=0, umax=2*np.pi, ucount=64, urepeat=1.0,
+                  vmin=0, vmax=2*np.pi, vcount=64, vrepeat=1.0):
     """
     Computes the parameterization of a parametric surface
+
+    func: function(u,v)
+        Parametric function used to build the surface
     """
 
     vtype = [('position', np.float32, 3),
@@ -19,8 +23,9 @@ def surface(func):
              ('normal',   np.float32, 3)]
     itype = np.uint32
 
-    umin, umax, ucount = 0, 2*np.pi, 48
-    vmin, vmax, vcount = 0, 2*np.pi, 48
+    # umin, umax, ucount = 0, 2*np.pi, 64
+    # vmin, vmax, vcount = 0, 2*np.pi, 64
+
     vcount += 1
     ucount += 1
     n = vcount*ucount
@@ -34,8 +39,8 @@ def surface(func):
     for i,(u,v) in enumerate(zip(U,V)):
         vertices["position"][i] = func(u,v)
 
-    vertices["texcoord"][:,0] = Un
-    vertices["texcoord"][:,1] = Vn
+    vertices["texcoord"][:,0] = Un*urepeat
+    vertices["texcoord"][:,1] = Vn*vrepeat
 
     indices = []
     for i in range(ucount-1):

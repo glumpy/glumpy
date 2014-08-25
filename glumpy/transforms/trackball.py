@@ -57,6 +57,6 @@ class Trackball(Transform):
 
     def on_mouse_scroll(self, x, y, dx, dy):
 
-        self._fovy = np.minimum(np.maximum(self._fovy*(1-dy/100), 10.0), 179.0)
+        self._fovy = np.minimum(np.maximum(self._fovy*(1-dy/100), 1.0), 179.0)
         self['projection'] = glm.perspective(self._fovy, self._aspect,
                                              self._znear, self._zfar)

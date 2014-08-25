@@ -115,9 +115,9 @@ def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
 
 
+
 def klein(u, v):
     from math import pi, cos, sin
-
     if u < pi:
         x = 3 * cos(u) * (1 + sin(u)) + (2 * (1 - cos(u) / 2)) * cos(u) * cos(v)
         z = -8 * sin(u) - 2 * (1 - cos(u) / 2) * sin(u) * cos(v)
@@ -125,10 +125,9 @@ def klein(u, v):
         x = 3 * cos(u) * (1 + sin(u)) + (2 * (1 - cos(u) / 2)) * cos(v + pi)
         z = -8 * sin(u)
     y = -2 * (1 - cos(u) / 2) * sin(v)
-    return x/5., y/5., z/5.
+    return x/5, y/5, z/5
 
-
-vertices, indices = surface(klein)
+vertices, indices = surface(klein, urepeat=3)
 
 
 program = gloo.Program(vertex, fragment)
