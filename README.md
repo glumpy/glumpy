@@ -1,6 +1,6 @@
 # Glumpy = Numpy + OpenGL
 
-<a href="https://github.com/rougier/glumpy"><img src="https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/logo.svg" align="left" hspace="10" vspace="6"></a>
+<a href="https://github.com/rougier/glumpy"><img src="https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/logo.png" align="left" hspace="10" vspace="6"></a>
 
 **Glumpy** is a python library for scientific visualization that is both fast,
   responsive, and scalable. **Glumpy** offers a natural interface between numpy
