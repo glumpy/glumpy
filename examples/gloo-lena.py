@@ -12,7 +12,6 @@ vertex = """
     attribute vec2 position;
     attribute vec2 texcoord;
     varying vec2 v_texcoord;
-
     void main()
     {
         gl_Position = vec4(position, 0.0, 1.0);
@@ -34,13 +33,7 @@ window = app.Window(width=512, height=512, aspect=1)
 @window.event
 def on_draw(dt):
     window.clear()
-    window.lock()
     program.draw(gl.GL_TRIANGLE_STRIP)
-    window.unlock()
-
-@window.event
-def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]

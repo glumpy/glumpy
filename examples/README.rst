@@ -54,13 +54,18 @@ Gloo
 
 * `gloo-cube.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cube.py>`_
 
-  This example shows a rotating, colored & outlined cube.
+  This example shows a rotating, colored & outlined cube. It uses transformation
+  matrices to translate, rotate and finally project the cube on the window framebuffer.
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-cube.png
 
 
-
 * `gloo-lena.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-lena.png
+
+  This examples shows how to display an image, without control of the aspect ratio though.
+
 
 * `gloo-texture-1D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-1D.py>`_
 
