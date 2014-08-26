@@ -47,7 +47,7 @@ Gloo
 
 * `gloo-quad.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-quad.py>`_
 
-  This example show a colored quad made of two triangle in orthographic mode.
+  This example show an animated colored quad made of two triangles in orthographic mode.
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-quad.png
 
