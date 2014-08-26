@@ -3,6 +3,9 @@
 ## App
 
 * app-simple.py
+
+  The most simple glimpy example. This should display a black windows.
+
 * app-config.py
 * app-events.py
 * app-screenshot.py
