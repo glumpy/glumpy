@@ -25,12 +25,11 @@ vertex = """
 """
 
 fragment = """
-    uniform sampler1D texture1;
-    uniform sampler2D texture2;
+    uniform sampler1D texture;
     varying vec2 v_texcoord;
     void main()
     {
-        gl_FragColor = texture1D(texture1, v_texcoord.x);
+        gl_FragColor = texture1D(texture, v_texcoord.x);
     }
 """
 
@@ -48,6 +47,5 @@ def on_resize(width, height):
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-program['texture1'] = np.linspace(0.0,1.0,256)
-program['texture2'] = np.random.uniform(0.5,1.0,(64,64,3))
+program['texture'] = np.linspace(0.0,1.0,256)
 app.run()

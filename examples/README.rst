@@ -83,6 +83,11 @@ Gloo
 
 * `gloo-console.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-console.py>`_
 
+  This examples shows how to have a console to display information.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-console.png
+
+
 * `gloo-rain.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-rain.py>`_
 
 * `gloo-trail.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-trail.py>`_

@@ -5,10 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-import glumpy
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.gloo as gloo
+from glumpy import app, gloo, gl, glm
 
 
 vertex = """
@@ -37,7 +34,7 @@ def checkerboard(grid_num=8, grid_size=32):
     Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
     return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
 
-window = app.Window(width=800, height=800)
+window = app.Window(width=512, height=512)
 
 @window.event
 def on_draw(dt):
