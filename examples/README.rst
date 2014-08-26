@@ -116,8 +116,10 @@ numpy array).
 
 * `gloo-atlas.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-atlas.py>`_
 
+  This example illustrates the atlas object that allow to store different
+  texture into a single one.
 
-* `gloo-quiver.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-quiver.py>`_
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-atlas.png
 
 
 * `gloo-marker.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
