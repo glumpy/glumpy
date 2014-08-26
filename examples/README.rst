@@ -5,6 +5,10 @@ Examples
 App
 ===
 
+**glumpy.app** is the layer responsible for opening a window, handling events
+(mouse, keyboard and user event). It also provides convenient interfaces to
+parse command line options and configure the GL context.
+
 * `app-simple.py <https://github.com/rougier/glumpy/blob/master/examples/app-simple.py>`_
 
   The most simple glumpy example. This should display a black window.
@@ -42,8 +46,14 @@ App
   Display a window in interactive mode (python console is reactive).
 
 
+
 Gloo
 ====
+
+**glumpy.gloo** is the heart of glumpy and is responsible for talking to the
+ GPU throught buffers, textures and programs. This is done quite transparently
+ throught the numpy interface and the GPU data object which is a numpy array.
+
 
 * `gloo-quad.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-quad.py>`_
 
@@ -105,7 +115,10 @@ Gloo
 
 * `gloo-marker.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
 
-  This example show various antialiased markers.
+  This example show various antialiased markers. The anti-aliasing is direclty
+  made on the GPU using signed-distance functions for each shape. This make the
+  dispay very fast (it is possible to display a million points this way,
+  provided they're not too big in terms of pixel area).
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-marker.png
 
