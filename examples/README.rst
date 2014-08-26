@@ -15,7 +15,7 @@ App
 
 * `app-events.py <https://github.com/rougier/glumpy/blob/master/examples/app-events.py>`_
 
-  This example connect to all available events and display them when trigerred.
+  This example connect to all available events and display them when triggered.
 
 * `app-screenshot.py <https://github.com/rougier/glumpy/blob/master/examples/app-screenshot.py>`_
 
@@ -23,7 +23,7 @@ App
 
 * `app-timed.py <https://github.com/rougier/glumpy/blob/master/examples/app-timed.py>`_
 
-  Open a window and display it for 1 second then exit.
+  Open a window, display it for 1 second and exit.
 
 * `app-two-windows.py <https://github.com/rougier/glumpy/blob/master/examples/app-two-windows.py>`_
 
@@ -83,12 +83,17 @@ Gloo
 
 * `gloo-console.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-console.py>`_
 
-  This examples shows how to have a console to display information.
+  This examples shows how to invoke a (simple) console to display information.
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-console.png
 
 
 * `gloo-rain.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-rain.py>`_
+
+  This example simulates rain drops using growing and fading circles and shows how to update a vertex buffer.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-rain.png
+
 
 * `gloo-trail.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-trail.py>`_
 
