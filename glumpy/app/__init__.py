@@ -15,7 +15,7 @@ from glumpy import gl
 from glumpy.log import log
 from glumpy.ext.inputhook import inputhook_manager, stdin_ready
 from glumpy.app.window import backends
-from glumpy.app.window.viewport import Viewport
+from . viewport import Viewport
 
 from . import parser
 from . import configuration
@@ -181,6 +181,10 @@ class Window(object):
         window._backend = __backend__
         config = configuration.gl_get_configuration()
         window._config = config
+
+        # Add the root viewport
+        window.viewport = Viewport()
+        window.attach(window.viewport)
 
         log.info("Using %s (%s %d.%d)" %
                  (__backend__.name(), config.api,

@@ -290,14 +290,22 @@ class Snippet(object):
         return all
 
 
+    # def __call__(self, *args, **kwargs):
+    #     """ __call__(self, *args) <==> self(*args) """
+
+    #     S = self.copy()
+    #     S._args = args
+    #     for symbol in kwargs.keys():
+    #         S._aliases[symbol] = kwargs[symbol]
+    #     return S
+
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
 
-        S = self.copy()
-        S._args = args
+        self._args = args
         for symbol in kwargs.keys():
-            S._aliases[symbol] = kwargs[symbol]
-        return S
+            self._aliases[symbol] = kwargs[symbol]
+        return self
 
     def __op__(self, operand, other):
         S = self.copy()
