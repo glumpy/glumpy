@@ -105,6 +105,9 @@ Gloo
 
 * `gloo-marker.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
 
+  This example show various antialiased markers.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-marker.png
 
 ..
    ` <https://github.com/rougier/glumpy/blob/master/examples/>`_
