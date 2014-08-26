@@ -60,16 +60,26 @@ Gloo
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-cube.png
 
 
-* `gloo-lena.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_
+* `gloo-texture-1D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-1D.py>`_
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-lena.png
+  This example shows how to manipulate 1-dimensional textures.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-texture-1D.png
+
+
+* `gloo-texture-2D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-2D.py>`_
+
+  This example shows how to manipulate 2-dimensional textures.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-texture-2D.png
+
+
+* `gloo-lena.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_
 
   This examples shows how to display an image, without control of the aspect ratio though.
 
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-lena.png
 
-* `gloo-texture-1D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-1D.py>`_
-
-* `gloo-texture-2D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-2D.py>`_
 
 * `gloo-console.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-console.py>`_
 
