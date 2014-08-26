@@ -5,16 +5,14 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from makecube import makecube
 from glumpy import app, gl, glm, gloo
-
+from glumpy.geometry import colorcube
 
 vertex = """
-uniform vec4 u_color;
-uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
-
+uniform vec4 ucolor;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 attribute vec3 position;
 attribute vec4 color;
 
@@ -22,8 +20,8 @@ varying vec4 v_color;
 
 void main()
 {
-    v_color = u_color * color;
-    gl_Position = u_projection * u_view * u_model * vec4(position,1.0);
+    v_color = ucolor * color;
+    gl_Position = projection * view * model * vec4(position,1.0);
 }
 """
 
@@ -48,14 +46,14 @@ def on_draw(dt):
     gl.glDisable(gl.GL_BLEND)
     gl.glEnable(gl.GL_DEPTH_TEST)
     gl.glEnable(gl.GL_POLYGON_OFFSET_FILL)
-    cube['u_color'] = 1, 1, 1, 1
+    cube['ucolor'] = 1, 1, 1, 1
     cube.draw(gl.GL_TRIANGLES, faces)
 
     # Outlined cube
     gl.glDisable(gl.GL_POLYGON_OFFSET_FILL)
     gl.glEnable(gl.GL_BLEND)
     gl.glDepthMask(gl.GL_FALSE)
-    cube['u_color'] = 0, 0, 0, 1
+    cube['ucolor'] = 0, 0, 0, 1
     cube.draw(gl.GL_LINES, outline)
     gl.glDepthMask(gl.GL_TRUE)
 
@@ -65,36 +63,25 @@ def on_draw(dt):
     model = np.eye(4, dtype=np.float32)
     glm.rotate(model, theta, 0, 0, 1)
     glm.rotate(model, phi, 0, 1, 0)
-    cube['u_model'] = model
+    cube['model'] = model
 
 
 @window.event
 def on_resize(width, height):
-    cube['u_projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
+    cube['projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
 
+@window.event
+def on_init():
+    gl.glEnable(gl.GL_DEPTH_TEST)
+    gl.glPolygonOffset(1, 1)
+    gl.glEnable(gl.GL_LINE_SMOOTH)
+    gl.glLineWidth(0.75)
 
-# Build cube data
-V, I, O = makecube()
-vertices = V.view(gloo.VertexBuffer)
-faces    = I.view(gloo.IndexBuffer)
-outline  = O.view(gloo.IndexBuffer)
-
-
+vertices, faces, outline = colorcube()
 cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
-view = np.eye(4, dtype=np.float32)
-model = np.eye(4, dtype=np.float32)
-projection = np.eye(4, dtype=np.float32)
-glm.translate(view, 0, 0, -5)
-cube['u_model'] = model
-cube['u_view'] = view
+cube['model'] = np.eye(4, dtype=np.float32)
+cube['view'] = glm.translation(0, 0, -5)
 phi, theta = 0, 0
 
-# OpenGL initalization
-gl.glEnable(gl.GL_DEPTH_TEST)
-gl.glPolygonOffset(1, 1)
-gl.glEnable(gl.GL_LINE_SMOOTH)
-gl.glLineWidth(0.75)
-
-# Run
 app.run()

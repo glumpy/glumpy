@@ -5,3 +5,4 @@
 # -----------------------------------------------------------------------------
 from normals import normals
 from parametric import surface
+from colorcube import colorcube

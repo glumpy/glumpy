@@ -50,10 +50,15 @@ Gloo
   This example shows an animated colored quad made of two triangles in orthographic mode.
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-quad.png
-     :align: right
 
 
 * `gloo-cube.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cube.py>`_
+
+  This example shows a rotating, colored & outlined cube.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-cube.png
+
+
 
 * `gloo-lena.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_
 

@@ -49,6 +49,30 @@ def translate(M, x, y=None, z=None):
     return M
 
 
+def translation(x, y=None, z=None):
+    """Translate by an offset (x, y, z) .
+
+    Parameters
+    ----------
+    x : float
+        X coordinate of a translation vector.
+    y : float | None
+        Y coordinate of translation vector. If None, `x` will be used.
+    z : float | None
+        Z coordinate of translation vector. If None, `x` will be used.
+
+    Returns
+    -------
+    M : array
+        Translation matrix
+    """
+
+    M = np.eye(4, dtype=np.float32)
+    return translate(M,x,y,z)
+
+
+
+
 def scale(M, x, y=None, z=None):
     """Non-uniform scaling along the x, y, and z axes
 
