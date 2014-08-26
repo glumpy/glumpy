@@ -51,8 +51,8 @@ Gloo
 ====
 
 **glumpy.gloo** is the heart of glumpy and is responsible for talking to the
- GPU throught buffers, textures and programs. This is done quite transparently
- throught the numpy interface and the GPU data object which is a numpy array.
+GPU throught buffers, textures and programs. This is done quite transparently
+throught the numpy interface and the GPU data object which is a numpy array.
 
 
 * `gloo-quad.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-quad.py>`_
@@ -115,10 +115,10 @@ Gloo
 
 * `gloo-marker.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
 
-  This example show various antialiased markers. The anti-aliasing is direclty
-  made on the GPU using signed-distance functions for each shape. This make the
-  dispay very fast (it is possible to display a million points this way,
-  provided they're not too big in terms of pixel area).
+  This example show various antialiased markers. The anti-aliasing is computed
+  by the GPU using signed-distance functions that describe the mathematical
+  shape. This makes the display very fast (it is possible to display a million
+  points this way, provided they're not too big in terms of pixels area).
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-marker.png
 
