@@ -7,7 +7,7 @@ App
 
 * `app-simple.py <https://github.com/rougier/glumpy/blob/master/examples/app-simple.py>`_
 
-   The most simple glumpy example. This should display a black window.
+  The most simple glumpy example. This should display a black window.
 
 * `app-config.py <https://github.com/rougier/glumpy/blob/master/examples/app-config.py>`_
 
