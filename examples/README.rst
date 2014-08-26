@@ -47,6 +47,8 @@ Gloo
 
 * `gloo-quad.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-quad.py>`_
 
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-quad.png
+
 * `gloo-cube.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cube.py>`_
 
 * `gloo-lena.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_
