@@ -109,6 +109,9 @@ Gloo
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-marker.png
 
+
+
+
 ..
    ` <https://github.com/rougier/glumpy/blob/master/examples/>`_
    ` <https://github.com/rougier/glumpy/blob/master/examples/>`_
