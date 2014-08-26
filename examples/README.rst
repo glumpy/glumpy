@@ -108,11 +108,17 @@ numpy array).
 
 * `gloo-trail.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-trail.py>`_
 
+  This example show mouse trails using growing and fadind discs. It illustrate how to use
+  mouse interation to update a vertex buffer.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-trail.png
+
+
 * `gloo-atlas.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-atlas.py>`_
+
 
 * `gloo-quiver.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-quiver.py>`_
 
-* `gloo-cloud.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cloud.py>`_
 
 * `gloo-marker.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
 
@@ -123,6 +129,13 @@ numpy array).
 
   .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-marker.png
 
+
+* `gloo-cloud.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cloud.py>`_
+
+  This example show an animated 3d scatter plots made of a million antialiased
+  points. It should run smoothly on any recent hardware.
+
+  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-cloud.png
 
 
 
