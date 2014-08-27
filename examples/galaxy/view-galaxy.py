@@ -59,7 +59,7 @@ void main()
 }
 """
 
-window = app.Window(width=800, height=800)
+window = app.Window(width=1024, height=1024)
 
 @window.event
 def on_init():
