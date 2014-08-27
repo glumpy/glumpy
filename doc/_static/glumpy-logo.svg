@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="271.94138"
-   height="89.039368"
+   width="300"
+   height="300"
    id="svg4080"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="glumpy.svg">
+   sodipodi:docname="glumpy-logo.svg">
   <defs
      id="defs4082" />
   <sodipodi:namedview
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3"
-     inkscape:cx="153.50562"
-     inkscape:cy="28.022394"
+     inkscape:zoom="2.2266667"
+     inkscape:cx="150"
+     inkscape:cy="150"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -57,7 +57,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -65,9 +65,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-462.40594,-471.39606)">
+     transform="translate(-462.40594,-260.43543)">
     <g
-       id="g3041">
+       id="g3041"
+       transform="matrix(2.8722634,0,0,2.8722634,-838.74501,-1071.4105)">
       <path
          sodipodi:nodetypes="ccccccc"
          inkscape:connector-curvature="0"
@@ -210,33 +211,6 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#dc0000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="639.23969"
-       y="524.96899"
-       id="text5443"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan5445"
-         x="639.23969"
-         y="524.96899"
-         style="font-size:48px;font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;font-family:Source Sans Pro;-inkscape-font-specification:Source Sans Pro Heavy">GLUMPY</tspan><tspan
-         sodipodi:role="line"
-         x="639.23969"
-         y="584.96899"
-         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:center;line-height:30.00000119%;writing-mode:lr-tb;text-anchor:middle;fill:#dc0000;fill-opacity:1;font-family:Source Sans Pro;-inkscape-font-specification:Source Sans Pro Light"
-         id="tspan5468" /><tspan
-         sodipodi:role="line"
-         x="639.23969"
-         y="644.96899"
-         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:center;line-height:40.0000006%;writing-mode:lr-tb;text-anchor:middle;fill:#dc0000;fill-opacity:1;font-family:Source Sans Pro;-inkscape-font-specification:Source Sans Pro Light"
-         id="tspan5470" /><tspan
-         sodipodi:role="line"
-         x="639.23969"
-         y="704.96899"
-         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:center;line-height:40.0000006%;writing-mode:lr-tb;text-anchor:middle;fill:#dc0000;fill-opacity:1;font-family:Source Sans Pro;-inkscape-font-specification:Source Sans Pro Light"
-         id="tspan5472" /></text>
-    <text
-       xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        x="117"
        y="90.372704"
@@ -247,22 +221,10 @@
          id="tspan5495"
          x="117"
          y="90.372704" /></text>
-    <text
-       xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="640.44104"
-       y="537.25238"
-       id="text5443-4"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan5445-4"
-         x="640.44104"
-         y="537.25238"
-         style="font-size:11.5px;font-style:normal;font-variant:normal;font-weight:200;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;writing-mode:lr-tb;text-anchor:middle;font-family:Source Sans Pro;-inkscape-font-specification:Source Sans Pro Ultra-Light">Fast, Scalable &amp; Beautiful Visualization</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Layer"
-     transform="translate(6,0.60717)" />
+     transform="translate(6,211.5678)" />
 </svg>
