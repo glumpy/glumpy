@@ -155,3 +155,66 @@ numpy array).
    gloo-hexagonal-grid.py
    gloo-irregular-grids.py
    gloo-regular-grids.py
+
+
+Computation
+===========
+
+* Game of life
+* Grayscott Reaction-Diffusion system
+
+
+Post-processing filters
+=======================
+
+* Sepia colors
+* Gaussian blur
+* Filter composition
+
+
+Snippets
+========
+
+* 2D plots on regular grid
+* 3D plots on regular grid
+* Arbitrary viewports
+
+
+Transforms
+==========
+
+* Pan-zoom
+* Trackball
+* Projection / Model / View
+
+
+Eye-candy demonstrations
+========================
+
+* Spiral galaxy
+* Fireworks
+* Voronoi
+* Quiver plot
+* Realtime signals
+
+
+Collections
+===========
+
+* Points
+* Lines
+* Triangles
+* Markers
+* Antialiased solid lines
+* Antialiased dashed lines
+
+
+Technics
+========
+
+* Read movie
+* Write movie
+* Antialiased grids
+* Heighfields
+* High-frequency signal
+* Image spatial interpolations
