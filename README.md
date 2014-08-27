@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/glumpy-teaser.png">
 
 **Glumpy** is a python library for scientific visualization that is both fast,
-responsive, and scalable. **Glumpy** offers a natural interface between numpy
+scalable and beautiful. **Glumpy** offers a natural interface between numpy
 and modern OpenGL.
 
 
