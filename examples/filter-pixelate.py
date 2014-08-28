@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from makecube import makecube
+from glumpy.geometry import primitives
 from glumpy import gl, app, glm, gloo, filters
 
 
@@ -81,16 +81,11 @@ def on_mouse_scroll(x, y, dx, dy):
 
 
 # Build cube data
-V, I, O = makecube()
-vertices = V.view(gloo.VertexBuffer)
-faces    = I.view(gloo.IndexBuffer)
-outline  = O.view(gloo.IndexBuffer)
-
-# Build cube
+vertices, faces = primitives.cube()
 cube = gloo.Program(cube_vertex, cube_fragment)
 cube.bind(vertices)
 view = np.eye(4, dtype=np.float32)
-glm.translate(view, 0, 0, -5)
+glm.translate(view, 0, 0, -3)
 cube['view'] = view
 cube['model'] = np.eye(4, dtype=np.float32)
 cube['texture'] = checkerboard()

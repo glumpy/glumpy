@@ -8,10 +8,8 @@
 
 import numpy as np
 from glumpy import app, gl, glm, gloo
+from glumpy.geometry import colorcube
 from glumpy.transforms import PVMProjection, Position3D
-from makecube import makecube
-
-
 
 vertex = """
 uniform vec4 u_color;
@@ -67,7 +65,7 @@ def on_draw(dt):
 
 
 # Build cube data
-V, I, O = makecube()
+V, I, O = colorcube()
 vertices = V.view(gloo.VertexBuffer)
 faces    = I.view(gloo.IndexBuffer)
 outline  = O.view(gloo.IndexBuffer)

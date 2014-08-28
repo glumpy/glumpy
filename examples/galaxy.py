@@ -5,16 +5,9 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from PIL import Image
-
-from galaxy import Galaxy
-from specrend import *
-
-import glumpy
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.glm as glm
-import glumpy.gloo as gloo
+from galaxy_specrend import *
+from galaxy_simulation import Galaxy
+from glumpy import app, gloo, gl, glm, data
 
 
 vertex = """
@@ -59,7 +52,7 @@ void main()
 }
 """
 
-window = app.Window(width=1024, height=1024)
+window = app.Window(width=800, height=800)
 
 @window.event
 def on_init():
@@ -104,7 +97,7 @@ glm.translate(view, 0, 0, -5)
 program['u_model'] = model
 program['u_view'] = view
 program['u_colormap'] = colors
-program['u_texture'] = np.array(Image.open("particle.png"))
+program['u_texture'] = data.get("particle.png")
 program['u_texture'].interpolation = gl.GL_LINEAR
 
 program['a_temperature'] = (galaxy['temperature'] - t0) / (t1-t0)
@@ -112,14 +105,9 @@ program['a_brightness'] = galaxy['brightness']
 program['a_size'] = galaxy['size']
 program['a_type'] = galaxy['type']
 
-
-# OpenGL initalization
-# --------------------------------------
 gl.glClearColor(0.0, 0.0, 0.03, 1.0)
 gl.glDisable(gl.GL_DEPTH_TEST)
 gl.glEnable(gl.GL_BLEND)
-gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE);
+gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE)
 
-# Start
-# --------------------------------------
 app.run(framerate=60)

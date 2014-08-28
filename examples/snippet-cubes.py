@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from makecube import makecube
+from glumpy.geometry import primitives
 from glumpy import app, gl, glm, gloo
 from glumpy.graphics.collection import BaseCollection
 
@@ -16,24 +16,25 @@ uniform mat4 projection;
 
 attribute float index;
 attribute vec3 position;
-attribute vec4 color;
+attribute vec2 texcoord;
 
-varying vec4 v_color;
-
+varying vec2 v_texcoord;
 void main()
 {
-    v_color = color;
+    v_texcoord = texcoord;
     vec4 pos = projection * view * model * vec4(position,1.0);
     gl_Position = <grid>;
 }
 """
 
 fragment = """
-varying vec4 v_color;
+uniform sampler2D texture;
+varying vec2 v_texcoord;
 void main()
 {
     <clip>;
-    gl_FragColor = v_color;
+    float r = texture2D(texture, v_texcoord).r;
+    gl_FragColor = vec4(vec3(r),1.0);
 }
 """
 
@@ -82,6 +83,12 @@ void clip(float index)
 }
 """)
 
+def checkerboard(grid_num=8, grid_size=32):
+    row_even = grid_num / 2 * [0, 1]
+    row_odd = grid_num / 2 * [1, 0]
+    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
+    return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
+
 
 rows,cols = 3,3
 window = app.Window(width=1024, height=1024, color=(0.30, 0.30, 0.35, 1.00))
@@ -93,7 +100,7 @@ dtype = [("position", np.float32, 3),
          ("color",    np.float32, 4),
          ("index",    np.float32, 1)]
 cubes = BaseCollection(vtype=dtype, itype=np.uint32)
-V,I,_ = makecube()
+V,I = primitives.cube()
 C = np.zeros(len(V),dtype=dtype)
 C[...] = V
 for i in range(rows*cols):
@@ -140,7 +147,8 @@ program.bind(V)
 view = np.eye(4, dtype=np.float32)
 model = np.eye(4, dtype=np.float32)
 projection = np.eye(4, dtype=np.float32)
-glm.translate(view, 0, 0, -5)
+glm.translate(view, 0, 0, -3)
+program['texture'] = checkerboard()
 program['model'] = model
 program['view'] = view
 program['grid'] = Grid("pos", "index")
@@ -150,6 +158,6 @@ program['clip'] = Clip("v_index")
 program['clip']["rows"] = rows
 program['clip']["cols"] = cols
 
-fovy = 45
+fovy = 30
 phi, theta = 30, 20
 app.run()
