@@ -19,7 +19,7 @@ parse command line options and configure the GL context.
 
 * `app-events.py <https://github.com/rougier/glumpy/blob/master/examples/app-events.py>`_
 
-  This example connect to all available events and display them when triggered.
+  This example connects to all available events and display them when triggered.
 
 * `app-screenshot.py <https://github.com/rougier/glumpy/blob/master/examples/app-screenshot.py>`_
 
@@ -56,66 +56,67 @@ thanls to the numpy interface (and the GPU data object which is a subclassed
 numpy array).
 
 
-* `gloo-quad.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-quad.py>`_
-
-  This example shows an animated colored quad made of two triangles in orthographic mode.
-
-
-* `gloo-cube.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cube.py>`_
-
-  This example shows a rotating, colored & outlined cube. It uses transformation
-  matrices to translate, rotate and finally project the cube on the window framebuffer.
+* `gloo-quad.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-quad.py>`_ shows
+  an animated colored quad made of two triangles in orthographic mode.
 
 
-* `gloo-texture-1D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-1D.py>`_
-
-  This example shows how to manipulate 1-dimensional textures.
-
-
-* `gloo-texture-2D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-2D.py>`_
-
-  This example shows how to manipulate 2-dimensional textures.
+* `gloo-cube.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-cube.py>`_ shows
+  a rotating, colored & outlined cube. It uses transformation matrices to
+  translate, rotate and finally project the cube on the window framebuffer.
 
 
-* `gloo-lena.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_
-
-  This examples shows how to display an image, without control of the aspect ratio though.
-
-
-* `gloo-console.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-console.py>`_
-
-  This examples shows how to invoke a (simple) console to display information.
+* `gloo-texture-1D.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-1D.py>`_
+  shows how to manipulate 1-dimensional textures.
 
 
-* `gloo-rain.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-rain.py>`_
+* `gloo-texture-2D.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-2D.py>`_ shows
+  how to manipulate 2-dimensional textures.
 
-  This example simulates rain drops using growing and fading circles and shows how to update a vertex buffer.
+
+* `gloo-lena.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_ shows
+  how to display an image, without control of the aspect ratio though.
 
 
-* `gloo-trail.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-trail.py>`_
+* `gloo-console.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-console.py>`_
+  shows how to invoke a (simple) console to display information.
 
-  This example show mouse trails using growing and fadind discs. It illustrate how to use
+
+* `gloo-rain.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-rain.py>`_
+  simulates rain drops using growing and fading circles and shows how to update
+  a vertex buffer.
+
+
+* `gloo-trail.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-trail.py>`_
+  shows mouse trails using growing and fadind discs. It illustrate how to use
   mouse interation to update a vertex buffer.
 
 
-* `gloo-atlas.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-atlas.py>`_
-
-  This example illustrates the atlas object that allow to store different
-  texture into a single one.
-
-
-* `gloo-marker.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
-
-  This example show various antialiased markers. The anti-aliasing is computed
-  by the GPU using signed-distance functions that describe the mathematical
-  shape. This makes the display very fast (it is possible to display a million
-  points this way, provided they're not too big in terms of pixels area).
+* `gloo-atlas.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-atlas.py>`_
+  illustrates the atlas object that allow to store different texture into a
+  single one.
 
 
-* `gloo-cloud.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cloud.py>`_
+* `gloo-marker.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
+  shows various antialiased markers. The anti-aliasing is computed by the GPU
+  using signed-distance functions that describe the mathematical shape. This
+  makes the display very fast (it is possible to display a million points this
+  way, provided they're not too big in terms of pixels area).
 
-  This example show an animated 3d scatter plots made of a million antialiased
-  points. It should run smoothly on any recent hardware.
+
+* `gloo-cloud.py
+  <https://github.com/rougier/glumpy/blob/master/examples/gloo-cloud.py>`_
+  shows an animated 3d scatter plots made of a million antialiased points. It
+  should run smoothly on any recent hardware.
 
 
 
