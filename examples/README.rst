@@ -60,50 +60,36 @@ numpy array).
 
   This example shows an animated colored quad made of two triangles in orthographic mode.
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-quad.png
-
 
 * `gloo-cube.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cube.py>`_
 
   This example shows a rotating, colored & outlined cube. It uses transformation
   matrices to translate, rotate and finally project the cube on the window framebuffer.
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-cube.png
-
 
 * `gloo-texture-1D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-1D.py>`_
 
   This example shows how to manipulate 1-dimensional textures.
-
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-texture-1D.png
 
 
 * `gloo-texture-2D.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-texture-2D.py>`_
 
   This example shows how to manipulate 2-dimensional textures.
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-texture-2D.png
-
 
 * `gloo-lena.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-lena.py>`_
 
   This examples shows how to display an image, without control of the aspect ratio though.
-
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-lena.png
 
 
 * `gloo-console.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-console.py>`_
 
   This examples shows how to invoke a (simple) console to display information.
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-console.png
-
 
 * `gloo-rain.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-rain.py>`_
 
   This example simulates rain drops using growing and fading circles and shows how to update a vertex buffer.
-
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-rain.png
 
 
 * `gloo-trail.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-trail.py>`_
@@ -111,15 +97,11 @@ numpy array).
   This example show mouse trails using growing and fadind discs. It illustrate how to use
   mouse interation to update a vertex buffer.
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-trail.png
-
 
 * `gloo-atlas.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-atlas.py>`_
 
   This example illustrates the atlas object that allow to store different
   texture into a single one.
-
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-atlas.png
 
 
 * `gloo-marker.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-marker.py>`_
@@ -129,32 +111,12 @@ numpy array).
   shape. This makes the display very fast (it is possible to display a million
   points this way, provided they're not too big in terms of pixels area).
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-marker.png
-
 
 * `gloo-cloud.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-cloud.py>`_
 
   This example show an animated 3d scatter plots made of a million antialiased
   points. It should run smoothly on any recent hardware.
 
-  .. image:: https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/screenshots/gloo-cloud.png
-
-
-
-..
-   ` <https://github.com/rougier/glumpy/blob/master/examples/>`_
-   ` <https://github.com/rougier/glumpy/blob/master/examples/>`_
-   ` <https://github.com/rougier/glumpy/blob/master/examples/>`_
-   ` <https://github.com/rougier/glumpy/blob/master/examples/>`_
-   gloo-arrows.py
-   gloo-solid-segment.py
-   gloo-voronoi.py
-   gloo-frame.py
-   gloo-terminal.py
-   gloo-cartesian-grid.py
-   gloo-hexagonal-grid.py
-   gloo-irregular-grids.py
-   gloo-regular-grids.py
 
 
 Computation
