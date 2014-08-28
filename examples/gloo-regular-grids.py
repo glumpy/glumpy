@@ -82,7 +82,7 @@ program['u_major_grid_color'] = 0, 0, 0, 1.0
 program['u_minor_grid_color'] = 0, 0, 0, 0.5
 
 # Polar projection example
-if 1:
+if 0:
     limits1 = -5.1, +5.1, -5.1, +5.1
     limits2 = 1.0, 5.0, 0, 2*np.pi
     major_grid_step = np.array([ 1.00, np.pi/6])
@@ -97,8 +97,8 @@ if 0:
     minor_grid_step = np.array([ 0.2, 0.2])
 
 # Lamber projection limits
-if 0:
-    limits1 = -2.0, +2.0, -2.0, +2.0
+if 1:
+    limits1 = -2.0, +2.0, -1.5, +1.5
     limits2 = -np.pi, +np.pi, -np.pi/2, +np.pi/2
     major_grid_step = np.array([1.0, 0.5])*np.pi/(6*1)
     minor_grid_step = np.array([1.0, 0.5])*np.pi/(6*5)

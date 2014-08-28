@@ -3,9 +3,9 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-from glumpy.log import log
-from glumpy import gloo, shaders
 from . window import event
+from glumpy.log import log
+from glumpy import gloo, shaders, transforms
 
 
 
@@ -118,8 +118,11 @@ class Viewport(event.EventDispatcher):
         self._id = Viewport._idcount
         Viewport._idcount += 1
 
-        self._clipping = gloo.Snippet(shaders.get_code("viewport-clipping.glsl"))
-        self._transform = gloo.Snippet(shaders.get_code("viewport-transform.glsl"))
+#        self._clipping = gloo.Snippet(shaders.get_code("viewport-clipping.glsl"))
+#        self._transform = gloo.Snippet(shaders.get_code("viewport-transform.glsl"))
+
+        self._clipping = transforms.Transform(shaders.get_code("viewport-clipping.glsl"))
+        self._transform = transforms.Transform(shaders.get_code("viewport-transform.glsl"))
 
 
     def add(self, child):
@@ -270,10 +273,9 @@ class Viewport(event.EventDispatcher):
         # Enforce aspect first
         if self._aspect:
             vh = self._aspect*vw
-            # if vh > pvh:
-            #     if -1 < self._requested_size[0] <= 1:
-            #         vh = pvh
-            #         vw = vh/self._aspect
+            if vh > pvh and -1 < self._requested_size[0] <= 1:
+                vh = pvh
+                vw = vh/self._aspect
 
 
 
@@ -469,7 +471,6 @@ class Viewport(event.EventDispatcher):
 # Viewport events
 Viewport.register_event_type('on_enter')
 Viewport.register_event_type('on_leave')
-Viewport.register_event_type('on_draw')
 Viewport.register_event_type('on_resize')
 Viewport.register_event_type('on_mouse_motion')
 Viewport.register_event_type('on_mouse_drag')
@@ -480,9 +481,11 @@ Viewport.register_event_type('on_character')
 Viewport.register_event_type('on_key_press')
 Viewport.register_event_type('on_key_release')
 
+# Viewport.register_event_type('on_draw')
+
 # Window events
-Viewport.register_event_type('on_init')
-Viewport.register_event_type('on_show')
-Viewport.register_event_type('on_hide')
-Viewport.register_event_type('on_close')
-Viewport.register_event_type('on_idle')
+#Viewport.register_event_type('on_init')
+#Viewport.register_event_type('on_show')
+#Viewport.register_event_type('on_hide')
+#Viewport.register_event_type('on_close')
+#Viewport.register_event_type('on_idle')

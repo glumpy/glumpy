@@ -53,7 +53,7 @@ varying vec2 v_size;
 
 // Functions
 // ------------------------------------
-/*
+
 // Hammer forward transform
 // ------------------------------------
 vec2 transform_forward(vec2 P)
@@ -85,8 +85,8 @@ vec2 transform_inverse(vec2 P)
     float lat = asin(z*y);
     return vec2(lon,lat);
 }
-*/
 
+/*
 // Forward transform (polar)
 // ------------------------------------
 vec2 transform_forward(vec2 P)
@@ -106,7 +106,7 @@ vec2 transform_inverse(vec2 P)
         theta = 2.0*M_PI+theta;
     return vec2(rho,theta);
 }
-
+*/
 
 // [-0.5,-0.5]x[0.5,0.5] -> [xmin,xmax]x[ymin,ymax]
 // ------------------------------------------------
