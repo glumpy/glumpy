@@ -200,7 +200,7 @@ class Window(object):
 
 
 
-# ----------------------------------------------------------------- __run__ ---
+# --------------------------------------------------------------- __init__ ---
 def __init__(clock=None, framerate=None, backend=None):
     """ Initialize the main loop
 
@@ -236,7 +236,6 @@ def __init__(clock=None, framerate=None, backend=None):
     else:
         __clock__ = clock
     __clock__.set_fps_limit(framerate)
-
 
     # OpenGL Initialization
     gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)

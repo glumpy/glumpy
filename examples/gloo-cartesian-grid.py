@@ -128,7 +128,7 @@ def update_grid(w, h):
 
 
 
-window = app.Window(width=2*512, height=2*512, color=(1,1,1,1))
+window = app.Window(width=512, height=512, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):

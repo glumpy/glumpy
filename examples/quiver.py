@@ -286,7 +286,7 @@ void main()
 """
 
 
-window = app.Window(width=800, height=800, color=(1,1,1,1))
+window = app.Window(width=512, height=512, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
