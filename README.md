@@ -30,8 +30,3 @@ and modern OpenGL.
         window.clear()
 
     app.run()
-
-
-## Gallery
-
-→ https://github.com/rougier/glumpy/wiki/Gallery
