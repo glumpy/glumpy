@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy.geometry import primitives
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, data
 from glumpy.graphics.collection import BaseCollection
 
 vertex = """
@@ -83,12 +83,6 @@ void clip(float index)
 }
 """)
 
-def checkerboard(grid_num=8, grid_size=32):
-    row_even = grid_num / 2 * [0, 1]
-    row_odd = grid_num / 2 * [1, 0]
-    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
-    return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
-
 
 rows,cols = 3,3
 window = app.Window(width=1024, height=1024, color=(0.30, 0.30, 0.35, 1.00))
@@ -148,7 +142,7 @@ view = np.eye(4, dtype=np.float32)
 model = np.eye(4, dtype=np.float32)
 projection = np.eye(4, dtype=np.float32)
 glm.translate(view, 0, 0, -3)
-program['texture'] = checkerboard()
+program['texture'] = data.checkerboard()
 program['model'] = model
 program['view'] = view
 program['grid'] = Grid("pos", "index")

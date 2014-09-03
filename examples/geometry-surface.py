@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import data, shaders
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, data
 from glumpy.geometry import primitives
 from glumpy.transforms import Trackball
 
@@ -92,12 +92,6 @@ void main()
 window = app.Window(1200, 800, color = (1,1,1,1))
 
 
-def checkerboard(grid_num=32, grid_size=24):
-    row_even = grid_num / 2 * [0, 1]
-    row_odd = grid_num / 2 * [1, 0]
-    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
-    return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
-
 
 @window.event
 def on_draw(dt):
@@ -155,7 +149,7 @@ surface['data'] = (Z-Z.min())/(Z.max() - Z.min())
 surface['data'].interpolation = gl.GL_NEAREST
 surface['data_shape'] = Z.shape[1], Z.shape[0]
 surface['u_kernel'] = data.get("spatial-filters.npy")
-surface['texture'] = checkerboard()
+surface['texture'] = data.checkerboard(32,24)
 
 transform = Trackball("vec4(position.xy, z, 1.0)")
 surface['transform'] = transform

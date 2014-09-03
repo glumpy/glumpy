@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, data
 from glumpy.geometry import surface
 
 
@@ -84,12 +84,6 @@ void main()
 
 window = app.Window(width=1024, height=1024, color=(1,1,1,1))
 
-def checkerboard(grid_num=16, grid_size=24):
-    row_even = grid_num / 2 * [0, 1]
-    row_odd = grid_num / 2 * [1, 0]
-    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
-    return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
-
 @window.event
 def on_draw(dt):
     global phi, theta, duration
@@ -139,7 +133,7 @@ glm.translate(view, 0, 0, -5)
 program['model'] = model
 program['view'] = view
 program['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
-program['texture'] = checkerboard()
+program['texture'] = data.checkerboard()
 program['texture'].wrapping = gl.GL_REPEAT
 
 program["light1_position"] = 3, 0, 0+5

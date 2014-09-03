@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, data
 from glumpy.geometry import primitives
 
 from glumpy.graphics.collection import LineCollection
@@ -88,12 +88,6 @@ void main()
 
 window = app.Window(width=1024, height=1024, color=(1,1,1,1))
 
-def checkerboard(grid_num=16, grid_size=24):
-    row_even = grid_num / 2 * [0, 1]
-    row_odd = grid_num / 2 * [1, 0]
-    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
-    return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
-
 @window.event
 def on_draw(dt):
     global phi, theta, duration
@@ -112,11 +106,9 @@ def on_draw(dt):
 def on_resize(width, height):
     program['projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
 
-
 @window.event
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
-
 
 @window.event
 def on_key_press(key, modifiers):
@@ -147,7 +139,7 @@ glm.translate(view, 0, 0, -5)
 program['model'] = model
 program['view'] = view
 program['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
-program['texture'] = checkerboard()
+program['texture'] = data.checkerboard()
 program["light1_position"] = 3, 0, 0+5
 program["light2_position"] = 0, 3, 0+5
 program["light3_position"] = -3, -3, +5

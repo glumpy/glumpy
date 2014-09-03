@@ -81,7 +81,7 @@ def objload(filename) :
     return vertices, indices
 
 
-def checkerboard(grid_num=16, grid_size=24):
+def checkerboard(grid_num=8, grid_size=32):
     row_even = grid_num / 2 * [0, 1]
     row_odd = grid_num / 2 * [1, 0]
     Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
@@ -94,7 +94,9 @@ def get(name):
     filename = _get_file(name)
     extension = os.path.basename(name).split('.')[-1]
 
-    if extension in ['ttf', 'otf']:
+    if name == "checkerboard":
+        return checkerboard(16,32)
+    elif extension in ['ttf', 'otf']:
         return filename
     elif extension == 'npy':
         return np.load(filename)

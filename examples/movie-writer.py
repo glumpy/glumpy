@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, data
 from glumpy.geometry import primitives
 from glumpy.ext.ffmpeg_writer import FFMPEG_VideoWriter
 
@@ -39,12 +39,6 @@ duration = 5.0
 framerate = 60
 writer = FFMPEG_VideoWriter("cube.mp4", (width, height), fps=framerate)
 fbuffer = np.zeros((window.height, window.height, 3), dtype=np.uint8)
-
-def checkerboard(grid_num=8, grid_size=32):
-    row_even = grid_num / 2 * [0, 1]
-    row_odd = grid_num / 2 * [1, 0]
-    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
-    return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
 
 
 @window.event
@@ -87,7 +81,7 @@ view = np.eye(4, dtype=np.float32)
 glm.translate(view, 0, 0, -3)
 cube['view'] = view
 cube['model'] = np.eye(4, dtype=np.float32)
-cube['texture'] = checkerboard()
+cube['texture'] = data.checkerboard()
 phi, theta = 0, 0
 
 app.run(framerate=framerate)

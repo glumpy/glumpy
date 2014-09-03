@@ -91,7 +91,7 @@ class LineCollection(Collection):
         I = np.repeat(np.arange(itemsize),2)[1:-1]
 
         defaults = LineCollection.defaults
-        reserved = ["a_uniform_index", "position"]
+        reserved = ["collection_index", "position"]
         for name in self.vtype.names:
             if name not in reserved:
                 if name in kwargs.keys() or name in defaults.keys():
