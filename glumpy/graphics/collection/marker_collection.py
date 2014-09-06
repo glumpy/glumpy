@@ -10,7 +10,7 @@ import numpy as np
 from functools import reduce
 from glumpy import gl
 from glumpy.gloo.program import Program
-from glumpy.shaders import get_file, get_code
+from glumpy.shaders import get
 from glumpy.graphics.collection.util import fetchcode
 from glumpy.graphics.collection.collection import Collection
 
@@ -69,12 +69,12 @@ class MarkerCollection(Collection):
             vertex += "void fetch_uniforms(void) { }\n"
         vertex += self._declarations["uniforms"]
         vertex += self._declarations["attributes"]
-        vertex += get_code('marker.vert')
+        vertex += get('collections/marker.vert')
 
         fragment = ""
-        fragment += get_code('marker-%s.frag' % marker)
-        fragment += get_code('outline.frag')
-        fragment += get_code('marker.frag')
+        fragment += get('markers/marker-%s.frag' % marker)
+        fragment += get('antialias/outline.frag')
+        fragment += get('collections/marker.frag')
 
         self._program = Program(vertex, fragment)
         for name in self._uniforms.keys():

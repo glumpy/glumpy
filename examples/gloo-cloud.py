@@ -45,11 +45,27 @@ uniform float antialias;
 varying float v_radius;
 varying vec4  v_fg_color;
 varying vec4  v_bg_color;
+
+float marker(vec2 P, float size)
+{
+   const float SQRT_2 = 1.4142135623730951;
+   float x = SQRT_2/2 * (P.x - P.y);
+   float y = SQRT_2/2 * (P.x + P.y);
+
+   float r1 = max(abs(x)- size/2, abs(y)- size/10);
+   float r2 = max(abs(y)- size/2, abs(x)- size/10);
+   float r3 = max(abs(P.x)- size/2, abs(P.y)- size/10);
+   float r4 = max(abs(P.y)- size/2, abs(P.x)- size/10);
+   return min( min(r1,r2), min(r3,r4));
+}
+
+
 void main()
 {
     float r = (v_radius + linewidth + 1.5*antialias);
     float t = linewidth/2.0 - antialias;
     float signed_distance = length(gl_PointCoord.xy - vec2(0.5,0.5)) * 2 * r - v_radius;
+//    float signed_distance = marker((gl_PointCoord.xy - vec2(0.5,0.5))*r*2, 2*v_radius);
     float border_distance = abs(signed_distance) - t;
     float alpha = border_distance/antialias;
     alpha = exp(-alpha*alpha);

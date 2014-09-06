@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, gloo, glm
+from glumpy import app, gl, gloo, glm, shaders
 
 
 # Add an option for choosing marker
@@ -72,10 +72,10 @@ data['a_orientation'][n-1] = 0
 
 # Parse options to get marker
 options = app.parser.get_options()
-program = gloo.Program(("shaders/markers/marker.vert",),
-                       ("shaders/markers/marker-%s.frag" % options.marker,
-                        "shaders/markers/antialias.glsl",
-                        "shaders/markers/marker.frag"))
+program = gloo.Program( shaders.get("marker.vert"),
+                       (shaders.get("markers/marker-%s.frag" % options.marker),
+                        shaders.get("antialias/outline.frag"),
+                        shaders.get("marker.frag")))
 program.bind(data)
 program['u_antialias'] = 1.00
 program['u_model'] = np.eye(4)

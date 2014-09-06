@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, glm, gloo
+from glumpy import app, gl, glm, gloo, shaders
 
 vertex = """
     attribute vec2 position;
@@ -16,6 +16,36 @@ vertex = """
 """
 
 fragment = """
+#version 120
+
+vec4 outline(float distance, float linewidth, float antialias, vec4 stroke, vec4 fill)
+{
+    vec4 frag_color;
+    float t = linewidth/2.0 - antialias;
+    float signed_distance = distance;
+    float border_distance = abs(signed_distance) - t;
+    float alpha = border_distance/antialias;
+    alpha = exp(-alpha*alpha);
+
+    // Within linestroke
+    if( border_distance < 0.0 )
+        frag_color = stroke;
+    else if( signed_distance < 0.0 )
+        // Inside shape
+        if( border_distance > (linewidth/2.0 + antialias) )
+            frag_color = fill;
+        else // Line stroke interior border
+            frag_color = mix(fill, stroke, alpha);
+    else
+        // Outide shape
+        if( border_distance > (linewidth/2.0 + antialias) )
+            discard;
+        else // Line stroke exterior border
+            frag_color = vec4(stroke.rgb, stroke.a * alpha);
+
+    return frag_color;
+}
+
 vec4 stroke(float distance, float linewidth, float antialias, vec4 stroke)
 {
     vec4 frag_color;
@@ -243,32 +273,115 @@ float arrow_stealth(vec2 texcoord,
 }
 
 
-uniform vec2 iResolution;
-varying vec2 v_texcoord;
+// Constants
+// ------------------------------------
+const float SQRT_2 = 1.4142135623730951;
+
+// External functions
+// ------------------------------------
+//float marker(vec2, float);
+//vec4 filled(float, float, float, vec4);
+//vec4 outline(float, float, float, vec4, vec4);
+//vec4 stroke(float, float, float, vec4);
+
+
+// Uniforms
+// ------------------------------------
+uniform float u_antialias;
+
+// Varyings
+// ------------------------------------
+varying vec4  v_fg_color;
+varying vec4  v_bg_color;
+varying float v_linewidth;
+varying float v_size;
+varying vec2  v_rotation;
+
+// Main
+// ------------------------------------
 void main()
 {
-    const float linewidth = 20.0;
-    const float antialias =  1.0;
-    float body = 20.0*linewidth;
-    vec2 texcoord = gl_FragCoord.xy - iResolution.xy/2.0;
+    vec2 P = gl_PointCoord.xy - vec2(0.5,0.5);
+    P = vec2(v_rotation.x*P.x - v_rotation.y*P.y,
+             v_rotation.y*P.x + v_rotation.x*P.y) * v_size;
 
+    float point_size = SQRT_2*v_size  + 2 * (v_linewidth + 1.5*u_antialias);
+    float body = v_size/SQRT_2;
 
-    float d = arrow_curved(texcoord, body, 0.25*body, linewidth, antialias);
-    // float d = arrow_stealth(texcoord, body, 0.25*body, linewidth, antialias);
-    // float d = arrow_triangle_90(texcoord, body, 0.15*body, linewidth, antialias);
-    // float d = arrow_triangle_60(texcoord, body, 0.20*body, linewidth, antialias);
-    // float d = arrow_triangle_30(texcoord, body, 0.25*body, linewidth, antialias);
-    // float d = arrow_angle_90(texcoord, body, 0.15*body, linewidth, antialias);
-    // float d = arrow_angle_60(texcoord, body, 0.20*body, linewidth, antialias);
-    // float d = arrow_angle_30(texcoord, body, 0.25*body, linewidth, antialias);
+    // float d = arrow_curved(P, body, 0.25*body, v_linewidth, u_antialias);
+    // float d = arrow_stealth(P, body, 0.25*body, v_linewidth, u_antialias);
+    // float d = arrow_triangle_90(P, body, 0.15*body, v_linewidth, u_antialias);
+    // float d = arrow_triangle_60(P, body, 0.20*body, v_linewidth, u_antialias);
+    // float d = arrow_triangle_30(P, body, 0.25*body, v_linewidth, u_antialias);
+    // float d = arrow_angle_90(P, body, 0.15*body, v_linewidth, u_antialias);
+    float d = arrow_angle_60(P, body, 0.25*body, v_linewidth, u_antialias);
+    // float d = arrow_angle_30(P, body, 0.33*body, v_linewidth, u_antialias);
 
-    gl_FragColor = filled(d, linewidth, antialias, vec4(0,0,0,1));
-    // gl_FragColor = stroke(d, linewidth, antialias, vec4(0,0,0,1));
-
+    // gl_FragColor = outline(d, v_linewidth, u_antialias, v_fg_color, v_bg_color);
+    gl_FragColor = filled(d, v_linewidth, u_antialias, v_fg_color);
+    // gl_FragColor = stroke(d, v_linewidth, u_antialias, v_fg_color);
 }
 """
 
 
+
+# Create window
+window = app.Window(width=2*512, height=512, color=(1,1,1,1))
+
+# What to draw when necessary
+@window.event
+def on_draw(dt):
+    window.clear()
+    program.draw(gl.GL_POINTS)
+    program['a_orientation'][-1] += np.pi/1024.0
+
+# Setup ortho matrix on resize
+@window.event
+def on_resize(width, height):
+    projection = glm.ortho(0, width, 0, height, -1, +1)
+    program['u_projection'] = projection
+
+# Setup some markers
+n = 500+1
+data = np.zeros(n, dtype=[('a_position',    np.float32, 3),
+                          ('a_fg_color',    np.float32, 4),
+                          ('a_bg_color',    np.float32, 4),
+                          ('a_size',        np.float32, 1),
+                          ('a_orientation', np.float32, 1),
+                          ('a_linewidth',   np.float32, 1)])
+data = data.view(gloo.VertexBuffer)
+data['a_linewidth'] = 1
+data['a_fg_color'] = 0, 0, 0, 1
+data['a_bg_color'] = 1, 1, 1, 0
+data['a_orientation'] = 0
+radius, theta, dtheta = 245.0, 0.0, 6.5 / 180.0 * np.pi
+for i in range(500):
+    theta += dtheta
+    x = 256 + radius * np.cos(theta)
+    y = 256 + radius * np.sin(theta)
+    r = 10.1 - i * 0.01
+    radius -= 0.4
+    data['a_orientation'][i] = theta + np.pi
+    data['a_position'][i] = x, y, 0
+    data['a_size'][i] = 2 * r
+    data['a_linewidth'][i] = 1.5 - 0.5*i/500.
+
+data['a_position'][n-1]    = 512+256, 256, 0
+data['a_size'][n-1]        = 512/np.sqrt(2)
+data['a_linewidth'][n-1]   = 16.0
+data['a_fg_color'][n-1]    = 0, 0, 0, 1
+data['a_bg_color'][n-1]    = .95, .95, .95, 1
+data['a_orientation'][n-1] = 0
+
+# Parse options to get marker
+program = gloo.Program( shaders.get("marker.vert"), fragment)
+program.bind(data)
+program['u_antialias'] = 1.00
+program['u_model'] = np.eye(4)
+program['u_view'] = np.eye(4)
+app.run()
+
+"""
 window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 @window.event
@@ -285,3 +398,4 @@ program = gloo.Program(vertex, fragment, count=4)
 dx,dy = 1,1
 program['position'] = (-dx,-dy), (-dx,+dy), (+dx,-dy), (+dx,+dy)
 app.run()
+"""
