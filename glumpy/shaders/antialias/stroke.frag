@@ -28,9 +28,7 @@ vec4 stroke(float distance, float linewidth, float antialias, vec4 stroke)
     float alpha = border_distance/antialias;
     alpha = exp(-alpha*alpha);
 
-    if( border_distance > (linewidth/2.0 + antialias) )
-        discard;
-    else if( border_distance < 0.0 )
+    if( border_distance < 0.0 )
         frag_color = stroke;
     else
         frag_color = vec4(stroke.rgb, stroke.a * alpha);

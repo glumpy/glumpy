@@ -28,18 +28,12 @@ vec4 filled(float distance, float linewidth, float antialias, vec4 fill)
     float alpha = border_distance/antialias;
     alpha = exp(-alpha*alpha);
 
-    // Within linestroke
     if( border_distance < 0.0 )
         frag_color = fill;
-    // Within shape
     else if( signed_distance < 0.0 )
         frag_color = fill;
     else
-        // Outside shape
-        if( border_distance > (linewidth/2.0 + antialias) )
-            discard;
-        else // Line stroke exterior border
-            frag_color = vec4(fill.rgb, alpha * fill.a);
+        frag_color = vec4(fill.rgb, alpha * fill.a);
 
     return frag_color;
 }

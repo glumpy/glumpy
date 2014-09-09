@@ -26,7 +26,42 @@ class Trackball(Transform):
         self._model = self._trackball.model
         self._projection = np.eye(4, dtype=np.float32)
         self._view = np.eye(4, dtype=np.float32)
+        self._aspect = 1.0
         glm.translate(self._view, 0, 0, -8)
+
+
+    @property
+    def theta(self):
+        """ Angle (in degrees) around the z axis """
+        return self._trackball.theta
+
+    @theta.setter
+    def theta(self, theta):
+        self._trackball.theta = theta
+        self._model = self._trackball.model
+        self["model"] = self._model
+
+    @property
+    def phi(self):
+        """ Angle (in degrees) around the x axis """
+        return self._trackball.phi
+
+    @phi.setter
+    def phi(self, phi):
+        self._trackball.phi = phi
+        self._model = self._trackball.model
+        self["model"] = self._model
+
+    @property
+    def zoom(self):
+        """ Angle (in degrees) around the x axis """
+        return self._fovy
+
+    @phi.setter
+    def zoom(self, value):
+        self._fovy = np.minimum(np.maximum(value, 1.0), 179.0)
+        self['projection'] = glm.perspective(self._fovy, self._aspect,
+                                             self._znear, self._zfar)
 
 
 

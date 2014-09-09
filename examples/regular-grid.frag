@@ -39,6 +39,9 @@ uniform vec4 u_major_grid_color;
 // Minor grid line color
 uniform vec4 u_minor_grid_color;
 
+// Minor grid line color
+uniform sampler2D u_texture;
+
 
 // Varyings
 // ------------------------------------
@@ -46,49 +49,11 @@ uniform vec4 u_minor_grid_color;
 // Texture coordinates (from (-0.5,-0.5) to (+0.5,+0.5)
 varying vec2 v_texcoord;
 
-// Quad size (pixels)
-varying vec2 v_size;
 
 
-
-// Functions
+// Projection Functions
 // ------------------------------------
-
-/*
-// Forward transform (identity)
-// ------------------------------------
-vec2 transform_forward(vec2 P)
-{
-    return P;
-}
-
-// Inverse transform (polar)
-// ------------------------------------
-vec2 transform_inverse(vec2 P)
-{
-    return P;
-}
-*/
-
-// Forward transform (polar)
-// ------------------------------------
-vec2 transform_forward(vec2 P)
-{
-    float x = P.x * cos(P.y);
-    float y = P.x * sin(P.y);
-    return vec2(x,y);
-}
-
-// Inverse transform (polar)
-// ------------------------------------
-vec2 transform_inverse(vec2 P)
-{
-    float rho = length(P);
-    float theta = atan(P.y,P.x);
-    if( theta < 0.0 )
-        theta = 2.0*M_PI+theta;
-    return vec2(rho,theta);
-}
+<transform>
 
 
 
@@ -133,7 +98,8 @@ float stroke_alpha(float distance, float linewidth, float antialias)
 float get_tick(float t, float vmin, float vmax, float step)
 {
     float first_tick = floor((vmin + step/2.0)/step) * step;
-    float last_tick = floor((vmax - step/2.0)/step) * step;
+    //float last_tick = floor((vmax - step/2.0)/step) * step;
+    float last_tick = floor((vmax + step/2.0)/step) * step;
     float tick = vmin + t*(vmax-vmin);
     if (tick < (vmin + (first_tick-vmin)/2.0))
         return vmin;
@@ -180,6 +146,7 @@ void main()
     if( P2.y > u_limits2[3] ) outside.y = true;
 
     vec2 NP2 = scale_inverse(P2,u_limits2);
+
     vec2 P;
     float tick;
 
@@ -245,8 +212,14 @@ void main()
         color = u_minor_grid_color;
     }
 
+/*
     // For the same price you could project a texture
-    // vec4 texcolor = texture2D(u_texture, vec2(NP2.x, 1.0-NP2.y));
-    // gl_FragColor = mix(texcolor, color, alpha);
+    if( outside.x || outside.y ) {
+        gl_FragColor = vec4(color.rgb, color.a*alpha);
+    } else {
+        vec4 texcolor = texture2D(u_texture, vec2(NP2.x+0.5, 0.5-NP2.y));
+        gl_FragColor = mix(texcolor, color, color.a*alpha);
+    }
+*/
     gl_FragColor = vec4(color.rgb, color.a*alpha);
 }

@@ -288,6 +288,14 @@ class Program(GLObject):
         for shader in shaders:
             for (hook,subhook) in shader.hooks:
                 self._hooks[hook] = [shader, subhook, None]
+        # for shader in shaders:
+        #     for (hook,subhook) in shader.hooks:
+        #         if hook in self._hooks.keys():
+        #             if subhook not in self._hooks[hook][1]:
+        #             self._hooks[hook][1].append(subhook)
+        #         else:
+        #             self._hooks[hook] = [shader, [subhook], None]
+
 
 
     def _build_uniforms(self):
@@ -337,11 +345,11 @@ class Program(GLObject):
 
 
     def __setitem__(self, name, data):
-
         if name in self._hooks.keys():
             snippet = data
             shader = self._hooks[name][0]
             function = self._hooks[name][1]
+
             if isinstance(data, Snippet):
                 snippet._default = function
             self._hooks[name][1] = snippet

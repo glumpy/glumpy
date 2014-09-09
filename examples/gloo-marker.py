@@ -16,8 +16,8 @@ app.parser.get_default().add_argument(
              "arrow-left", "arrow-right", "arrow-up", "arrow-down",
              "arrow2-left", "arrow2-right", "arrow2-up", "arrow2-down",
              "triangle-left", "triangle-right", "triangle-up", "triangle-down",
-             "tag-left", "tag-right", "tag-up", "tag-down",
-             "minus", "plus", "cross", "vbar",
+             "tag-left", "tag-right", "tag-up", "tag-down", "star",
+             "minus", "plus", "cross", "vbar", "spiky", "pin", "heart",
              "square", "empty-square", "diamond", "empty-diamond"))
 
 
@@ -29,7 +29,7 @@ window = app.Window(width=2*512, height=512, color=(1,1,1,1))
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_POINTS)
-    program['a_orientation'][-1] += np.pi/1024.0
+#    program['a_orientation'][-1] += np.pi/1024.0
 
 # Setup ortho matrix on resize
 @window.event
@@ -51,7 +51,7 @@ data['a_linewidth'] = 1
 data['a_fg_color'] = 0, 0, 0, 1
 data['a_bg_color'] = 1, 1, 1, 0
 data['a_orientation'] = 0
-radius, theta, dtheta = 255.0, 0.0, 5.5 / 180.0 * np.pi
+radius, theta, dtheta = 250.0, 0.0, 5.5 / 180.0 * np.pi
 for i in range(500):
     theta += dtheta
     x = 256 + radius * np.cos(theta)

@@ -29,21 +29,11 @@ vec4 outline(float distance, float linewidth, float antialias, vec4 stroke, vec4
     float alpha = border_distance/antialias;
     alpha = exp(-alpha*alpha);
 
-    // Within linestroke
     if( border_distance < 0.0 )
         frag_color = stroke;
     else if( signed_distance < 0.0 )
-        // Inside shape
-        if( border_distance > (linewidth/2.0 + antialias) )
-            frag_color = fill;
-        else // Line stroke interior border
-            frag_color = mix(fill, stroke, alpha);
+        frag_color = mix(fill, stroke, sqrt(alpha));
     else
-        // Outide shape
-        if( border_distance > (linewidth/2.0 + antialias) )
-            discard;
-        else // Line stroke exterior border
-            frag_color = vec4(stroke.rgb, stroke.a * alpha);
-
+        frag_color = vec4(stroke.rgb, stroke.a * alpha);
     return frag_color;
 }

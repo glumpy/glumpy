@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from  glumpy import app, gl, glm, gloo, shaders
+from  glumpy import app, gl, glm, gloo, data, shaders
 from glumpy.transforms import Trackball, Position3D, Position2D
 
 vertex = """
@@ -20,7 +20,7 @@ void main (void)
 }
 """
 
-window = app.Window(width=512, height=512, color=(1,1,1,1))
+window = app.Window(width=2*512, height=2*512, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -32,20 +32,39 @@ def on_resize(width, height):
     program["iResolution"] = width, height
 
 program = gloo.Program(vertex, "./regular-grid.frag")
-program["texcoord"] = (-0.5,-0.5     ), (-0.5, +0.5     ), (+0.5,-0.5    ), (+0.5,+0.5    )
+program["texcoord"] = (-0.5,-0.5), (-0.5, +0.5), (+0.5,-0.5), (+0.5,+0.5)
+program["u_texture"] = data.get("lena.png")
 program['u_major_grid_width'] = 1.5
 program['u_minor_grid_width'] = 1.0
 program['u_major_grid_color'] = 0, 0, 0, 1.0
 program['u_minor_grid_color'] = 0, 0, 0, 0.5
 program['u_antialias'] = 1.0
 
-
+# Polar domains
 program['u_major_grid_step'] = np.array([ 1.00, np.pi/6])
 program['u_minor_grid_step'] = np.array([ 0.25, np.pi/60])
 program['u_limits1'] = -5.1, +5.1, -5.1, +5.1
-program['u_limits2'] = 1.0, 5.0, 1*np.pi/6, 11*np.pi/6
+program['u_limits2'] = 1.0, 5.0, 1*np.pi/6, 5.1*np.pi/6
 
+# Cartesian domains
+# program['u_major_grid_step'] = np.array([ 1.00, 1.00])
+# program['u_minor_grid_step'] = np.array([ 0.10, 0.10])
+# program['u_limits1'] = -5.1, +5.1, -5.1, +5.1
+# program['u_limits2'] = -5.0, +5.0, -5.0, +5.0
+
+# Hammer domains
+# program['u_major_grid_step'] = np.array([ 1.00, 0.50]) * np.pi/ 6.0
+# program['u_minor_grid_step'] = np.array([ 1.00, 0.50]) * np.pi/30.0
+# program['u_limits1'] = -3.0, +3.0, -1.5, +1.5
+# program['u_limits2'] = -np.pi, +np.pi, -np.pi/3, +np.pi/3
+
+program['transform'] = shaders.get("transforms/polar.glsl")
+# program['transform'] = shaders.get("transforms/identity.glsl")
+# program['transform'] = shaders.get("transforms/hammer.glsl")
 program['trackball'] = Trackball(Position2D("texcoord"))
+program['trackball'].theta = 0
+program['trackball'].phi = 0
+program['trackball'].zoom = 7.5
 window.attach(program['trackball'])
 
 app.run()
