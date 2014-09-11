@@ -115,6 +115,7 @@ uniform mat4 view;
 uniform mat4 model;
 uniform mat4 projection;
 uniform vec2 iResolution;
+varying mat4 v_PVM;
 
 float screen_distance(vec4 A, vec4 B)
 {
@@ -130,9 +131,21 @@ float screen_distance(vec4 A, vec4 B)
 }
 
 
+float screen_distance(vec2 A, vec4 B)
+{
+    vec4 pB = v_PVM*B;
+    pB /= pB.w;
+    pB.xy = pB.xy * iResolution/2.0;
+
+    return length(A.xy - pB.xy);
+}
+
+
 
 void main()
 {
+    const vec2 v_size=vec2(1024.,1024.);
+
     vec2 NP1 = v_texcoord;
     vec2 P1 = scale_forward(NP1, u_limits1);
     vec2 P2 = transform_inverse(P1);
@@ -150,30 +163,38 @@ void main()
     vec2 P;
     float tick;
 
+    vec4 pNP1 = v_PVM*vec4(NP1,0,1);
+    pNP1 /= pNP1.w;
+    pNP1.xy = pNP1.xy * iResolution/2.0;
+
     tick = get_tick(NP2.x+.5, u_limits2[0], u_limits2[1], u_major_grid_step[0]);
     P = transform_forward(vec2(tick,P2.y));
     P = scale_inverse(P, u_limits1);
-    // float Mx = length(v_size * (NP1 - P));
-    float Mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+    float Mx = length(v_size * (NP1 - P));
+    // float Mx = screen_distance(pNP1.xy, vec4(P,0,1));
+    // float Mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
 
 
     tick = get_tick(NP2.x+.5, u_limits2[0], u_limits2[1], u_minor_grid_step[0]);
     P = transform_forward(vec2(tick,P2.y));
     P = scale_inverse(P, u_limits1);
-    // float mx = length(v_size * (NP1 - P));
-    float mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+    float mx = length(v_size * (NP1 - P));
+    // float mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+    // float mx = screen_distance(pNP1.xy, vec4(P,0,1));
 
     tick = get_tick(NP2.y+.5, u_limits2[2], u_limits2[3], u_major_grid_step[1]);
     P = transform_forward(vec2(P2.x,tick));
     P = scale_inverse(P, u_limits1);
-    // float My = length(v_size * (NP1 - P));
-    float My = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+    float My = length(v_size * (NP1 - P));
+    // float My = screen_distance(pNP1.xy, vec4(P,0,1));
+    // float My = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
 
     tick = get_tick(NP2.y+.5, u_limits2[2], u_limits2[3], u_minor_grid_step[1]);
     P = transform_forward(vec2(P2.x,tick));
     P = scale_inverse(P, u_limits1);
-    // float my = length(v_size * (NP1 - P));
-    float my = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+     float my = length(v_size * (NP1 - P));
+    // float my = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+    // float my = screen_distance(pNP1.xy, vec4(P,0,1));
 
     float M = min(Mx,My);
     float m = min(mx,my);
@@ -212,7 +233,7 @@ void main()
         color = u_minor_grid_color;
     }
 
-/*
+
     // For the same price you could project a texture
     if( outside.x || outside.y ) {
         gl_FragColor = vec4(color.rgb, color.a*alpha);
@@ -220,6 +241,5 @@ void main()
         vec4 texcolor = texture2D(u_texture, vec2(NP2.x+0.5, 0.5-NP2.y));
         gl_FragColor = mix(texcolor, color, color.a*alpha);
     }
-*/
-    gl_FragColor = vec4(color.rgb, color.a*alpha);
+//    gl_FragColor = vec4(color.rgb, color.a*alpha);
 }

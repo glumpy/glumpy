@@ -103,7 +103,7 @@ def compute_grid():
 
 
 
-rows,cols = 2,2
+rows,cols = 4,4
 window = app.Window(width=1024, height=1024, color=(1,1,1,1))
 
 

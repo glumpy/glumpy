@@ -13,10 +13,14 @@ uniform vec2 iResolution;
 attribute vec2 texcoord;
 varying vec2 v_texcoord;
 varying vec2 v_size;
+
+varying mat4 v_PVM;
 void main (void)
 {
     v_texcoord = texcoord;
     gl_Position = <trackball>;
+
+    v_PVM = projection*view*model;
 }
 """
 
@@ -44,7 +48,7 @@ program['u_antialias'] = 1.0
 program['u_major_grid_step'] = np.array([ 1.00, np.pi/6])
 program['u_minor_grid_step'] = np.array([ 0.25, np.pi/60])
 program['u_limits1'] = -5.1, +5.1, -5.1, +5.1
-program['u_limits2'] = 1.0, 5.0, 1*np.pi/6, 5.1*np.pi/6
+program['u_limits2'] = 1.0, 5.0, 0*np.pi, 2*np.pi
 
 # Cartesian domains
 # program['u_major_grid_step'] = np.array([ 1.00, 1.00])
