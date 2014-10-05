@@ -174,9 +174,9 @@ class Uniform(Variable):
 
             if isinstance(data, Texture2D):
                 self._data = data
-
             elif isinstance(self._data, Texture2D):
-                self._data.set_data(data)
+                #self._data.set_data(data)
+                self._data[...] = data.reshape(self._data.shape)
 
             # Automatic texture creation if required
             else:

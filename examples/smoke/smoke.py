@@ -5,13 +5,13 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gloo, gl
+from glumpy import app, gloo, gl, shaders, data
 
 # Constants
 # -------------------------------------
 CellSize               = 1.25
-ViewportWidth          = 512
-ViewportHeight         = 512
+ViewportWidth          = 2*512
+ViewportHeight         = 2*512
 GridWidth              = 256 # WARN: This is static in shaders
 GridHeight             = 256 # WARN: This is static in shaders
 SplatRadius            = GridWidth / 8.0
@@ -80,7 +80,10 @@ prog_divergence = Program("divergence.frag")
 prog_fill = Program("fill.frag")
 prog_splat = Program("splat.frag")
 prog_buoyancy = Program("buoyancy.frag")
-prog_visualize = Program("visualize.frag")
+
+fragment = (shaders.get_file('spatial-filters.frag'), "./visualize.frag")
+#prog_visualize = Program("visualize.frag")
+prog_visualize = Program(fragment)
 
 prog_advect["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
 prog_advect["TimeStep"] = TimeStep
@@ -155,23 +158,16 @@ def disc(shape=(256,256), center=(128,128), radius = 64):
     def distance(x,y):
         return np.sqrt((x-center[0])**2+(y-center[1])**2)
     D = np.fromfunction(distance,shape)
-    return np.where(D<=radius,True,False).astype(np.float32)
+    return np.where(D<=radius,1.0,0.0).astype(np.float32)
 
 def CreateObstacles(dest, width, height):
-
     dest.activate()
     gl.glViewport(0, 0, width, height)
     gl.glClearColor(0, 0, 0, 0)
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-    T = np.zeros((height,width,4), np.float32).view(gloo.Texture2D)
-    T[+0,:,:] = 1.0
-    T[-1,:,:] = 1.0
-    T[:,+0,:] = 1.0
-    T[:,-1,:] = 1.0
-    # T[150,92:100] = 1.0
-    # T[150,156:164] = 1.0
-    # T[128,120:136] = 1.0
+    T = np.ones((height,width,4), np.float32).view(gloo.Texture2D)
+    T[+1:-1,+1:-1] = 0.0
 
     prog_fill["Sampler"] = T
     prog_fill.draw(gl.GL_TRIANGLE_STRIP)
@@ -219,9 +215,14 @@ def on_draw(dt):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     gl.glEnable(gl.GL_BLEND)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+
+    prog_visualize['u_data']   = Density.Ping.texture
+    prog_visualize['u_shape']  = Density.Ping.texture.shape[1], Density.Ping.texture.shape[0]
+    prog_visualize['u_kernel'] = data.get("spatial-filters.npy")
+
     prog_visualize["Sampler"] = Density.Ping.texture
     prog_visualize["Sampler"].interpolation = gl.GL_LINEAR
-    prog_visualize["FillColor"] = 0.975, 0.950, 1.000
+    prog_visualize["FillColor"] = 0.95, 0.92, 1.00
     prog_visualize["Scale"] =  1.0/window.width, 1.0/window.height
     prog_visualize.draw(gl.GL_TRIANGLE_STRIP)
 
