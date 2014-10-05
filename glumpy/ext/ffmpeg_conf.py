@@ -23,7 +23,6 @@
 # File from the MoviePy project - released under licence MIT
 # See https://github.com/Zulko/moviepy
 
-
 """
 Configuration MoviePy
 

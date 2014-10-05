@@ -2,8 +2,6 @@
 // Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
-#version 120
-
 float marker(vec2 P, float size)
 {
     const vec2 c1 = vec2(+0.2125, 0.00);

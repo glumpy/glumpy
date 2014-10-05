@@ -170,30 +170,30 @@ void main()
     tick = get_tick(NP2.x+.5, u_limits2[0], u_limits2[1], u_major_grid_step[0]);
     P = transform_forward(vec2(tick,P2.y));
     P = scale_inverse(P, u_limits1);
-    float Mx = length(v_size * (NP1 - P));
+    // float Mx = length(v_size * (NP1 - P));
+    float Mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
     // float Mx = screen_distance(pNP1.xy, vec4(P,0,1));
-    // float Mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
 
 
     tick = get_tick(NP2.x+.5, u_limits2[0], u_limits2[1], u_minor_grid_step[0]);
     P = transform_forward(vec2(tick,P2.y));
     P = scale_inverse(P, u_limits1);
-    float mx = length(v_size * (NP1 - P));
-    // float mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+    // float mx = length(v_size * (NP1 - P));
+    float mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
     // float mx = screen_distance(pNP1.xy, vec4(P,0,1));
 
     tick = get_tick(NP2.y+.5, u_limits2[2], u_limits2[3], u_major_grid_step[1]);
     P = transform_forward(vec2(P2.x,tick));
     P = scale_inverse(P, u_limits1);
-    float My = length(v_size * (NP1 - P));
+    // float My = length(v_size * (NP1 - P));
+    float My = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
     // float My = screen_distance(pNP1.xy, vec4(P,0,1));
-    // float My = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
 
     tick = get_tick(NP2.y+.5, u_limits2[2], u_limits2[3], u_minor_grid_step[1]);
     P = transform_forward(vec2(P2.x,tick));
     P = scale_inverse(P, u_limits1);
-     float my = length(v_size * (NP1 - P));
-    // float my = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
+    // float my = length(v_size * (NP1 - P));
+    float my = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
     // float my = screen_distance(pNP1.xy, vec4(P,0,1));
 
     float M = min(Mx,My);

@@ -16,9 +16,9 @@ app.parser.get_default().add_argument(
              "arrow-left", "arrow-right", "arrow-up", "arrow-down",
              "arrow2-left", "arrow2-right", "arrow2-up", "arrow2-down",
              "triangle-left", "triangle-right", "triangle-up", "triangle-down",
-             "tag-left", "tag-right", "tag-up", "tag-down", "star",
-             "minus", "plus", "cross", "vbar", "spiky", "pin", "heart",
-             "square", "empty-square", "diamond", "empty-diamond"))
+             "tag-left", "tag-right", "tag-up", "tag-down", "star", "spade",
+             "minus", "plus", "cross", "vbar", "spiky", "pin", "heart", "club",
+             "square", "empty-square", "diamond", "empty-diamond", "ellipse"))
 
 
 # Create window
@@ -56,7 +56,7 @@ for i in range(500):
     theta += dtheta
     x = 256 + radius * np.cos(theta)
     y = 256 + radius * np.sin(theta)
-    r = 10.1 - i * 0.02
+    r = 12.1 - i * 0.02
     radius -= 0.45
     data['a_orientation'][i] = theta - np.pi/2
     data['a_position'][i] = x, y, 0

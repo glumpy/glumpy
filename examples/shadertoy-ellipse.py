@@ -50,19 +50,17 @@ vec4 stroke(float distance, float linewidth, float antialias, vec4 stroke)
     return frag_color;
 }
 
-float sdEllipse( vec2 p, in vec2 ab )
+float sdEllipse(vec2 p, in vec2 ab )
 {
-	p = abs( p ); if( p.x > p.y ){ p=p.yx; ab=ab.yx; }
-
-	float l = ab.y*ab.y - ab.x*ab.x;
-
+    p = abs( p ); if( p.x > p.y ){ p=p.yx; ab=ab.yx; }
+    float l = ab.y*ab.y - ab.x*ab.x;
     float m = ab.x*p.x/l;
-	float n = ab.y*p.y/l;
-	float m2 = m*m;
-	float n2 = n*n;
+    float n = ab.y*p.y/l;
+    float m2 = m*m;
+    float n2 = n*n;
 
     float c = (m2 + n2 - 1.0)/3.0;
-	float c3 = c*c*c;
+    float c3 = c*c*c;
 
     float q = c3 + m2*n2*2.0;
     float d = c3 + m2*n2;
@@ -70,7 +68,7 @@ float sdEllipse( vec2 p, in vec2 ab )
 
     float co;
 
-    if( d<0.0 )
+    if(d < 0.0)
     {
         float p = acos(q/c3)/3.0;
         float s = cos(p);
@@ -91,10 +89,8 @@ float sdEllipse( vec2 p, in vec2 ab )
         co = (p + 2.0*g/rm - m)/2.0;
     }
 
-    float si = sqrt( 1.0 - co*co );
-
-    vec2 closestPoint = vec2( ab.x*co, ab.y*si );
-
+    float si = sqrt(1.0 - co*co);
+    vec2 closestPoint = vec2(ab.x*co, ab.y*si);
     return length(closestPoint - p ) * sign(p.y-closestPoint.y);
 }
 

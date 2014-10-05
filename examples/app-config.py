@@ -7,11 +7,10 @@
 """ This example show how to choose a configuration. """
 from glumpy import app
 
-
 config = app.configuration.Configuration()
-config.depth_size = 0
-config.api = "GL"
-config.srgb = True
+config.major_version = 3
+config.minor_version = 2
+config.profile = "core"
 print config
 print "-----"
 window = app.Window(config=config)

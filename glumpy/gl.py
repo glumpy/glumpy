@@ -17,3 +17,4 @@ def cleanupCallback( context=None ):
 from OpenGL.GL import *
 from OpenGL.GL.EXT.geometry_shader4 import *
 from OpenGL.GL.NV.geometry_program4 import *
+from OpenGL.GL.ARB.texture_rg import *

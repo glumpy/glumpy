@@ -14,8 +14,10 @@ from glumpy.gloo.globject import GLObject
 class Texture(GPUData,GLObject):
     """ Generic texture """
 
-    _formats = { 1: gl.GL_LUMINANCE,
-                 2: gl.GL_LUMINANCE_ALPHA,
+    _formats = { # 1: gl.GL_LUMINANCE,
+                 # 2: gl.GL_LUMINANCE_ALPHA,
+                 1: gl.GL_RED,
+                 2: gl.GL_RG,
                  3: gl.GL_RGB,
                  4: gl.GL_RGBA }
 
@@ -205,10 +207,21 @@ class Texture2D(Texture):
         Texture._create(self)
         log.debug("GPU: Resizing texture(%sx%s)"% (self.width,self.height))
         gl.glBindTexture(self.target, self._handle)
-        gl.glTexImage2D(self.target, 0, self.format, self.width, self.height,
-                        0, self.format, self.gtype, None)
-#        gl.glTexImage2D(self.target, 0, gl.GL_RGBA32F, self.width, self.height,
-#                        0, self.format, self.gtype, None)
+        #        gl.glTexImage2D(self.target, 0, self.format, self.width, self.height,
+        #                        0, self.format, self.gtype, None)
+        if self.format == gl.GL_RED:
+            gl.glTexImage2D(self.target, 0, gl.GL_R32F, self.width, self.height,
+                            0, self.format, self.gtype, None)
+
+        elif self.format == gl.GL_RG:
+            gl.glTexImage2D(self.target, 0, gl.GL_RG32F, self.width, self.height,
+                            0, self.format, self.gtype, None)
+        elif self.format == gl.GL_RGB:
+            gl.glTexImage2D(self.target, 0, gl.GL_RGB32F, self.width, self.height,
+                            0, self.format, self.gtype, None)
+        elif self.format == gl.GL_RGBA:
+            gl.glTexImage2D(self.target, 0, gl.GL_RGBA32F, self.width, self.height,
+                            0, self.format, self.gtype, None)
 
     def _update(self):
         """ Update texture on GPU """

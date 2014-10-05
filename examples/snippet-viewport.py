@@ -39,14 +39,13 @@ program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 # -- Child has 95% of size of root
 # child = app.Viewport(size=(.95,.95), position=(0.5,0.5), anchor=(0.5,0.5), aspect=1)
 # -- Child has a (fixed) size of 256x256
-# child = app.Viewport(size=(256,256), position=(0.5,0.5), anchor=(0.5,0.5), aspect=1)
+child = app.Viewport(size=(256,256), position=(0.5,0.5), anchor=(0.5,0.5), aspect=1)
 # -- Child is at bottom-left corner
 # child = app.Viewport(size=(256,256), position=(0.0,0.0), anchor=(0.0,0.0), aspect=1)
 # -- Child is at top-right corner
 # child = app.Viewport(size=(256,256), position=(-1,-1), anchor=(-1,-1), aspect=1)
-
-# Child is at top-right corner
-child = app.Viewport(size=(0.5,0.5), position=(-1,-1), anchor=(-1,-1), aspect=1)
+# -- Child is at top-right corner
+# child = app.Viewport(size=(0.5,0.5), position=(-1,-1), anchor=(-1,-1), aspect=1)
 window.viewport.add(child)
 
 
