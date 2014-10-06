@@ -14,6 +14,7 @@ uniform float scale;
 // ------------------------------------
 // vec4 color;
 // vec2 position;
+// vec2 translate;
 // vec2 texcoord;
 
 // Varyings

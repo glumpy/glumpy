@@ -1,12 +1,18 @@
-#version 120
-
+// ----------------------------------------------------------------------------
+// Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+// Distributed under the (new) BSD License.
+// ----------------------------------------------------------------------------
+// From Fluid demo by Philip Rideout
+// Originals sources and explanation on http://prideout.net/blog/?p=58
+// -----------------------------------------------------------------------------
 uniform sampler2D Velocity;
 uniform sampler2D Obstacles;
+uniform vec2 InverseSize;
 uniform float HalfInverseCellSize;
 
 vec4 texelFetchOffset(sampler2D sampler, ivec2 P, int lod, ivec2 offset)
 {
-    return texture2D(sampler, vec2(P+offset)/vec2(256.0,256.0));
+    return texture2D(sampler, vec2(P+offset)*InverseSize);
 }
 
 void main()
@@ -26,10 +32,10 @@ void main()
     vec3 oW = texelFetchOffset(Obstacles, T, 0, ivec2(-1, 0)).xyz;
 
     // Use obstacle velocities for solid cells:
-    if (oN.x > 0) vN = oN.yz;
-    if (oS.x > 0) vS = oS.yz;
-    if (oE.x > 0) vE = oE.yz;
-    if (oW.x > 0) vW = oW.yz;
+    if (oN.x > 0.0) vN = oN.yz;
+    if (oS.x > 0.0) vS = oS.yz;
+    if (oE.x > 0.0) vE = oE.yz;
+    if (oW.x > 0.0) vW = oW.yz;
 
     gl_FragColor.r = HalfInverseCellSize * (vE.x - vW.x + vN.y - vS.y);
 }

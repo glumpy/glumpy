@@ -4,28 +4,31 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+# Porting of the Fluid demo by Philip Prideout (c) 2010
+# Originals sources and explanation on http://prideout.net/blog/?p=58
+# -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gloo, gl, shaders, data
 
 # Constants
 # -------------------------------------
 CellSize               = 1.25
-ViewportWidth          = 2*512
-ViewportHeight         = 2*512
-GridWidth              = 256 # WARN: This is static in shaders
-GridHeight             = 256 # WARN: This is static in shaders
+ViewportWidth          = 512
+ViewportHeight         = 512
+GridWidth              = 512
+GridHeight             = 512
 SplatRadius            = GridWidth / 8.0
-AmbientTemperature     = 0.0
+AmbientTemperature     = -1.0
 ImpulseTemperature     = 10.0
 ImpulseDensity         = 1.0
 NumJacobiIterations    = 40
 TimeStep               = 0.125
-SmokeBuoyancy          = 1.0
+SmokeBuoyancy          = 1.00
 SmokeWeight            = 0.05
 GradientScale          = 1.125 / CellSize
 TemperatureDissipation = 0.99
 VelocityDissipation    = 0.99
-DensityDissipation     = 0.995
+DensityDissipation     = 0.9995
 ImpulsePosition        = GridWidth/2, -int(SplatRadius/2)
 PositionSlot           = 0
 
@@ -34,9 +37,9 @@ window = app.Window(ViewportWidth, ViewportHeight)
 
 
 class Surface(object):
-    def __init__(self, width, height, depth):
+    def __init__(self, width, height, depth, interpolation=gl.GL_NEAREST):
         self.texture = np.zeros((height,width,depth), np.float32).view(gloo.Texture2D)
-        self.texture.interpolation = gl.GL_NEAREST
+        self.texture.interpolation = interpolation
         self.framebuffer = gloo.FrameBuffer(color=self.texture)
         self.clear()
 
@@ -53,9 +56,9 @@ class Surface(object):
         self.framebuffer.deactivate()
 
 class Slab(object):
-    def __init__(self, width, height, depth):
-        self.Ping = Surface(width, height, depth)
-        self.Pong = Surface(width, height, depth)
+    def __init__(self, width, height, depth, interpolation=gl.GL_NEAREST):
+        self.Ping = Surface(width, height, depth, interpolation)
+        self.Pong = Surface(width, height, depth, interpolation)
 
     def swap(self):
         self.Ping, self.Pong = self.Pong, self.Ping
@@ -67,11 +70,11 @@ def Program(fragment):
 
 
 Velocity = Slab(GridWidth, GridHeight, 2)
-Density = Slab(GridWidth, GridHeight, 1)
+Density = Slab(GridWidth, GridHeight, 1, gl.GL_LINEAR)
 Pressure = Slab(GridWidth, GridHeight, 1)
-Temperature = Slab(GridWidth, GridHeight, 1)
+Temperature = Slab(GridWidth, GridHeight, 1, gl.GL_LINEAR)
 Divergence = Surface(GridWidth, GridHeight, 3)
-Obstacles = Surface(GridWidth, GridHeight, 3)
+Obstacles = Surface(GridWidth, GridHeight, 3, gl.GL_LINEAR)
 
 prog_gradient = Program("gradient.frag")
 prog_jacobi = Program("jacobi.frag")
@@ -86,6 +89,11 @@ fragment = (shaders.get_file('spatial-filters.frag'), "./visualize.frag")
 prog_visualize = Program(fragment)
 
 prog_advect["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
+prog_divergence["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
+prog_gradient["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
+prog_buoyancy["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
+prog_jacobi["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
+prog_fill["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
 prog_advect["TimeStep"] = TimeStep
 prog_jacobi["Alpha"] =  -CellSize * CellSize
 prog_jacobi["InverseBeta"] = 0.25
@@ -93,7 +101,6 @@ prog_gradient["GradientScale"] = GradientScale
 prog_divergence["HalfInverseCellSize"] = 0.5 / CellSize
 prog_splat["Radius"] = SplatRadius
 prog_splat["Point"] = ImpulsePosition
-
 prog_buoyancy["AmbientTemperature"] = AmbientTemperature
 prog_buoyancy["TimeStep"] = TimeStep
 prog_buoyancy["Sigma"] = SmokeBuoyancy
@@ -154,7 +161,7 @@ def ClearSurface(surface, v):
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     surface.deactivate()
 
-def disc(shape=(256,256), center=(128,128), radius = 64):
+def disc(shape=(256,256), center=(128,128), radius = 96):
     def distance(x,y):
         return np.sqrt((x-center[0])**2+(y-center[1])**2)
     D = np.fromfunction(distance,shape)
@@ -166,9 +173,15 @@ def CreateObstacles(dest, width, height):
     gl.glClearColor(0, 0, 0, 0)
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-    T = np.ones((height,width,4), np.float32).view(gloo.Texture2D)
-    T[+1:-1,+1:-1] = 0.0
+    T = np.ones((height,width,3), np.float32).view(gloo.Texture2D)
 
+    T[+1:-1,+1:-1] = 0.0
+    T[...,0] += disc(shape = (GridHeight,GridWidth),
+                     center = (GridHeight/2,GridWidth/2),
+                     radius = 32)
+    T[...,2] += -2*disc(shape = (GridHeight,GridWidth),
+                        center = (GridHeight/2,GridWidth/2),
+                        radius = 32)
     prog_fill["Sampler"] = T
     prog_fill.draw(gl.GL_TRIANGLE_STRIP)
     dest.deactivate()
@@ -219,10 +232,8 @@ def on_draw(dt):
     prog_visualize['u_data']   = Density.Ping.texture
     prog_visualize['u_shape']  = Density.Ping.texture.shape[1], Density.Ping.texture.shape[0]
     prog_visualize['u_kernel'] = data.get("spatial-filters.npy")
-
     prog_visualize["Sampler"] = Density.Ping.texture
-    prog_visualize["Sampler"].interpolation = gl.GL_LINEAR
-    prog_visualize["FillColor"] = 0.95, 0.92, 1.00
+    prog_visualize["FillColor"] = 0.95, 0.925, 1.00
     prog_visualize["Scale"] =  1.0/window.width, 1.0/window.height
     prog_visualize.draw(gl.GL_TRIANGLE_STRIP)
 

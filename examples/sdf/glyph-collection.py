@@ -18,7 +18,6 @@ window = gp.Window(width=700, height=700)
 @window.event
 def on_draw(dt):
     global theta, dtheta
-
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
     C.draw()
     theta += dtheta
@@ -79,7 +78,7 @@ jabberwocky = (
 "All mimsy were the borogoves,\n"
 "  And the mome raths outgrabe.\n" )
 
-font = Font("Vera.ttf")
+font = Font("OpenSans-Regular.ttf")
 
 C = gp.GlyphCollection()
 C.append(jabberwocky, font)
@@ -89,7 +88,7 @@ C['u_kernel'] = np.load("spatial-filters.npy")
 C['atlas_data'] = font.atlas
 C['atlas_data'].interpolation = gl.GL_LINEAR
 C['atlas_shape'] = font.atlas.shape[1],font.atlas.shape[0]
-C['color'] = 1,0,0,1
+C['color'] = 0,0,0,1
 C['scale'] = 1.0
 
 gl.glClearColor(1.0, 1.0, 1.0, 1.0)

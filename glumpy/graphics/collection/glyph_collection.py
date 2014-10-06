@@ -21,17 +21,20 @@ class GlyphCollection(Collection):
 
     # This cannot be changed (shader code depends on it)
     dtypes = [ ('position',  np.float32, 2),
+               ('translate', np.float32, 2),
                ('texcoord',  np.float32, 2),
                ('color',     np.float32, 4) ]
 
     # Default variable scopes
     scopes = { 'position'   : '!local',
                'texcoord'   : '!local',
+               'translate'  : 'shared',
                'color'      : 'shared' }
 
     # Default variable values
     defaults = { 'position' : (0,0),
                  'texcoord' : (0,0),
+                 'translate': (0,0),
                  'color'    : (0,0,0,1) }
 
 

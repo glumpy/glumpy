@@ -7,8 +7,8 @@
 # the file COPYING, distributed as part of this software.
 #-----------------------------------------------------------------------------
 import os
-# import numpy
-# from Cython.Distutils import build_ext
+import numpy
+from Cython.Distutils import build_ext
 from distutils.core import setup, Extension
 
 if __name__ == "__main__":
@@ -70,9 +70,9 @@ if __name__ == "__main__":
               'glumpy.shaders.collections': ['*.vert','*.frag', "*.geom", "*.glsl"]
           },
 
-#          cmdclass={'build_ext': build_ext},
-#          ext_modules=[Extension("glumpy.ext.sdf",
-#                                 sources=["glumpy/ext/sdf/_sdf.pyx",
-#                                          "glumpy/ext/sdf/sdf.c"],
-#                                 include_dirs=[numpy.get_include()])],
+          cmdclass={'build_ext': build_ext},
+          ext_modules=[Extension("glumpy.ext.sdf",
+                                 sources=["glumpy/ext/sdf/_sdf.pyx",
+                                          "glumpy/ext/sdf/sdf.c"],
+                                 include_dirs=[numpy.get_include()])],
 )

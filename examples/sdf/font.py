@@ -7,8 +7,7 @@ import sys
 import numpy as np
 from freetype import *
 from scipy.ndimage.interpolation import zoom
-
-from sdf import compute_sdf
+from glumpy.ext.sdf import compute_sdf
 from glumpy.gloo.atlas import Atlas
 
 

@@ -1,5 +1,10 @@
-#version 120
-
+// ----------------------------------------------------------------------------
+// Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+// Distributed under the (new) BSD License.
+// ----------------------------------------------------------------------------
+// From Fluid demo by Philip Rideout
+// Originals sources and explanation on http://prideout.net/blog/?p=58
+// -----------------------------------------------------------------------------
 uniform sampler2D Velocity;
 uniform sampler2D Temperature;
 uniform sampler2D Density;
@@ -7,10 +12,11 @@ uniform float AmbientTemperature;
 uniform float TimeStep;
 uniform float Sigma;
 uniform float Kappa;
+uniform vec2 InverseSize;
 
 vec4 texelFetch(sampler2D sampler, ivec2 P, int lod)
 {
-    return texture2D(sampler, vec2(P)/vec2(256.0,256.0));
+    return texture2D(sampler, vec2(P)*InverseSize);
 }
 
 void main()
