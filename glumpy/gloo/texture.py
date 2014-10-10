@@ -14,12 +14,27 @@ from glumpy.gloo.globject import GLObject
 class Texture(GPUData,GLObject):
     """ Generic texture """
 
-    _formats = { # 1: gl.GL_LUMINANCE,
-                 # 2: gl.GL_LUMINANCE_ALPHA,
-                 1: gl.GL_RED,
-                 2: gl.GL_RG,
-                 3: gl.GL_RGB,
-                 4: gl.GL_RGBA }
+    # _formats = { # 1: gl.GL_LUMINANCE,
+    #              # 2: gl.GL_LUMINANCE_ALPHA,
+    #              1: gl.GL_RED,
+    #              2: gl.GL_RG,
+    #              3: gl.GL_RGB,
+    #              4: gl.GL_RGBA }
+
+    _cpu_formats = { 1: gl.GL_RED,
+                     2: gl.GL_RG,
+                     3: gl.GL_RGB,
+                     4: gl.GL_RGBA }
+
+    _gpu_formats = { 1: gl.GL_RED,
+                     2: gl.GL_RG,
+                     3: gl.GL_RGB,
+                     4: gl.GL_RGBA }
+
+    _gpu_float_formats = { 1: gl.GL_R32F,
+                           2: gl.GL_RG32F,
+                           3: gl.GL_RGB32F,
+                           4: gl.GL_RGBA32F }
 
     _gtypes = { np.dtype(np.int8):    gl.GL_BYTE,
                 np.dtype(np.uint8):   gl.GL_UNSIGNED_BYTE,
@@ -35,6 +50,8 @@ class Texture(GPUData,GLObject):
         # self._interpolation = gl.GL_LINEAR, gl.GL_LINEAR
         self._interpolation = gl.GL_NEAREST, gl.GL_NEAREST
         self._wrapping = gl.GL_CLAMP_TO_EDGE
+        self._cpu_format = None
+        self._gpu_format = None
 
     def _check_shape(self, shape, ndims):
         """ Check and normalize shape. """
@@ -58,11 +75,31 @@ class Texture(GPUData,GLObject):
         return self.pending_data is not None
 
 
-    @property
-    def format(self):
-        """ Texture format. """
+#    @property
+#    def format(self):
+#        """ Texture format. """
+#
+#        return Texture._formats[self.shape[-1]]
 
-        return Texture._formats[self.shape[-1]]
+    @property
+    def cpu_format(self):
+        """ Texture CPU format. """
+
+        return self._cpu_format
+
+    @property
+    def gpu_format(self):
+        """ Texture GPU format. """
+
+        return self._gpu_format
+
+
+    @gpu_format.setter
+    def gpu_format(self, value):
+        """ Texture GPU format. """
+
+        self._gpu_format = value
+        self._need_setup = True
 
 
     @property
@@ -153,18 +190,29 @@ class Texture1D(Texture):
     def __init__(self):
         Texture.__init__(self, gl.GL_TEXTURE_1D)
         self.shape = self._check_shape(self.shape, 1)
+        self._cpu_format = Texture._cpu_formats[self.shape[-1]]
+        self._gpu_format = Texture._gpu_formats[self.shape[-1]]
+
 
     @property
     def width(self):
         return self.shape[0]
 
-    def _create(self):
-        Texture._create(self)
+#    def _create(self):
+#        Texture._create(self)
+#        log.debug("GPU: Resizing texture(%s)"% (self.width))
+#        gl.glBindTexture(self.target, self._handle)
+#        gl.glTexImage1D(self.target, 0, self.format, self.width,
+#                        0, self.format, self.gtype, None)
 
-        log.debug("GPU: Resizing texture(%s)"% (self.width))
+    def _setup(self):
+        """ Setup texture on GPU """
+
+        Texture._setup(self)
         gl.glBindTexture(self.target, self._handle)
-        gl.glTexImage1D(self.target, 0, self.format, self.width,
-                        0, self.format, self.gtype, None)
+        gl.glTexImage1D(self.target, 0, self._gpu_format, self.width,
+                        0, self._cpu_format, self.gtype, None)
+        self._need_setup = False
 
     def _update(self):
 
@@ -174,18 +222,28 @@ class Texture1D(Texture):
             itemsize = self.strides[0]
             x /= itemsize
             width /= itemsize
-            gl.glTexSubImage1D(self.target, 0, x, width, self.format, self.gtype, self)
+            gl.glTexSubImage1D(self.target, 0, x, width, self._cpu_format, self.gtype, self)
         self._pending_data = None
         self._need_update = False
 
 
+class TextureFloat1D(Texture1D):
+    """ 1D float texture """
+
+    def __init__(self):
+        Texture1D.__init__(self)
+        self._gpu_format = Texture._gpu_float_formats[self.shape[-1]]
+
+
 
 class Texture2D(Texture):
-    """ 2D Texture """
+    """ 2D texture """
 
     def __init__(self):
         Texture.__init__(self, gl.GL_TEXTURE_2D)
         self.shape = self._check_shape(self.shape, 2)
+        self._cpu_format = Texture._cpu_formats[self.shape[-1]]
+        self._gpu_format = Texture._gpu_formats[self.shape[-1]]
 
     @property
     def width(self):
@@ -201,27 +259,39 @@ class Texture2D(Texture):
         return self.shape[0]
 
 
-    def _create(self):
-        """ Create texture on GPU """
+    # def _create(self):
+    #     """ Create texture on GPU """
 
-        Texture._create(self)
-        log.debug("GPU: Resizing texture(%sx%s)"% (self.width,self.height))
+    #     Texture._create(self)
+    #     log.debug("GPU: Resizing texture(%sx%s)"% (self.width,self.height))
+    #     gl.glBindTexture(self.target, self._handle)
+    #     gl.glTexImage2D(self.target, 0, self.format, self.width, self.height,
+    #                     0, self.format, self.gtype, None)
+    #     """
+    #     if self.format == gl.GL_RED:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_R32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+
+    #     elif self.format == gl.GL_RG:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_RG32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+    #     elif self.format == gl.GL_RGB:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_RGB32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+    #     elif self.format == gl.GL_RGBA:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_RGBA32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+    #     """
+
+    def _setup(self):
+        """ Setup texture on GPU """
+
+        Texture._setup(self)
         gl.glBindTexture(self.target, self._handle)
-        #        gl.glTexImage2D(self.target, 0, self.format, self.width, self.height,
-        #                        0, self.format, self.gtype, None)
-        if self.format == gl.GL_RED:
-            gl.glTexImage2D(self.target, 0, gl.GL_R32F, self.width, self.height,
-                            0, self.format, self.gtype, None)
+        gl.glTexImage2D(self.target, 0, self._gpu_format, self.width, self.height,
+                        0, self._cpu_format, self.gtype, None)
+        self._need_setup = False
 
-        elif self.format == gl.GL_RG:
-            gl.glTexImage2D(self.target, 0, gl.GL_RG32F, self.width, self.height,
-                            0, self.format, self.gtype, None)
-        elif self.format == gl.GL_RGB:
-            gl.glTexImage2D(self.target, 0, gl.GL_RGB32F, self.width, self.height,
-                            0, self.format, self.gtype, None)
-        elif self.format == gl.GL_RGBA:
-            gl.glTexImage2D(self.target, 0, gl.GL_RGBA32F, self.width, self.height,
-                            0, self.format, self.gtype, None)
 
     def _update(self):
         """ Update texture on GPU """
@@ -245,8 +315,17 @@ class Texture2D(Texture):
             height = nbytes // self.width
             gl.glBindTexture(self._target, self.handle)
             gl.glTexSubImage2D(self.target, 0, x, y, width, height,
-                               self.format, self.gtype, self)
+                               self._cpu_format, self.gtype, self)
             gl.glBindTexture(self._target, self.handle)
 
         self._pending_data = None
         self._need_update = False
+
+
+
+class TextureFloat2D(Texture2D):
+    """ 2D float texture """
+
+    def __init__(self):
+        Texture2D.__init__(self)
+        self._gpu_format = Texture._gpu_float_formats[self.shape[-1]]

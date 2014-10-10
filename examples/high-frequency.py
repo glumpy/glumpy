@@ -70,7 +70,7 @@ void main(void)
 }
 """
 
-window = app.Window(width=2350, height=600, color=(1,1,1,1))
+window = app.Window(width=3*512, height=512, color=(1,1,1,1))
 pause = False
 
 @window.event

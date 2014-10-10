@@ -78,13 +78,12 @@ void main()
     vec3 v_normal = normalize(cross(dx,dy));
 
     // Map value to rgb color
-    vec4 c = 0.6+0.4*texture2D(texture, v_texcoord);
-
+    float c = 0.6 + 0.4*texture2D(texture, v_texcoord).r;
     vec4 l1 = vec4(light_color[0] * lighting(v_normal, light_position[0]), 1);
     vec4 l2 = vec4(light_color[1] * lighting(v_normal, light_position[1]), 1);
     vec4 l3 = vec4(light_color[2] * lighting(v_normal, light_position[2]), 1);
 
-    gl_FragColor = color * c * (0.5 + 0.5*(l1+l2+l3));
+    gl_FragColor = color * vec4(c,c,c,1) * (0.5 + 0.5*(l1+l2+l3));
 } """
 
 

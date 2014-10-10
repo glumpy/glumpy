@@ -24,7 +24,8 @@ fragment = """
     varying vec2 v_texcoord;
     void main()
     {
-        gl_FragColor = texture2D(texture, v_texcoord);
+        float r = texture2D(texture, v_texcoord).r;
+        gl_FragColor = vec4(r,r,r,1);
     }
 """
 

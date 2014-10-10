@@ -22,7 +22,7 @@ void main () {
     gl_Position.xy = start + (time * end) + center;
     gl_Position.y -= 1.0 * time * time;
     v_lifetime = clamp(1.0 - (time / lifetime), 0.0, 1.0);
-    gl_PointSize = (v_lifetime * v_lifetime) * 60.0;
+    gl_PointSize = (v_lifetime * v_lifetime) * 30.0;
 }
 """
 
@@ -39,7 +39,7 @@ void main()
 """
 
 n = 2500
-window = app.Window(1024,1024)
+window = app.Window(512,512)
 program = gloo.Program(vertex, fragment, count=n)
 
 def explosion():

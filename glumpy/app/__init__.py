@@ -10,6 +10,7 @@ import re
 import sys
 import logging
 import importlib
+import numpy as np
 
 from glumpy import gl
 from glumpy.log import log
@@ -286,10 +287,22 @@ def run(clock=None, framerate=None, interactive=None,
     """
 
     clock = __init__(clock=clock, framerate=framerate, backend=__backend__)
+    options = parser.get_options()
 
     if interactive is None:
-        options = parser.get_options()
         interactive = options.interactive
+
+    writer = None
+    if options.record:
+        from glumpy.ext.ffmpeg_writer import FFMPEG_VideoWriter
+        framerate = 60
+        window = __backend__.windows()[0]
+        width, height = window.width, window.height
+        filename = "movie.mp4"
+        writer = FFMPEG_VideoWriter(filename, (width, height), fps=framerate)
+        fbuffer = np.zeros((height, width, 3), dtype=np.uint8)
+        data = fbuffer.copy()
+        log.info("Recording movie in '%s'" % filename)
 
     if interactive:
         # Set interactive python session
@@ -308,3 +321,13 @@ def run(clock=None, framerate=None, interactive=None,
             duration -= dt
             framecount -= 1
             count = __backend__.process(dt)
+
+            # Record one frame (if there is writer available)
+            if writer is not None:
+                gl.glReadPixels(0, 0, window.width, window.height,
+                                gl.GL_RGB, gl.GL_UNSIGNED_BYTE, fbuffer)
+                data[...] = fbuffer[::-1,:,:]
+                writer.write_frame(data)
+
+        if writer is not None:
+            writer.close()

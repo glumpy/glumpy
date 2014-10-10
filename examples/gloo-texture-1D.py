@@ -29,7 +29,8 @@ fragment = """
     varying vec2 v_texcoord;
     void main()
     {
-        gl_FragColor = texture1D(texture, v_texcoord.x);
+        float r = texture1D(texture, v_texcoord.x).r;
+        gl_FragColor = vec4(r,r,r,1);
     }
 """
 
@@ -48,4 +49,5 @@ program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['texture'] = np.linspace(0.0,1.0,256)
+
 app.run()

@@ -38,7 +38,7 @@ window = app.Window(ViewportWidth, ViewportHeight)
 
 class Surface(object):
     def __init__(self, width, height, depth, interpolation=gl.GL_NEAREST):
-        self.texture = np.zeros((height,width,depth), np.float32).view(gloo.Texture2D)
+        self.texture = np.zeros((height,width,depth), np.float32).view(gloo.TextureFloat2D)
         self.texture.interpolation = interpolation
         self.framebuffer = gloo.FrameBuffer(color=self.texture)
         self.clear()

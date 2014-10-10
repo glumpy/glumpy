@@ -252,8 +252,8 @@ void main()
     const float linewidth = 3.0;
     const float antialias =  1.0;
 
-    const float rows = 24.0;
-    const float cols = 24.0;
+    const float rows = 32.0;
+    const float cols = 32.0;
     float body = min(iResolution.x/cols, iResolution.y/rows) / SQRT_2;
     vec2 texcoord = gl_FragCoord.xy;
     vec2 size   = iResolution.xy / vec2(cols,rows);
@@ -286,7 +286,7 @@ void main()
 """
 
 
-window = app.Window(width=512, height=512, color=(1,1,1,1))
+window = app.Window(width=2*512, height=2*512, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):

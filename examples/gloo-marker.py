@@ -29,7 +29,7 @@ window = app.Window(width=2*512, height=512, color=(1,1,1,1))
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_POINTS)
-#    program['a_orientation'][-1] += np.pi/1024.0
+    program['a_orientation'][-1] += np.pi/1024.0
 
 # Setup ortho matrix on resize
 @window.event

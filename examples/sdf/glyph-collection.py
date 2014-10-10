@@ -8,8 +8,6 @@ import numpy as np
 import glumpy as gp
 import glumpy.gl as gl
 import glumpy.glm as glm
-
-
 from font import Font
 
 

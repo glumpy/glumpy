@@ -42,6 +42,11 @@ def set_default_options(parser):
                         choices = ('glfw', 'sdl2', 'pyside', 'pyglet', 'sdl',  'osxglut'),
                         help="Backend to use, one of ")
 
+    # Record
+    parser.add_argument("--record",
+                        action='store_true',
+                        help='Record a movie (default is "movie.mp4")')
+
     # Interactive mode
     parser.add_argument("--interactive", "-i",
                         action='store_true',
