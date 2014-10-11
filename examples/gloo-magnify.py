@@ -21,20 +21,17 @@ void main () {
     p = normalize(p);
     v_radius = 2.0;
 
-
     if( d < 0.5 ) {
         float factor;
-        float limit = 0.45;
-
-        // Adapt radius to zoom level
-        v_radius = 2.0 + (0.50-d)*5.0 * min(zoom-1.0,1.0);
+        float limit = 0.5;
 
         // Compute distortion factor
         if (d*zoom < limit) {
             factor = d*zoom;
+            // Adapt radius to zoom level
+            v_radius = 2.0 + (0.50-d)*5.0 * min((zoom-1.0)/5.0,2.0);
         } else {
             factor = limit +(0.5-limit)*(d*zoom-limit)/(0.5*zoom-limit);
-            // v_radius = 2.0;
         }
 
         // Compute new position
@@ -78,7 +75,7 @@ void main()
 }
 """
 
-n = 5000
+n = 50000
 window = app.Window(1024,1024, color=(1,1,1,1))
 program = gloo.Program(vertex, fragment, count=n)
 program['position'] = np.random.normal(0.0,0.25,(n,2))
