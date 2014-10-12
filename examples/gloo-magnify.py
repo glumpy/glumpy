@@ -75,7 +75,7 @@ void main()
 }
 """
 
-n = 50000
+n = 25000
 window = app.Window(1024,1024, color=(1,1,1,1))
 program = gloo.Program(vertex, fragment, count=n)
 program['position'] = np.random.normal(0.0,0.25,(n,2))
@@ -96,4 +96,4 @@ def on_draw(dt):
     window.clear()
     program.draw(gl.GL_POINTS)
 
-app.run(framerate=60)
+app.run()
