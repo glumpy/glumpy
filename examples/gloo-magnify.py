@@ -15,7 +15,6 @@ uniform float zoom;
 attribute vec2 position;
 varying float v_radius;
 void main () {
-
     vec2 p = position - mouse;
     float d = length(p);
     p = normalize(p);
@@ -28,7 +27,7 @@ void main () {
         // Compute distortion factor
         if (d*zoom < limit) {
             factor = d*zoom;
-            // Adapt radius to zoom level
+            // Adapt radius to zoom level and point position
             v_radius = 2.0 + (0.50-d)*5.0 * min((zoom-1.0)/5.0,2.0);
         } else {
             factor = limit +(0.5-limit)*(d*zoom-limit)/(0.5*zoom-limit);
