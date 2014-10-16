@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, glm
-from glumpy.graphics.collection import SolidSegmentCollection
+from glumpy.graphics.collection import AggSolidSegmentCollection
 
 
 window = app.Window(width=1200, height=600, color=(1,1,1,1))
@@ -27,10 +27,9 @@ P0[:,0] = np.linspace(100,1100,n)
 P1[:,0] = np.linspace(110,1110,n)
 LW = np.linspace(1, 8, n)
 
-C = SolidSegmentCollection(linewidth='local')
+C = AggSolidSegmentCollection(linewidth='local')
 C.append(P0, P1, linewidth = LW)
 C['antialias'] = 1
-
 C['model'] = np.eye(4, dtype=np.float32)
 C['view'] = np.eye(4, dtype=np.float32)
 

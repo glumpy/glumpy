@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from  glumpy import app
-from glumpy.graphics.collection import LineCollection
+from glumpy.graphics.collection import PathCollection
 
 
 vertex = """
@@ -69,12 +69,9 @@ void main(void)
 
 rows,cols = 16,20
 n, p = rows*cols, 1000
-lines = LineCollection(dtypes = [("amplitude", np.float32, 1),
-                                 ("selected",  np.float32, 1),
-                                 ("xscale",    np.float32, 1)],
-                       scopes = {"amplitude" : "shared",
-                                 "selected" : "shared",
-                                 "xscale" : "shared"},
+lines = PathCollection(dtype = [("amplitude", (np.float32, 1), 'shared', 1),
+                                ("selected",  (np.float32, 1), 'shared', 0),
+                                ("xscale",    (np.float32, 1), 'shared', 1)],
                        vertex=vertex, fragment=fragment )
 lines["rows"] = rows
 lines["cols"] = cols

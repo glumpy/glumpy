@@ -5,14 +5,18 @@
 # -----------------------------------------------------------------------------
 """ """
 
+import os
 import numpy as np
+
 from glumpy import gl
 from glumpy.shaders import get_file, get_code
+from glumpy.graphics.collection.util import fetchcode
 from glumpy.graphics.collection.collection import Collection
+from glumpy.gloo.program import Program, VertexBuffer, IndexBuffer
 
 
 
-class LineCollection(Collection):
+class PathCollection(Collection):
     """ """
 
     def __init__(self, dtype=[], vertex=None, fragment=None, **kwargs):

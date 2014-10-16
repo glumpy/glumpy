@@ -12,9 +12,22 @@ from glumpy import app, gl, glm, gloo
 
 
 vertex = """
+uniform float antialias;
+uniform float linewidth;
+uniform float miter_limit;
+
 attribute vec2 position;
+
+varying float v_antialias[1];
+varying float v_linewidth[1];
+varying float v_miter_limit[1];
+
 void main()
 {
+    v_antialias[0] = antialias;
+    v_linewidth[0] = linewidth;
+    v_miter_limit[0] = miter_limit;
+
     gl_Position = vec4(position, 0.0, 1.0);
 } """
 
@@ -110,9 +123,13 @@ geometry = """
 #extension GL_EXT_geometry_shader4 : enable
 
 uniform mat4 projection;
-uniform float antialias;
-uniform float linewidth;
-uniform float miter_limit;
+// uniform float antialias;
+// uniform float linewidth;
+// uniform float miter_limit;
+
+varying in float v_antialias[4][1];
+varying in float v_linewidth[4][1];
+varying in float v_miter_limit[4][1];
 
 varying out vec2 v_caps;
 varying out float v_length;
@@ -143,6 +160,11 @@ float line_distance(vec2 p0, vec2 p1, vec2 p)
 
 void main(void)
 {
+    float antialias = v_antialias[0][0];
+    float linewidth = v_linewidth[0][0];
+    float miter_limit = v_miter_limit[0][0];
+
+
     // Get the four vertices passed to the shader
     vec2 p0 = gl_PositionIn[0].xy; // start of previous segment
     vec2 p1 = gl_PositionIn[1].xy; // end of previous segment, start of current segment
@@ -289,7 +311,7 @@ fragment = gloo.FragmentShader(fragment)
 geometry = gloo.GeometryShader(geometry, 4, gl.GL_LINES_ADJACENCY_EXT, gl.GL_TRIANGLE_STRIP)
 program = gloo.Program(vertex, fragment, geometry)
 
-P = (star(n=5)*350 + (400,400)).astype(np.float32)
+#P = (star(n=5)*350 + (400,400)).astype(np.float32)
 
 closed = False
 if closed:
@@ -306,7 +328,7 @@ I = I.astype(np.uint32).view(gloo.IndexBuffer)
 
 
 program["position"] = P
-program["linewidth"] = 32.0
+program["linewidth"] = 3.0
 program["antialias"] = 1.0
 program["miter_limit"] = 4.0
 program["color"] = 0,0,0,1

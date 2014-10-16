@@ -4,7 +4,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 """
-Marker collection is a collection of markers of different types.
+Unimarker collection is a collection of markers of the same type.
 """
 
 import os
@@ -18,12 +18,11 @@ from glumpy.graphics.collection.collection import Collection
 
 
 
-class MarkerCollection(Collection):
-    def __init__(self, **kwargs):
+class UnimarkerCollection(Collection):
+    def __init__(self, marker='cross', **kwargs):
 
         dtype = [ ('position',    (np.float32, 3), '!local', (0,0,0)),
                   ('size',        (np.float32, 1), 'local', 1),
-                  ('marker',      (np.float32, 1), 'local', 1),
                   ('orientation', (np.float32, 1), 'local', 0),
                   ('fg_color',    (np.float32, 4), 'local', (0,0,0,1)),
                   ('bg_color',    (np.float32, 4), 'local', (1,1,1,1)),
@@ -31,7 +30,7 @@ class MarkerCollection(Collection):
                   ('antialias',   (np.float32, 1), 'global', 1.0) ]
 
         vertex = get('collections/marker.vert')
-        # fragment = get('markers/marker-%s.frag' % marker)
+        fragment = get('markers/marker-%s.frag' % marker)
         fragment += get('antialias/outline.frag')
         fragment += get('collections/marker.frag')
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_POINTS,
@@ -45,7 +44,7 @@ class MarkerCollection(Collection):
         # defaults = MarkerCollection.defaults
         V = np.zeros(count, dtype=self.vtype)
         for name in self.vtype.names:
-            if name not in ["a_uniform_index"]:
+            if name not in ["collection_index"]:
                 V[name] = kwargs.get(name, self._defaults[name])
         if self.utype:
             U = np.zeros(count, dtype=self.utype)

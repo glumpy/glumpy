@@ -36,7 +36,7 @@ def get_code(name):
 
 
 def get(name):
-    """ Retrieve a shader filename and content """
+    """ Retrieve a shader content """
 
     # return get_file(name), get_code(name)
     return get_code(name)

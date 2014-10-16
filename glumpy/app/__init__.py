@@ -266,6 +266,16 @@ def __init__(clock=None, framerate=None, backend=None):
 
 
 
+# -------------------------------------------------------------------- quit ---
+def quit():
+    count = len(__backend__.windows())
+    while count:
+        dt = clock.tick()
+        window = __backend__.windows()[-1]
+        window.close()
+        count = __backend__.process(dt)
+
+
 # --------------------------------------------------------------------- run ---
 def run(clock=None, framerate=None, interactive=None,
         duration = sys.maxint, framecount = sys.maxint):

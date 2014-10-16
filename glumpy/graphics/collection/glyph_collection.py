@@ -3,11 +3,11 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-""" """
+"""
+A GlyphCollection allows to render pieces of text.
+"""
 
-import os
 import numpy as np
-
 from glumpy import gl
 from glumpy.shaders import get_file, get_code
 from glumpy.graphics.collection.util import fetchcode
@@ -17,82 +17,53 @@ from glumpy.gloo.program import Program, VertexBuffer, IndexBuffer
 
 
 class GlyphCollection(Collection):
-    """ """
-
-    # This cannot be changed (shader code depends on it)
-    dtypes = [ ('position',  np.float32, 2),
-               ('translate', np.float32, 2),
-               ('texcoord',  np.float32, 2),
-               ('color',     np.float32, 4) ]
-
-    # Default variable scopes
-    scopes = { 'position'   : '!local',
-               'texcoord'   : '!local',
-               'translate'  : 'shared',
-               'color'      : 'shared' }
-
-    # Default variable values
-    defaults = { 'position' : (0,0),
-                 'texcoord' : (0,0),
-                 'translate': (0,0),
-                 'color'    : (0,0,0,1) }
-
+    """
+    A GlyphCollection allows to render pieces of text.
+    """
 
     def __init__(self, **kwargs):
-        """ """
+        dtype = [('position',  (np.float32, 2), '!local', (0,0)),
+                 ('texcoord',  (np.float32, 2), '!local', (0,0)),
+                 ('translate', (np.float32, 2), 'shared', (0,0)),
+                 ('color',     (np.float32, 4), 'shared', (0,0,0,1))]
+        vertex = get_code('sdf-glyph.vert')
+        fragment = get_code("spatial-filters.frag" ) + get_code('sdf-glyph.frag')
 
-        # Extend dtypes with user argument
-        dtypes = list(GlyphCollection.dtypes)
-        if "dtypes" in kwargs.keys():
-            dtypes.extend(kwargs.get("dtypes", []))
-            del kwargs["dtypes"]
-        scopes = dict(GlyphCollection.scopes)
-
-        # Initialize collection
-        Collection.__init__(self, dtypes, scopes, itype=np.uint32, **kwargs)
-
-        # Set draw mode
-        self._mode = gl.GL_TRIANGLES
-
-        # Build program
-        vertex = ""
-        if self.utype is not None:
-            vertex += fetchcode(self.utype)
-        else:
-            vertex += "void fetch_uniforms(void) { }\n"
-        vertex += self._declarations["uniforms"]
-        vertex += self._declarations["attributes"]
-        vertex += get_code('sdf-glyph.vert')
-        fragment = ""
-        fragment += get_code("spatial-filters.frag")
-        fragment += get_code('sdf-glyph.frag')
-
-        self._program = Program(vertex, fragment)
-        for name in self._uniforms.keys():
-            self._uniforms[name] = GlyphCollection.defaults.get(name)
-            self._program[name] = self._uniforms[name]
-        self._build_buffers()
-
+        Collection.__init__(self, dtype=dtype, itype=np.uint32,
+                            mode = gl.GL_TRIANGLES,
+                            vertex=vertex, fragment=fragment)
 
 
     def append(self, text, font, anchor_x='center', anchor_y='center', **kwargs):
-        """ """
+        """
+        Append a new text to the collection
 
-        defaults = GlyphCollection.defaults
-        V,I = self.bake(text, font, anchor_x, anchor_y)
+        text : str
+            Text to be appended
 
+        font : glumpy.graphics.font.Font
+            Font to be used to render text
+
+        anchor_x : str
+            Text horizontal anchor ('left', 'center', 'right')
+
+        anchor_y : str
+            Text horizontal anchor ('top', 'center', 'bottom')
+        """
+
+        V, I = self.bake(text, font, anchor_x, anchor_y)
         reserved = ["a_uniform_index", "position", "texcoord"]
         for name in self.vtype.names:
             if name not in reserved:
-                if name in kwargs.keys() or name in defaults.keys():
+                if name in kwargs.keys() or name in self._defaults.keys():
                     V[name] = kwargs.get(name, defaults[name])
 
         if self.utype:
             U = np.zeros(1, dtype=self.utype)
             for name in self.utype.names:
                 if name not in ["__unused__"]:
-                    if name in kwargs.keys() or name in defaults.keys():
-                        U[name] = kwargs.get(name, defaults[name])
+                    if name in kwargs.keys() or name in self._defaults.keys():
+                        U[name] = kwargs.get(name, self._defaults[name])
         else:
             U = None
 
@@ -100,7 +71,7 @@ class GlyphCollection(Collection):
 
 
     def bake(self, text, font, anchor_x='center', anchor_y='center'):
-        """ """
+        """ Bake a tet string to be added in the collection """
 
         n = len(text) - text.count('\n')
         indices = np.zeros((n,6), dtype=self.itype)
