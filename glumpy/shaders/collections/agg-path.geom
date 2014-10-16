@@ -46,6 +46,12 @@ float line_distance(vec2 p0, vec2 p1, vec2 p)
     return length(p-h);
 }
 
+vec4 transform(vec2 position)
+{
+    return projection*vec4(position.xy, 0.0, 1.0);
+}
+
+
 void main(void)
 {
     vec4 color = v_geom_color[0][0];
@@ -108,7 +114,7 @@ void main(void)
     // Cap at start
     if( p0 == p1 ) {
         p = p1 - w*v1 + w*n1;
-        gl_Position = projection*vec4(p, 0.0, 1.0);
+        gl_Position = transform(p);
         v_texcoord = vec2(-w, +w);
         v_caps.x = v_texcoord.x;
     // Regular join
@@ -140,7 +146,7 @@ void main(void)
     if( p2 == p3 ) v_caps.y = v_texcoord.x;
     else           v_caps.y = 1.0;
 
-    gl_Position = projection*vec4(p, 0.0, 1.0);
+    gl_Position = transform(p);
     v_bevel_distance.x = -d0*line_distance(p1+d0*n0*w, p1+d0*n1*w, p);
     v_bevel_distance.y =    -line_distance(p2+d1*n1*w, p2+d1*n2*w, p);
     EmitVertex();
@@ -161,7 +167,7 @@ void main(void)
     if( p0 == p1 ) v_caps.x = v_texcoord.x;
     else           v_caps.x = 1.0;
 
-    gl_Position = projection*vec4(p, 0.0, 1.0);
+    gl_Position = transform(p);
     v_bevel_distance.x =    -line_distance(p1+d0*n0*w, p1+d0*n1*w, p);
     v_bevel_distance.y = +d1*line_distance(p2+d1*n1*w, p2+d1*n2*w, p);
     EmitVertex();
@@ -181,7 +187,7 @@ void main(void)
     if( p0 == p1 ) v_caps.x = v_texcoord.x;
     else           v_caps.x = 1.0;
 
-    gl_Position = projection*vec4(p, 0.0, 1.0);
+    gl_Position = transform(p);
     v_bevel_distance.x =    -line_distance(p1+d0*n0*w, p1+d0*n1*w, p);
     v_bevel_distance.y = -d1*line_distance(p2+d1*n1*w, p2+d1*n2*w, p);
     EmitVertex();

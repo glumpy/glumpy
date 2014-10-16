@@ -219,7 +219,7 @@ class BaseCollection(object):
         count = self._uniforms_float_count
         cols = linesize // float(count/4)
         rows = max(1,int(math.ceil(size / float(cols))))
-        self._ushape = rows, cols*(count/4), 4 #count
+        self._ushape = rows, cols*(count/4), count
         return self._ushape
 
 
@@ -243,8 +243,9 @@ class BaseCollection(object):
 
             # We take the whole array (_data), not the data one
             texture = self._uniforms_list._data.view(np.float32)
-            tcount = len(texture)/self._uniforms_float_count
-            shape = self._compute_ushape(tcount)
+
+            count = len(texture)/self._uniforms_float_count
+            shape = self._compute_ushape(count)
 
             texture = texture.reshape(shape[0],shape[1],4)
             self._uniforms_texture = texture.view(Texture2D)
