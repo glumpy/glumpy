@@ -33,6 +33,7 @@ class UnimarkerCollection(Collection):
         fragment = get('markers/marker-%s.frag' % marker)
         fragment += get('antialias/outline.frag')
         fragment += get('collections/marker.frag')
+
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_POINTS,
                             vertex=vertex, fragment=fragment, **kwargs)
 

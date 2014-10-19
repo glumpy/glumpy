@@ -392,6 +392,7 @@ class ArrayList(object):
             self._items[istart:istop] = items
             self._count += _count
 
+
     def append(self, data, itemsize=None):
         """
         Append data to the end.
@@ -419,8 +420,20 @@ class ArrayList(object):
 
 if __name__ == '__main__':
     L = ArrayList(dtype=int)
-    L.append( (1,2,3), itemsize=1 )
-    L[0] = 1,2,3
-    L[1] = 1,2,3
-    L[2] = 1,2,3
+    #L.append( (1,2,3), itemsize=1 )
+    #L[0] = 1,2,3
+    #L[1] = 1,2,3
+    #L[2] = 1,2,3
+    #print L
+
+    for i in range(10):
+        L.append(i)
     print L
+    for i in range(10):
+        del L[0]
+
+    for i in range(10):
+        L.insert(0,i)
+    print L
+    for i in range(10):
+        del L[-1]

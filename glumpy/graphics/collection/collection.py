@@ -61,6 +61,8 @@ class Collection(BaseCollection):
                 ('int32', 4)   : "ivec4" }
 
     def __init__(self, dtype, itype, mode, vertex, fragment, geometry=None, **kwargs):
+        """
+        """
 
         self._uniforms = {}
         self._attributes = {}
@@ -118,7 +120,7 @@ class Collection(BaseCollection):
         for name in self._uniforms.keys():
             self._uniforms[name] = self._defaults.get(name)
             self._program[name] = self._uniforms[name]
-        self._build_buffers()
+        self._update()
 
 
     def __getitem__(self, key):
@@ -140,6 +142,9 @@ class Collection(BaseCollection):
 
     def draw(self, mode = gl.GL_POINTS):
         """ Draw collection """
+
+        if self._need_update:
+            self._update()
 
         mode = mode or self._mode
         if self._indices_list is not None:
