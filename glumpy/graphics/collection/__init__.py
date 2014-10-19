@@ -9,6 +9,8 @@ from . glyph_collection import GlyphCollection
 
 from . path_collection import PathCollection
 
+from . point_collection import PointCollection
+
 from . agg_path_collection import AggPathCollection
 
 from . marker_collection import MarkerCollection

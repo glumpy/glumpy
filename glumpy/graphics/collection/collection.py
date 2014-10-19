@@ -120,7 +120,6 @@ class Collection(BaseCollection):
         for name in self._uniforms.keys():
             self._uniforms[name] = self._defaults.get(name)
             self._program[name] = self._uniforms[name]
-        self._update()
 
 
     def __getitem__(self, key):

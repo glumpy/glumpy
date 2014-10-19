@@ -35,6 +35,8 @@ class PathCollection(Collection):
 
         itemsize = kwargs.get('itemsize', len(P))
 
+        count = len(P)/itemsize
+
         V = np.zeros(len(P), dtype=self.vtype)
         V['position'] = P
         I = np.repeat(np.arange(itemsize),2)[1:-1]
@@ -45,9 +47,8 @@ class PathCollection(Collection):
             if name not in reserved:
                 if name in kwargs.keys() or name in defaults.keys():
                     V[name] = kwargs.get(name, defaults[name])
-
         if self.utype:
-            U = np.zeros(1, dtype=self.utype)
+            U = np.zeros(count, dtype=self.utype)
             for name in self.utype.names:
                 if name not in ["__unused__"]:
                     if name in kwargs.keys() or name in defaults.keys():
@@ -56,4 +57,4 @@ class PathCollection(Collection):
             U = None
 
 
-        Collection.append(self, vertices=V, indices=I ,uniforms=U, itemsize=itemsize)
+        Collection.append(self, vertices=V, indices=I, uniforms=U, itemsize=itemsize)

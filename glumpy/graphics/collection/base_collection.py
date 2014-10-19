@@ -456,8 +456,7 @@ class BaseCollection(object):
         count = self._uniforms_float_count
         cols = linesize // float(count/4)
         rows = max(1,int(math.ceil(size / float(cols))))
-        # shape = rows, cols*(count/4), count
-        shape = rows, cols*(count/4), 4
+        shape = rows, cols*(count/4), count
         self._ushape = shape
         return shape
 
@@ -479,11 +478,13 @@ class BaseCollection(object):
                 self._uniforms_texture._delete()
 
             # We take the whole array (_data), not the data one
-            # shape = self._compute_texture_shape(len(self))
             texture = self._uniforms_list._data.view(np.float32)
             size = len(texture)/self._uniforms_float_count
             shape = self._compute_texture_shape(size)
+
+            # shape[2]= float count is only used in vertex shader code
             texture = texture.reshape(shape[0],shape[1],4)
+
             self._uniforms_texture = texture.view(Texture2D)
             self._uniforms_texture.interpolation =  gl.GL_NEAREST
 
@@ -497,7 +498,6 @@ class BaseCollection(object):
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
-
     vtype = [('value', 'f4', 2)]
     utype = [('value_1', 'f4', 3),
              ('value_2', 'f4', 3)]

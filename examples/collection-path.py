@@ -107,7 +107,7 @@ def on_mouse_motion(x,y,dx,dy):
 @window.event
 def on_mouse_scroll(x, y, dx, dy):
     index = get_index(x,y)
-    dx = np.sign(dy) * .05
+    dx = -np.sign(dy) * .05
     lines["xscale"][index] *= np.exp(2.5*dx)
     lines["xscale"][index] = min(max(1.0, lines["xscale"][index]),100)
 

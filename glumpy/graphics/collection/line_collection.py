@@ -20,8 +20,9 @@ class LineCollection(Collection):
 
         dtype = [ ('position', (np.float32, 3), '!local', (0,0,0)),
                   ('color',    (np.float32, 4), 'shared', (1,1,1,1))] + dtype
-        vertex = vertex or get_code('line-collection.vert')
-        fragment = fragment or get_code('line-collection.frag')
+        vertex = vertex or get_code('line.vert')
+        fragment = fragment or get_code('line.frag')
+
         Collection.__init__(self, dtype, itype=np.uint32, mode=gl.GL_LINES,
                                   vertex=vertex, fragment=fragment, **kwargs)
 
