@@ -34,7 +34,6 @@ class PathCollection(Collection):
         """ """
 
         itemsize = kwargs.get('itemsize', len(P))
-
         count = len(P)/itemsize
 
         V = np.zeros(len(P), dtype=self.vtype)
