@@ -18,8 +18,8 @@ class PointCollection(Collection):
 
         dtype = [ ('position', (np.float32, 3), "!local", (0,0,0)),
                   ('size',     (np.float32, 1), "global", 1.0) ]
-        vertex    = get_code("collection/point.vert")
-        fragment  = get_code("collection/point.frag")
+        vertex    = get_code("collections/point.vert")
+        fragment  = get_code("collections/point.frag")
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_POINTS,
                             vertex=vertex, fragment=fragment)
 

@@ -42,8 +42,4 @@ def on_draw(dt):
     program1.draw(gl.GL_POINTS)
     program2.draw(gl.GL_POINTS)
 
-@window.event
-def on_resize(width,height):
-    gl.glViewport(0, 0, width, height)
-
 app.run()

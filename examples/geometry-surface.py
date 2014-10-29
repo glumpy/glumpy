@@ -98,6 +98,8 @@ def on_draw(dt):
 
     window.clear()
 
+    surface['data']
+
     gl.glDisable(gl.GL_BLEND)
     gl.glEnable(gl.GL_DEPTH_TEST)
     gl.glEnable(gl.GL_POLYGON_OFFSET_FILL)
@@ -114,6 +116,8 @@ def on_draw(dt):
     model = surface['model'].reshape(4,4)
     view = surface['view'].reshape(4,4)
     surface['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
+
+
 
 @window.event
 def on_init():
@@ -153,6 +157,8 @@ surface['texture'] = data.checkerboard(32,24)
 transform = Trackball("vec4(position.xy, z, 1.0)")
 surface['transform'] = transform
 window.attach(transform)
+
+T = (Z-Z.min())/(Z.max() - Z.min())
 
 surface['height'] = 0.75
 surface["light_position[0]"] = 3, 0, 0+5

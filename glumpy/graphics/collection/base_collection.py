@@ -482,7 +482,7 @@ class BaseCollection(object):
             size = len(texture)/self._uniforms_float_count
             shape = self._compute_texture_shape(size)
 
-            # shape[2]= float count is only used in vertex shader code
+            # shape[2] = float count is only used in vertex shader code
             texture = texture.reshape(shape[0],shape[1],4)
 
             self._uniforms_texture = texture.view(Texture2D)

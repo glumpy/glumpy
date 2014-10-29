@@ -22,17 +22,15 @@ def get_file(name):
             if os.path.exists(filename):
                 return filename
 
-    log.warning("Shader '%s' not found" % name)
-    return None
+    log.critical("Shader '%s' not found" % name)
+    raise RuntimeError("Shader file not found")
 
 
 def get_code(name):
     """ Retrieve a shader code from sub-directories """
 
     filename = get_file(name)
-    if filename:
-        return open(filename).read()
-    return ""
+    return open(filename).read()
 
 
 def get(name):

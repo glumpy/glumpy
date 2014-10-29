@@ -29,10 +29,10 @@ class UnimarkerCollection(Collection):
                   ('linewidth',   (np.float32, 1), 'global', 1.0),
                   ('antialias',   (np.float32, 1), 'global', 1.0) ]
 
-        vertex = get('collection/marker.vert')
+        vertex = get('collections/marker.vert')
         fragment = get('markers/marker-%s.frag' % marker)
         fragment += get('antialias/outline.frag')
-        fragment += get('collection/marker.frag')
+        fragment += get('collections/marker.frag')
 
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_POINTS,
                             vertex=vertex, fragment=fragment, **kwargs)

@@ -22,10 +22,10 @@ from glumpy.graphics.collection.base_collection import BaseCollection
 class Collection(BaseCollection):
     """
     A collection is a container for several items having the same data
-    structure (dtype). Each data type can be declared as local (it specific to
-    a vertex), shared (it is shared among an item vertices) or global (it is
-    shared by all vertices). It is based on the BaseCollection but offers a
-    more intuitive interface.
+    structure (dtype). Each data type can be declared as local (it is specific
+    to a vertex), shared (it is shared among item vertices) or global (it is
+    shared by all items). It is based on the BaseCollection but offers a more
+    intuitive interface.
 
     Parameters
     ----------
@@ -68,8 +68,8 @@ class Collection(BaseCollection):
         self._attributes = {}
         self._varyings = {}
         self._mode = mode
-        vtype      = []
-        utype      = []
+        vtype = []
+        utype = []
 
         # Build vtype and utype according to parameters
         declarations = {"uniforms"   : "",
