@@ -5,9 +5,9 @@
 # -----------------------------------------------------------------------------
 from . base_collection import BaseCollection
 from . glyph_collection import GlyphCollection
-from . path_collection import PathCollection
 from . point_collection import PointCollection
+from . unimarker_collection import UnimarkerCollection
+from . path_collection import PathCollection
+from . agg_solid_segment_collection import AggSolidSegmentCollection
 # from . agg_path_collection import AggPathCollection
 # from . marker_collection import MarkerCollection
-from . unimarker_collection import UnimarkerCollection
-from . agg_solid_segment_collection import AggSolidSegmentCollection
