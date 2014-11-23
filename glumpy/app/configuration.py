@@ -6,6 +6,7 @@
 """
 GL Configuration settings
 """
+from glumpy.log import log
 from glumpy import defaults
 
 # Default configuration
@@ -263,43 +264,73 @@ def gl_get_configuration():
     configuration =  Configuration()
     gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
     value = ctypes.c_int()
-    gl.glGetFramebufferAttachmentParameteriv(
-        gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
-        gl.GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, value )
-    configuration._red_size = value.value
 
-    gl.glGetFramebufferAttachmentParameteriv(
-        gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
-        gl.GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE, value )
-    configuration._green_size = value.value
+    try:
+        gl.glGetFramebufferAttachmentParameteriv(
+            gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
+            gl.GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, value )
+        configuration._red_size = value.value
+    except:
+        log.warn("Cannot read RED channel size from the framebuffer")
+        configuration._red_size = 0
 
-    gl.glGetFramebufferAttachmentParameteriv(
-        gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
-        gl.GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE, value )
-    configuration._blue_size = value.value
+    try:
+        gl.glGetFramebufferAttachmentParameteriv(
+            gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
+            gl.GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE, value )
+        configuration._green_size = value.value
+    except:
+        log.warn("Cannot read GREEN channel size from the framebuffer")
+        configuration._green_size = 0
 
-    gl.glGetFramebufferAttachmentParameteriv(
-        gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
-        gl.GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, value )
-    configuration._alpha_size = value.value
+    try:
+        gl.glGetFramebufferAttachmentParameteriv(
+            gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
+            gl.GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE, value )
+        configuration._blue_size = value.value
+    except:
+        log.warn("Cannot read BLUE channel size from the framebuffer")
+        configuration._blue_size = 0
 
-    gl.glGetFramebufferAttachmentParameteriv(
-        gl.GL_FRAMEBUFFER, gl.GL_DEPTH,
-        gl.GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, value )
-    configuration._depth_size = value.value
+    try:
+        gl.glGetFramebufferAttachmentParameteriv(
+            gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
+            gl.GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, value )
+        configuration._alpha_size = value.value
+    except:
+        log.warn("Cannot read ALPHA channel size from the framebuffer")
+        configuration._alpha_size = 0
 
-    gl.glGetFramebufferAttachmentParameteriv(
-        gl.GL_FRAMEBUFFER, gl.GL_STENCIL,
-        gl.GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, value )
-    configuration._stencil_size = value.value
+    try:
+        gl.glGetFramebufferAttachmentParameteriv(
+            gl.GL_FRAMEBUFFER, gl.GL_DEPTH,
+            gl.GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, value )
+        configuration._depth_size = value.value
+    except:
+        log.warn("Cannot read DEPTH size from the framebuffer")
+        configuration._depth_size = 0
 
-    gl.glGetFramebufferAttachmentParameteriv(
-        gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
-        gl.GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, value )
-    if value.value == gl.GL_LINEAR:
+    try:
+        gl.glGetFramebufferAttachmentParameteriv(
+            gl.GL_FRAMEBUFFER, gl.GL_STENCIL,
+            gl.GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, value )
+        configuration._stencil_size = value.value
+    except:
+        log.warn("Cannot read STENCIL size from the framebuffer")
+        configuration._stencil_size = 0
+
+    try:
+        gl.glGetFramebufferAttachmentParameteriv(
+            gl.GL_FRAMEBUFFER, gl.GL_FRONT_LEFT,
+            gl.GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, value )
+        if value.value == gl.GL_LINEAR:
+            configuration._srgb = False
+        elif value.value == gl.GL_SRGB:
+            configuration._srgb = True
+    except:
+        log.warn("Cannot read sRGB value from the framebuffer")
         configuration._srgb = False
-    elif value.value == gl.GL_SRGB:
-        configuration._srgb = True
+
 
     configuration._stereo        = gl.glGetInteger(gl.GL_STEREO)
     configuration._double_buffer = gl.glGetInteger(gl.GL_DOUBLEBUFFER)
