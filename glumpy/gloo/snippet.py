@@ -290,22 +290,22 @@ class Snippet(object):
         return all
 
 
-    # def __call__(self, *args, **kwargs):
-    #     """ __call__(self, *args) <==> self(*args) """
-
-    #     S = self.copy()
-    #     S._args = args
-    #     for symbol in kwargs.keys():
-    #         S._aliases[symbol] = kwargs[symbol]
-    #     return S
-
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
 
-        self._args = args
+        S = self.copy()
+        S._args = args
         for symbol in kwargs.keys():
-            self._aliases[symbol] = kwargs[symbol]
-        return self
+            S._aliases[symbol] = kwargs[symbol]
+        return S
+
+    # def __call__(self, *args, **kwargs):
+    #     """ __call__(self, *args) <==> self(*args) """
+
+    #     self._args = args
+    #     for symbol in kwargs.keys():
+    #         self._aliases[symbol] = kwargs[symbol]
+    #     return self
 
     def __op__(self, operand, other):
         S = self.copy()
@@ -464,34 +464,36 @@ vec4 inverse(vec4 position)
 }
 """
 
-    # Scale = Snippet(scale)
-    # Translate = Snippet(translate)
-    # Position4D = "position"
-    # Position3D = "vec4(position.xyz, 1.0)"
-    # Position2D = "vec4(position.xy, 0.0, 1.0)"
+    Scale = Snippet(scale)
+    Translate = Snippet(translate)
+    Position4D = "position"
+    Position3D = "vec4(position.xyz, 1.0)"
+    Position2D = "vec4(position.xy, 0.0, 1.0)"
 
-    # R = Translate(Position3D)
-    # # R = Translate.forward(Translate.forward(Position3D))
-    # # R = Translate.forward(Position3D)
-    # print R.code
-    # print R.call
+    R = Translate(Position3D)
+    R = Translate(Translate(Position3D))
+    #R = Translate.forward(Position3D)
+    print R.code
+    print R.call
 
 
-    T = Snippet("""
-varying float v_index;
-vec2 transform(float index)
-{
-    v_index = index;
-}
-""")
-    TT = T(T(v_index="toto"), v_index="titi")
+#     T = Snippet("""
+# varying float v_index;
+# vec2 transform(float index)
+# {
+#     v_index = index;
+# }
+# """)
+#     TT = T( T(v_index="toto"), v_index="titi")
 
-    print T.code
-    print TT.code
+#     print TT
 
-    print TT.lookup("v_index")
-    print TT.args[0].lookup("v_index")
+# #    print T.code
+# #    print TT.code
 
-    S = Snippet("""varying float v_index;""")(v_index = T.lookup("v_index"))
+# #    print TT.lookup("v_index")
+# #    print TT.args[0].lookup("v_index")
 
-    # print C.code
+# #    S = Snippet("""varying float v_index;""")(v_index = T.lookup("v_index"))
+
+#     # print C.code
