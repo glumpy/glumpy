@@ -29,6 +29,9 @@ vertex = """
 """
 
 fragment = """
+#include "markers/square.glsl"
+#include "antialias/filled.glsl"
+
 uniform sampler2D texture;
 varying vec2 v_texcoord;
 varying vec2 v_quadsize;
@@ -59,14 +62,13 @@ float marker(vec2 P, float size)
 
 void main()
 {
-    const float rows = 50.0;
-    const float cols = 50.0;
+    const float rows = 32.0;
+    const float cols = 32.0;
 
     float v = texture2D(texture, v_texcoord).r;
     vec2 size = v_quadsize / vec2(cols,rows);
     vec2 center = (floor(v_pixcoord/size) + vec2(0.5,0.5)) * size;
     float d = marker(v_pixcoord - center, 0.9*size.x);
-
     gl_FragColor = filled(d, 1.0, 1.0, vec4(v,v,v,1));
 }
 """
@@ -83,7 +85,6 @@ def on_key_press(key, modifiers):
     if key == app.window.key.SPACE:
         transform.reset()
 
-
 @window.event
 def on_resize(width, height):
     program['viewport'] = 0, 0, width, height
@@ -91,7 +92,7 @@ def on_resize(width, height):
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-program['texture'] = np.random.uniform(0,1,(50,50))
+program['texture'] = np.random.uniform(0,1,(32,32))
 
 transform = PanZoom(Position2D("position"))
 program['transform'] = transform
