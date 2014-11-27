@@ -100,7 +100,7 @@ C[...] = V
 for i in range(rows*cols):
     C["index"] = i
     cubes.append(vertices=C, indices=I)
-cubes._build_buffers()
+cubes._update() #build_buffers()
 V = cubes._vertices_buffer
 I = cubes._indices_buffer
 
