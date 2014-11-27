@@ -49,7 +49,7 @@ def use(backend, api=None, major=None, minor=None, profile=None):
     Parameters
     ----------
 
-    backend : ['osxglut', 'pyglet', 'glfw', 'sdl', 'sdl2', 'pyside']
+    backend : ['osxglut', 'freeglut', 'pyglet', 'glfw', 'sdl', 'sdl2', 'pyside']
         Graphical toolkit to use
 
     api : ['GL'|'ES']
