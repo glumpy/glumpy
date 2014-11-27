@@ -94,8 +94,10 @@ window = app.Window(1200, 800, color = (1,1,1,1))
 
 @window.event
 def on_draw(dt):
-    global phi, theta, duration
+    global phi, theta, time
 
+
+    time += dt
     window.clear()
 
     surface['data']
@@ -116,7 +118,7 @@ def on_draw(dt):
     model = surface['model'].reshape(4,4)
     view = surface['view'].reshape(4,4)
     surface['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
-
+    # surface["height"] = 0.75*np.cos(time/5.0)
 
 
 @window.event
@@ -168,4 +170,5 @@ surface["light_color[0]"]    = 1, 0, 0
 surface["light_color[1]"]    = 0, 1, 0
 surface["light_color[2]"]    = 0, 0, 1
 phi, theta = -45, 0
+time = 0
 app.run()
