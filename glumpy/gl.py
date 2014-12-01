@@ -3,6 +3,7 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+import ctypes
 from glumpy.log import log
 from OpenGL.arrays import numpymodule
 
@@ -24,3 +25,20 @@ from OpenGL.GL import *
 from OpenGL.GL.EXT.geometry_shader4 import *
 from OpenGL.GL.NV.geometry_program4 import *
 from OpenGL.GL.ARB.texture_rg import *
+
+
+# Patch: pythonize the glGetActiveAttrib
+_glGetActiveAttrib = glGetActiveAttrib
+def glGetActiveAttrib(program, index):
+    # Prepare
+    bufsize = 32
+    length = ctypes.c_int()
+    size = ctypes.c_int()
+    type = ctypes.c_int()
+    name = ctypes.create_string_buffer(bufsize)
+    # Call
+    _glGetActiveAttrib(program, index,
+                       bufsize, ctypes.byref(length), ctypes.byref(size),
+                       ctypes.byref(type), name)
+    # Return Python objects
+    return name.value, size.value, type.value

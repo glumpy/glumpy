@@ -15,26 +15,6 @@ from . shader import VertexShader, FragmentShader, GeometryShader
 from . variable import gl_typeinfo, Uniform, Attribute
 
 
-# Patch: pythonize the glGetActiveAttrib
-import ctypes
-gl._glGetActiveAttrib = gl.glGetActiveAttrib
-def glGetActiveAttrib(program, index):
-    # Prepare
-    bufsize = 32
-    length = ctypes.c_int()
-    size = ctypes.c_int()
-    type = ctypes.c_int()
-    name = ctypes.create_string_buffer(bufsize)
-    # Call
-    gl._glGetActiveAttrib(program, index,
-                          bufsize, ctypes.byref(length), ctypes.byref(size),
-                          ctypes.byref(type), name)
-    # Return Python objects
-    return name.value, size.value, type.value
-gl.glGetActiveAttrib = glGetActiveAttrib
-
-
-
 
 # ----------------------------------------------------------- Program class ---
 class Program(GLObject):
