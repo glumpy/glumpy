@@ -29,9 +29,6 @@ vertex = """
 """
 
 fragment = """
-#include "markers/square.glsl"
-#include "antialias/filled.glsl"
-
 uniform sampler2D texture;
 varying vec2 v_texcoord;
 varying vec2 v_quadsize;
