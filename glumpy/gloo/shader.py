@@ -125,8 +125,11 @@ class Shader(GLObject):
         if len(self.hooks):
             raise RuntimeError("Shader has pending hooks, cannot compile")
 
+
         # Set shader source
-        gl.glShaderSource(self._handle, self.code)
+        # code = "#version 120\n" + self.code
+        code = self.code
+        gl.glShaderSource(self._handle, code)
 
         # Actual compilation
         gl.glCompileShader(self._handle)
