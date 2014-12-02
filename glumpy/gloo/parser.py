@@ -7,12 +7,14 @@
 import re
 import numpy as np
 import OpenGL.GL as gl
+from glumpy import library
+from glumpy.log import log
 
 
 def remove_comments(code):
     """ Remove C-style comment from GLSL code string """
 
-    pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
+    pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*\n)"
     # first group captures quoted strings (double or single)
     # second group captures comments (//single-line or /* multi-line */)
     regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
@@ -27,6 +29,53 @@ def remove_comments(code):
 
     return regex.sub(do_replace, code)
 
+
+def remove_version(code):
+    """ Remove any version directive """
+
+    pattern = '\#\s*version[^\r\n]*\n'
+    regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+    return regex.sub('\n', code)
+
+
+def merge_includes(code):
+    """ Merge all includes recursively """
+
+    pattern = '\#\s*include\s*"(?P<filename>[a-zA-Z0-9\-\.\/]+)"[^\r\n]*\n'
+    regex = re.compile(pattern)
+    includes = []
+
+    def replace(match):
+        filename = match.group("filename")
+        if filename not in includes:
+            includes.append(filename)
+            path = library.find(filename)
+            if not path:
+                log.critical('"%s" not found' % filename)
+                raise RuntimeError("File not found")
+            text = '\n// --- start of "%s" ---\n' % filename
+            text += remove_comments(open(path).read())
+            text += '// --- end of "%s" ---\n' % filename
+            return text
+        return ''
+
+    # Limit recursion to depth 10
+    for i in range(10):
+        if re.search(regex, code):
+            code = re.sub(regex, replace, code)
+        else:
+            break;
+
+    return code
+
+
+def preprocess(code):
+    """ Preprocess a code by removing comments, version and merging includes """
+    if code:
+        code = remove_comments(code)
+        code = remove_version(code)
+        code = merge_includes(code)
+    return code
 
 
 def get_declarations(code, qualifier = ""):
@@ -75,6 +124,9 @@ def get_declarations(code, qualifier = ""):
     return variables
 
 def get_hooks(code):
+    if not len(code):
+        return []
+
     hooks = []
     re_hooks = re.compile("\<(?P<hook>\w+)(\.(?P<subhook>\w+))?\>", re.VERBOSE)
     # re_hooks = re.compile("\<(?P<hook>\w+)\>", re.VERBOSE)
@@ -121,8 +173,7 @@ def get_functions(code):
     return functions
 
 def parse(code):
-    if code:
-        code = remove_comments(code)
+    code = preprocess(code)
     externs   = get_externs(code) if code else []
     consts    = get_consts(code) if code else []
     uniforms  = get_uniforms(code) if code else []
@@ -143,7 +194,9 @@ def parse(code):
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
     code = """
-    # version 120
+    #version 120
+
+    #include "colormaps/colormaps.glsl"
 
     extern float extern_a[2] /* comment */,
                  extern_b,   /* comment */
@@ -174,19 +227,20 @@ if __name__ == '__main__':
     void function_b(int a, int b, int c) {}
     """
 
-    p = parse(code)
 
-    for key in p.keys():
-        print key
-        if key not in["functions", "hooks"]:
-            for (name,vtype) in p[key]:
-                print " - %s (%s)"%  (name,vtype)
-            print
-        elif key == "hooks":
-            for name in p[key]:
-                print " - %s " % name
-            print
-        else:
-            for (rtype,name,args,func) in p[key]:
-                print " - %s %s (%s) { ... }"%  (rtype, name, args)
-            print
+    print preprocess(code)
+
+    # for key in p.keys():
+    #     print key
+    #     if key not in["functions", "hooks"]:
+    #         for (name,vtype) in p[key]:
+    #             print " - %s (%s)"%  (name,vtype)
+    #         print
+    #     elif key == "hooks":
+    #         for name in p[key]:
+    #             print " - %s " % name
+    #         print
+    #     else:
+    #         for (rtype,name,args,func) in p[key]:
+    #             print " - %s %s (%s) { ... }"%  (rtype, name, args)
+    #         print

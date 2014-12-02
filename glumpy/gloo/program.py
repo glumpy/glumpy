@@ -8,6 +8,7 @@ import numpy as np
 
 from glumpy import gl
 from glumpy.log import log
+from glumpy import library
 from . snippet import Snippet
 from . globject import GLObject
 from . buffer import VertexBuffer, IndexBuffer
@@ -43,12 +44,6 @@ class Program(GLObject):
         count : int (optional)
             Number of vertices this program will use. This can be given to
             initialize a VertexBuffer during Program initialization.
-
-        Note
-        ----
-
-        If several vertex/fragment/geometry shaders are specified, only one can
-        contain the main function respectively.
         """
 
         GLObject.__init__(self)
@@ -56,9 +51,9 @@ class Program(GLObject):
         self._buffer = None
 
         # Make sure shaders are shaders
-        self._verts = self._get_shaders(verts, VertexShader)
-        self._frags = self._get_shaders(frags, FragmentShader)
-        self._geoms = self._get_shaders(geoms, GeometryShader)
+        self._vertex   = self._merge(verts, VertexShader)
+        self._fragment = self._merge(frags, FragmentShader)
+        self._geometry = self._merge(geoms, GeometryShader)
 
         self._uniforms = {}
         self._attributes = {}
@@ -77,28 +72,32 @@ class Program(GLObject):
             self.bind(self._buffer)
 
 
-    def _get_shaders(self, shaders, shader_class):
+    def _merge(self, shaders, shader_class):
+        """
+        Merge a list of shaders
+        """
 
-        # Get all geoms shaders
-        if isinstance(shaders, (str, shader_class)):
-            shaders = [shaders]
-        elif isinstance(shaders, (type(None), tuple, list)):
-            shaders = shaders or []
+        if isinstance(shaders, shader_class):
+            return shaders
+        elif isinstance(shaders, str):
+            return shader_class(library.get(shaders))
+        elif shaders is None:
+            return None
+        elif isinstance(shaders, (tuple, list)):
+            pass
         else:
             raise ValueError('shaders must be str, Shader or list')
 
-        # Apply
-        shaders_list = []
+        # Merge shader list
+        code = ''
         for shader in shaders:
             if isinstance(shader, str):
-                shaders_list.append(shader_class(shader))
+                code += library.get(shader)
             elif isinstance(shader, shader_class):
-                if shader not in shaders_list:
-                    shaders_list.append(shader)
+                code += shader.code
             else:
                 raise ValueError('Cannot make a Shader out of %r.' % type(shader))
-
-        return shaders_list
+        return shader_class(code)
 
 
     def __len__(self):
@@ -108,78 +107,9 @@ class Program(GLObject):
             return None
 
 
-    # def attach(self, shaders):
-    #     """ Attach one or several vertex/fragment shaders to the program.
-
-    #     Parameters
-    #     ----------
-
-    #     shaders : VertexShader or FragmentShaders or list
-    #         Shaders to attach
-    #     """
-
-    #     if isinstance(shaders, (VertexShader, FragmentShader)):
-    #         shaders = [shaders]
-    #     for shader in shaders:
-    #         if isinstance(shader, VertexShader):
-    #             self._verts.append(shader)
-    #         elif isinstance(shader, FragmentShader):
-    #             self._frags.append(shader)
-    #         else:
-    #             log.warn("Unknown shader type")
-
-    #     # Ensure uniqueness of shaders
-    #     self._verts = list(set(self._verts))
-    #     self._frags = list(set(self._frags))
-
-    #     self._need_create = True
-    #     self._need_update = True
-
-    #     # Build uniforms and attributes
-    #     self._build_uniforms()
-    #     self._build_attributes()
-
-
-
     def _setup(self):
         """ Setup the program by resolving all pending hooks. """
         pass
-
-
-    # def detach(self, shaders):
-    #     """Detach one or several vertex/fragment shaders from the program.
-
-    #     Parameters
-    #     ----------
-
-    #     shaders : VertexShader or FragmentShaders or list
-    #         Shaders to detach
-
-    #     Note
-    #     ----
-
-    #     We don't need to defer attach/detach shaders since shader deletion
-    #     takes care of that.
-    #     """
-
-    #     if type(shaders) in [VertexShader, FragmentShader]:
-    #         shaders = [shaders]
-    #     for shader in shaders:
-    #         if isinstance(shader, VertexShader):
-    #             if shader in self._verts:
-    #                 self._verts.remove(shader)
-    #             else:
-    #                 raise ValueError("Shader is not attached to the program")
-    #         elif isinstance(shader, FragmentShader):
-    #             if shader in self._frags:
-    #                 self._frags.remove(shader)
-    #             else:
-    #                 raise ValueError("Shader is not attached to the program")
-    #     self._need_update = True
-
-    #     # Build uniforms and attributes
-    #     self._build_uniforms()
-    #     self._build_attributes()
 
 
     def _create(self):
@@ -228,17 +158,20 @@ class Program(GLObject):
         """ Build and attach shaders """
 
         # Check if we have at least something to attach
-        if not self._verts:
+        if not self._vertex:
             raise ValueError("No vertex shader has been given")
-        if not self._frags:
+        if not self._fragment:
             raise ValueError("No fragment shader has been given")
 
         log.debug("GPU: Attaching shaders to program")
 
         # Attach shaders
         attached = gl.glGetAttachedShaders(program)
-        shaders = self._verts + self._frags + self._geoms
-        for shader in shaders: #self._verts:
+        shaders = [self._vertex, self._fragment]
+        if self._geometry is not None:
+            shaders.append(self._geometry)
+
+        for shader in shaders:
             if shader.need_update:
                 if shader.handle in attached:
                     gl.glDetachShader(program, handle)
@@ -263,11 +196,14 @@ class Program(GLObject):
     def _build_hooks(self):
         """ Build hooks """
 
-        shaders = self._verts + self._frags + self._geoms
+        shaders = [self._vertex, self._fragment]
+        if self._geometry is not None:
+            shaders.append(self._geometry)
         self._hooks = {}
         for shader in shaders:
             for (hook,subhook) in shader.hooks:
                 self._hooks[hook] = [shader, subhook, None]
+
         # for shader in shaders:
         #     for (hook,subhook) in shader.hooks:
         #         if hook in self._hooks.keys():
@@ -401,11 +337,11 @@ class Program(GLObject):
         """Extract uniforms from shaders code """
 
         uniforms = []
-        for shader in self._verts:
-            uniforms.extend(shader.uniforms)
-        for shader in self._frags:
-            uniforms.extend(shader.uniforms)
-        for shader in self._geoms:
+        shaders = [self._vertex, self._fragment]
+        if self._geometry is not None:
+            shaders.append(self._geometry)
+
+        for shader in shaders:
             uniforms.extend(shader.uniforms)
         uniforms = list(set(uniforms))
         return uniforms
@@ -460,9 +396,7 @@ class Program(GLObject):
         """ Extract attributes from shaders code """
 
         attributes= []
-        for shader in self._verts:
-            attributes.extend(shader.attributes)
-        # No attribute in fragment shaders
+        attributes.extend(self._vertex.attributes)
         attributes = list(set(attributes))
         return attributes
     all_attributes = property(_get_all_attributes,
@@ -511,17 +445,6 @@ class Program(GLObject):
         return inactive_attributes
     inactive_attributes = property(_get_inactive_attributes,
         doc = "Program inactive attributes obtained from GPU")
-
-
-    @property
-    def shaders(self):
-        """ List of shaders currently attached to this program """
-
-        shaders = []
-        shaders.extend(self._verts)
-        shaders.extend(self._frags)
-        shaders.extend(self._geoms)
-        return shaders
 
 
 

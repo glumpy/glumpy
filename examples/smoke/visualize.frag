@@ -10,7 +10,7 @@ uniform vec2 u_shape;
 uniform sampler2D Sampler;
 uniform vec3 FillColor;
 uniform vec2 Scale;
-vec2 Bicubic(sampler2D, vec2, vec2);
+// vec2 Bicubic(sampler2D, vec2, vec2);
 
 void main()
 {

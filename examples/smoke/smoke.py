@@ -88,6 +88,7 @@ fragment = (shaders.get_file('spatial-filters.frag'), "./visualize.frag")
 #prog_visualize = Program("visualize.frag")
 prog_visualize = Program(fragment)
 
+
 prog_advect["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
 prog_divergence["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight
 prog_gradient["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight

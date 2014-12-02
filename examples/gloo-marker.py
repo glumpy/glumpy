@@ -5,21 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, gloo, glm, shaders
-
-
-# Add an option for choosing marker
-app.parser.get_default().add_argument(
-    "--marker", "-m", help="Marker to display", default="clobber",
-    choices=("disc", "clobber", "asterisk", "infinity", "check", "T", "ring",
-             "chevron-left", "chevron-right", "chevron-up", "chevron-down",
-             "arrow-left", "arrow-right", "arrow-up", "arrow-down",
-             "arrow2-left", "arrow2-right", "arrow2-up", "arrow2-down",
-             "triangle-left", "triangle-right", "triangle-up", "triangle-down",
-             "tag-left", "tag-right", "tag-up", "tag-down", "star", "spade",
-             "minus", "plus", "cross", "vbar", "spiky", "pin", "heart", "club",
-             "square", "empty-square", "diamond", "empty-diamond", "ellipse"))
-
+from glumpy import app, gl, gloo
+from glumpy.transforms import Position2D, OrthographicProjection, PanZoom
 
 # Create window
 window = app.Window(width=2*512, height=512, color=(1,1,1,1))
@@ -29,55 +16,53 @@ window = app.Window(width=2*512, height=512, color=(1,1,1,1))
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_POINTS)
-    program['a_orientation'][-1] += np.pi/1024.0
-
-# Setup ortho matrix on resize
-@window.event
-def on_resize(width, height):
-    projection = glm.ortho(0, width, 0, height, -1, +1)
-    program['u_projection'] = projection
+    program['orientation'][-1] += np.pi/1024.0
 
 
 # Setup some markers
 n = 500+1
-data = np.zeros(n, dtype=[('a_position',    np.float32, 3),
-                          ('a_fg_color',    np.float32, 4),
-                          ('a_bg_color',    np.float32, 4),
-                          ('a_size',        np.float32, 1),
-                          ('a_orientation', np.float32, 1),
-                          ('a_linewidth',   np.float32, 1)])
+data = np.zeros(n, dtype=[('position',    np.float32, 3),
+                          ('fg_color',    np.float32, 4),
+                          ('bg_color',    np.float32, 4),
+                          ('size',        np.float32, 1),
+                          ('orientation', np.float32, 1),
+                          ('linewidth',   np.float32, 1)])
 data = data.view(gloo.VertexBuffer)
-data['a_linewidth'] = 1
-data['a_fg_color'] = 0, 0, 0, 1
-data['a_bg_color'] = 1, 1, 1, 0
-data['a_orientation'] = 0
+data['linewidth'] = 1
+data['fg_color'] = 0, 0, 0, 1
+data['bg_color'] = 1, 1, 1, 0
+data['orientation'] = 0
 radius, theta, dtheta = 250.0, 0.0, 5.5 / 180.0 * np.pi
 for i in range(500):
     theta += dtheta
     x = 256 + radius * np.cos(theta)
     y = 256 + radius * np.sin(theta)
-    r = 12.1 - i * 0.02
+    r = 10.0 - i * 0.02
     radius -= 0.45
-    data['a_orientation'][i] = theta - np.pi/2
-    data['a_position'][i] = x, y, 0
-    data['a_size'][i] = 2 * r
-    data['a_linewidth'][i] = 1
+    data['orientation'][i] = theta - np.pi/2
+    data['position'][i] = x, y, 0
+    data['size'][i] = 2 * r
+    data['linewidth'][i] = 1
 
-data['a_position'][n-1]    = 512+256, 256, 0
-data['a_size'][n-1]        = 512/np.sqrt(2)
-data['a_linewidth'][n-1]   = 3.0
-data['a_fg_color'][n-1]    = 0, 0, 0, 1
-data['a_bg_color'][n-1]    = .95, .95, .95, 1
-data['a_orientation'][n-1] = 0
+data['position'][n-1]    = 512+256, 256, 0
+data['size'][n-1]        = 512/np.sqrt(2)
+data['linewidth'][n-1]   = 3.0
+data['fg_color'][n-1]    = 0, 0, 0, 1
+data['bg_color'][n-1]    = .95, .95, .95, 1
+data['orientation'][n-1] = 0
 
-# Parse options to get marker
-options = app.parser.get_options()
-program = gloo.Program( shaders.get("marker.vert"),
-                       (shaders.get("markers/marker-%s.frag" % options.marker),
-                        shaders.get("antialias/outline.frag"),
-                        shaders.get("marker.frag")))
+program = gloo.Program("markers/marker.vert", "markers/marker.frag")
 program.bind(data)
-program['u_antialias'] = 1.00
-program['u_model'] = np.eye(4)
-program['u_view'] = np.eye(4)
+
+program['antialias'] = 1.00
+program['marker']    = "square"
+program['paint']     = "stroke"
+
+transform = OrthographicProjection(Position2D("position"))
+program['transform'] = transform
+
+#print program._vertex.code
+
+window.attach(transform)
+
 app.run()

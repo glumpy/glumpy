@@ -42,6 +42,7 @@ class PanZoom(Transform):
         self.aspect = aspect
         self["scale"] = self.scale * self.aspect
         self["translate"] = self.translate
+        Transform.on_resize(self, width, height)
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
@@ -56,13 +57,14 @@ class PanZoom(Transform):
         self.scale = s
         self["scale"] = self.scale * self.aspect
         self["translate"] = self.translate
-
+        Transform.on_mouse_scroll(self, x, y, dx, dy)
 
     def on_mouse_drag(self, x, y, dx, dy, button):
         """ Mouse has been dragged """
 
         self.translate += (2*dx/self.width, -2*dy/self.height)
         self["translate"] = self.translate
+        Transform.on_mouse_scroll(self, x, y, dx, dy, button)
 
     def reset(self):
         """ Reset transformation """

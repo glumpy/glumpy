@@ -6,12 +6,11 @@
 import re
 import os.path
 import numpy as np
-
 from glumpy import gl
 from glumpy.log import log
 from . snippet import Snippet
 from . globject import GLObject
-from . parser import (remove_comments,
+from . parser import (remove_comments, preprocess,
                       get_uniforms, get_attributes, get_hooks)
 
 
@@ -40,7 +39,7 @@ class Shader(GLObject):
     }
 
 
-    def __init__(self, target, code=None):
+    def __init__(self, target, code):
         """
         Initialize the shader and get code if possible.
 
@@ -56,8 +55,7 @@ class Shader(GLObject):
         self._code = None
         self._source = None
         self._hooked = None
-        if code is not None:
-            self.code = code
+        self.code = preprocess(code)
         self._program = None
 
 
@@ -127,8 +125,8 @@ class Shader(GLObject):
 
 
         # Set shader source
-        # code = "#version 120\n" + self.code
-        code = self.code
+        code = "#version 120\n" + self.code
+        # code = self.code
         gl.glShaderSource(self._handle, code)
 
         # Actual compilation
