@@ -42,7 +42,7 @@ void main()
 
     vec2 size = v_quadsize / vec2(cols,rows);
     vec2 center = (floor(v_pixcoord/size) + vec2(0.5,0.5)) * size;
-    float d = marker_square(v_pixcoord - center, size.x);
+    float d = marker_heart(v_pixcoord - center, .9*size.x);
     gl_FragColor = filled(d, 1.0, 1.0, vec4(v,v,v,1));
 }
 """

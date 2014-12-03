@@ -4,9 +4,8 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 from . window import event
-from glumpy import library
 from glumpy.log import log
-from glumpy import gloo, shaders, transforms
+from glumpy import gloo, shaders, transforms, library
 
 
 
@@ -91,8 +90,8 @@ class Viewport(event.EventDispatcher):
 
         # Aspect ratio (width/height)
         self._aspect = aspect
-#        if aspect:
-#            log.info("Enforcing %.1f aspect ratio" % aspect)
+        if aspect:
+            log.info("Enforcing %.1f aspect ratio" % aspect)
 
         # Anchor point for placement
         self._anchor = anchor
@@ -119,8 +118,6 @@ class Viewport(event.EventDispatcher):
         self._id = Viewport._idcount
         Viewport._idcount += 1
 
-#        self._clipping = gloo.Snippet(shaders.get_code("viewport-clipping.glsl"))
-#        self._transform = gloo.Snippet(shaders.get_code("viewport-transform.glsl"))
         self._clipping = transforms.Transform(library.get("viewport-clipping.glsl"))
         self._transform = transforms.Transform(library.get("viewport-transform.glsl"))
 
@@ -130,7 +127,6 @@ class Viewport(event.EventDispatcher):
 
         child._parent = self
         self._children.append(child)
-
 
 
     def __getitem__(self, index):

@@ -6,5 +6,5 @@
 
 float marker_square(vec2 P, float size)
 {
-    return max(abs(P.x), abs(P.y)) - size/(2*M_SQRT2);
+    return max(abs(P.x), abs(P.y)) - size/2.0;
 }

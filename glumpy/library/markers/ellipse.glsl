@@ -10,8 +10,8 @@ float marker_ellipse(vec2 P, float size)
 {
     // Alternate version (approximation)
     float a = 1.0;
-    float b = 3.0;
-    float r = 0.9;
+    float b = 2.0;
+    float r = 0.5*size;
     float f = length( P*vec2(a,b) );
     f = length( P*vec2(a,b) );
     f = f*(f-r)/length( P*vec2(a*a,b*b) );

@@ -5,6 +5,8 @@
 
 float marker_pin(vec2 P, float size)
 {
+    size *= .9;
+
     vec2 c1 = vec2(0.0,-0.15)*size;
     float r1 = length(P-c1)-size/2.675;
     vec2 c2 = vec2(+1.49,-0.80)*size;
