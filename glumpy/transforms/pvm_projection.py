@@ -5,16 +5,14 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import gl
-from glumpy import glm
 from . transform import Transform
-from glumpy.shaders import get_code
+from glumpy import gl, glm, library
 
 
 class PVMProjection(Transform):
 
     def __init__(self, *args, **kwargs):
-        code = get_code("pvm.glsl")
+        code = library.get("transforms/pvm.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
         self._fovy = 40

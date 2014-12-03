@@ -55,7 +55,7 @@ data['orientation'][-1] = 0
 program = gloo.Program("arrows/arrow.vert", "arrows/arrow.frag")
 program.bind(data)
 program['antialias'] = 1.00
-program['arrow']     = "curved"
+program['arrow']     = "stealth"
 program['paint']     = "filled"
 transform = OrthographicProjection(Position2D("position"))
 program['transform'] = transform
