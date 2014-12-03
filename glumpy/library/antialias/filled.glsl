@@ -40,5 +40,5 @@ vec4 filled(float distance, float linewidth, float antialias, vec4 bg_color)
 
 vec4 filled(float distance, float linewidth, float antialias, vec4 fg_color, vec4 bg_color)
 {
-    return filled(distance, linewidth, antialias, bg_color);
+    return filled(distance, linewidth, antialias, fg_color);
 }

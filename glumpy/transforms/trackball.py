@@ -5,18 +5,15 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import gl
-from glumpy import glm
-from glumpy.shaders import get_code
-from . transform import Transform
 from . import _trackball
+from . transform import Transform
+from glumpy import gl, glm, library
 
 
 class Trackball(Transform):
 
     def __init__(self, *args, **kwargs):
-        #if "code" not in kwargs.keys():
-        code = get_code("pvm.glsl")
+        code = library.get("transforms/pvm.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
         self._fovy = 25

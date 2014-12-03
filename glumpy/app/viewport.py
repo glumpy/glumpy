@@ -4,6 +4,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 from . window import event
+from glumpy import library
 from glumpy.log import log
 from glumpy import gloo, shaders, transforms
 
@@ -120,9 +121,8 @@ class Viewport(event.EventDispatcher):
 
 #        self._clipping = gloo.Snippet(shaders.get_code("viewport-clipping.glsl"))
 #        self._transform = gloo.Snippet(shaders.get_code("viewport-transform.glsl"))
-
-        self._clipping = transforms.Transform(shaders.get_code("viewport-clipping.glsl"))
-        self._transform = transforms.Transform(shaders.get_code("viewport-transform.glsl"))
+        self._clipping = transforms.Transform(library.get("viewport-clipping.glsl"))
+        self._transform = transforms.Transform(library.get("viewport-transform.glsl"))
 
 
     def add(self, child):

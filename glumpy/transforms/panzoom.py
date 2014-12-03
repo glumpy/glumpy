@@ -5,14 +5,14 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
+from glumpy import library
 from . transform import Transform
-from glumpy.shaders import get_code
 
 
 class PanZoom(Transform):
 
     def __init__(self, *args, **kwargs):
-        code = get_code("panzoom.glsl")
+        code = library.get("transforms/panzoom.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
         self.scale     = np.array([1.,1.])
@@ -64,7 +64,7 @@ class PanZoom(Transform):
 
         self.translate += (2*dx/self.width, -2*dy/self.height)
         self["translate"] = self.translate
-        Transform.on_mouse_scroll(self, x, y, dx, dy, button)
+        Transform.on_mouse_drag(self, x, y, dx, dy, button)
 
     def reset(self):
         """ Reset transformation """
