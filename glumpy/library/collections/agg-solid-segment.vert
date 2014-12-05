@@ -2,15 +2,10 @@
 // Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
-
-// Constants
-// ------------------------------------
-
-// Uniforms
-// ------------------------------------
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+// Hooks:
+//  <transform> : vec4 function(position, ...)
+//
+// ----------------------------------------------------------------------------
 
 // Externs
 // ------------------------------------
@@ -29,12 +24,6 @@ varying float v_linewidth;
 varying vec2  v_texcoord;
 varying vec4  v_fg_color;
 
-// Functions
-// ------------------------------------
-vec4 transform(vec4 position)
-{
-    return projection * view * model * position;
-}
 
 // Main
 // ------------------------------------
@@ -47,24 +36,26 @@ void main (void)
     v_antialias   = antialias;
     v_fg_color    = fg_color;
 
-    vec2 P;
+    vec2 position;
     vec2 T = P1 - P0;
+    // vec2 T = <transform(P1)> - <transform(P0)>;
+
     v_length = length(T);
-    float w = linewidth/2.0 + 1.5*antialias;
-    T = w*T/v_length;
+    float w = v_linewidth/2.0 + 1.5*v_antialias;
+    T = w*normalize(T);
 
     if( index < 0.5 ) {
-       P = vec2( P0.x-T.y-T.x, P0.y+T.x-T.y);
+       position = vec2( P0.x-T.y-T.x, P0.y+T.x-T.y);
        v_texcoord = vec2(-w, +w);
     } else if( index < 1.5 ) {
-       P = vec2(P0.x+T.y-T.x, P0.y-T.x-T.y);
+       position = vec2(P0.x+T.y-T.x, P0.y-T.x-T.y);
        v_texcoord= vec2(-w, -w);
     } else if( index < 2.5 ) {
-       P = vec2( P1.x+T.y+T.x, P1.y-T.x+T.y);
+       position = vec2( P1.x+T.y+T.x, P1.y-T.x+T.y);
        v_texcoord= vec2(v_length+w, -w);
     } else {
-       P = vec2( P1.x-T.y+T.x, P1.y+T.x+T.y);
+       position = vec2( P1.x-T.y+T.x, P1.y+T.x+T.y);
        v_texcoord = vec2(v_length+w, +w);
     }
-    gl_Position = transform(vec4(P, 0.0, 1.0));
+    gl_Position = <transform>;
 }

@@ -4,7 +4,6 @@
 // ----------------------------------------------------------------------------
 // Hooks:
 //  <transform> : vec4 function(position, ...)
-//  <externs> : Function for fetching extern variables
 //
 // ----------------------------------------------------------------------------
 #version 120
@@ -35,7 +34,7 @@ varying float v_linewidth;
 // ------------------------------------
 void main (void)
 {
-    <externs>;
+    fetch_uniforms();
 
     v_size        = size;
     v_linewidth   = linewidth;

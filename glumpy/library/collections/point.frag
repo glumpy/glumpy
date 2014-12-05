@@ -2,18 +2,14 @@
 // Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
-// #version 120
+#version 120
 
-// Externs
+// Varyings
 // ------------------------------------
-// vec3 position;
-// vec2 size;
-// void fetch_uniforms();
+varying float v_size;
+varying vec4  v_color;
 
-void main()
+void main(void)
 {
-    fetch_uniforms();
-
-    gl_Position = <transform>;
-    gl_PointSize = size;
+    gl_FragColor = v_color;
 }

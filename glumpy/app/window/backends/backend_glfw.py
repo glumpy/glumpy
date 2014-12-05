@@ -3,7 +3,7 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-import sys
+import os, sys
 from glumpy import gl
 from glumpy.log import log
 from glumpy.app import configuration
@@ -36,7 +36,10 @@ def available(): return __availability__
 def __init__():
     global __initialized__
     if not __initialized__:
+        # glfw might change dir on initialization (feature, not a bug)
+        cwd = os.getcwd()
         glfw.glfwInit()
+        os.chdir(cwd)
     __initialized__ = True
 
 def __exit__():

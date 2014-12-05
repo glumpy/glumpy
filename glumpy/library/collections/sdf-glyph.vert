@@ -37,7 +37,6 @@ vec4 transform(vec4 position)
 // ------------------------------------
 void main()
 {
-    // This function is externally generated
     fetch_uniforms();
 
     gl_Position = transform( vec4(position,0,1) );

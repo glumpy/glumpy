@@ -4,6 +4,7 @@
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
 from panzoom import PanZoom
+from viewport import Viewport
 from trackball import Trackball
 from transform import Transform
 from position2d import Position2D

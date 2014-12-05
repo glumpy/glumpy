@@ -128,7 +128,11 @@ def get_hooks(code):
         return []
 
     hooks = []
-    re_hooks = re.compile("\<(?P<hook>\w+)(\.(?P<subhook>\w+))?\>", re.VERBOSE)
+    re_hooks = re.compile("""\<
+                               (?P<hook>\w+)
+                               (\.(?P<subhook>\w+))?
+                               (\([^<>]+\))?
+                             \>""", re.VERBOSE )
     # re_hooks = re.compile("\<(?P<hook>\w+)\>", re.VERBOSE)
     for match in re.finditer(re_hooks, code):
         hooks.append( (match.group('hook'),match.group('subhook')) )
@@ -217,6 +221,9 @@ if __name__ == '__main__':
     varying mat4 varying_c;
 
     <hook_3>;
+    <hook_4(args)>;
+    <hook_5.subhook>;
+    <hook_6.subhook(args)>;
 
     void
     function_a(int a, int b, int c)
@@ -228,7 +235,9 @@ if __name__ == '__main__':
     """
 
 
-    print preprocess(code)
+    code = preprocess(code)
+    print get_hooks(code)
+
 
     # for key in p.keys():
     #     print key

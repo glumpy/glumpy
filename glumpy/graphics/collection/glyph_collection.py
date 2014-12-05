@@ -3,32 +3,23 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-"""
-A GlyphCollection allows to render pieces of text.
-"""
-
 import numpy as np
-from glumpy import gl
+from glumpy import gl, library
 from glumpy.shaders import get_file, get_code
-from glumpy.graphics.collection.util import fetchcode
 from glumpy.graphics.collection.collection import Collection
 from glumpy.gloo.program import Program, VertexBuffer, IndexBuffer
 
 
 
 class GlyphCollection(Collection):
-    """
-    A GlyphCollection allows to render pieces of text.
-    """
 
     def __init__(self, **kwargs):
         dtype = [('position',  (np.float32, 2), '!local', (0,0)),
                  ('texcoord',  (np.float32, 2), '!local', (0,0)),
                  ('translate', (np.float32, 2), 'shared', (0,0)),
                  ('color',     (np.float32, 4), 'shared', (0,0,0,1))]
-        vertex = get_code('sdf-glyph.vert')
-        fragment = get_code("spatial-filters.frag" ) + get_code('sdf-glyph.frag')
-
+        vertex   = library.get('collections/sdf-glyph.vert')
+        fragment = library.get('collections/sdf-glyph.frag')
         Collection.__init__(self, dtype=dtype, itype=np.uint32,
                             mode = gl.GL_TRIANGLES,
                             vertex=vertex, fragment=fragment)
@@ -71,7 +62,7 @@ class GlyphCollection(Collection):
 
 
     def bake(self, text, font, anchor_x='center', anchor_y='center'):
-        """ Bake a tet string to be added in the collection """
+        """ Bake a text string to be added in the collection """
 
         n = len(text) - text.count('\n')
         indices = np.zeros((n,6), dtype=self.itype)

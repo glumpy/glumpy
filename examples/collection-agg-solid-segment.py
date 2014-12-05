@@ -7,30 +7,27 @@
 import numpy as np
 from glumpy import app, glm
 from glumpy.graphics.collection import AggSolidSegmentCollection
-
+from glumpy.transforms import Position2D, OrthographicProjection, PanZoom, Viewport
 
 window = app.Window(width=1200, height=600, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
     window.clear()
-    C.draw()
-
-@window.event
-def on_resize(width, height):
-    C['projection'] = glm.ortho(0, width, 0, height, -1, +1)
+    collection.draw()
 
 n = 100
 P0 = np.ones((n,2))*50
 P1 = np.ones((n,2))*550
 P0[:,0] = np.linspace(100,1100,n)
 P1[:,0] = np.linspace(110,1110,n)
-LW = np.linspace(1, 8, n)
 
-C = AggSolidSegmentCollection(linewidth='local')
-C.append(P0, P1, linewidth = LW)
-C['antialias'] = 1
-C['model'] = np.eye(4, dtype=np.float32)
-C['view'] = np.eye(4, dtype=np.float32)
+
+transform = OrthographicProjection(Position2D("position")) + Viewport()
+window.attach(transform)
+
+collection = AggSolidSegmentCollection(linewidth='local', transform=transform)
+collection.append(P0, P1, linewidth = np.linspace(1, 8, n))
+collection['antialias'] = 1
 
 app.run()

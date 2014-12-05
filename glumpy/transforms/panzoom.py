@@ -40,7 +40,7 @@ class PanZoom(Transform):
             aspect = np.array([1.0, ratio/1.0])
         self.translate *= aspect / self.aspect
         self.aspect = aspect
-        self["scale"] = self.scale * self.aspect
+        self["scale"] = self.scale #* self.aspect
         self["translate"] = self.translate
         Transform.on_resize(self, width, height)
 
@@ -55,7 +55,7 @@ class PanZoom(Transform):
         self.translate[0] = x - s[0] * (x - self.translate[0]) / self.scale[0]
         self.translate[1] = y - s[1] * (y - self.translate[1]) / self.scale[1]
         self.scale = s
-        self["scale"] = self.scale * self.aspect
+        self["scale"] = self.scale #* self.aspect
         self["translate"] = self.translate
         Transform.on_mouse_scroll(self, x, y, dx, dy)
 

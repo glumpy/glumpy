@@ -62,6 +62,10 @@ class Shader(GLObject):
     def __setitem__(self, name, data):
         """ """
 
+        # code = re.sub(r"<(?P<name>[a-zA-Z_]\w+)\((?P<args>[^<>]+)\)>",
+        #               "\g<name>(\g<args>)", code)
+        # code = re.sub(r"<(?P<name>[a-zA-Z_]\w+)>", "\g<name>", code)
+
         name = "<%s>" % name
         if isinstance(data,Snippet):
             call = data.call
@@ -122,7 +126,6 @@ class Shader(GLObject):
 
         if len(self.hooks):
             raise RuntimeError("Shader has pending hooks, cannot compile")
-
 
         # Set shader source
         code = "#version 120\n" + self.code

@@ -26,33 +26,47 @@ class Transform(Snippet,EventDispatcher):
 
 
     def on_attach(self, program):
-        for snippet in list(self._args) + [self._next]:
+        for snippet in list(self._args):
             if isinstance(snippet, Snippet):
                 snippet.dispatch_event("on_attach", program)
-
+        if self._next:
+            operator, snippet = self._next
+            snippet.dispatch_event("on_attach", program)
 
     def on_resize(self, width, height):
-        for snippet in list(self._args) + [self._next]:
+        for snippet in list(self._args):
             if isinstance(snippet, Snippet):
                 snippet.dispatch_event("on_resize", width, height)
+        if self._next:
+            operator, snippet = self._next
+            snippet.dispatch_event("on_resize", width, height)
 
 
     def on_mouse_drag(self, x, y, dx, dy, button):
-        for snippet in list(self._args) + [self._next]:
+        for snippet in list(self._args):
             if isinstance(snippet, Snippet):
                 snippet.dispatch_event("on_mouse_drag", x, y, dx, dy, button)
+        if self._next:
+            operator, snippet = self._next
+            snippet.dispatch_event("on_mouse_drag", x, y, dx, dy, button)
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
-        for snippet in list(self._args) + [self._next]:
+        for snippet in list(self._args):
             if isinstance(snippet, Snippet):
                 snippet.dispatch_event("on_mouse_scroll", x, y, dx, dy)
+        if self._next:
+            operator, snippet = self._next
+            snippet.dispatch_event("on_mouse_scroll", x, y, dx, dy)
 
 
     def on_data(self):
-        for snippet in self._args + [self]:
+        for snippet in self._args:
             if isinstance(snippet, Snippet):
                 snippet.dispatch_event("on_data")
+        if self._next:
+            operator, snippet = self._next
+            snippet.dispatch_event("on_data")
 
 
 

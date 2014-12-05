@@ -223,11 +223,13 @@ class Snippet(object):
                 s += "()"
             if self.next:
                 operand, other = self._next
-                s += " %s " % operand + str(other)
+                if str(other).strip():
+                    s += " %s " % operand + str(other)
         else:
             if self._next:
                 operand, other = self.next
                 s = str(other)
+                print s
         return s
 
 
@@ -293,19 +295,17 @@ class Snippet(object):
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
 
-        S = self.copy()
+        kwargs["copy"] = kwargs.get("copy", True)
+        if kwargs["copy"]:
+            S = self.copy()
+        else:
+            S = self
+        del kwargs["copy"]
+
         S._args = args
         for symbol in kwargs.keys():
             S._aliases[symbol] = kwargs[symbol]
         return S
-
-    # def __call__(self, *args, **kwargs):
-    #     """ __call__(self, *args) <==> self(*args) """
-
-    #     self._args = args
-    #     for symbol in kwargs.keys():
-    #         self._aliases[symbol] = kwargs[symbol]
-    #     return self
 
     def __op__(self, operand, other):
         S = self.copy()

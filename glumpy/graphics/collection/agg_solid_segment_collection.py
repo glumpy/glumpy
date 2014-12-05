@@ -3,19 +3,16 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-""" """
 
 import numpy as np
-from glumpy import gl
-from glumpy.shaders import get
-from glumpy.gloo.program import Program
-from glumpy.graphics.collection.util import fetchcode
+from glumpy import gl, library
+from glumpy.transforms import Position2D
 from glumpy.graphics.collection.collection import Collection
 
 
 class AggSolidSegmentCollection(Collection):
 
-    def __init__(self, P0=None, P1=None, **kwargs):
+    def __init__(self,  vertex=None, fragment=None, transform=None, **kwargs):
 
         dtype = [ ('P0',          (np.float32, 2), '!local', (0,0)),
                   ('P1',          (np.float32, 2), '!local', (0,0)),
@@ -24,13 +21,17 @@ class AggSolidSegmentCollection(Collection):
                   ('linewidth',   (np.float32, 1), 'global', 1),
                   ('antialias',   (np.float32, 1), 'global', 1) ]
 
-        vertex = get('collections/agg-solid-segment.vert')
-        fragment = get('antialias/stroke.frag')
-        fragment += get('antialias/cap.frag')
-        fragment += get('collections/agg-solid-segment.frag')
+        vertex = library.get('collections/agg-solid-segment.vert')
+        fragment = library.get('collections/agg-solid-segment.frag')
 
         Collection.__init__(self, dtype=dtype, itype=np.uint32, mode=gl.GL_TRIANGLES,
                             vertex=vertex, fragment=fragment, **kwargs)
+
+        if transform is not None:
+            self._program["transform"] = transform
+        else:
+            self._program["transform"] = Position2D("position")
+
 
     def append(self, P0, P1, **kwargs):
         """ """

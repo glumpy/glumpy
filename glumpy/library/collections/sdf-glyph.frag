@@ -5,11 +5,8 @@
 // Ref: http://www.java-gaming.org/index.php?topic=33612.0
 //      http://www.reddit.com/
 //       -> r/gamedev/comments/2879jd/just_found_out_about_signed_distance_field_text/
-
-// Constants
-// ------------------------------------
-// The reciprocal of the square root of two (1/sqrt(2))
-const float M_SQRT1_2 = 0.707106781186547524400844362104849039;
+#include "math/constants.glsl"
+#include "misc/spatial-filters.frag"
 
 // Uniforms
 // ------------------------------------
@@ -22,13 +19,6 @@ varying float v_scale;
 varying vec2 v_texcoord;
 varying vec4 v_color;
 
-
-// Functions
-// ------------------------------------
-vec4 Nearest(sampler2D texture, vec2 shape, vec2 uv);
-vec4 Bilinear(sampler2D texture, vec2 shape, vec2 uv);
-vec4 Bicubic(sampler2D texture, vec2 shape, vec2 uv);
-vec4 CatRom(sampler2D texture, vec2 shape, vec2 uv);
 
 vec4 Texture2D(sampler2D texture, vec2 shape, vec2 uv)
 {
