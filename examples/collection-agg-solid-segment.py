@@ -26,7 +26,7 @@ P0 = np.dstack((np.linspace(100,1100,n),np.ones(n)* 50)).reshape(n,2)
 P1 = np.dstack((np.linspace(110,1110,n),np.ones(n)*550)).reshape(n,2)
 
 # Viewport is a transform that update a viewport uniform in the shader
-transform = PanZoom(OrthographicProjection(Position2D())) + Viewport()
+transform = PanZoom(OrthographicProjection(Position2D()), aspect=None) + Viewport()
 window.attach(transform)
 
 collection = AggSolidSegmentCollection(linewidth='local', transform=transform)
