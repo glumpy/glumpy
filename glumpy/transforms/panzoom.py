@@ -71,5 +71,5 @@ class PanZoom(Transform):
 
         self.scale = np.array([1.,1.])
         self.translate = np.array([0.,0.])
-        self["scale"] = self.aspect * np.array([1.,1.])
+        self["scale"] = np.array([1.,1.]) # * self.aspect
         self["translate"] = np.array([0.,0.])

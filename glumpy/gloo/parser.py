@@ -128,16 +128,14 @@ def get_hooks(code):
         return []
 
     hooks = []
-    re_hooks = re.compile("""\<
-                               (?P<hook>\w+)
-                               (\.(?P<subhook>\w+))?
-                               (\([^<>]+\))?
-                             \>""", re.VERBOSE )
+    re_hooks = re.compile("""\<(?P<hook>\w+)
+                              (\.(?P<subhook>\w+))?
+                              (\([^<>]+\))?\>""", re.VERBOSE )
     # re_hooks = re.compile("\<(?P<hook>\w+)\>", re.VERBOSE)
     for match in re.finditer(re_hooks, code):
         hooks.append( (match.group('hook'),match.group('subhook')) )
-        #print match.group('hook')
-        #print match.group('subhook')
+        # print match.group('hook')
+        # print match.group('subhook')
     return hooks
 
 def get_args(code):

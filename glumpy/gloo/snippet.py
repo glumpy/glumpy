@@ -244,7 +244,6 @@ class Snippet(object):
                 print s
         return s
 
-
 #    def __getattr__(self, key):
 #        for  (rtype, name, args, code) in self._objects["functions"]:
 #            if name == key:

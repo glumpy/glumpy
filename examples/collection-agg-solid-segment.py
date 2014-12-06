@@ -16,14 +16,17 @@ def on_draw(dt):
     window.clear()
     collection.draw()
 
+@window.event
+def on_key_press(key, modifiers):
+    if key == app.window.key.SPACE:
+        transform.reset()
+
 n = 100
-P0 = np.ones((n,2))*50
-P1 = np.ones((n,2))*550
-P0[:,0] = np.linspace(100,1100,n)
-P1[:,0] = np.linspace(110,1110,n)
+P0 = np.dstack((np.linspace(100,1100,n),np.ones(n)* 50)).reshape(n,2)
+P1 = np.dstack((np.linspace(110,1110,n),np.ones(n)*550)).reshape(n,2)
 
 # Viewport is a transform that update a viewport uniform in the shader
-transform = PanZoom(OrthographicProjection (Position2D())) + Viewport()
+transform = PanZoom(OrthographicProjection(Position2D())) + Viewport()
 window.attach(transform)
 
 collection = AggSolidSegmentCollection(linewidth='local', transform=transform)

@@ -88,7 +88,7 @@ class Filter(object):
                     if len(snippet.args) > 1:
                         raise ValueError("Filter snippet cannot have more than 1 argument")
                     elif not isinstance(snippet.args[0], gloo.Snippet):
-                        raise ValueError("Filter snippet asrgument must be a Snippet")
+                        raise ValueError("Filter snippet argument must be a Snippet")
                     else:
                         snippet = snippet.args[0]
                 snippet._args = "original", "filtered", "v_texcoord", "texsize"
