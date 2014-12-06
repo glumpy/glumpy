@@ -16,7 +16,7 @@ attribute vec2 position;
 void main (void) { gl_Position = vec4(position,0,1); }
 """
 quad_fragment = """
-void main(void) { gl_FragColor = vec4(1,1,1,1.0/256.0); }
+void main(void) { gl_FragColor = vec4(1,1,1,1.0/128.0); }
 """
 line_vertex = """
 attribute vec2 position;
@@ -32,7 +32,6 @@ def on_draw(dt):
     global time
 
     time += np.random.uniform(0,dt)
-
     quad.draw(gl.GL_TRIANGLE_STRIP)
     line.draw(gl.GL_LINE_STRIP)
     window.swap()
@@ -40,9 +39,10 @@ def on_draw(dt):
     line.draw(gl.GL_LINE_STRIP)
 
     X = line["position"][:,0]
-    s = np.random.uniform(0.1,0.5)
-    f = np.random.uniform(3,5)
-    line["position"][:,1] = s*np.cos(f*X + time) + 0.01*np.random.uniform(-1,+1,n)
+    scale = np.random.uniform(0.1,0.5)
+    frequency = np.random.uniform(3,5)
+    noise = 0.01*np.random.uniform(-1,+1,n)
+    line["position"][:,1] = scale*np.cos(frequency*X + time) + noise
 
 @window.event
 def on_init():
