@@ -223,7 +223,7 @@ class Snippet(object):
                         s += arg.generate_call(arguments)
                     else:
                         s += str(arg)
-                    if i > 0 and i < (len(self._args)-1):
+                    if i < (len(self._args)-1):
                         s += ", "
                 s += ")"
             else:

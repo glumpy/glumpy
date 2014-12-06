@@ -50,7 +50,7 @@ program["transform"] = translate(position2D("position"))
 program["transform"]["translate"] = 1
 program["translate"] = 1
 program["color"] = "vec4(0,0,0,1)"
-print program._verts[0].code
+print program._vertex.code
 
 print "--- With aliases ---"
 program = gloo.Program(vertex, fragment)
@@ -58,4 +58,4 @@ program["transform"] = translate(position2D("position"), translate="offset")
 program["transform"]["offset"] = 1
 program["offset"] = 1
 program["color"] = "vec4(0,0,0,1)"
-print program._verts[0].code
+print program._vertex.code
