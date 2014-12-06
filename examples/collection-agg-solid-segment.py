@@ -22,12 +22,11 @@ P1 = np.ones((n,2))*550
 P0[:,0] = np.linspace(100,1100,n)
 P1[:,0] = np.linspace(110,1110,n)
 
-
-transform = OrthographicProjection(Position2D("position")) + Viewport()
+# Viewport is a transform that update a viewport uniform in the shader
+transform = PanZoom(OrthographicProjection (Position2D())) + Viewport()
 window.attach(transform)
 
 collection = AggSolidSegmentCollection(linewidth='local', transform=transform)
 collection.append(P0, P1, linewidth = np.linspace(1, 8, n))
 collection['antialias'] = 1
-
 app.run()

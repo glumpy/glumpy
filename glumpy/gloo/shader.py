@@ -62,18 +62,40 @@ class Shader(GLObject):
     def __setitem__(self, name, data):
         """ """
 
-        # code = re.sub(r"<(?P<name>[a-zA-Z_]\w+)\((?P<args>[^<>]+)\)>",
-        #               "\g<name>(\g<args>)", code)
-        # code = re.sub(r"<(?P<name>[a-zA-Z_]\w+)>", "\g<name>", code)
 
-        name = "<%s>" % name
-        if isinstance(data,Snippet):
-            call = data.call
-            code = data.code
-            self._hooked = self._hooked.replace(name, call)
-            self._hooked = code + self._hooked
-        else:
+        if not isinstance(data,Snippet):
             self._hooked = self._hooked.replace(name, data)
+            return
+
+#        code = data.code
+#        call = data.call
+
+        # Function code
+        self._hooked = data.code + self._hooked
+
+        # Replace expression of type <function(args)>
+        # Arguments have been given in the shader
+        def replace(match):
+            call = data.generate_call(match.group("args"))
+            return call
+        pattern = re.compile(r"<(?P<name>[a-zA-Z_]\w+)\((?P<args>[^<>]+)\)>")
+        for match in re.finditer(pattern, self._hooked):
+            self._hooked = re.sub(pattern, replace, self._hooked)
+
+        # Replace expression of type <function>
+        # Arguments have been given from within python
+        pattern = re.compile(r"<(?P<name>[a-zA-Z_]\w+)>")
+        self._hooked = re.sub(pattern, data.call, self._hooked)
+
+
+        # name = "<%s>" % name
+        # if isinstance(data,Snippet):
+        #     call = data.call
+        #     code = data.code
+        #     self._hooked = self._hooked.replace(name, call)
+        #     self._hooked = code + self._hooked
+        # else:
+        #     self._hooked = self._hooked.replace(name, data)
 
 
     @property

@@ -40,7 +40,7 @@ class Snippet(object):
         # Variables and functions name parsed from source code
         self._objects = parse(code)
 
-        # Default function to be called if not given
+        # Default function to be called if none given
         self._default = default
 
         # No args yet
@@ -54,7 +54,6 @@ class Snippet(object):
         for symbol in kwargs.keys():
             self._aliases[symbol] = kwargs[symbol]
         self._symbols = {}
-
 
         # Attached programs
         self._programs = []
@@ -123,8 +122,8 @@ class Snippet(object):
     @property
     def code(self):
         """ Mangled code """
-        Snippet._id_counter = 0
 
+        Snippet._id_counter = 0
         snippets = self.snippets
         funnames, varnames = [], []
         for snippet in snippets:
@@ -145,11 +144,11 @@ class Snippet(object):
 
         fdup = find_duplicates(funnames)
         vdup = find_duplicates(varnames)
-        code = self._generate_code(fdup, vdup)
+        code = self.generate_code(fdup, vdup)
         return code
 
 
-    def _generate_code(self, fdup=[], vdup=[]):
+    def generate_code(self, fdup=[], vdup=[]):
         """ Generate mangled code """
 
         Snippet._id_counter += 1
@@ -187,13 +186,13 @@ class Snippet(object):
         if len(self._args):
             for snippet in self._args:
                 if isinstance(snippet, Snippet):
-                    code += snippet._generate_code(fdup, vdup)
+                    code += snippet.generate_code(fdup, vdup)
 
         # Get code from next snippet
         if self.next:
             operand, snippet = self._next
             if isinstance(snippet, Snippet):
-                code += snippet._generate_code(fdup, vdup)
+                code += snippet.generate_code(fdup, vdup)
 
         return code
 
@@ -203,10 +202,10 @@ class Snippet(object):
         """ Mangled call """
         # This force code to be built and name mangled
         code = self.code
-        return self._generate_call()
+        return self.generate_call()
 
 
-    def _generate_call(self):
+    def generate_call(self, arguments=None):
         """ Generate mangled call """
 
         s = ""
@@ -218,9 +217,22 @@ class Snippet(object):
 
             s = self.lookup(name, deepsearch=False) or name
             if len(self._args):
-                s += " ( " + ", ".join([str(arg) for arg in self._args]) + " )"
+                s += "("
+                for i,arg in enumerate(self._args):
+                    if isinstance(arg,Snippet):
+                        s += arg.generate_call(arguments)
+                    else:
+                        s += str(arg)
+                    if i > 0 and i < (len(self._args)-1):
+                        s += ", "
+                s += ")"
             else:
-                s += "()"
+                # If an argument has been given, we put it at the end
+                # This handles hooks of the form <transform(args)>
+                if arguments is not None:
+                    s += "(%s)" % arguments
+                else:
+                    s += "()"
             if self.next:
                 operand, other = self._next
                 if str(other).strip():
@@ -271,7 +283,7 @@ class Snippet(object):
         """ Get last snippet in the chain """
 
         if self.next:
-            operand, snippet = self.next
+            snippet = self.next
             if isinstance(snippet, Snippet):
                 return snippet.last
         return self
@@ -340,7 +352,7 @@ class Snippet(object):
         return self.__op__(";", other)
 
     def __str__(self):
-        return self._generate_call()
+        return self.generate_call()
 
     def __getitem__(self, key):
         if len(self._programs) == 0:

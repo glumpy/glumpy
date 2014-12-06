@@ -176,8 +176,11 @@ def get_functions(code):
             functions.append( (rtype, name, args, fcode) )
     return functions
 
+
 def parse(code):
-    code = preprocess(code)
+    """ Parse a shader """
+
+    code      = preprocess(code)
     externs   = get_externs(code) if code else []
     consts    = get_consts(code) if code else []
     uniforms  = get_uniforms(code) if code else []
