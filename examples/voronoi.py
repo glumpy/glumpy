@@ -5,7 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, glm, gloo, filters
+from glumpy.graphics import Filter
+from glumpy import app, gl, glm, gloo
 
 cone_vertex = """
 uniform mat4 projection;
@@ -28,7 +29,7 @@ void main()
 }
 """
 
-borders = filters.Filter(1024, 1024, """
+borders = Filter(1024, 1024, """
 const float epsilon = 1e-3;
 vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
 {

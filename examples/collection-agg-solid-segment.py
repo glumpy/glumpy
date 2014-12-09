@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, glm
 from glumpy.graphics.collection import AggSolidSegmentCollection
-from glumpy.transforms import Position2D, OrthographicProjection, PanZoom, Viewport
+from glumpy.transforms import Position3D, OrthographicProjection, PanZoom, Viewport
 
 window = app.Window(width=1200, height=600, color=(1,1,1,1))
 
@@ -22,11 +22,12 @@ def on_key_press(key, modifiers):
         transform.reset()
 
 n = 100
-P0 = np.dstack((np.linspace(100,1100,n),np.ones(n)* 50)).reshape(n,2)
-P1 = np.dstack((np.linspace(110,1110,n),np.ones(n)*550)).reshape(n,2)
+P0 = np.dstack((np.linspace(100,1100,n),np.ones(n)* 50,np.zeros(n))).reshape(n,3)
+P1 = np.dstack((np.linspace(110,1110,n),np.ones(n)*550,np.zeros(n))).reshape(n,3)
 
-# Viewport is a transform that update a viewport uniform in the shader
-transform = PanZoom(OrthographicProjection(Position2D()), aspect=None) + Viewport()
+# Viewport is a transform that update a uniform (viewport) describing the
+# current viewport. It is required for computing the line width.
+transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
 window.attach(transform)
 
 collection = AggSolidSegmentCollection(linewidth='local', transform=transform)

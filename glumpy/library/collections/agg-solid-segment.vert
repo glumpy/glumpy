@@ -36,6 +36,11 @@ vec4 viewport_to_NDC(vec2 position, vec2 viewport)
     return vec4(2.0*(position/viewport) - 1.0, 0.0, 1.0);
 }
 
+vec4 viewport_to_NDC(vec2 position, vec2 viewport, float z)
+{
+    return vec4(2.0*(position/viewport) - 1.0, z, 1.0);
+}
+
 
 // Main
 // ------------------------------------
@@ -60,46 +65,24 @@ void main (void)
     v_length = length(T);
     float w = v_linewidth/2.0 + 1.5*v_antialias;
     T = w*normalize(T);
+    float z;
     if( index < 0.5 ) {
        position = vec2( p0.x-T.y-T.x, p0.y+T.x-T.y);
        v_texcoord = vec2(-w, +w);
+       z = P0.z;
     } else if( index < 1.5 ) {
        position = vec2(p0.x+T.y-T.x, p0.y-T.x-T.y);
        v_texcoord= vec2(-w, -w);
+       z = P0.z;
     } else if( index < 2.5 ) {
        position = vec2( p1.x+T.y+T.x, p1.y-T.x+T.y);
        v_texcoord= vec2(v_length+w, -w);
+       z = P1.z;
     } else {
        position = vec2( p1.x-T.y+T.x, p1.y+T.x+T.y);
        v_texcoord = vec2(v_length+w, +w);
+       z = P1.z;
     }
 
-    gl_Position = viewport_to_NDC(position, viewport.zw);
-
-
-/*
-    vec2 position;
-    // vec2 T = P1 - P0;
-    vec2 T = <transform(P1)>.xy - <transform(P0)>.xy;
-
-    v_length = length(T);
-    float w = v_linewidth/2.0 + 1.5*v_antialias;
-    T = w*normalize(T);
-
-    if( index < 0.5 ) {
-       position = vec2( P0.x-T.y-T.x, P0.y+T.x-T.y);
-       v_texcoord = vec2(-w, +w);
-    } else if( index < 1.5 ) {
-       position = vec2(P0.x+T.y-T.x, P0.y-T.x-T.y);
-       v_texcoord= vec2(-w, -w);
-    } else if( index < 2.5 ) {
-       position = vec2( P1.x+T.y+T.x, P1.y-T.x+T.y);
-       v_texcoord= vec2(v_length+w, -w);
-    } else {
-       position = vec2( P1.x-T.y+T.x, P1.y+T.x+T.y);
-       v_texcoord = vec2(v_length+w, +w);
-    }
-    //gl_Position = <transform>;
-    gl_Position = vec4(position,0,1);
-*/
+    gl_Position = viewport_to_NDC(position, viewport.zw, z);
 }

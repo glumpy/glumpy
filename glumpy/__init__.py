@@ -10,6 +10,8 @@ from . app import Window
 
 from . app.window import key
 from . app.window import mouse
+
+from . graphics.filter import *
 from . graphics.collection import *
 
 from . import app

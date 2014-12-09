@@ -5,8 +5,9 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
+from glumpy.graphics import Filter
 from glumpy.geometry import primitives
-from glumpy import gl, app, glm, gloo, data, filters
+from glumpy import gl, app, glm, gloo, data
 
 
 cube_vertex = """
@@ -32,7 +33,7 @@ void main()
 """
 
 
-pixelate = filters.Filter(512, 512, """
+pixelate = Filter(512, 512, """
 uniform float level;
 vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
 {

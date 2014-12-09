@@ -5,8 +5,9 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
+from glumpy.graphics import Filter
 from glumpy.geometry import primitives
-from glumpy import gl, app, glm, gloo, data, filters
+from glumpy import gl, app, glm, gloo, data
 
 
 cube_vertex = """
@@ -57,7 +58,7 @@ vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
          + 0.0702702703 * (texture2D( filtered, texcoord + vec2(3.2307692308, 0.0)/texsize) +
                            texture2D( filtered, texcoord - vec2(3.2307692308, 0.0)/texsize) );
 }""")
-GaussianBlur = filters.Filter(512, 512, VBlur, HBlur)
+GaussianBlur = Filter(512, 512, VBlur, HBlur)
 
 
 

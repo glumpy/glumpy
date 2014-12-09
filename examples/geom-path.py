@@ -10,6 +10,9 @@
 import numpy as np
 from glumpy import app, gl, glm, gloo
 
+# stride_tricks = np.lib.stride_tricks
+# Z = np.arange(24,dtype=np.float32).reshape(8,3)
+# stride_tricks.as_strided(Z,(4,4,12),(4,12,4)).reshape(16,4,3)
 
 vertex = """
 uniform float antialias;
@@ -32,7 +35,7 @@ void main()
 } """
 
 fragment = """
-vec4 stroke(float distance, float linewidth, float antialias, vec4 stroke)
+vec4 stroke(float distance, float linewidth, float antialias, vec4 color)
 {
     vec4 frag_color;
     float t = linewidth/2.0 - antialias;
@@ -44,13 +47,13 @@ vec4 stroke(float distance, float linewidth, float antialias, vec4 stroke)
     if( border_distance > (linewidth/2.0 + antialias) )
         discard;
     else if( border_distance < 0.0 )
-        frag_color = stroke;
+        frag_color = color;
     else
-        frag_color = vec4(stroke.rgb, stroke.a * alpha);
+        frag_color = vec4(color.rgb, color.a * alpha);
 
     return frag_color;
 }
-vec4 cap(int type, float dx, float dy, float linewidth, float antialias, vec4 stroke)
+vec4 cap(int type, float dx, float dy, float linewidth, float antialias, vec4 color)
 {
     float d = 0.0;
     dx = abs(dx);
@@ -70,7 +73,7 @@ vec4 cap(int type, float dx, float dy, float linewidth, float antialias, vec4 st
     // Butt
     else if (type == 5)  d = max(dx+t,dy);
 
-    return stroke(d, linewidth, antialias, stroke);
+    return stroke(d, linewidth, antialias, color);
 }
 
 
@@ -311,9 +314,9 @@ fragment = gloo.FragmentShader(fragment)
 geometry = gloo.GeometryShader(geometry, 4, gl.GL_LINES_ADJACENCY_EXT, gl.GL_TRIANGLE_STRIP)
 program = gloo.Program(vertex, fragment, geometry)
 
-#P = (star(n=5)*350 + (400,400)).astype(np.float32)
+P = (star(n=5)*350 + (400,400)).astype(np.float32)
 
-closed = False
+closed = True
 if closed:
     if np.allclose(P[0],P[1]):
         I = (np.arange(len(P)+2)-1)
@@ -328,7 +331,7 @@ I = I.astype(np.uint32).view(gloo.IndexBuffer)
 
 
 program["position"] = P
-program["linewidth"] = 3.0
+program["linewidth"] = 13.0
 program["antialias"] = 1.0
 program["miter_limit"] = 4.0
 program["color"] = 0,0,0,1

@@ -61,7 +61,6 @@ class Trackball(Transform):
                                              self._znear, self._zfar)
 
 
-
     def on_attach(self, program):
         program["view"] = self._view
         program["model"] = self._model
@@ -73,6 +72,7 @@ class Trackball(Transform):
         self._aspect = width / float(height)
         self['projection'] = glm.perspective(self._fovy, self._aspect,
                                              self._znear, self._zfar)
+        Transform.on_resize(self, width, height)
 
 
     def on_mouse_drag(self, x, y, dx, dy, button):
@@ -85,6 +85,7 @@ class Trackball(Transform):
 
         self._model = self._trackball.model
         self["model"] = self._model
+        # Transform.on_mouse_drag(self, x, y, dx, dy, button)
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
@@ -92,3 +93,4 @@ class Trackball(Transform):
         self._fovy = np.minimum(np.maximum(self._fovy*(1-dy/100), 1.0), 179.0)
         self['projection'] = glm.perspective(self._fovy, self._aspect,
                                              self._znear, self._zfar)
+        # Transform.on_mouse_scroll(self, x, y, dx, dy)
