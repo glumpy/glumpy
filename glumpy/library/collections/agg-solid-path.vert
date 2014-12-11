@@ -80,9 +80,11 @@ void main (void)
         vec2 normal  = normalize(vec2(-v0.y,v0.x));
         vec2 tangent = normalize(v0+v1);
         vec2 miter   = vec2(-tangent.y, tangent.x);
-        float l = abs((linewidth/2.0) / dot(miter,normal)) + 1.5*antialias;
+        float l = abs(w / dot(miter,normal));
         P = _curr.xy + miter*l*sign(id);
     }
+
+    if( abs(id) > 1.5 ) v_color.a = 0.0;
 
     v_distance = w*id;
     gl_Position = viewport_to_NDC(P, viewport.zw, curr.z);
