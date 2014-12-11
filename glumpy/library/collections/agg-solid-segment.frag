@@ -19,11 +19,11 @@ varying vec4  v_fg_color;
 void main (void)
 {
     if (v_texcoord.x < 0.0) {
-        gl_FragColor = cap( CAP_ROUND,
+        gl_FragColor = cap( CAP_NONE,
                             v_texcoord.x, v_texcoord.y,
                             v_linewidth, v_antialias, v_fg_color);
     } else if(v_texcoord.x > v_length) {
-        gl_FragColor = cap( CAP_ROUND,
+        gl_FragColor = cap( CAP_NONE,
                             v_texcoord.x-v_length, v_texcoord.y,
                             v_linewidth, v_antialias, v_fg_color);
     } else {
