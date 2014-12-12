@@ -7,8 +7,7 @@
 import numpy as np
 from glumpy import app, glm, gl
 from glumpy.graphics.collection import AggSolidPathCollection
-from glumpy.transforms import (Position3D, Viewport,
-                               OrthographicProjection, Trackball, PanZoom)
+from glumpy.transforms import Position3D, Viewport, OrthographicProjection, PanZoom
 
 
 window = app.Window(width=800, height=800, color=(1,1,1,1))
@@ -32,7 +31,6 @@ def spiral(n = 1024):
 @window.event
 def on_draw(dt):
     window.clear()
-    # gl.glPolygonMode( gl.GL_FRONT_AND_BACK, gl.GL_LINE )
     paths.draw()
 
 @window.event
@@ -43,11 +41,14 @@ def on_key_press(key, modifiers):
 # Viewport is a transform that update a uniform (viewport) describing the
 # current viewport. It is required for computing the line width.
 transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
-# transform = Trackball(Position3D()) + Viewport()
 window.attach(transform)
 
 paths = AggSolidPathCollection(transform=transform)
-# paths.append(star(n=5)*350 + (400,400,0), closed=True)
+# for i in range(256):
+#     scale = np.random.uniform(10,30)
+#     x,y = np.random.uniform(0,800,2)
+#     paths.append(star(n=5)*scale + (x,y,0), closed=True)
 paths.append(spiral())
-paths["linewidth"] = 3.0
+
+paths["linewidth"] = 1.0
 app.run()

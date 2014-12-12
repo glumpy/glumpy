@@ -12,7 +12,7 @@
 // extern vec2  P0;
 // extern vec2  P1;
 // extern float index;
-// extern vec4  fg_color;
+// extern vec4  color;
 // extern float antialias;
 // extern float linewidth;
 
@@ -22,7 +22,7 @@ varying float v_length;
 varying float v_antialias;
 varying float v_linewidth;
 varying vec2  v_texcoord;
-varying vec4  v_fg_color;
+varying vec4  v_color;
 
 
 vec2 NDC_to_viewport(vec4 position, vec2 viewport)
@@ -48,9 +48,9 @@ void main (void)
 {
     // This function is externally generated
     fetch_uniforms();
-    v_linewidth   = linewidth;
-    v_antialias   = antialias;
-    v_fg_color    = fg_color;
+    v_linewidth = linewidth;
+    v_antialias = antialias;
+    v_color     = color;
 
     vec4 P0_ = <transform(P0)>;
     vec4 P1_ = <transform(P1)>;
