@@ -11,17 +11,22 @@ from glumpy.graphics.collection.collection import Collection
 
 class GlyphCollection(Collection):
 
-    def __init__(self, **kwargs):
+    def __init__(self, transform=None, **kwargs):
         dtype = [('position',  (np.float32, 2), '!local', (0,0)),
                  ('texcoord',  (np.float32, 2), '!local', (0,0)),
-                 ('origin',    (np.float32, 3), 'local', (0,0,0)),
-                 ('direction', (np.float32, 3), 'local', (1,0,0)),
+                 ('origin',    (np.float32, 3), 'shared', (0,0,0)),
+                 ('direction', (np.float32, 3), 'shared', (1,0,0)),
+                 ('scale',     (np.float32, 1), 'shared', 0.005),
                  ('color',     (np.float32, 4), 'shared', (0,0,0,1))]
         vertex   = library.get('collections/sdf-glyph.vert')
         fragment = library.get('collections/sdf-glyph.frag')
         Collection.__init__(self, dtype=dtype, itype=np.uint32,
                             mode = gl.GL_TRIANGLES,
                             vertex=vertex, fragment=fragment)
+        if transform is not None:
+            self._program["transform"] = transform
+        else:
+            self._program["transform"] = Position3D("position")
 
 
     def append(self, text, font, anchor_x='center', anchor_y='center', **kwargs):

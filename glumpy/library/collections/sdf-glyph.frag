@@ -15,15 +15,15 @@ uniform vec2      atlas_shape;
 
 // Varyings
 // ------------------------------------
-// varying float v_scale;
+varying float v_scale;
 varying vec2 v_texcoord;
 varying vec4 v_color;
 
 
 vec4 Texture2D(sampler2D texture, vec2 shape, vec2 uv)
 {
-//    if(v_scale > 5.0) return CatRom(texture,shape,uv);
-//    else              return texture2D(texture, uv);
+    if(v_scale > 5.0) return CatRom(texture,shape,uv);
+    else              return texture2D(texture, uv);
     return texture2D(texture, uv);
 }
 float contour(in float d, in float w)
@@ -40,8 +40,19 @@ float sample(sampler2D texture, vec2 uv, float w)
 // ------------------------------------
 void main(void)
 {
+    vec4 color = v_color;
+
     // Retrieve distance from texture
-    float dist = Texture2D(atlas_data, atlas_shape, v_texcoord).r;
+    // float dist = Texture2D(atlas_data, atlas_shape, v_texcoord).r;
+
+    float dist;
+    if(v_scale > 4.0) {
+        dist = CatRom(atlas_data, atlas_shape, v_texcoord).r;
+        color = vec4(0,0,1,1);
+    }
+    else {
+        dist = texture2D(atlas_data, v_texcoord).r;
+    }
 
     // fwidth helps keep outlines a constant width irrespective of scaling
     // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
@@ -50,11 +61,12 @@ void main(void)
     // Regular SDF
     float alpha = contour( dist, width );
 
-/*
     // Supersampled version (when scale is small)
-    if (v_scale < 1.0)
+    if (v_scale < 0.25)
     {
         // Supersample, 4 extra points
+
+        color = vec4(1,0,0,1);
 
         // Half of 1/sqrt2; you can play with this
         float dscale = 0.5 * M_SQRT1_2;
@@ -69,6 +81,5 @@ void main(void)
         // so 1 + 0.5*4 = 3 is the divisor
         alpha = (alpha + 0.5 * asum) / 3.0;
     }
-*/
-    gl_FragColor = vec4(v_color.rgb, alpha*v_color.a);
+    gl_FragColor = vec4(color.rgb, alpha*color.a);
 }
