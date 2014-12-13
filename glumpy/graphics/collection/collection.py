@@ -106,6 +106,7 @@ class Collection(BaseCollection):
         # Build program (once base collection is built)
         saved = vertex
         vertex = ""
+
         if self.utype is not None:
             vertex += fetchcode(self.utype) + vertex
         else:

@@ -15,15 +15,16 @@ uniform vec2      atlas_shape;
 
 // Varyings
 // ------------------------------------
-varying float v_scale;
+// varying float v_scale;
 varying vec2 v_texcoord;
 varying vec4 v_color;
 
 
 vec4 Texture2D(sampler2D texture, vec2 shape, vec2 uv)
 {
-    if(v_scale > 5.0) return CatRom(texture,shape,uv);
-    else              return texture2D(texture, uv);
+//    if(v_scale > 5.0) return CatRom(texture,shape,uv);
+//    else              return texture2D(texture, uv);
+    return texture2D(texture, uv);
 }
 float contour(in float d, in float w)
 {
@@ -49,6 +50,7 @@ void main(void)
     // Regular SDF
     float alpha = contour( dist, width );
 
+/*
     // Supersampled version (when scale is small)
     if (v_scale < 1.0)
     {
@@ -67,6 +69,6 @@ void main(void)
         // so 1 + 0.5*4 = 3 is the divisor
         alpha = (alpha + 0.5 * asum) / 3.0;
     }
-
+*/
     gl_FragColor = vec4(v_color.rgb, alpha*v_color.a);
 }

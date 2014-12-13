@@ -103,7 +103,8 @@ attribute float     collection_index;
     types = { 1 : 'float', 2 : 'vec2 ', 3 : 'vec3 ',
               4 : 'vec4 ', 9 : 'mat3 ', 16 : 'mat4 '}
     for name,count,_ in _utype:
-        header += "varying %s %s%s;\n" % (types[count],prefix,name)
+        if name != '__unused__':
+            header += "varying %s %s%s;\n" % (types[count],prefix,name)
 
     # Body generation (not so easy)
     body = """\nvoid fetch_uniforms() {
@@ -126,6 +127,8 @@ attribute float     collection_index;
     store = 0
     # Be very careful with utype name order (_utype.keys is wrong)
     for name in utype.names:
+        if name == '__unused__':
+            continue
         count, shift =_utype[name], 0
         size = count
         while count:

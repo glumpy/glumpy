@@ -18,6 +18,15 @@ from glumpy.graphics.collection.util import dtype_reduce
 from glumpy.graphics.collection.array_list import ArrayList
 
 
+def next_power_of_2(n):
+    """ Return next power of 2 greater than or equal to n """
+    n -= 1 # greater than OR EQUAL TO n
+    shift = 1
+    while (n+1) & n: # n+1 is not a power of 2 yet
+        n |= n >> shift
+        shift *= 2
+    return n + 1
+
 
 class Item(object):
     """
@@ -178,9 +187,13 @@ class BaseCollection(object):
                 raise RuntimeError("utype cannot be reduced to float32 only")
 
             # Make utype divisible by 4
-            count = ((r_utype[1]-1)//4+1)*4
+            # count = ((r_utype[1]-1)//4+1)*4
+
+            # Make utype a power of two
+            count = next_power_of_2(r_utype[1])
             if (count - r_utype[1]) > 0:
                 utype.append(('__unused__', 'f4', count-r_utype[1]))
+
             self._uniforms_list  = ArrayList(dtype=utype)
             self._uniforms_float_count = count
 

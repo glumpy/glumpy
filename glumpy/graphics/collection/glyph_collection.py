@@ -5,10 +5,8 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import gl, library
-from glumpy.shaders import get_file, get_code
 from glumpy.graphics.collection.collection import Collection
-from glumpy.gloo.program import Program, VertexBuffer, IndexBuffer
-
+#from glumpy.gloo.program import Program, VertexBuffer, IndexBuffer
 
 
 class GlyphCollection(Collection):
@@ -16,7 +14,8 @@ class GlyphCollection(Collection):
     def __init__(self, **kwargs):
         dtype = [('position',  (np.float32, 2), '!local', (0,0)),
                  ('texcoord',  (np.float32, 2), '!local', (0,0)),
-                 ('translate', (np.float32, 2), 'shared', (0,0)),
+                 ('origin',    (np.float32, 3), 'local', (0,0,0)),
+                 ('direction', (np.float32, 3), 'local', (1,0,0)),
                  ('color',     (np.float32, 4), 'shared', (0,0,0,1))]
         vertex   = library.get('collections/sdf-glyph.vert')
         fragment = library.get('collections/sdf-glyph.frag')
@@ -43,18 +42,20 @@ class GlyphCollection(Collection):
         """
 
         V, I = self.bake(text, font, anchor_x, anchor_y)
-        reserved = ["a_uniform_index", "position", "texcoord"]
+
+        defaults = self._defaults
+        reserved = ["collection_index", "position", "texcoord"]
         for name in self.vtype.names:
             if name not in reserved:
-                if name in kwargs.keys() or name in self._defaults.keys():
+                if name in kwargs.keys() or name in defaults.keys():
                     V[name] = kwargs.get(name, defaults[name])
 
         if self.utype:
             U = np.zeros(1, dtype=self.utype)
             for name in self.utype.names:
                 if name not in ["__unused__"]:
-                    if name in kwargs.keys() or name in self._defaults.keys():
-                        U[name] = kwargs.get(name, self._defaults[name])
+                    if name in kwargs.keys() or name in defaults.keys():
+                        U[name] = kwargs.get(name, defaults[name])
         else:
             U = None
 
@@ -136,4 +137,5 @@ class GlyphCollection(Collection):
         vertices = vertices.ravel()
         indices  = indices.ravel()
 
-        return vertices.view(VertexBuffer), indices.view(IndexBuffer)
+        return vertices, indices
+        # return vertices.view(VertexBuffer), indices.view(IndexBuffer)
