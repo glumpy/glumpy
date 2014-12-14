@@ -89,7 +89,8 @@ numpy array).
 
 * `gloo-rain.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-rain.py>`_
 
-  This example simulates rain drops using growing and fading circles and shows how to update a vertex buffer.
+  This example simulates rain drops using growing and fading circles and shows
+  how to update a vertex buffer.
 
 
 * `gloo-trail.py <https://github.com/rougier/glumpy/blob/master/examples/gloo-trail.py>`_

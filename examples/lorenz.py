@@ -52,6 +52,12 @@ def lorenz(n=100000):
     # Normalize
     vmin,vmax = P.min(),P.max()
     P = 2*(P-vmin)/(vmax-vmin) - 1
+
+    # Centering
+    P[:,0] -= (P[:,0].max() + P[:,0].min())/2.0
+    P[:,1] -= (P[:,1].max() + P[:,1].min())/2.0
+    P[:,2] -= (P[:,2].max() + P[:,2].min())/2.0
+
     return P
 
 @window.event

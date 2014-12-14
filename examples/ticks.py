@@ -12,7 +12,7 @@ from glumpy.transforms import Position3D, Viewport, Trackball
 from glumpy.graphics.collection import AggSolidSegmentCollection
 
 
-window = app.Window(width=1200, height=800, color=(1,1,1,1))
+window = app.Window(width=1000, height=900, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -23,7 +23,9 @@ def on_draw(dt):
 @window.event
 def on_key_press(key, modifiers):
     if key == app.window.key.SPACE:
-        transform.reset()
+        transform.theta = 0
+        transform.phi = 0
+        transform.zoom = 16.5
 
 # Viewport is a transform that update a uniform (viewport) describing the
 # current viewport. It is required for computing the line width.
@@ -33,8 +35,11 @@ window.attach(transform)
 
 
 labels = GlyphCollection(transform=transform)
-font = FontManager().get_file("../glumpy/data/fonts/Roboto-Regular.ttf")
+font = FontManager().get_file("../glumpy/data/fonts/OpenSans-Regular.ttf")
 
+transform.theta = 0
+transform.phi = 0
+transform.zoom = 16
 
 
 # xmin,xmax = 0,800
@@ -48,9 +53,11 @@ n = 10
 for i,y in enumerate(np.linspace(xmin,xmax,n)):
     text = "%.2f" % i
     scale = 0.001
-    labels.append(text, font, origin = (1.05,y,0), scale = scale,
+    labels.append(text, font,
+                  origin = (1.05,y,0), scale = scale, direction = (1,0,0),
                   anchor_x = "left", anchor_y = "center")
-    labels.append(text, font, origin = (y, -1.05, 0), scale= scale,
+    labels.append(text, font, origin = (y, -1.05, 0),
+                  scale= scale, direction = (1,0,0),
                   anchor_x = "center", anchor_y = "top")
 
 

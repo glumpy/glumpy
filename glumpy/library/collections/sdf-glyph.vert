@@ -2,6 +2,7 @@
 // Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
+#include "math/constants.glsl"
 
 // Externs
 // ------------------------------------
@@ -32,8 +33,12 @@ void main()
 {
     fetch_uniforms();
 
-    vec3 tangent = normalize(direction);
+    vec3 tangent = normalize(direction.xyz);
     vec3 ortho   = cross(tangent, vec3(0,0,-1));
+    // float angle = -M_PI/2.0;
+    // vec3 tangent = normalize(vec3(1,1,1));
+    // vec3 ortho   = cross(tangent, normalize(vec3(0,cos(angle),sin(angle))));
+
     vec3 P1 = origin + scale*(tangent*position.x + ortho*position.y);
     vec4 P1_ = <transform(P1)>;
     vec2 p1 = NDC_to_viewport(P1_, viewport.zw);
