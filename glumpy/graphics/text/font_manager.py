@@ -9,6 +9,7 @@ from glumpy.log import log
 from glumpy.gloo.atlas import Atlas
 from glumpy.graphics.text import Font
 
+
 class FontManager(object):
 
     # Default atlas
@@ -51,6 +52,11 @@ class FontManager(object):
         return self.cache[basename]
 
 
+    def get_font(self, family, weight=400, stretch='regular', slant='regular'):
+        log.warn("Not yet implemented")
+        return self.get_file('')
+
+
     @property
     def atlas(self):
         if FontManager._atlas is None:
@@ -61,11 +67,3 @@ class FontManager(object):
     @property
     def cache(self):
         return FontManager._cache
-
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-
-    manager = FontManager()
-    manager.get_file("Library/toto.ttf")
