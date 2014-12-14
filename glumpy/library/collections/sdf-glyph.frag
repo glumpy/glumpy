@@ -48,7 +48,8 @@ void main(void)
     float dist;
     if(v_scale > 300) {
         dist = CatRom(atlas_data, atlas_shape, v_texcoord).r;
-        color = vec4(0,0,1,1);
+        // Debug
+        // color = vec4(0,0,1,1);
     } else {
         dist = texture2D(atlas_data, v_texcoord).r;
     }
@@ -63,10 +64,10 @@ void main(void)
     // Supersampled version (when scale is small)
     if (v_scale < 25)
     {
+        // Debug
+        // color = vec4(1,0,0,1);
+
         // Supersample, 4 extra points
-
-        color = vec4(1,0,0,1);
-
         // Half of 1/sqrt2; you can play with this
         float dscale = 0.5 * M_SQRT1_2;
         vec2 duv = dscale * (dFdx(v_texcoord) + dFdy(v_texcoord));

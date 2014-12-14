@@ -7,7 +7,47 @@ import sys
 import numpy as np
 from freetype import *
 from glumpy.ext.sdf import compute_sdf
-from scipy.ndimage.interpolation import zoom
+# from scipy.ndimage.interpolation import zoom
+
+
+def bilinear_interpolate(im, x, y):
+    """ By Alex Flint on StackOverflow """
+
+    x = np.asarray(x)
+    y = np.asarray(y)
+
+    x0 = np.floor(x).astype(int)
+    x1 = x0 + 1
+    y0 = np.floor(y).astype(int)
+    y1 = y0 + 1
+
+    x0 = np.clip(x0, 0, im.shape[1]-1);
+    x1 = np.clip(x1, 0, im.shape[1]-1);
+    y0 = np.clip(y0, 0, im.shape[0]-1);
+    y1 = np.clip(y1, 0, im.shape[0]-1);
+
+    Ia = im[ y0, x0 ]
+    Ib = im[ y1, x0 ]
+    Ic = im[ y0, x1 ]
+    Id = im[ y1, x1 ]
+
+    wa = (x1-x) * (y1-y)
+    wb = (x1-x) * (y-y0)
+    wc = (x-x0) * (y1-y)
+    wd = (x-x0) * (y-y0)
+
+    return wa*Ia + wb*Ib + wc*Ic + wd*Id
+
+
+def zoom(Z, ratio):
+    """ Bilinear image zoom """
+
+    nrows, ncols = Z.shape
+    x,y = np.meshgrid(np.linspace(0, ncols, (ratio*ncols), endpoint=False),
+                      np.linspace(0, nrows, (ratio*nrows), endpoint=False))
+    return bilinear_interpolate(Z, x, y)
+
+
 
 
 class Glyph:
@@ -118,7 +158,8 @@ class Font:
 
        # Scale down glyph to low resolution size
         ratio = self._lowres_size/float(self._hires_size)
-        lowres_data = 1 - zoom(hires_data, ratio, cval=1.0)
+        # lowres_data = 1 - zoom(hires_data, ratio, cval=1.0)
+        lowres_data = 1 - zoom(hires_data, ratio)
 
        # Compute information at low resolution size
         # size   = ( lowres_data.shape[1], lowres_data.shape[0] )
