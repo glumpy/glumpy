@@ -46,11 +46,10 @@ void main(void)
     // float dist = Texture2D(atlas_data, atlas_shape, v_texcoord).r;
 
     float dist;
-    if(v_scale > 4.0) {
+    if(v_scale > 300) {
         dist = CatRom(atlas_data, atlas_shape, v_texcoord).r;
         color = vec4(0,0,1,1);
-    }
-    else {
+    } else {
         dist = texture2D(atlas_data, v_texcoord).r;
     }
 
@@ -62,7 +61,7 @@ void main(void)
     float alpha = contour( dist, width );
 
     // Supersampled version (when scale is small)
-    if (v_scale < 0.25)
+    if (v_scale < 25)
     {
         // Supersample, 4 extra points
 

@@ -52,8 +52,10 @@ if __name__ == "__main__":
                     'glumpy.filters',
                     'glumpy.geometry',
                     'glumpy.graphics',
-                    'glumpy.graphics.collection',
-                    'glumpy.transforms' ],
+                    'glumpy.transforms',
+                    'glumpy.graphics.text',
+                    'glumpy.graphics.collection'],
+
           package_data={
               'glumpy.data.arrays':         ['*.npy'],
               'glumpy.data.fonts':          ['*.ttf', '*.txt'],

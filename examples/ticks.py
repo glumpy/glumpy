@@ -9,7 +9,7 @@ from glumpy import app, glm
 from glumpy.graphics.collection import AggSolidSegmentCollection
 from glumpy.transforms import Position3D, Trackball, OrthographicProjection, PanZoom, Viewport
 
-window = app.Window(width=2000, height=2000, color=(1,1,1,1))
+window = app.Window(width=1200, height=800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):

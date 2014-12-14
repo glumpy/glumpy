@@ -6,10 +6,8 @@
 import sys
 import numpy as np
 from freetype import *
-from scipy.ndimage.interpolation import zoom
 from glumpy.ext.sdf import compute_sdf
-from glumpy.gloo.atlas import Atlas
-
+from scipy.ndimage.interpolation import zoom
 
 
 class Glyph:
@@ -64,19 +62,21 @@ class Glyph:
             return 0
 
 
-# -----------------------------------------------------------------------------
+
 class Font:
 
-    _atlas = None
-
-    def __init__(self, filename):
+    def __init__(self, filename, atlas):
 
         self._hires_size = 256
         self._lowres_size = 48
+        self._padding = 0.125
+
 
         self.filename = filename
+        self.atlas = atlas
+
         self.glyphs = {}
-        face = Face( self.filename )
+        face = Face(self.filename)
         face.set_char_size(self._lowres_size*64)
         metrics = face.size
         self.ascender  = metrics.ascender/64.0
@@ -85,22 +85,16 @@ class Font:
         self.linegap   = (self.height - self.ascender + self.descender)
 
 
-    @property
-    def atlas(self):
-        if Font._atlas is None:
-            Font._atlas = np.zeros((1024,1024),np.float32).view(Atlas)
-            # Font._atlas = np.zeros((512,512),np.uint8).view(Atlas)
-        return Font._atlas
-
-
     def __getitem__(self, charcode):
         if charcode not in self.glyphs.keys():
             self.load('%c' % charcode)
         return self.glyphs[charcode]
 
-    def load_glyph(self, face, charcode, hires_size=512, lowres_size=32, padding=0.125):
-        face.set_char_size( hires_size*64 )
-        face.load_char(charcode, FT_LOAD_RENDER | FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT);
+
+    def load_glyph(self, face, charcode):
+
+        face.set_char_size( self._hires_size*64 )
+        face.load_char(charcode, FT_LOAD_RENDER | FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT)
 
         bitmap = face.glyph.bitmap
         width  = face.glyph.bitmap.width
@@ -113,23 +107,23 @@ class Font:
 
         # Pad high resolution glyph with a blank border and normalize values
         # between 0 and 1
-        hires_width  = (1+2*padding)*width
-        hires_height = (1+2*padding)*height
+        hires_width  = (1+2*self._padding)*width
+        hires_height = (1+2*self._padding)*height
         hires_data = np.zeros( (hires_height,hires_width), np.double)
-        ox,oy = padding*width, padding*height
+        ox,oy = self._padding*width, self._padding*height
         hires_data[oy:oy+height, ox:ox+width] = G/255.0
 
        # Compute distance field at high resolution
         compute_sdf(hires_data)
 
-       # Scale down glyph to low resoltion size
-        ratio = lowres_size/float(hires_size)
+       # Scale down glyph to low resolution size
+        ratio = self._lowres_size/float(self._hires_size)
         lowres_data = 1 - zoom(hires_data, ratio, cval=1.0)
 
        # Compute information at low resolution size
         # size   = ( lowres_data.shape[1], lowres_data.shape[0] )
-        offset = ( (face.glyph.bitmap_left - padding*width) * ratio,
-                   (face.glyph.bitmap_top + padding*height) * ratio )
+        offset = ( (face.glyph.bitmap_left - self._padding*width) * ratio,
+                   (face.glyph.bitmap_top + self._padding*height) * ratio )
         advance = ( (face.glyph.advance.x/64.0)*ratio,
                     (face.glyph.advance.y/64.0)*ratio )
         return lowres_data, offset, advance
@@ -142,8 +136,7 @@ class Font:
             if charcode in self.glyphs.keys():
                 continue
 
-            data,offset,advance = self.load_glyph(
-                face, charcode, self._hires_size, self._lowres_size)
+            data,offset,advance = self.load_glyph(face, charcode)
 
             h,w = data.shape
             region = self.atlas.allocate( (h+2,w+2) )

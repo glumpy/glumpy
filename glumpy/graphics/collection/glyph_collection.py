@@ -4,9 +4,10 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import gl, library
+from glumpy import gl, data, library
+from glumpy.graphics.text import Font, FontManager
 from glumpy.graphics.collection.collection import Collection
-#from glumpy.gloo.program import Program, VertexBuffer, IndexBuffer
+
 
 
 class GlyphCollection(Collection):
@@ -27,6 +28,13 @@ class GlyphCollection(Collection):
             self._program["transform"] = transform
         else:
             self._program["transform"] = Position3D("position")
+
+        manager = FontManager()
+        atlas = manager.atlas
+        self['u_kernel'] = data.get("spatial-filters.npy")
+        self['atlas_data'] = atlas
+        self['atlas_data'].interpolation = gl.GL_LINEAR
+        self['atlas_shape'] = atlas.shape[1], atlas.shape[0]
 
 
     def append(self, text, font, anchor_x='center', anchor_y='center', **kwargs):

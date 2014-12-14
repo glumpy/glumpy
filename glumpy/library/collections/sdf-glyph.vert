@@ -49,7 +49,7 @@ void main()
 
     float d2 = length(p2 - p1);
     float d3 = length(p3 - p1);
-    v_scale = min(d2,d3)/100.0;
+    v_scale = min(d2,d3);
 
 
     gl_Position = P1_;
