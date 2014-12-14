@@ -289,25 +289,25 @@ class Window(window.Window):
     def _modifiers_translate( self, modifiers ):
         _modifiers = 0
         if QtCore.Qt.ShiftModifier & modifiers:
-            _modifiers |= window.key.SHIFT,
+            _modifiers |= window.key.MOD_SHIFT
         if QtCore.Qt.ControlModifier & modifiers:
-            _modifiers += window.key.CONTROL,
+            _modifiers |= window.key.MOD_CONTROL
         if QtCore.Qt.AltModifier & modifiers:
-            _modifiers += window.key.ALT,
+            _modifiers |= window.key.MOD_ALT
         if QtCore.Qt.MetaModifier & modifiers:
-            _modifiers += window.key.META,
+            _modifiers |= window.key.MOD_META
         return _modifiers
 
     def _modifiers_translate( self, modifiers ):
         _modifiers = 0
         if QtCore.Qt.ShiftModifier & modifiers:
-            _modifiers |= window.key.SHIFT,
+            _modifiers |= window.key.MOD_SHIFT
         if QtCore.Qt.ControlModifier & modifiers:
-            _modifiers += window.key.CONTROL,
+            _modifiers |= window.key.MOD_CONTROL
         if QtCore.Qt.AltModifier & modifiers:
-            _modifiers += window.key.ALT,
+            _modifiers |= window.key.MOD_ALT
         if QtCore.Qt.MetaModifier & modifiers:
-            _modifiers += window.key.META,
+            _modifiers |= window.key.MOD_META
         return _modifiers
 
     def close(self):
