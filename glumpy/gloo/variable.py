@@ -313,8 +313,8 @@ class Attribute(Variable):
     def _deactivate(self):
         if isinstance(self.data,VertexBuffer):
             self.data.deactivate()
-            #if self.handle:
-            gl.glDisableVertexAttribArray(self.handle)
+            if self.handle > 0:
+                gl.glDisableVertexAttribArray(self.handle)
 
 
     def _update(self):
