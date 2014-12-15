@@ -7,8 +7,10 @@
 import numpy as np
 from glumpy import app, glm
 from glumpy.graphics.text import FontManager
-from glumpy.graphics.collection import GlyphCollection
 from glumpy.transforms import Position3D, Viewport, Trackball
+
+from glumpy.graphics.collection import GlyphCollection
+from glumpy.graphics.collection import AggSolidPathCollection
 from glumpy.graphics.collection import AggSolidSegmentCollection
 
 
@@ -17,15 +19,20 @@ window = app.Window(width=1000, height=900, color=(1,1,1,1))
 @window.event
 def on_draw(dt):
     window.clear()
-    collection.draw()
+    ticks.draw()
     labels.draw()
+    paths.draw()
 
 @window.event
 def on_key_press(key, modifiers):
     if key == app.window.key.SPACE:
-        transform.theta = 0
-        transform.phi = 0
-        transform.zoom = 16.5
+        reset()
+
+def reset():
+    transform.theta = 0
+    transform.phi = 0
+    transform.zoom = 16.5
+
 
 # Viewport is a transform that update a uniform (viewport) describing the
 # current viewport. It is required for computing the line width.
@@ -35,11 +42,7 @@ window.attach(transform)
 
 
 labels = GlyphCollection(transform=transform)
-font = FontManager().get_file("../glumpy/data/fonts/OpenSans-Regular.ttf")
 
-transform.theta = 0
-transform.phi = 0
-transform.zoom = 16
 
 
 # xmin,xmax = 0,800
@@ -48,102 +51,159 @@ xmin,xmax = -1,1
 ymin,ymax = -1,1
 
 
+z = 0
 
-n = 10
+regular = FontManager().get_file("../glumpy/data/fonts/OpenSans-Regular.ttf")
+bold    = FontManager().get_file("../glumpy/data/fonts/OpenSans-Bold.ttf")
+n = 11
+scale = 0.001
 for i,y in enumerate(np.linspace(xmin,xmax,n)):
-    text = "%.2f" % i
-    scale = 0.001
-    labels.append(text, font,
-                  origin = (1.05,y,0), scale = scale, direction = (1,0,0),
+    text = "%.2f" % (i/10.0)
+    labels.append(text, regular,
+                  origin = (1.05,y,z), scale = scale, direction = (1,0,0),
                   anchor_x = "left", anchor_y = "center")
-    labels.append(text, font, origin = (y, -1.05, 0),
+    labels.append(text, regular, origin = (y, -1.05, z),
                   scale= scale, direction = (1,0,0),
                   anchor_x = "center", anchor_y = "top")
 
+title = "Ticks & labels"
+labels.append(title, bold, origin = (0, 1.1, z),
+              scale= 2*scale, direction = (1,0,0),
+              anchor_x = "center", anchor_y = "center")
 
-collection = AggSolidSegmentCollection(transform=transform,
-                                       linewidth='local', color='local')
+
+ticks = AggSolidSegmentCollection(transform=transform,
+                                  linewidth='local', color='local')
 
 
 
 # Frame
 # -------------------------------------
-P0 = [(xmin,ymin,0), (xmin,ymax,0), (xmax,ymax,0), (xmax,ymin,0)]
-P1 = [(xmin,ymax,0), (xmax,ymax,0), (xmax,ymin,0), (xmin,ymin,0)]
-collection.append(P0, P1, linewidth=2)
+P0 = [(xmin,ymin,z), (xmin,ymax,z), (xmax,ymax,z), (xmax,ymin,z)]
+P1 = [(xmin,ymax,z), (xmax,ymax,z), (xmax,ymin,z), (xmin,ymin,z)]
+ticks.append(P0, P1, linewidth=2)
 
 # Grids
 # -------------------------------------
-n = 10
+n = 11
 P0 = np.zeros((n-2,3))
 P1 = np.zeros((n-2,3))
 
 P0[:,0] = np.linspace(xmin,xmax,n)[1:-1]
 P0[:,1] = ymin
+P0[:,2] = z
 P1[:,0] = np.linspace(xmin,xmax,n)[1:-1]
 P1[:,1] = ymax
-collection.append(P0, P1, linewidth=1, color=(0,0,0,.25))
+P1[:,2] = z
+ticks.append(P0, P1, linewidth=1, color=(0,0,0,.25))
 
 P0 = np.zeros((n-2,3))
 P1 = np.zeros((n-2,3))
 P0[:,0] = xmin
 P0[:,1] = np.linspace(ymin,ymax,n)[1:-1]
+P0[:,2] = z
 P1[:,0] = xmax
 P1[:,1] = np.linspace(ymin,ymax,n)[1:-1]
-collection.append(P0, P1, linewidth=1, color=(0,0,0,.25))
+P1[:,2] = z
+ticks.append(P0, P1, linewidth=1, color=(0,0,0,.25))
 
 
 # Majors
 # -------------------------------------
-n = 10
+n = 11
 P0 = np.zeros((n-2,3))
 P1 = np.zeros((n-2,3))
 P0[:,0] = np.linspace(xmin,xmax,n)[1:-1]
 P0[:,1] = ymin - 0.015
+P0[:,2] = z
 P1[:,0] = np.linspace(xmin,xmax,n)[1:-1]
 P1[:,1] = ymin + 0.025 * (ymax-ymin)
-collection.append(P0, P1, linewidth=1.5)
+P1[:,2] = z
+ticks.append(P0, P1, linewidth=1.5)
 P0[:,1] = ymax + 0.015
 P1[:,1] = ymax - 0.025 * (ymax-ymin)
-collection.append(P0, P1, linewidth=1.5)
+ticks.append(P0, P1, linewidth=1.5)
 
 P0 = np.zeros((n-2,3))
 P1 = np.zeros((n-2,3))
 P0[:,0] = xmin - 0.015
 P0[:,1] = np.linspace(ymin,ymax,n)[1:-1]
+P0[:,2] = z
 P1[:,0] = xmin + 0.025 * (xmax-xmin)
 P1[:,1] = np.linspace(ymin,ymax,n)[1:-1]
-collection.append(P0, P1, linewidth=1.5)
+P1[:,2] = z
+ticks.append(P0, P1, linewidth=1.5)
 P0[:,0] = xmax + 0.015
 P1[:,0] = xmax - 0.025 * (xmax-xmin)
-collection.append(P0, P1, linewidth=1.5)
+ticks.append(P0, P1, linewidth=1.5)
 
 
 # Minors
 # -------------------------------------
-n = 100
+n = 111
 P0 = np.zeros((n-2,3))
 P1 = np.zeros((n-2,3))
 P0[:,0] = np.linspace(xmin,xmax,n)[1:-1]
 P0[:,1] = ymin
+P0[:,2] = z
 P1[:,0] = np.linspace(xmin,xmax,n)[1:-1]
 P1[:,1] = ymin + 0.0125 * (ymax-ymin)
-collection.append(P0, P1, linewidth=1)
+P1[:,2] = z
+ticks.append(P0, P1, linewidth=1)
 P0[:,1] = ymax
 P1[:,1] = ymax - 0.0125 * (ymax-ymin)
-collection.append(P0, P1, linewidth=1)
+ticks.append(P0, P1, linewidth=1)
 
 P0 = np.zeros((n-2,3))
 P1 = np.zeros((n-2,3))
 P0[:,0] = xmin
 P0[:,1] = np.linspace(ymin,ymax,n)[1:-1]
+P0[:,2] = z
 P1[:,0] = xmin + 0.0125 * (xmax-xmin)
 P1[:,1] = np.linspace(ymin,ymax,n)[1:-1]
-collection.append(P0, P1, linewidth=1)
+P1[:,2] = z
+ticks.append(P0, P1, linewidth=1)
 P0[:,0] = xmax
 P1[:,0] = xmax - 0.0125 * (xmax-xmin)
-collection.append(P0, P1, linewidth=1)
+ticks.append(P0, P1, linewidth=1)
 
 
+def lorenz(n=100000):
+    def iterate(P, s=10, r=28, b=2.667, dt=0.01):
+        x, y, z = P
+        x_dot = s*(y - x)
+        y_dot = r*x - y - x*z
+        z_dot = x*y - b*z
+        return dt*x_dot, dt*y_dot, dt*z_dot
 
+    # Need one more for the initial values
+    P = np.empty((n+1,3))
+
+    # Setting initial values
+    P[0] = 0., 1., 1.05
+
+    # Stepping through "time"
+    dt = 100.0/n
+    for i in range(n) :
+        # Derivatives of the X, Y, Z state
+        P[i+1] = P[i] + iterate(P[i], dt=dt)
+
+    # Normalize
+    vmin,vmax = P.min(),P.max()
+    P = 2*(P-vmin)/(vmax-vmin) - 1
+
+    # Centering
+    P[:,0] -= (P[:,0].max() + P[:,0].min())/2.0
+    P[:,1] -= (P[:,1].max() + P[:,1].min())/2.0
+    P[:,2] -= (P[:,2].max() + P[:,2].min())/2.0
+
+    return P
+
+
+paths = AggSolidPathCollection(transform=transform)
+paths.append(lorenz(), color=(0,0,1,1))
+paths["linewidth"] = 1
+
+
+reset()
 app.run()

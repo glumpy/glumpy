@@ -6,6 +6,7 @@
 //  <transform> : vec4 function(position, ...)
 //
 // ----------------------------------------------------------------------------
+#include "misc/viewport-NDC.glsl"
 
 // Externs
 // ------------------------------------
@@ -23,23 +24,6 @@ varying float v_antialias;
 varying float v_linewidth;
 varying float v_distance;
 varying vec4  v_color;
-
-
-vec2 NDC_to_viewport(vec4 position, vec2 viewport)
-{
-    vec2 p = position.xy/position.w;
-    return (p+1.0)/2.0 * viewport;
-}
-
-vec4 viewport_to_NDC(vec2 position, vec2 viewport)
-{
-    return vec4(2.0*(position/viewport) - 1.0, 0.0, 1.0);
-}
-
-vec4 viewport_to_NDC(vec2 position, vec2 viewport, float z)
-{
-    return vec4(2.0*(position/viewport) - 1.0, z, 1.0);
-}
 
 
 // Main

@@ -25,7 +25,7 @@ def next_power_of_2(n):
     while (n+1) & n: # n+1 is not a power of 2 yet
         n |= n >> shift
         shift *= 2
-    return n + 1
+    return max(4,n + 1)
 
 
 class Item(object):

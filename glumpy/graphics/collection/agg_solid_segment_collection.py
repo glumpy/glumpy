@@ -17,23 +17,21 @@ class AggSolidSegmentCollection(Collection):
         dtype = [ ('P0',        (np.float32, 2), '!local', (0,0)),
                   ('P1',        (np.float32, 2), '!local', (0,0)),
                   ('index',     (np.float32, 1), '!local', 0),
-                  ('color',     (np.float32, 4), 'global', (0,0,0,1)),
-                  ('linewidth', (np.float32, 1), 'global', 1),
-                  ('antialias', (np.float32, 1), 'global', 1) ]
+                  ('color',     (np.float32, 4), 'shared', (0,0,0,1)),
+                  ('linewidth', (np.float32, 1), 'shared', 1),
+                  ('antialias', (np.float32, 1), 'shared', 1) ]
 
         dtype = [ ('P0',        (np.float32, 3), '!local', (0,0,0)),
                   ('P1',        (np.float32, 3), '!local', (0,0,0)),
                   ('index',     (np.float32, 1), '!local', 0),
-                  ('color',     (np.float32, 4), 'global', (0,0,0,1)),
-                  ('linewidth', (np.float32, 1), 'global', 1),
-                  ('antialias', (np.float32, 1), 'global', 1) ]
+                  ('color',     (np.float32, 4), 'shared', (0,0,0,1)),
+                  ('linewidth', (np.float32, 1), 'shared', 1),
+                  ('antialias', (np.float32, 1), 'shared', 1) ]
 
         vertex = library.get('collections/agg-solid-segment.vert')
         fragment = library.get('collections/agg-solid-segment.frag')
-
         Collection.__init__(self, dtype=dtype, itype=np.uint32, mode=gl.GL_TRIANGLES,
                             vertex=vertex, fragment=fragment, **kwargs)
-
         if transform is not None:
             self._program["transform"] = transform
         else:
@@ -43,15 +41,20 @@ class AggSolidSegmentCollection(Collection):
     def append(self, P0, P1, **kwargs):
         """ """
 
-        defaults = self._defaults
         count = len(P0)
         V = np.zeros(count, dtype=self.vtype)
+
+        defaults = self._defaults
+        reserved = ["collection_index", "P0", "P1", "index"]
+
         for name in self.vtype.names:
-            V[name] = kwargs.get(name, defaults[name])
+            if name not in reserved:
+                V[name] = kwargs.get(name, defaults[name])
         if self.utype:
             U = np.zeros(count, dtype=self.utype)
             for name in self.utype.names:
-                U[name] = kwargs.get(name, defaults[name])
+                if name not in ["__unused__"]:
+                    U[name] = kwargs.get(name, defaults[name])
         else:
             U = None
 

@@ -3,7 +3,6 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-
 import numpy as np
 from glumpy import gl, library
 from glumpy.transforms import Position3D
@@ -11,16 +10,17 @@ from glumpy.graphics.collection.collection import Collection
 
 
 class AggSolidPathCollection(Collection):
+    """
+    """
 
     def __init__(self, vertex=None, fragment=None, transform=None, **kwargs):
-
         dtype = [ ('prev',       (np.float32, 3), '!local', (0,0,0)),
                   ('curr',       (np.float32, 3), '!local', (0,0,0)),
                   ('next',       (np.float32, 3), '!local', (0,0,0)),
                   ('id',         (np.float32, 1), '!local', 0),
-                  ('color',      (np.float32, 4), 'global', (0,0,0,1)),
-                  ('linewidth',  (np.float32, 1), 'global', 25),
-                  ('antialias',  (np.float32, 1), 'global', 1) ]
+                  ('color',      (np.float32, 4), 'shared', (0,0,0,1)),
+                  ('linewidth',  (np.float32, 1), 'shared', 1),
+                  ('antialias',  (np.float32, 1), 'shared', 1) ]
 
         vertex = library.get('collections/agg-solid-path.vert')
         fragment = library.get('collections/agg-solid-path.frag')
@@ -34,20 +34,22 @@ class AggSolidPathCollection(Collection):
             self._program["transform"] = Position3D("position")
 
 
-
     def append(self, P, closed=False, **kwargs):
 
-        defaults = self._defaults
         V = self.bake(P, closed=closed)
 
+        defaults = self._defaults
+        reserved = ["collection_index", "prev", "curr", "next", "id"]
+
         for name in self.vtype.names:
-            if name not in ["prev", "curr", "next", "id"]:
+            if name not in reserved:
                 V[name] = kwargs.get(name, defaults[name])
 
         if self.utype:
             U = np.zeros(1, dtype=self.utype)
             for name in self.utype.names:
-                U[name] = kwargs.get(name, defaults[name])
+                if name not in ["__unused__"]:
+                    U[name] = kwargs.get(name, defaults[name])
         else:
             U = None
 

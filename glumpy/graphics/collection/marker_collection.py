@@ -45,7 +45,7 @@ class MarkerCollection(Collection):
         # defaults = MarkerCollection.defaults
         V = np.zeros(count, dtype=self.vtype)
         for name in self.vtype.names:
-            if name not in ["a_uniform_index"]:
+            if name not in ["collection_index"]:
                 V[name] = kwargs.get(name, self._defaults[name])
         if self.utype:
             U = np.zeros(count, dtype=self.utype)

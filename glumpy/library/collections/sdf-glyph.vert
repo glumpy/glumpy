@@ -3,6 +3,7 @@
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
 #include "math/constants.glsl"
+#include "misc/viewport-NDC.glsl"
 
 // Externs
 // ------------------------------------
@@ -18,13 +19,6 @@
 varying float v_scale;
 varying vec2  v_texcoord;
 varying vec4  v_color;
-
-
-vec2 NDC_to_viewport(vec4 position, vec2 viewport)
-{
-    vec2 p = position.xy/position.w;
-    return (p+1.0)/2.0 * viewport;
-}
 
 
 // Main
