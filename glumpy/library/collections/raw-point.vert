@@ -3,30 +3,31 @@
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
 // Hooks:
-//  <transform> : vec4 function(position, ...)
+//  <transform> : vec4 function(position)
 //
 // ----------------------------------------------------------------------------
 #version 120
 
-// Collection externs
+// Externs
 // ------------------------------------
-// extern vec3  position;
+// extern vec3 position;
 // extern float size;
-// extern vec4  color;
+// extern vec4 color;
 
 // Varyings
 // ------------------------------------
 varying float v_size;
 varying vec4  v_color;
 
+// Main (hooked)
+// ------------------------------------
 void main()
 {
-    // From collection
     fetch_uniforms();
 
     v_size = size;
     v_color = color;
 
-    gl_Position = <transform>;
+    gl_Position = <transform(position)>;
     gl_PointSize = size;
 }

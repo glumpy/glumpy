@@ -12,7 +12,7 @@ from glumpy.graphics.collection.collection import Collection
 
 class AggSolidSegmentCollection(Collection):
 
-    def __init__(self, vertex=None, fragment=None, transform=None, **kwargs):
+    def __init__(self, transform=None, **kwargs):
 
         dtype = [ ('P0',        (np.float32, 2), '!local', (0,0)),
                   ('P1',        (np.float32, 2), '!local', (0,0)),

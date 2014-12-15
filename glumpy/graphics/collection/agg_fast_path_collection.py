@@ -9,7 +9,7 @@ from glumpy.transforms import Position3D
 from glumpy.graphics.collection.collection import Collection
 
 
-class AggSolidPathCollection(Collection):
+class AggFastPathCollection(Collection):
     """
     """
 
@@ -18,12 +18,12 @@ class AggSolidPathCollection(Collection):
                   ('curr',       (np.float32, 3), '!local', (0,0,0)),
                   ('next',       (np.float32, 3), '!local', (0,0,0)),
                   ('id',         (np.float32, 1), '!local', 0),
-                  ('color',      (np.float32, 4), 'shared', (0,0,0,1)),
-                  ('linewidth',  (np.float32, 1), 'shared', 1),
-                  ('antialias',  (np.float32, 1), 'shared', 1) ]
+                  ('color',      (np.float32, 4), 'global', (0,0,0,1)),
+                  ('linewidth',  (np.float32, 1), 'global', 1),
+                  ('antialias',  (np.float32, 1), 'global', 1) ]
 
-        vertex = library.get('collections/agg-solid-path.vert')
-        fragment = library.get('collections/agg-solid-path.frag')
+        vertex = library.get('collections/agg-fast-path.vert')
+        fragment = library.get('collections/agg-fast-path.frag')
 
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_TRIANGLE_STRIP,
                             vertex=vertex, fragment=fragment, **kwargs)
@@ -37,22 +37,10 @@ class AggSolidPathCollection(Collection):
     def append(self, P, closed=False, **kwargs):
 
         V = self.bake(P, closed=closed)
+        U = np.zeros(1, dtype=self.utype) if self.utype else None
 
-        defaults = self._defaults
-        reserved = ["collection_index", "prev", "curr", "next", "id"]
-
-        for name in self.vtype.names:
-            if name not in reserved:
-                V[name] = kwargs.get(name, defaults[name])
-
-        if self.utype:
-            U = np.zeros(1, dtype=self.utype)
-            for name in self.utype.names:
-                if name not in ["__unused__"]:
-                    U[name] = kwargs.get(name, defaults[name])
-        else:
-            U = None
-
+        protect = ["prev", "curr", "next", "id"]
+        self.apply_defaults(V, U, protect=protect, **kwargs)
         Collection.append(self, vertices=V, uniforms=U)
 
 

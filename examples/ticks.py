@@ -10,7 +10,7 @@ from glumpy.graphics.text import FontManager
 from glumpy.transforms import Position3D, Viewport, Trackball
 
 from glumpy.graphics.collection import GlyphCollection
-from glumpy.graphics.collection import AggSolidPathCollection
+from glumpy.graphics.collection import PathCollection
 from glumpy.graphics.collection import AggSolidSegmentCollection
 
 
@@ -168,7 +168,7 @@ P1[:,0] = xmax - 0.0125 * (xmax-xmin)
 ticks.append(P0, P1, linewidth=1)
 
 
-def lorenz(n=100000):
+def lorenz(n=10000):
     def iterate(P, s=10, r=28, b=2.667, dt=0.01):
         x, y, z = P
         x_dot = s*(y - x)
@@ -200,10 +200,9 @@ def lorenz(n=100000):
     return P
 
 
-paths = AggSolidPathCollection(transform=transform)
+paths = PathCollection(mode="agg", transform=transform)
 paths.append(lorenz(), color=(0,0,1,1))
-paths["linewidth"] = 1
-
-
+paths["color"] = 0,0,1,1
 reset()
+
 app.run()
