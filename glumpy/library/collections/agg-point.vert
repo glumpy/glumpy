@@ -12,13 +12,18 @@
 // ------------------------------------
 // extern vec3 position;
 // extern float size;
-// extern vec4 color;
+// extern vec4 fg_color;
+// extern vec4 bg_color;
+// extern float orientation;
+// extern float antialias;
+// extern float linewidth;
 
 // Varyings
 // ------------------------------------
 varying float v_size;
 varying vec4  v_color;
-
+varying float v_linewidth;
+varying float v_antialias;
 
 // Main (hooked)
 // ------------------------------------

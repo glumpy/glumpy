@@ -9,10 +9,11 @@ from  glumpy import app
 from glumpy.graphics.collection import MarkerCollection
 
 n = 1000
-C = MarkerCollection(orientation='global')
-C.append(n, position = np.random.uniform(-1,1,(n,3)),
-            bg_color = np.random.uniform(0,1,(n,4)),
-            size = 32, fg_color=(0,0,0,1))
+C = MarkerCollection(orientation='local')
+
+C.append(np.random.uniform(-1,1,(n,3)),
+         bg_color = np.random.uniform(0,1,(n,4)),
+         size = 64, fg_color=(0,0,0,1))
 
 window = app.Window(1024,1024, color=(1,1,1,1))
 
@@ -20,9 +21,9 @@ window = app.Window(1024,1024, color=(1,1,1,1))
 def on_draw(dt):
     window.clear()
     C.draw()
-    C['orientation'] += np.pi/180.0
-#    del C[0]
-#    if not len(C):
-#        app.exit()
+    C['orientation'] +=  np.random.uniform(0.0,0.1,len(C))
+    del C[0]
+    if not len(C):
+        app.quit()
 
 app.run()

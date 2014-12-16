@@ -6,7 +6,5 @@
 from . path_collection import PathCollection
 from . point_collection import PointCollection
 from . glyph_collection import GlyphCollection
+from . marker_collection import MarkerCollection
 from . segment_collection import SegmentCollection
-
-# from . marker_collection import MarkerCollection
-# from . unimarker_collection import UnimarkerCollection

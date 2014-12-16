@@ -6,21 +6,14 @@
 """
 Marker collection is a collection of markers of different types.
 """
-
-import os
 import numpy as np
-from functools import reduce
-from glumpy import gl
-from glumpy.gloo.program import Program
-from glumpy.shaders import get
-from glumpy.graphics.collection.util import fetchcode
+from glumpy import gl, library
+from glumpy.transforms import Position3D
 from glumpy.graphics.collection.collection import Collection
 
 
-
 class MarkerCollection(Collection):
-    def __init__(self, **kwargs):
-
+    def __init__(self, marker = 'spade', transform=None, **kwargs):
         dtype = [ ('position',    (np.float32, 3), '!local', (0,0,0)),
                   ('size',        (np.float32, 1), 'local', 1),
                   ('marker',      (np.float32, 1), 'local', 1),
@@ -30,28 +23,24 @@ class MarkerCollection(Collection):
                   ('linewidth',   (np.float32, 1), 'global', 1.0),
                   ('antialias',   (np.float32, 1), 'global', 1.0) ]
 
-        vertex = get('collections/marker.vert')
-        # fragment = get('markers/marker-%s.frag' % marker)
-        fragment += get('antialias/outline.frag')
-        fragment += get('collections/marker.frag')
+        vertex   = library.get('collections/marker.vert')
+        fragment = library.get('collections/marker.frag')
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_POINTS,
                             vertex=vertex, fragment=fragment, **kwargs)
 
-
-    def append(self, count, itemsize=1, **kwargs):
-        if count <= 0:
-            return
-
-        # defaults = MarkerCollection.defaults
-        V = np.zeros(count, dtype=self.vtype)
-        for name in self.vtype.names:
-            if name not in ["collection_index"]:
-                V[name] = kwargs.get(name, self._defaults[name])
-        if self.utype:
-            U = np.zeros(count, dtype=self.utype)
-            for name in self.utype.names:
-                if name not in ["__unused__"]:
-                    U[name] = kwargs.get(name, self._defaults[name])
+        if transform is not None:
+            self._program["transform"] = transform
         else:
-            U = None
-        Collection.append(self, vertices=V, uniforms=U, itemsize=itemsize)
+            self._program["transform"] = Position3D()
+
+        self._program["marker"] = marker
+        self._program["paint"] = "outline"
+
+
+    def append(self, P, **kwargs):
+
+        V = np.zeros(len(P), dtype=self.vtype)
+        U = np.zeros(len(P), dtype=self.utype) if self.utype else None
+        self.apply_defaults(V, U, **kwargs)
+        V["position"] = P
+        Collection.append(self, vertices=V, uniforms=U, itemsize=1)
