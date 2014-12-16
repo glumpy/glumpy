@@ -38,7 +38,7 @@ def on_resize(width, height):
 program = gloo.Program(vertex, "./regular-grid.frag")
 program["texcoord"] = (-0.5,-0.5), (-0.5, +0.5), (+0.5,-0.5), (+0.5,+0.5)
 # program["u_texture"] = data.get("lena.png")
-program["u_texture"] = data.get("MonaLisa.png")
+program["u_texture"] = data.get("lena.png")
 program["u_texture"].interpolation = gl.GL_LINEAR
 program['u_major_grid_width'] = 1.5
 program['u_minor_grid_width'] = 1.0
