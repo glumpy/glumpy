@@ -26,3 +26,16 @@ colormap_underover(float t, vec3 color, vec3 under, vec3 over)
            colormap_segment(0.0,1.0,t)*color +
            step(1.0,t)*over;
 }
+
+/*
+ * t <= 0    : return under
+ * 0 < t < 1 : return color
+ * t >= 1    : return over
+ */
+vec4
+colormap_underover(float t, vec4 color, vec4 under, vec4 over)
+{
+    return step(t,0.0)*under +
+           colormap_segment(0.0,1.0,t)*color +
+           step(1.0,t)*over;
+}

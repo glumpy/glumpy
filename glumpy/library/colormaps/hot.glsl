@@ -16,7 +16,7 @@ vec3 colormap_hot(float t, vec3 under, vec3 over)
     return colormap_underover(t, colormap_hot(t), under, over);
 }
 
-vec3 colormap_hot(float t, vec4 under, vec4 over)
+vec4 colormap_hot(float t, vec4 under, vec4 over)
 {
     return colormap_underover(t, vec4(colormap_hot(t),1.0), under, over);
 }

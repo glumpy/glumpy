@@ -14,7 +14,7 @@ vec3 colormap_blues(float t, vec3 under, vec3 over)
     return colormap_underover(t, colormap_blues(t), under, over);
 }
 
-vec3 colormap_blues(float t, vec4 under, vec4 over)
+vec4 colormap_blues(float t, vec4 under, vec4 over)
 {
     return colormap_underover(t, vec4(colormap_blues(t),1.0), under, over);
 }

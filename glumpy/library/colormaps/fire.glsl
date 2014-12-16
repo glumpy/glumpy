@@ -15,7 +15,7 @@ vec3 colormap_fire(float t, vec3 under, vec3 over)
     return colormap_underover(t, colormap_fire(t), under, over);
 }
 
-vec3 colormap_fire(float t, vec4 under, vec4 over)
+vec4 colormap_fire(float t, vec4 under, vec4 over)
 {
     return colormap_underover(t, vec4(colormap_fire(t),1.0), under, over);
 }

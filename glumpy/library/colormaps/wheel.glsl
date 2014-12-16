@@ -15,7 +15,7 @@ vec3 colormap_wheel(float t, vec3 under, vec3 over)
     return colormap_underover(t, colormap_wheel(t), under, over);
 }
 
-vec3 colormap_wheel(float t, vec4 under, vec4 over)
+vec4 colormap_wheel(float t, vec4 under, vec4 over)
 {
     return colormap_underover(t, vec4(colormap_wheel(t),1.0), under, over);
 }
