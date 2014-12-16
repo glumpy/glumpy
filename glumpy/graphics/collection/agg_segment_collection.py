@@ -49,6 +49,7 @@ class AggSegmentCollection(Collection):
         V['P0'] = P0
         V['P1'] = P1
         V = V.repeat(4,axis=0)
+
         V['index'] = np.resize([0,1,2,3], 4*count)
         I = np.resize( np.array([0,1,2,0,2,3], dtype=np.uint32), 6*count)
         I += np.repeat( 4*np.arange(count), 6)

@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, glm
-from glumpy.graphics.collection import AggSolidSegmentCollection
+from glumpy.graphics.collection import SegmentCollection
 from glumpy.transforms import Position3D, OrthographicProjection, PanZoom, Viewport
 
 window = app.Window(width=1200, height=600, color=(1,1,1,1))
@@ -30,7 +30,7 @@ P1 = np.dstack((np.linspace(110,1110,n),np.ones(n)*550,np.zeros(n))).reshape(n,3
 transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
 window.attach(transform)
 
-collection = AggSolidSegmentCollection(linewidth='local', transform=transform)
+collection = SegmentCollection(mode="agg", linewidth='local', transform=transform)
 collection.append(P0, P1, linewidth = np.linspace(1, 8, n))
 collection['antialias'] = 1
 app.run()
