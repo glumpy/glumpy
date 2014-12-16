@@ -14,7 +14,7 @@ from glumpy.graphics.collection import PathCollection
 from glumpy.graphics.collection import SegmentCollection
 
 
-window = app.Window(width=1000, height=900, color=(1,1,1,1))
+window = app.Window(width=1000, height=800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -69,7 +69,7 @@ for i,y in enumerate(np.linspace(xmin,xmax,n)):
                   scale= scale, direction = (1,0,0),
                   anchor_x = "center", anchor_y = "top")
 
-title = "Ticks & labels"
+title = "Lorenz strange attractor"
 labels.append(title, bold, origin = (0, 1.1, z),
               scale= 2*scale, direction = (1,0,0),
               anchor_x = "center", anchor_y = "center")
