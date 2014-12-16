@@ -6,9 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, glm, gl
-# from glumpy.graphics.collection import AggSolidPathCollection
-from glumpy.graphics.collection import AggSolidPath2Collection as AggSolidPathCollection
-
+from glumpy.graphics.collection import PathCollection
 from glumpy.transforms import Position3D, Viewport, OrthographicProjection, PanZoom
 
 
@@ -45,15 +43,9 @@ def on_key_press(key, modifiers):
 transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
 window.attach(transform)
 
-paths = AggSolidPathCollection(transform=transform)
-#for i in range(10000):
-scale = np.random.uniform(10,20)
-x,y = np.random.uniform(0,800,2)
+paths = PathCollection(mode="agg", transform=transform)
+x,y, scale = 400, 400, 300
+paths.append(star(n=25)*scale + (x,y,0), closed=True)
 
-#scale=350
-#x,y=400,400
-#paths.append(star(n=5)*scale + (x,y,0), closed=True)
-
-paths.append(spiral())
-paths["linewidth"] = 1.0
+paths["linewidth"] = 10.0
 app.run()

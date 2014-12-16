@@ -23,7 +23,7 @@ class AggPathCollection(Collection):
                   ('uv',         (np.float32, 2), '!local', (0,0)),
                   ('caps',       (np.float32, 2), 'global', (0,0)),
                   ('join',       (np.float32, 1), 'global', 0),
-                  ('color',      (np.float32, 4), 'global', (0,0,1,1)),
+                  ('color',      (np.float32, 4), 'global', (0,0,0,1)),
                   ('miter_limit',(np.float32, 1), 'global', 4),
                   ('linewidth',  (np.float32, 1), 'global', 1),
                   ('antialias',  (np.float32, 1), 'global', 1) ]
@@ -61,7 +61,10 @@ class AggPathCollection(Collection):
         V = np.empty(n-1, dtype=self.vtype)
         PI = P[I]
 
-        V['p0'][0] = P[0]
+        if closed:
+            V['p0'][0] = P[-1]
+        else:
+            V['p0'][0] = P[0]
         V['p1'][0] = P[0]
         V['p2'][0] = P[1]
         V['p3'][0] = P[2]
@@ -74,12 +77,21 @@ class AggPathCollection(Collection):
         V['p0'][-1] = P[-3]
         V['p1'][-1] = P[-2]
         V['p2'][-1] = P[-1]
-        V['p3'][-1] = P[-1]
+        if closed:
+            V['p3'][-1] = P[0]
+        else:
+            V['p3'][-1] = P[-1]
 
         V = np.repeat(V, 4, axis=0).reshape((len(V),4))
         V['uv'] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
 
-        I = np.resize(np.array([0,1,2, 1,2,3], dtype=np.uint32),(n-1)*(2*3))
-        I += np.repeat( 4*np.arange(n-1), 6)
+        if closed:
+            I = np.resize(np.array([0,1,2, 1,2,3], dtype=np.uint32),(n)*(2*3))
+            I += np.repeat( 4*np.arange(n), 6)
+            I[-6:] = 4*n-6,4*n-5,0,4*n-5,0,1
+            print len(V.ravel())
+        else:
+            I = np.resize(np.array([0,1,2, 1,2,3], dtype=np.uint32),(n-1)*(2*3))
+            I += np.repeat( 4*np.arange(n-1), 6)
 
         return V.ravel(), I.ravel()
