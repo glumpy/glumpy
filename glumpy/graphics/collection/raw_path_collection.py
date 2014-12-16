@@ -44,7 +44,7 @@ class RawPathCollection(Collection):
         n = len(P)
         if closed:
             V = np.empty(n+3, dtype=self.vtype)
-            V["position"][2:-2] = P
+            V["position"][1:-2] = P
             V["position"][-2] = P[0]
         else:
             V = np.empty(n+2, dtype=self.vtype)
