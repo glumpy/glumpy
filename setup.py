@@ -42,10 +42,11 @@ if __name__ == "__main__":
 
                     'glumpy.library',
                     'glumpy.library.math',
-                    'glumpy.library.paths',
+                    'glumpy.library.misc',
                     'glumpy.library.arrows',
                     'glumpy.library.markers',
                     'glumpy.library.filters',
+                    'glumpy.library.colormaps',
                     'glumpy.library.antialias',
                     'glumpy.library.transforms',
                     'glumpy.library.collections',
