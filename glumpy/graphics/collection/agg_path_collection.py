@@ -89,7 +89,6 @@ class AggPathCollection(Collection):
             I = np.resize(np.array([0,1,2, 1,2,3], dtype=np.uint32),(n)*(2*3))
             I += np.repeat( 4*np.arange(n), 6)
             I[-6:] = 4*n-6,4*n-5,0,4*n-5,0,1
-            print len(V.ravel())
         else:
             I = np.resize(np.array([0,1,2, 1,2,3], dtype=np.uint32),(n-1)*(2*3))
             I += np.repeat( 4*np.arange(n-1), 6)
