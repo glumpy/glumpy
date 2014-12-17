@@ -9,7 +9,8 @@
 import os
 import numpy
 from Cython.Distutils import build_ext
-from distutils.core import setup, Extension
+# from distutils.core import setup, Extension
+from setuptools import setup, Extension
 
 if __name__ == "__main__":
 
