@@ -9,7 +9,7 @@ from  glumpy import app
 from glumpy.graphics.collection import MarkerCollection
 
 n = 100
-C = MarkerCollection(orientation='shared')
+C = MarkerCollection(orientation='local')
 
 C.append(np.random.uniform(-1,1,(n,3)),
          bg_color = np.random.uniform(0,1,(n,4)),
