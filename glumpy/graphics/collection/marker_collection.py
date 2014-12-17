@@ -17,7 +17,7 @@ class MarkerCollection(Collection):
         dtype = [ ('position',    (np.float32, 3), '!local', (0,0,0)),
                   ('size',        (np.float32, 1), 'local', 1),
                   ('marker',      (np.float32, 1), 'local', 1),
-                  ('orientation', (np.float32, 1), 'local', 0),
+                  ('orientation', (np.float32, 1), 'local', 0.0),
                   ('fg_color',    (np.float32, 4), 'local', (0,0,0,1)),
                   ('bg_color',    (np.float32, 4), 'local', (1,1,1,1)),
                   ('linewidth',   (np.float32, 1), 'global', 1.0),
@@ -38,7 +38,6 @@ class MarkerCollection(Collection):
 
 
     def append(self, P, **kwargs):
-
         V = np.zeros(len(P), dtype=self.vtype)
         U = np.zeros(len(P), dtype=self.utype) if self.utype else None
         self.apply_defaults(V, U, **kwargs)

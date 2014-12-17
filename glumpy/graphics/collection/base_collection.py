@@ -394,7 +394,9 @@ class BaseCollection(object):
                 return V[key]
             # Getting a named field from uniforms
             elif U is not None and key in U.dtype.names:
-                return U[key]
+                # Careful, U is the whole texture that can be bigger than list
+                # return U[key]
+                return U[key][:len(self._uniforms_list)]
             else:
                 raise IndexError("Unknonw field name ('%s')" % key)
 
@@ -443,7 +445,9 @@ class BaseCollection(object):
                 V[key] = data
             # Setting a named field in uniforms
             elif self.utype and key in self.utype.names:
-                U[key] = data
+                # Careful, U is the whole texture that can be bigger than list
+                # U[key] = data
+                U[key][:len(self._uniforms_list)] = data
             else:
                 raise IndexError("Unknonw field name ('%s')" % key)
 
@@ -497,9 +501,8 @@ class BaseCollection(object):
 
             # shape[2] = float count is only used in vertex shader code
             texture = texture.reshape(shape[0],shape[1],4)
-
             self._uniforms_texture = texture.view(Texture2D)
-            self._uniforms_texture.interpolation =  gl.GL_NEAREST
+            self._uniforms_texture.interpolation = gl.GL_NEAREST
 
         if self._program is not None:
             self._program.bind(self._vertices_buffer)

@@ -3,6 +3,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All rights reserved.
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
+from . collection import Collection
+from . base_collection import BaseCollection
 from . path_collection import PathCollection
 from . point_collection import PointCollection
 from . glyph_collection import GlyphCollection
