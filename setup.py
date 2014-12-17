@@ -50,7 +50,6 @@ if __name__ == "__main__":
                     'glumpy.library.transforms',
                     'glumpy.library.collections',
 
-                    'glumpy.filters',
                     'glumpy.geometry',
                     'glumpy.graphics',
                     'glumpy.transforms',
@@ -64,10 +63,11 @@ if __name__ == "__main__":
               'glumpy.data.objects':        ['*.obj', "*.txt"],
               'glumpy.library':             ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.math':        ['*.vert','*.frag', "*.geom", "*.glsl"],
-              'glumpy.library.paths':       ['*.vert','*.frag', "*.geom", "*.glsl"],
+              'glumpy.library.misc':        ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.arrows':      ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.markers':     ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.filters':     ['*.vert','*.frag', "*.geom", "*.glsl"],
+              'glumpy.library.colormaps':   ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.antialias':   ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.transforms':  ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.collections': ['*.vert','*.frag', "*.geom", "*.glsl"]
