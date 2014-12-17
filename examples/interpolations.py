@@ -6,15 +6,13 @@
 # -----------------------------------------------------------------------------
 """ This example shows spatial interpolation of images. """
 import numpy as np
-from PIL import Image
-from glumpy import app, gl, glm, gloo, data
+from glumpy import app, gl, gloo, data, library
 
 
 vertex = """
     attribute vec2 position;
     attribute vec2 texcoord;
     attribute float interpol;
-
     varying vec2 v_texcoord;
     varying float v_interpol;
     void main()
@@ -25,49 +23,50 @@ vertex = """
     } """
 
 fragment = """
-    uniform sampler2D u_data;
-    uniform vec2 u_shape;
-    varying vec2 v_texcoord;
-    varying float v_interpol;
-    void main()
-    {
-        if (v_interpol < 0.5)
-            // gl_FragColor = Nearest(u_data, u_shape, v_texcoord);
-            gl_FragColor = texture2D(u_data, v_texcoord);
-        else if (v_interpol < 1.5)
-            gl_FragColor = Bilinear(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 2.5)
-            gl_FragColor = Hanning(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 3.5)
-            gl_FragColor = Hamming(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 4.5)
-            gl_FragColor = Hermite(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 5.5)
-            gl_FragColor = Kaiser(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 6.5)
-            gl_FragColor = Quadric(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 7.5)
-            gl_FragColor = Bicubic(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 8.5)
-            gl_FragColor = CatRom(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 9.5)
-            gl_FragColor = Mitchell(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 10.5)
-            gl_FragColor = Spline16(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 11.5)
-            gl_FragColor = Spline36(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 12.5)
-            gl_FragColor = Gaussian(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 13.5)
-            gl_FragColor = Bessel(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 14.5)
-            gl_FragColor = Sinc(u_data, u_shape, v_texcoord);
-        else if (v_interpol < 15.5)
-            gl_FragColor = Lanczos(u_data, u_shape, v_texcoord);
-        else
-            gl_FragColor = Blackman(u_data, u_shape, v_texcoord);
-    } """
-fragment = open('shaders/spatial-filters.frag').read() + fragment
+#include "misc/spatial-filters.frag"
+
+uniform sampler2D u_data;
+uniform vec2 u_shape;
+varying vec2 v_texcoord;
+varying float v_interpol;
+void main()
+{
+    if (v_interpol < 0.5)
+         // gl_FragColor = Nearest(u_data, u_shape, v_texcoord);
+         gl_FragColor = texture2D(u_data, v_texcoord);
+    else if (v_interpol < 1.5)
+        gl_FragColor = Bilinear(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 2.5)
+        gl_FragColor = Hanning(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 3.5)
+        gl_FragColor = Hamming(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 4.5)
+        gl_FragColor = Hermite(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 5.5)
+        gl_FragColor = Kaiser(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 6.5)
+        gl_FragColor = Quadric(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 7.5)
+        gl_FragColor = Bicubic(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 8.5)
+        gl_FragColor = CatRom(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 9.5)
+        gl_FragColor = Mitchell(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 10.5)
+        gl_FragColor = Spline16(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 11.5)
+        gl_FragColor = Spline36(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 12.5)
+        gl_FragColor = Gaussian(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 13.5)
+        gl_FragColor = Bessel(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 14.5)
+        gl_FragColor = Sinc(u_data, u_shape, v_texcoord);
+    else if (v_interpol < 15.5)
+        gl_FragColor = Lanczos(u_data, u_shape, v_texcoord);
+    else
+        gl_FragColor = Blackman(u_data, u_shape, v_texcoord);
+} """
 
 window = app.Window(width=4*512, height=2*512)
 

@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, gloo, glm, shaders
+from glumpy import app, gl, gloo, library
 from glumpy.transforms import PanZoom, Position2D
 
 vertex = """
