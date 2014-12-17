@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 from . window import event
 from glumpy.log import log
-from glumpy import gloo, shaders, transforms, library
+from glumpy import gloo, transforms, library
 
 
 

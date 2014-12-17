@@ -7,7 +7,6 @@
 import os
 import numpy as np
 from glumpy.gloo import Snippet
-from glumpy.shaders import get_code
 from glumpy.app.window.event import EventDispatcher
 
 
