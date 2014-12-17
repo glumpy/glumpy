@@ -43,8 +43,8 @@ def on_key_press(key, modifiers):
 transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
 window.attach(transform)
 
-paths = PathCollection(mode="raw", transform=transform)
+paths = PathCollection(mode="agg", transform=transform)
 x,y, scale = 400, 400, 300
 paths.append(star(n=25)*scale + (x,y,0), closed=True)
-# paths["linewidth"] = 10.0
+paths["linewidth"] = 10.0
 app.run()
