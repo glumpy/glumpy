@@ -20,6 +20,7 @@ cd examples
 
 * PyOpenGL: http://pyopengl.sourceforge.net/
 * Numpy: http://numpy.scipy.org/
+* Cython: http://cython.org
 
 ### Optional
 
