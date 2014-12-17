@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, gl, gloo, data
 from glumpy.geometry import primitives
-from glumpy.transforms import Trackball
+from glumpy.transforms import PanZoom
 
 
 vertex = """
@@ -73,13 +73,7 @@ def on_draw(dt):
 @window.event
 def on_key_press(key, modifiers):
     if key == app.window.key.SPACE:
-        transform_reset()
-
-def transform_reset():
-    transform.theta = 0
-    transform.phi = 0
-    transform.zoom = 14.25
-
+        transform.reset()
 
 def func3(x,y):
     return (1-x/2+x**5+y**3)*np.exp(-x**2-y**2)
@@ -87,7 +81,6 @@ x = np.linspace(-2.0, 2.0, 256).astype(np.float32)
 y = np.linspace(-2.0, 2.0, 256).astype(np.float32)
 X,Y = np.meshgrid(x, y)
 Z = func3(X,Y)
-
 
 program = gloo.Program(vertex, fragment)
 V,I = primitives.plane(2.0, n=64)
@@ -99,8 +92,7 @@ program['data_shape'] = Z.shape[1], Z.shape[0]
 program['u_kernel'] = data.get("spatial-filters.npy")
 program['u_kernel'].interpolation = gl.GL_LINEAR
 
-transform = Trackball()
+transform = PanZoom()
 program['transform'] = transform
 window.attach(transform)
-transform_reset()
 app.run()
