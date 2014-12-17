@@ -4,6 +4,15 @@
 scalable and beautiful. **Glumpy** offers a natural interface between numpy
 and modern OpenGL.
 
+## Installation
+
+```
+git clone https://github.com/glumpy/glumpy.git
+cd glumpy
+python setup.py install
+cd examples
+./app-simple.py
+```
 
 ## Dependencies
 
