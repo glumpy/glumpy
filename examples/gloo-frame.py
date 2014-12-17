@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from  glumpy import app, gl, glm, gloo, data, shaders
+from  glumpy import app, gl, gloo, data, library
 from glumpy.transforms import Trackball, Position3D, Position2D
 
 vertex = """
@@ -65,12 +65,15 @@ program['u_limits2'] = -5.0, +5.0, -5.0, +5.0
 # program['u_limits2'] = -np.pi, +np.pi, -np.pi/3, +np.pi/3
 
 # program['transform'] = shaders.get("transforms/polar.glsl")
-program['transform'] = shaders.get("transforms/identity.glsl")
 # program['transform'] = shaders.get("transforms/hammer.glsl")
+program['transform_forward'] = gloo.Snippet(library.get("transforms/identity_forward.glsl"))
+program['transform_inverse'] = gloo.Snippet(library.get("transforms/identity_inverse.glsl"))
 program['trackball'] = Trackball(Position2D("texcoord"))
 program['trackball'].theta = 0
 program['trackball'].phi = 0
 program['trackball'].zoom = 7.5
 window.attach(program['trackball'])
+
+# print program._fragment._code
 
 app.run()

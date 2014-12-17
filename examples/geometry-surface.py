@@ -5,30 +5,33 @@
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import data, shaders
-from glumpy import app, gl, glm, gloo, data
+from glumpy import app, gl, gloo, data, library
 from glumpy.geometry import primitives
 from glumpy.transforms import Trackball
 
 vertex = """
-    uniform float height;
-    uniform sampler2D data;
-    uniform vec2 data_shape;
-    attribute vec3 position;
-    attribute vec2 texcoord;
+#include "misc/spatial-filters.frag"
 
-    varying vec3 v_position;
-    varying vec2 v_texcoord;
-    void main()
-    {
-        float z = height*Bicubic(data, data_shape, texcoord).r;
-        gl_Position = <transform>;
-        v_texcoord = texcoord;
-        v_position = vec3(position.xy, z);
-    }
+uniform float height;
+uniform sampler2D data;
+uniform vec2 data_shape;
+attribute vec3 position;
+attribute vec2 texcoord;
+
+varying vec3 v_position;
+varying vec2 v_texcoord;
+void main()
+{
+    float z = height*Bicubic(data, data_shape, texcoord).r;
+    gl_Position = <transform>;
+    v_texcoord = texcoord;
+    v_position = vec3(position.xy, z);
+}
 """
 
 fragment = """
+#include "misc/spatial-filters.frag"
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -130,8 +133,7 @@ def on_init():
 
 
 n = 64
-surface = gloo.Program(shaders.get_code('spatial-filters.frag') + vertex,
-                       shaders.get_code('spatial-filters.frag') + fragment)
+surface = gloo.Program(vertex, fragment)
 vertices, s_indices = primitives.plane(2.0, n=n)
 surface.bind(vertices)
 
@@ -154,6 +156,7 @@ surface['data'] = (Z-Z.min())/(Z.max() - Z.min())
 surface['data'].interpolation = gl.GL_NEAREST
 surface['data_shape'] = Z.shape[1], Z.shape[0]
 surface['u_kernel'] = data.get("spatial-filters.npy")
+surface['u_kernel'].interpolation = gl.GL_LINEAR
 surface['texture'] = data.checkerboard(32,24)
 
 transform = Trackball("vec4(position.xy, z, 1.0)")

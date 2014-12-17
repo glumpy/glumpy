@@ -51,11 +51,6 @@ varying vec2 v_texcoord;
 
 
 
-// Projection Functions
-// ------------------------------------
-<transform>
-
-
 
 // [-0.5,-0.5]x[0.5,0.5] -> [xmin,xmax]x[ymin,ymax]
 // ------------------------------------------------
@@ -148,7 +143,7 @@ void main()
 
     vec2 NP1 = v_texcoord;
     vec2 P1 = scale_forward(NP1, u_limits1);
-    vec2 P2 = transform_inverse(P1);
+    vec2 P2 = <transform_inverse(P1)>;
 
     // Test if we are within limits but we do not discard yet because we want
     // to draw border. Discarding would mean half of the exterior not drawn.
@@ -168,7 +163,7 @@ void main()
     pNP1.xy = pNP1.xy * iResolution/2.0;
 
     tick = get_tick(NP2.x+.5, u_limits2[0], u_limits2[1], u_major_grid_step[0]);
-    P = transform_forward(vec2(tick,P2.y));
+    P = <transform_forward(vec2(tick,P2.y))>;
     P = scale_inverse(P, u_limits1);
     // float Mx = length(v_size * (NP1 - P));
     float Mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
@@ -176,21 +171,21 @@ void main()
 
 
     tick = get_tick(NP2.x+.5, u_limits2[0], u_limits2[1], u_minor_grid_step[0]);
-    P = transform_forward(vec2(tick,P2.y));
+    P = <transform_forward(vec2(tick,P2.y))>;
     P = scale_inverse(P, u_limits1);
     // float mx = length(v_size * (NP1 - P));
     float mx = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
     // float mx = screen_distance(pNP1.xy, vec4(P,0,1));
 
     tick = get_tick(NP2.y+.5, u_limits2[2], u_limits2[3], u_major_grid_step[1]);
-    P = transform_forward(vec2(P2.x,tick));
+    P = <transform_forward(vec2(P2.x,tick))>;
     P = scale_inverse(P, u_limits1);
     // float My = length(v_size * (NP1 - P));
     float My = screen_distance(vec4(NP1,0,1), vec4(P,0,1));
     // float My = screen_distance(pNP1.xy, vec4(P,0,1));
 
     tick = get_tick(NP2.y+.5, u_limits2[2], u_limits2[3], u_minor_grid_step[1]);
-    P = transform_forward(vec2(P2.x,tick));
+    P = <transform_forward(vec2(P2.x,tick))>;
     P = scale_inverse(P, u_limits1);
     // float my = length(v_size * (NP1 - P));
     float my = screen_distance(vec4(NP1,0,1), vec4(P,0,1));

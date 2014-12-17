@@ -4,10 +4,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import sys
-import math
 import numpy as np
-from  glumpy import app, gl, glm, gloo, shaders
+from  glumpy import app, gl, glm, gloo, library
 
 
 vertex = """
@@ -54,7 +52,6 @@ def on_resize(width, height):
     program['projection'] = glm.ortho(0, width, 0, height, -1, +1)
     program['viewport'] = 0,0,width,height
 
-
 vertices = np.zeros((rows,cols,4), dtype=[("row",      np.float32, 1),
                                           ("col",      np.float32, 1),
                                           ("texcoord", np.float32, 2)])
@@ -71,7 +68,7 @@ indices[:,:] += 4*np.arange(rows*cols).reshape(rows,cols,1)
 indices = indices.ravel()
 indices = indices.view(gloo.IndexBuffer)
 
-program = gloo.Program(vertex, shaders.get_code("regular-grid.frag"))
+program = gloo.Program(vertex, library.get("misc/regular-grid.frag"))
 program.bind(vertices)
 
 program["rows"] = rows
