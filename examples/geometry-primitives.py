@@ -8,7 +8,6 @@ import numpy as np
 from glumpy import app, gl, glm, gloo, data
 from glumpy.geometry import primitives
 
-from glumpy.graphics.collection import LineCollection
 
 vertex = """
 uniform mat4 view;
