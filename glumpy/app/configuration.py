@@ -262,7 +262,11 @@ def gl_get_configuration():
     import OpenGL.GL as gl
 
     configuration =  Configuration()
-    gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
+    try:
+        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
+    except:
+        log.warn("Cannot bind framebuffer")
+
     value = ctypes.c_int()
 
     try:

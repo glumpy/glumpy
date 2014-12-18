@@ -5,16 +5,15 @@
 # -----------------------------------------------------------------------------
 __version__ = "2.0"
 
-from . app import run
-from . app import Window
-
-from . app.window import key
-from . app.window import mouse
-
-from . graphics.filter import *
-from . graphics.collection import *
-
 from . import app
 from . import gloo
 from . import data
 from . import transforms
+
+from . app import run
+from . app import Window
+from . app.window import key
+from . app.window import mouse
+
+#from . graphics.filter import *
+#from . graphics.collection import *
