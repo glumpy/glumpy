@@ -112,7 +112,8 @@ class GLObject(object):
         """ Name of this object on the GPU """
 
         if hasattr(self, "base") and isinstance(self.base,GLObject):
-            return self.base._handle
+            if hasattr(self.base, "_handle"):
+                return self.base._handle
         return self._handle
         #return self._handle
 
