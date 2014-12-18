@@ -8,7 +8,7 @@ import numpy as np
 from  glumpy import app
 from glumpy.graphics.collection import MarkerCollection
 
-n = 100
+n = 1000
 C = MarkerCollection(orientation='local')
 
 C.append(np.random.uniform(-1,1,(n,3)),

@@ -97,17 +97,6 @@ fragment = """
 """
 
 
-def find_closest(A, target):
-    # A must be sorted
-    idx = A.searchsorted(target)
-    idx = np.clip(idx, 1, len(A) - 1)
-    left = A[idx - 1]
-    right = A[idx]
-    idx -= target - left < right - target
-    return idx
-
-
-
 window = app.Window(width=512, height=512, color=(1,1,1,1))
 
 @window.event
@@ -147,7 +136,7 @@ program['a_position'] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
 program['a_texcoord'] = ( 0, 0), ( 0,+1), (+1, 0), (+1,+1)
 program['u_grid_color'] = 0,0,0,1
 program['u_grid_thickness'] = 1
-program['u_grid_antialias'] = .75
+program['u_grid_antialias'] = 1
 program['u_translate'] = 0,0
 program['u_scale'] = 1.0
 program['u_size'] = 512,512
