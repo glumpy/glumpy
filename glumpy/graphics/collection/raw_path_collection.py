@@ -13,21 +13,31 @@ class RawPathCollection(Collection):
     """
     """
 
-    def __init__(self, transform=None, **kwargs):
-        dtype = [('position', (np.float32, 3), '!local', (0,0,0)),
-                 ('id',       (np.float32, 1), '!local', 0),
-                 ('color',    (np.float32, 4), 'local', (0,0,0,1)) ]
+    def __init__(self, user_dtype=None, transform=None,
+                 vertex = None, fragment = None, **kwargs):
 
-        vertex = library.get('collections/raw-path.vert')
-        fragment = library.get('collections/raw-path.frag')
+        base_dtype = [('position', (np.float32, 3), '!local', (0,0,0)),
+                      ('id',       (np.float32, 1), '!local', 0),
+                      ('color',    (np.float32, 4), 'local', (0,0,0,1)) ]
+
+        dtype = base_dtype
+        if user_dtype:
+            dtype.extend(user_dtype)
+
+        if vertex is None:
+            vertex = library.get('collections/raw-path.vert')
+        if fragment is None:
+            fragment = library.get('collections/raw-path.frag')
 
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_LINE_STRIP,
                             vertex=vertex, fragment=fragment, **kwargs)
 
-        if transform is not None:
-            self._program["transform"] = transform
-        else:
-            self._program["transform"] = Position3D()
+        # Set hooks if necessary
+        if "transform" in self._program._hooks.keys():
+            if transform is not None:
+                self._program["transform"] = transform
+            else:
+                self._program["transform"] = Position3D()
 
 
     def append(self, P, closed=False, **kwargs):
@@ -39,8 +49,9 @@ class RawPathCollection(Collection):
         Collection.append(self, vertices=V, uniforms=U)
 
 
-    def bake(self, P, closed=True):
+    def bake(self, P, closed=False):
         """ """
+
         n = len(P)
         if closed:
             V = np.empty(n+3, dtype=self.vtype)
@@ -57,3 +68,33 @@ class RawPathCollection(Collection):
         V["id"][-1] = 0
 
         return V
+
+    # Old path
+    # -------------
+    # def append(self, P, **kwargs):
+    #     """ """
+
+    #     itemsize = kwargs.get('itemsize', len(P))
+    #     count = len(P)/itemsize
+
+    #     V = np.zeros(len(P), dtype=self.vtype)
+    #     V['position'] = P
+    #     I = np.repeat(np.arange(itemsize),2)[1:-1]
+
+    #     defaults = self._defaults
+    #     reserved = ["collection_index", "position"]
+    #     for name in self.vtype.names:
+    #         if name not in reserved:
+    #             if name in kwargs.keys() or name in defaults.keys():
+    #                 V[name] = kwargs.get(name, defaults[name])
+    #     if self.utype:
+    #         U = np.zeros(count, dtype=self.utype)
+    #         for name in self.utype.names:
+    #             if name not in ["__unused__"]:
+    #                 if name in kwargs.keys() or name in defaults.keys():
+    #                     U[name] = kwargs.get(name, defaults[name])
+    #     else:
+    #         U = None
+
+
+    #     Collection.append(self, vertices=V, indices=I, uniforms=U, itemsize=itemsize)

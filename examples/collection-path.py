@@ -20,14 +20,6 @@ def star(inner=0.5, outer=1.0, n=5):
     P[:,1]= R*np.sin(T)
     return P
 
-def spiral(n = 1024):
-    T = np.linspace(0, 10*2*np.pi, n)
-    R = np.linspace(10, 400, n)
-    P = np.zeros((n,3), dtype=np.float32)
-    P[:,0] = 400 + np.cos(T)*R
-    P[:,1] = 400 + np.sin(T)*R
-    return P
-
 @window.event
 def on_draw(dt):
     window.clear()
@@ -43,8 +35,16 @@ def on_key_press(key, modifiers):
 transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
 window.attach(transform)
 
-paths = PathCollection(mode="agg", transform=transform)
-x,y, scale = 400, 400, 300
-paths.append(star(n=25)*scale + (x,y,0), closed=True)
-paths["linewidth"] = 10.0
+
+n = 1000
+S = star(n=5)
+P = np.tile(S.ravel(),n).reshape(n,len(S),3)
+P *= np.random.uniform(5,15,n)[:,np.newaxis,np.newaxis]
+P[:,:,:2] += np.random.uniform(0,800,(n,2))[:,np.newaxis,:]
+P = P.reshape(n*len(S),3)
+
+paths = PathCollection(mode="agg+", transform=transform)
+paths.append(P, closed=True, itemsize=len(S))
+paths["linewidth"] = 1.0
+
 app.run()

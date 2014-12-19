@@ -10,3 +10,8 @@ from . point_collection import PointCollection
 from . glyph_collection import GlyphCollection
 from . marker_collection import MarkerCollection
 from . segment_collection import SegmentCollection
+
+
+from . raw_path_collection import RawPathCollection
+from . agg_path_collection import AggPathCollection
+from . agg_fast_path_collection import AggFastPathCollection

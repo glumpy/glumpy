@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from  glumpy import app
-from glumpy.graphics.collection import PathCollection
+from glumpy.graphics.collection import RawPathCollection
 
 
 vertex = """
@@ -69,13 +69,15 @@ void main(void)
 
 rows,cols = 16,20
 n, p = rows*cols, 1000
-lines = PathCollection(dtype = [("amplitude", (np.float32, 1), 'shared', 1),
-                                ("selected",  (np.float32, 1), 'shared', 0),
-                                ("xscale",    (np.float32, 1), 'shared', 1)],
+lines = RawPathCollection(user_dtype = [("amplitude", (np.float32, 1), 'shared', 1),
+                                        ("selected",  (np.float32, 1), 'shared', 0),
+                                        ("xscale",    (np.float32, 1), 'shared', 1)],
                        vertex=vertex, fragment=fragment )
 lines["rows"] = rows
 lines["cols"] = cols
+
 lines.append(np.random.uniform(-1,1,(n*p,3)), itemsize=p)
+
 lines["position"][:,0] = np.tile(np.linspace(-1,+1,p),n)
 lines["amplitude"][:n] = np.random.uniform(0.25,0.75,n)
 lines["color"][:n] = np.random.uniform(0.5,1.0,(n,4))
