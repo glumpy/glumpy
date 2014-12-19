@@ -35,15 +35,14 @@ def on_key_press(key, modifiers):
 transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
 window.attach(transform)
 
-
-n = 1000
+n = 2500
 S = star(n=5)
 P = np.tile(S.ravel(),n).reshape(n,len(S),3)
-P *= np.random.uniform(5,15,n)[:,np.newaxis,np.newaxis]
+P *= np.random.uniform(5,10,n)[:,np.newaxis,np.newaxis]
 P[:,:,:2] += np.random.uniform(0,800,(n,2))[:,np.newaxis,:]
 P = P.reshape(n*len(S),3)
 
-paths = PathCollection(mode="agg+", transform=transform)
+paths = PathCollection(mode="agg", transform=transform)
 paths.append(P, closed=True, itemsize=len(S))
 paths["linewidth"] = 1.0
 

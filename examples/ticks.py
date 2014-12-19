@@ -201,7 +201,7 @@ def lorenz(n=50000):
     return P
 
 
-paths.append(lorenz(), color=(0,0,1,1))
+paths.append(lorenz(), color=(0,0,1,1), closed=False)
 paths["color"] = 0,0,1,1
 reset()
 

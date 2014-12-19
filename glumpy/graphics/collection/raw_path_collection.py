@@ -40,34 +40,61 @@ class RawPathCollection(Collection):
                 self._program["transform"] = Position3D()
 
 
-    def append(self, P, closed=False, **kwargs):
-        """ """
-        V = self.bake(P, closed=closed)
-        U = np.zeros(1, dtype=self.utype) if self.utype else None
-        protect = ["position", "id"]
-        self.apply_defaults(V, U, protect=protect, **kwargs)
-        Collection.append(self, vertices=V, uniforms=U)
 
+    def append(self, P, closed=False, itemsize=None, **kwargs):
+        """
+        Append a new set of vertices to the collection.
 
-    def bake(self, P, closed=False):
-        """ """
+        For kwargs argument, n is the number of vertices (local) or the number
+        of item (shared)
 
-        n = len(P)
+        Parameters
+        ----------
+
+        P : np.array
+            Vertices positions of the path(s) to be added
+
+        closed: bool
+            Whether path(s) is/are closed
+
+        itemsize: int or None
+            Size of an individual path
+
+        color : list, array or 4-tuple
+           Path color
+        """
+
+        itemsize  = itemsize or len(P)
+        itemcount = len(P)/itemsize
+        P = P.reshape(itemcount,itemsize,3)
         if closed:
-            V = np.empty(n+3, dtype=self.vtype)
-            V["position"][1:-2] = P
-            V["position"][-2] = P[0]
+            V = np.empty((itemcount,itemsize+3), dtype=self.vtype)
+            V["position"][:,1:-2] = P
+            V["position"][:,  -2] = V["position"][:,1]
         else:
-            V = np.empty(n+2, dtype=self.vtype)
-            V["position"][1:-1] = P
-
+            V = np.empty((itemcount,itemsize+2), dtype=self.vtype)
+            V["position"][:,1:-1] = P
         V["id"] = 1
-        V[0] = V[1]
-        V[-1] = V[-2]
-        V["id"][0] = 0
-        V["id"][-1] = 0
+        V[:, 0] = V[:, 1]
+        V[:,-1] = V[:,-2]
+        V["id"][:, 0] = 0
+        V["id"][:,-1] = 0
+        V["color"] = (0,0,0,1)
 
-        return V
+        # Uniforms
+        if self.utype:
+            U = np.zeros(itemcount, dtype=self.utype)
+            for name in self.utype.names:
+                if name not in ["__unused__"]:
+                    U[name] = kwargs.get(name, defaults[name])
+        else:
+            U = None
+
+        Collection.append(self, vertices=V, uniforms=U,
+                                itemsize=itemsize+2+closed)
+
+
+
 
     # Old path
     # -------------

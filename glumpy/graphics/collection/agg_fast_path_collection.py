@@ -3,73 +3,176 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+"""
+Antigrain Geometry Fast Path Collection
+
+This collection provides antialiased and accurate paths with caps and miter
+joins. It consume x4 more memory than regular lines and is a bit slower, but
+the quality of the output is worth the cost. Note that no control can be made
+on miter joins which may result in some glitches on screen.
+"""
 import numpy as np
 from glumpy import gl, library
-from glumpy.transforms import Position3D
+from glumpy.transforms import Position3D, Viewport
 from glumpy.graphics.collection.collection import Collection
+
 
 
 class AggFastPathCollection(Collection):
     """
+    Antigrain Geometry Fast Path Collection
+
+    This collection provides antialiased and accurate paths with caps and miter
+    joins. It consume x4 more memory than regular lines and is a bit slower,
+    but the quality of the output is worth the cost. Note that no control can
+    be made on miter joins which may result in some glitches on screen.
     """
 
-    def __init__(self, vertex=None, fragment=None, transform=None, **kwargs):
-        dtype = [ ('prev',       (np.float32, 3), '!local', (0,0,0)),
-                  ('curr',       (np.float32, 3), '!local', (0,0,0)),
-                  ('next',       (np.float32, 3), '!local', (0,0,0)),
-                  ('id',         (np.float32, 1), '!local', 0),
-                  ('color',      (np.float32, 4), 'global', (0,0,0,1)),
-                  ('linewidth',  (np.float32, 1), 'global', 1),
-                  ('antialias',  (np.float32, 1), 'global', 1) ]
+    def __init__(self, user_dtype=None, transform=None,
+                 vertex=None, fragment=None, **kwargs):
+        """
+        Initialize the collection.
 
-        vertex = library.get('collections/agg-fast-path.vert')
-        fragment = library.get('collections/agg-fast-path.frag')
+        Parameters
+        ----------
+
+        user_dtype: list
+            The base dtype can be completed (appended) by the used_dtype. It
+            only make sense if user also provide vertex and/or fragment shaders
+
+        transform: glumpy.Tranforms
+            The default vertex shader apply the supplied transform to the
+            vertices positions before computing the actual vertices positions
+            for path thickness. Note that it is necessary to add the
+            glumpy.transforms.Viewport transform at the end of the supplied transform.
+
+        vertex: string
+            Vertex shader code
+
+        fragment: string
+            Fragment  shader code
+
+        caps : string
+            'local', 'shared' or 'global'
+
+        color : string
+            'local', 'shared' or 'global'
+
+        linewidth : string
+            'local', 'shared' or 'global'
+
+        antialias : string
+            'local', 'shared' or 'global'
+        """
+
+        base_dtype = [ ('prev',       (np.float32, 3), '!local', (0,0,0)),
+                       ('curr',       (np.float32, 3), '!local', (0,0,0)),
+                       ('next',       (np.float32, 3), '!local', (0,0,0)),
+                       ('id',         (np.float32, 1), '!local', 0),
+                       ('color',      (np.float32, 4), 'global', (0,0,0,1)),
+                       ('linewidth',  (np.float32, 1), 'global', 1),
+                       ('antialias',  (np.float32, 1), 'global', 1) ]
+        dtype = base_dtype
+        if user_dtype:
+            dtype.extend(user_dtype)
+
+        if vertex is None:
+            vertex = library.get('collections/agg-fast-path.vert')
+        if fragment is None:
+            fragment = library.get('collections/agg-fast-path.frag')
 
         Collection.__init__(self, dtype=dtype, itype=None, mode=gl.GL_TRIANGLE_STRIP,
                             vertex=vertex, fragment=fragment, **kwargs)
 
-        if transform is not None:
-            self._program["transform"] = transform
-        else:
-            self._program["transform"] = Position3D("position")
+        # Set hooks if necessary
+        if "transform" in self._program._hooks.keys():
+            if transform is not None:
+                self._program["transform"] = transform
+            else:
+                self._program["transform"] = Position3D() + Viewport()
 
 
-    def append(self, P, closed=False, **kwargs):
 
-        V = self.bake(P, closed=closed)
-        U = np.zeros(1, dtype=self.utype) if self.utype else None
+    def append(self, P, closed=False, itemsize=None, **kwargs):
+        """
+        Append a new set of vertices to the collection.
 
-        protect = ["prev", "curr", "next", "id"]
-        self.apply_defaults(V, U, protect=protect, **kwargs)
-        Collection.append(self, vertices=V, uniforms=U)
+        For kwargs argument, n is the number of vertices (local) or the number
+        of item (shared)
 
+        Parameters
+        ----------
 
-    def bake(self, P, closed=True):
+        P : np.array
+            Vertices positions of the path(s) to be added
 
-        n = len(P)
+        closed: bool
+            Whether path(s) is/are closed
+
+        itemsize: int or None
+            Size of an individual path
+
+        caps : list, array or 2-tuple
+           Path start /end cap
+
+        color : list, array or 4-tuple
+           Path color
+
+        linewidth : list, array or float
+           Path linewidth
+
+        antialias : list, array or float
+           Path antialias area
+        """
+
+        itemsize  = itemsize or len(P)
+        itemcount = len(P)/itemsize
+
+        P = P.reshape(itemcount,itemsize,3)
         if closed:
-            R = np.empty(n+3, dtype=self.vtype)
-            R_ = R[1:-1]
-            R_['curr'][:-1]  = P
-            R_['prev'][1:-1] = P[:-1]
-            R_['prev'][0]    = P[-1]
-            R_['next'][:-2]  = P[1:]
-            R_['next'][-2]   = P[0]
-            R_[-1]           = R_[0]
+            V = np.empty((itemcount,itemsize+3), dtype=self.vtype)
+            # Apply default values on vertices
+            for name in self.vtype.names:
+                V[name][1:-2] = kwargs.get(name, self._defaults[name])
+            V['prev'][:,2:-1] = P
+            V['prev'][:,1]    = V['prev'][:,-2]
+            V['curr'][:,1:-2] = P
+            V['curr'][:,-2]   = V['curr'][:,1]
+            V['next'][:,0:-3] = P
+            V['next'][:,-3]   = V['next'][:,0]
+            V['next'][:,-2]   = V['next'][:,1]
         else:
-            R = np.empty(n+2, dtype=self.vtype)
-            R_ = R[1:-1]
-            R_['curr']      = P
-            R_['prev'][1:]  = P[:-1]
-            R_['prev'][0]   = P[0]
-            R_['next'][:-1] = P[1:]
-            R_['next'][-1]  = P[-1]
-        R = np.repeat(R,2,axis=0)
-        R['id'] = np.tile([1,-1],len(R)/2)
+            V = np.empty((itemcount,itemsize+2), dtype=self.vtype)
+            # Apply default values on vertices
+            for name in self.vtype.names:
+                V[name][1:-1] = kwargs.get(name, self._defaults[name])
+            V['prev'][:,2:] = P
+            V['prev'][:,1] = V['prev'][:,2]
+            V['curr'][:,1:-1] = P
+            V['next'][:,:-2] = P
+            V['next'][:,-2] = V['next'][:,-3]
 
-        R[:+2] = R[+2:+4]
-        R[-2:] = R[-4:-2]
-        R[:+2]['id'] = 2,-2
-        R[-2:]['id'] = 2,-2
+        V[:, 0] = V[:, 1]
+        V[:,-1] = V[:,-2]
+        V = V.ravel()
+        V = np.repeat(V,2,axis=0)
+        V['id'] = np.tile([1,-1],len(V)/2)
+        if closed:
+            V = V.reshape(itemcount,2*(itemsize+3))
+        else:
+            V = V.reshape(itemcount,2*(itemsize+2))
+        V["id"][:,:2 ] = 2,-2
+        V["id"][:,-2:] = 2,-2
+        V = V.ravel()
 
-        return R
+        # Uniforms
+        if self.utype:
+            U = np.zeros(itemcount, dtype=self.utype)
+            for name in self.utype.names:
+                if name not in ["__unused__"]:
+                    U[name] = kwargs.get(name, defaults[name])
+        else:
+            U = None
+
+        Collection.append(self, vertices=V, uniforms=U,
+                          itemsize=2*(itemsize+2+closed))

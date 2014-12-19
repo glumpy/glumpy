@@ -3,10 +3,18 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+"""
+Antigrain Geometry Path Collection
+
+This collection provides antialiased and accurate paths with caps and joins. It
+is memory hungry (x8) and slow (x.25) so it is to be used sparingly, mainly for
+thick paths where quality is critical.
+"""
 import numpy as np
 from glumpy import gl, library
 from glumpy.transforms import Position3D, Viewport
 from glumpy.graphics.collection.collection import Collection
+
 
 
 class AggPathCollection(Collection):
@@ -14,7 +22,7 @@ class AggPathCollection(Collection):
     Antigrain Geometry Path Collection
 
     This collection provides antialiased and accurate paths with caps and
-    joins. It is memory hungry (x8) and slow (x.25) and is to be used
+    joins. It is memory hungry (x8) and slow (x.25) so it is to be used
     sparingly, mainly for thick paths where quality is critical.
     """
 
@@ -66,6 +74,7 @@ class AggPathCollection(Collection):
                        ('p2',         (np.float32, 3), '!local', (0,0,0)),
                        ('p3',         (np.float32, 3), '!local', (0,0,0)),
                        ('uv',         (np.float32, 2), '!local', (0,0)),
+
                        ('caps',       (np.float32, 2), 'global', (0,0)),
                        ('join',       (np.float32, 1), 'global', 0),
                        ('color',      (np.float32, 4), 'global', (0,0,0,1)),
@@ -93,11 +102,42 @@ class AggPathCollection(Collection):
                 self._program["transform"] = Position3D() + Viewport()
 
 
-    def append(self, P, closed=True, itemsize=None, **kwargs):
+    def append(self, P, closed=False, itemsize=None, **kwargs):
         """
-        Bake a list of vertices for rendering them as thick line. Each line segment
-        must have its own vertices because of antialias (this means no vertex
-        sharing between two adjacent line segments).
+        Append a new set of vertices to the collection.
+
+        For kwargs argument, n is the number of vertices (local) or the number
+        of item (shared)
+
+        Parameters
+        ----------
+
+        P : np.array
+            Vertices positions of the path(s) to be added
+
+        closed: bool
+            Whether path(s) is/are closed
+
+        itemsize: int or None
+            Size of an individual path
+
+        caps : list, array or 2-tuple
+           Path start /end cap
+
+        join : list, array or float
+           path segment join
+
+        color : list, array or 4-tuple
+           Path color
+
+        miter_limit : list, array or float
+           Miter limit for join
+
+        linewidth : list, array or float
+           Path linewidth
+
+        antialias : list, array or float
+           Path antialias area
         """
 
         itemsize  = itemsize or len(P)
