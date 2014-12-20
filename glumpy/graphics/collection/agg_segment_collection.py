@@ -148,17 +148,3 @@ class AggSegmentCollection(Collection):
             U = None
 
         Collection.append(self, vertices=V, uniforms=U, indices=I, itemsize=4*itemcount)
-
-        # # WARNING: we must take care of kwargs when they relates to an attribute
-        # count = len(P0)
-        # V = np.zeros(count, dtype=self.vtype)
-        # U = np.zeros(len(P0), dtype=self.utype) if self.utype else None
-        # protect = ["P0", "P1", "index"]
-        # self.apply_defaults(V, U, protect=protect, **kwargs)
-        # V['P0'] = P0
-        # V['P1'] = P1
-        # V = V.repeat(4,axis=0)
-        # V['index'] = np.resize([0,1,2,3], 4*count)
-        # I = np.resize( np.array([0,1,2,0,2,3], dtype=np.uint32), 6*count)
-        # I += np.repeat( 4*np.arange(count), 6)
-        # Collection.append(self, vertices=V, uniforms=U, indices=I)

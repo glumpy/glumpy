@@ -49,6 +49,7 @@ void main()
         if (d > 4.0) break;
         z = vec2(x,y);
     }
+
     if ( i < n ) {
         float nu = log(log(sqrt(d))/log_2)/log_2;
         float index = float(i) + 1.0 - nu;

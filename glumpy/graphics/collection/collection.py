@@ -140,20 +140,6 @@ class Collection(BaseCollection):
         BaseCollection.__setitem__(self, key, value)
 
 
-    def apply_defaults(self, V, U, protect=[], **kwargs):
-        """ Apply default values to unset fields in V and U """
-
-        protect.append("collection_index")
-        defaults = self._defaults
-        for name in self.vtype.names:
-            if name not in protect:
-                V[name] = kwargs.get(name, defaults[name])
-        if self.utype:
-            for name in self.utype.names:
-                if name not in ["__unused__"]:
-                    U[name] = kwargs.get(name, defaults[name])
-
-
     def draw(self, mode = gl.GL_POINTS):
         """ Draw collection """
 
