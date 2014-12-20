@@ -33,6 +33,8 @@ __windows__ = []
 __backend__ = None
 
 
+__running__ = False
+
 
 # --------------------------------------------------------------------- fps ---
 def fps():
@@ -264,12 +266,15 @@ def __init__(clock=None, framerate=None, backend=None):
 
 # -------------------------------------------------------------------- quit ---
 def quit():
-    count = len(__backend__.windows())
-    while count:
-        dt = clock.tick()
-        window = __backend__.windows()[-1]
-        window.close()
-        count = __backend__.process(dt)
+    global __running__
+
+    __running__ = False
+    # count = len(__backend__.windows())
+    # while count:
+    #     dt = clock.tick()
+    #     window = __backend__.windows()[-1]
+    #     window.close()
+    #     count = __backend__.process(dt)
 
 
 # --------------------------------------------------------------------- run ---
@@ -291,6 +296,7 @@ def run(clock=None, framerate=None, interactive=None,
     framecount : int
         Number of frame to display before stopping.
     """
+    global __running__
 
     clock = __init__(clock=clock, framerate=framerate, backend=__backend__)
     options = parser.get_options()
@@ -321,8 +327,9 @@ def run(clock=None, framerate=None, interactive=None,
         inputhook_manager.set_inputhook(run)
 
     else:
+        __running__ = True
         count = len(__backend__.windows())
-        while count and duration > 0 and framecount > 0:
+        while count and duration > 0 and framecount > 0 and __running__:
             dt = clock.tick()
             duration -= dt
             framecount -= 1
