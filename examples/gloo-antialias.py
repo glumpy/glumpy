@@ -41,7 +41,7 @@ void main (void)
 """
 
 # Create window
-window = app.Window(width=4*512+32, height=3*256+32, color=(1,1,1,1))
+window = app.Window(width=2*512+16, height=3*128+16, color=(1,1,1,1))
 
 # What to draw when necessary
 @window.event
@@ -64,7 +64,7 @@ data['fg_color'] = 0, 0, 0, 1
 data['bg_color'] = 1, 1, 1, 0
 data['orientation'] = 0
 
-radius = 256
+radius = 128
 
 for j in range(3):
     for i in range(8):
@@ -74,7 +74,7 @@ for j in range(3):
         data['orientation'][index] = 0
         data['position'][index]    = x, y, 0
         data['size'][index]        = .75*radius
-        data['linewidth'][index]   = 1+i*3
+        data['linewidth'][index]   = 1+i*2
         data['antialias'][index] = 1
         if j == 2:
             data['antialias'][index] = 1+i*3
