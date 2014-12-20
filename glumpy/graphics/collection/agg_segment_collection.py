@@ -102,9 +102,6 @@ class AggSegmentCollection(Collection):
         P : np.array
             Vertices positions of the path(s) to be added
 
-        closed: bool
-            Whether path(s) is/are closed
-
         itemsize: int or None
             Size of an individual path
 
