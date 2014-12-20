@@ -33,4 +33,8 @@ window.attach(transform)
 collection = SegmentCollection(mode="agg", linewidth='local', transform=transform)
 collection.append(P0, P1, linewidth = np.linspace(1, 8, n))
 collection['antialias'] = 1
+
+#collection = SegmentCollection(mode="raw", transform=transform)
+#collection.append(P0, P1)
+
 app.run()
