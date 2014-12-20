@@ -69,10 +69,18 @@ class RawPathCollection(Collection):
         P = P.reshape(itemcount,itemsize,3)
         if closed:
             V = np.empty((itemcount,itemsize+3), dtype=self.vtype)
+            # Apply default values on vertices
+            for name in self.vtype.names:
+                if name not in ['collection_index', 'position']:
+                    V[name][1:-2] = kwargs.get(name, self._defaults[name])
             V["position"][:,1:-2] = P
             V["position"][:,  -2] = V["position"][:,1]
         else:
             V = np.empty((itemcount,itemsize+2), dtype=self.vtype)
+            # Apply default values on vertices
+            for name in self.vtype.names:
+                if name not in ['collection_index', 'position']:
+                    V[name][1:-1] = kwargs.get(name, self._defaults[name])
             V["position"][:,1:-1] = P
         V["id"] = 1
         V[:, 0] = V[:, 1]
@@ -91,36 +99,3 @@ class RawPathCollection(Collection):
 
         Collection.append(self, vertices=V, uniforms=U,
                                 itemsize=itemsize+2+closed)
-
-
-
-
-    # Old path
-    # -------------
-    # def append(self, P, **kwargs):
-    #     """ """
-
-    #     itemsize = kwargs.get('itemsize', len(P))
-    #     count = len(P)/itemsize
-
-    #     V = np.zeros(len(P), dtype=self.vtype)
-    #     V['position'] = P
-    #     I = np.repeat(np.arange(itemsize),2)[1:-1]
-
-    #     defaults = self._defaults
-    #     reserved = ["collection_index", "position"]
-    #     for name in self.vtype.names:
-    #         if name not in reserved:
-    #             if name in kwargs.keys() or name in defaults.keys():
-    #                 V[name] = kwargs.get(name, defaults[name])
-    #     if self.utype:
-    #         U = np.zeros(count, dtype=self.utype)
-    #         for name in self.utype.names:
-    #             if name not in ["__unused__"]:
-    #                 if name in kwargs.keys() or name in defaults.keys():
-    #                     U[name] = kwargs.get(name, defaults[name])
-    #     else:
-    #         U = None
-
-
-    #     Collection.append(self, vertices=V, indices=I, uniforms=U, itemsize=itemsize)

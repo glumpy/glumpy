@@ -11,8 +11,10 @@ from glumpy.graphics.collection import PointCollection
 window = app.Window(1024,1024, color=(1,1,1,1))
 
 n = 10000
-C = PointCollection("agg")
-C.append(np.random.normal(0,.25,(n,3)))
+C = PointCollection("agg", color="shared")
+C.append(np.random.normal(0,.25,(n,3)), itemsize=n/2)
+C["color"] = (1,0,0,1), (0,0,1,1)
+
 
 @window.event
 def on_draw(dt):

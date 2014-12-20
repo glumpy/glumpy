@@ -155,7 +155,7 @@ class AggPathCollection(Collection):
 
         # Apply default values on vertices
         for name in self.vtype.names:
-            if name not in ['p0', 'p1', 'p2', 'p3']:
+            if name not in ['collection_index', 'p0', 'p1', 'p2', 'p3']:
                 V[name] = kwargs.get(name, self._defaults[name])
 
         # Extract relevant segments only
