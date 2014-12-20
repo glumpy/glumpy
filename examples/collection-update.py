@@ -10,14 +10,11 @@ from glumpy.graphics.collection import RawPathCollection
 
 
 vertex = """
-// Those are added automatically by the collection
-// -----------------------------------------------
-// uniform   sampler2D uniforms;
-// uniform   vec3      uniforms_shape;
-// attribute float     collection_index;
-//
-// attribute vec3 position;
-// attribute vec4 color;
+// Externs
+// ------------------------------------
+// extern vec3  position;
+// extern float id;
+// extern vec4  color;
 // ... user-defined through collection init dtypes
 // -----------------------------------------------
 
@@ -34,9 +31,9 @@ void main()
     // If you want to make sure to pass it to the fragment,
     // It's better to define it here explicitly
     if (selected > 0.0)
-        v_color = vec4(1,1,1,1);
+        v_color = vec4(1,1,1,1*id);
     else
-        v_color = color;
+        v_color = vec4(color.rgb, color.a*id);
 
     float index = collection_index;
 
@@ -72,26 +69,42 @@ n, p = rows*cols, 1000
 lines = RawPathCollection(user_dtype = [("amplitude", (np.float32, 1), 'shared', 1),
                                         ("selected",  (np.float32, 1), 'shared', 0),
                                         ("xscale",    (np.float32, 1), 'shared', 1)],
-                       vertex=vertex, fragment=fragment )
-lines["rows"] = rows
-lines["cols"] = cols
-
+                          color="shared", vertex=vertex, fragment=fragment )
 lines.append(np.random.uniform(-1,1,(n*p,3)), itemsize=p)
 
-lines["position"][:,0] = np.tile(np.linspace(-1,+1,p),n)
+
+lines["rows"] = rows
+lines["cols"] = cols
 lines["amplitude"][:n] = np.random.uniform(0.25,0.75,n)
 lines["color"][:n] = np.random.uniform(0.5,1.0,(n,4))
 lines["color"][:n,3] = 1.0
 lines["selected"] = 0.0
 lines["xscale"][:n] = np.random.uniform(1,25,n)
 
-window = app.Window(800,600)
+# Each segment has two extra points for breaking the line strip
+positions = lines["position"].reshape(rows*cols,p+2,3)
+positions[:,1:-1,0] = np.tile(np.linspace(-1,+1,p),n).reshape(rows*cols,p)
+
+# Here we ensure:
+#   * first point = second point
+#   * last point = prev last point
+positions[:, 0] = positions[:, 1]
+positions[:,-1] = positions[:,-2]
+
+window = app.Window(1400,1000)
 @window.event
 def on_draw(dt):
-    window.clear(), lines.draw()
-    Y = lines["position"][:,1].reshape(n,p)
-    Y[:,:-10] = Y[:,10:]
-    Y[:,-10:] = np.random.uniform(-1,1, (n,10))
+    window.clear()
+    lines.draw()
+
+    positions[:,:-10,1] = positions[:,10:,1]
+    positions[:,-10:,1] = np.random.uniform(-1,1, (n,10))
+    # Here we ensure:
+    #   * first point = second point
+    #   * last point = prev last point
+    positions[:, 0] = positions[:, 1]
+    positions[:,-1] = positions[:,-2]
+
 
 def get_index(x,y):
     """ Find the index of the plot under mouse """

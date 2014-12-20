@@ -79,14 +79,13 @@ class RawPathCollection(Collection):
         V[:,-1] = V[:,-2]
         V["id"][:, 0] = 0
         V["id"][:,-1] = 0
-        V["color"] = (0,0,0,1)
 
         # Uniforms
         if self.utype:
             U = np.zeros(itemcount, dtype=self.utype)
             for name in self.utype.names:
                 if name not in ["__unused__"]:
-                    U[name] = kwargs.get(name, defaults[name])
+                    U[name] = kwargs.get(name, self._defaults[name])
         else:
             U = None
 
