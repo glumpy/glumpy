@@ -131,7 +131,7 @@ class MarkerCollection(Collection):
         itemsize  = itemsize or 1
         itemcount = len(P)/itemsize
 
-        V = np.empty(itemcount, dtype=self.vtype)
+        V = np.empty(itemcount*itemsize, dtype=self.vtype)
 
         # Apply default values on vertices
         for name in self.vtype.names:
