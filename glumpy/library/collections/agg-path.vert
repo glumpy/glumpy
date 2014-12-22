@@ -72,25 +72,40 @@ void main (void)
     vec2 v1 = normalize(_p2 - _p1);
     vec2 v2 = normalize(_p3 - _p2);
 
+
     // Determine the normal of each of the 3 segments (previous, current, next)
     vec2 n0 = vec2(-v0.y, v0.x);
     vec2 n1 = vec2(-v1.y, v1.x);
     vec2 n2 = vec2(-v2.y, v2.x);
 
     // Determine miter lines by averaging the normals of the 2 segments
-    vec2 miter_a = normalize(n0 + n1); // miter at start of current segment
-    vec2 miter_b = normalize(n1 + n2); // miter at end of current segment
+    vec2 miter_a;
+    vec2 miter_b;
+    const float epsilon = 0.1;
+
+    // WARN: Here we test if v0 = -v1 relatively to epsilon
+    if( length(v0+v1) < epsilon ) {
+        miter_a = n1;
+    } else {
+        miter_a = normalize(n0 + n1); // miter at start of current segment
+    }
+
+    // WARN: Here we test if v1 = -v2 relatively to epsilon
+    if( length(v1+v2) < epsilon ) {
+        miter_b = n1;
+    } else {
+        miter_b = normalize(n1 + n2); // miter at end of current segment
+    }
 
     // Determine the length of the miter by projecting it onto normal
     vec2 p,v;
     float d, z;
     float w = linewidth/2.0 + 1.5*antialias;
     v_length = length(_p2-_p1);
-
+    float m = miter_limit*linewidth/2.0;
     float length_a = w / dot(miter_a, n1);
     float length_b = w / dot(miter_b, n1);
 
-    float m = miter_limit*linewidth/2.0;
 
     // Angle between prev and current segment (sign only)
     float d0 = +1.0;
@@ -102,7 +117,7 @@ void main (void)
 
     // Adjust vertex position
     if (uv.x == -1) {
-        z = p1.z;
+        z = p1_.z;
 
         // Cap at start
         if( p0 == p1 ) {
@@ -123,7 +138,7 @@ void main (void)
         v_bevel_distance.x = uv.y*d0*point_to_line_distance(_p1+d0*n0*w, _p1+d0*n1*w, p);
         v_bevel_distance.y =        -point_to_line_distance(_p2+d1*n1*w, _p2+d1*n2*w, p);
     } else {
-        z = p2.z;
+        z = p2_.z;
 
         // Cap at end
         if( p2 == p3 ) {

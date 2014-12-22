@@ -5,36 +5,36 @@
 #  Contact: mcseem@antigrain.com
 #           mcseemagg@yahoo.com
 #           http://antigrain.com
-#  
+#
 #  AGG is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
 #  of the License, or (at your option) any later version.
-#  
+#
 #  AGG is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with AGG; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 # ----------------------------------------------------------------------------
 #
 # Python translation by Nicolas P. Rougier
 # Copyright (C) 2013 Nicolas P. Rougier. All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
-# 
+#
 # 2. Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in the
 #    documentation and/or other materials provided with the distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY NICOLAS P. ROUGIER ''AS IS'' AND ANY EXPRESS OR
 # IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 # MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -45,7 +45,7 @@
 # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# 
+#
 # The views and conclusions contained in the software and documentation are
 # those of the authors and should not be interpreted as representing official
 # policies, either expressed or implied, of Nicolas P. Rougier.
@@ -72,7 +72,7 @@ def calc_sq_distance( x1,y1, x2,y2 ):
 
 
 # -----------------------------------------------------------------------------
-def curve3_recursive_bezier( points, x1, y1, x2, y2, x3, y3, level = 0 ):
+def quadratic_recursive( points, x1, y1, x2, y2, x3, y3, level = 0 ):
     if level > curve_recursion_limit:
         return
 
@@ -132,13 +132,13 @@ def curve3_recursive_bezier( points, x1, y1, x2, y2, x3, y3, level = 0 ):
 
     # Continue subdivision
     # --------------------
-    curve3_recursive_bezier( points, x1, y1, x12, y12, x123, y123, level + 1 )
-    curve3_recursive_bezier( points, x123, y123, x23, y23, x3, y3, level + 1 )
+    quadratic_recursive( points, x1, y1, x12, y12, x123, y123, level + 1 )
+    quadratic_recursive( points, x123, y123, x23, y23, x3, y3, level + 1 )
 
 
 # -----------------------------------------------------------------------------
-def curve4_recursive_bezier( points, x1, y1, x2, y2, x3, y3, x4, y4, level=0):
-    if level > curve_recursion_limit: 
+def cubic_recursive( points, x1, y1, x2, y2, x3, y3, x4, y4, level=0):
+    if level > curve_recursion_limit:
         return
 
     # Calculate all the mid-points of the line segments
@@ -186,7 +186,7 @@ def curve4_recursive_bezier( points, x1, y1, x2, y2, x3, y3, x4, y4, level=0):
                 # Simple collinear case, 1---2---3---4
                 # We can leave just two endpoints
                 return
-             
+
             if d2 <= 0:
                 d2 = calc_sq_distance(x2, y2, x1, y1)
             elif d2 >= 1:
@@ -217,13 +217,13 @@ def curve4_recursive_bezier( points, x1, y1, x2, y2, x3, y3, x4, y4, level=0):
             if m_angle_tolerance < curve_angle_tolerance_epsilon:
                 points.append((x23, y23) )
                 return
-            
+
             # Angle Condition
             # ---------------
             da1 = math.fabs(math.atan2(y4 - y3, x4 - x3) - math.atan2(y3 - y2, x3 - x2))
             if da1 >= math.pi:
                 da1 = 2*math.pi - da1
-            
+
             if da1 < m_angle_tolerance:
                 points.extend( [(x2, y2),(x3, y3)] )
                 return
@@ -240,22 +240,22 @@ def curve4_recursive_bezier( points, x1, y1, x2, y2, x3, y3, x4, y4, level=0):
             if m_angle_tolerance < curve_angle_tolerance_epsilon:
                 points.append( (x23, y23) )
                 return
-            
+
             # Angle Condition
             # ---------------
             da1 = math.fabs(math.atan2(y3 - y2, x3 - x2) - math.atan2(y2 - y1, x2 - x1))
             if da1 >= math.pi:
                 da1 = 2*math.pi - da1
-            
+
             if da1 < m_angle_tolerance:
                 points.extend( [(x2, y2),(x3, y3)] )
                 return
-            
+
             if m_cusp_limit != 0.0:
                 if da1 > m_cusp_limit:
                     points.append( (x2, y2) )
                     return
-        
+
     elif s == 3:
         # Regular case
         # ------------
@@ -266,7 +266,7 @@ def curve4_recursive_bezier( points, x1, y1, x2, y2, x3, y3, x4, y4, level=0):
             if m_angle_tolerance < curve_angle_tolerance_epsilon:
                 points.append( (x23, y23) )
                 return
-            
+
             # Angle & Cusp Condition
             # ----------------------
             k   = math.atan2(y3 - y2, x3 - x2)
@@ -282,29 +282,29 @@ def curve4_recursive_bezier( points, x1, y1, x2, y2, x3, y3, x4, y4, level=0):
                 # ---------------------------------
                 points.append( (x23, y23) )
                 return
-            
+
             if m_cusp_limit != 0.0:
                 if da1 > m_cusp_limit:
                     points.append( (x2, y2) )
                     return
-                
+
                 if da2 > m_cusp_limit:
                     points.append( (x3, y3) )
                     return
-    
+
     # Continue subdivision
     # --------------------
-    curve4_recursive_bezier( points, x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1 )
-    curve4_recursive_bezier( points, x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1 )
+    cubic_recursive( points, x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1 )
+    cubic_recursive( points, x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1 )
 
 
 # -----------------------------------------------------------------------------
-def curve3_bezier( p1, p2, p3 ):
+def quadratic( p1, p2, p3 ):
     x1,y1 = p1
     x2,y2 = p2
     x3,y3 = p3
     points = []
-    curve3_recursive_bezier( points, x1,y1, x2,y2, x3,y3 )
+    quadratic_recursive( points, x1,y1, x2,y2, x3,y3 )
 
     dx,dy = points[0][0]-x1, points[0][1]-y1
     if (dx*dx+dy*dy) > 1e-10: points.insert(0, (x1,y1) )
@@ -312,23 +312,21 @@ def curve3_bezier( p1, p2, p3 ):
     dx,dy = points[-1][0]-x3, points[-1][1]-y3
     if (dx*dx+dy*dy) > 1e-10: points.append( (x3,y3) )
 
-    return np.array( points ).reshape(len(points),2)
+    return points
 
 
 # -----------------------------------------------------------------------------
-def curve4_bezier( p1, p2, p3, p4 ):
+def cubic( p1, p2, p3, p4 ):
     x1,y1 = p1
     x2,y2 = p2
     x3,y3 = p3
     x4,y4 = p4
     points = []
-    curve4_recursive_bezier( points, x1,y1, x2,y2, x3,y3, x4,y4 )
+    cubic_recursive( points, x1,y1, x2,y2, x3,y3, x4,y4 )
 
     dx,dy = points[0][0]-x1, points[0][1]-y1
     if (dx*dx+dy*dy) > 1e-10: points.insert(0, (x1,y1) )
     dx,dy = points[-1][0]-x4, points[-1][1]-y4
     if (dx*dx+dy*dy) > 1e-10: points.append( (x4,y4) )
 
-    return np.array( points ).reshape(len(points),2)
-
-
+    return points

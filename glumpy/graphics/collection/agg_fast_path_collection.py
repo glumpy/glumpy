@@ -146,7 +146,8 @@ class AggFastPathCollection(Collection):
             V = np.empty((itemcount,itemsize+2), dtype=self.vtype)
             # Apply default values on vertices
             for name in self.vtype.names:
-                V[name][1:-1] = kwargs.get(name, self._defaults[name])
+                if name not in ['collection_index', 'prev', 'curr', 'next']:
+                    V[name][1:-1] = kwargs.get(name, self._defaults[name])
             V['prev'][:,2:] = P
             V['prev'][:,1] = V['prev'][:,2]
             V['curr'][:,1:-1] = P

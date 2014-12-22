@@ -13,5 +13,5 @@ class OrthographicProjection(Transform):
         Transform.__init__(self, code, *args, **kwargs)
 
     def on_resize(self, width, height):
-        self["projection"] = glm.ortho(0, width, 0, height, +1,-1)
+        self["projection"] = glm.ortho(0, width, 0, height, +1000,-1000)
         Transform.on_resize(self, width, height)
