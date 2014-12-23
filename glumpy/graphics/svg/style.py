@@ -3,25 +3,60 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-from xml.etree import ElementTree
+from . color import Color
 
+_converters = {
+    "color":             Color,
+    "fill":              Color,
+    "stroke":            Color
+}
+
+
+# ------------------------------------------------------------------- Style ---
 class Style(object):
+    """
+    SVG uses styling properties to describe many of its document
+    parameters. Styling properties define how the graphics elements in the SVG
+    content are to be rendered. SVG uses styling properties for the following:
 
-    def __init__(self, definition):
-        self._fill         = None
-        self._stroke       = None
-        self._parse(definition)
+    * Parameters which are clearly visual in nature and thus lend themselves to
+      styling. Examples include all attributes that define how an object is
+      "painted," such as fill and stroke colors, linewidths and dash styles.
+
+    * Parameters having to do with text styling such as font family and size.
+
+    * Parameters which impact the way that graphical elements are rendered,
+      such as specifying clipping paths, masks, arrowheads, markers and filter
+      effects.
+    """
+
+    def __init__(self, description=None):
+
+        self.fill = None
+        self.stroke = None
+        self.color = None
+
+        if description:
+            self.parse(description)
 
 
-    def _parse(self, definition):
-        element = ElementTree.fromstring(definition)
 
-        self._fill = element.get("fill", None)
-        self._stroke = element.get("stroke", None)
+    def parse(self, description):
+        """ Parse an SVG style description """
 
-        print self._fill, self._stroke
+        items = description.strip().split(";")
+	attributes = dict([item.strip().split(":") for item in items if item])
+
+        for key,value in attributes.items():
+            if key in _converters:
+                self.__setattr__(key, _converters[key](value))
 
 
-style = Style("""
-<rect x="400" y="100" width="400" height="200"
-      style="fill: yellow" />""")
+
+
+
+# -----------------------------------------------------------------------------
+if __name__ == '__main__':
+    style = Style("""fill: #ffffff;
+                     stroke:#000000;
+                     stroke-width:0.172""")
