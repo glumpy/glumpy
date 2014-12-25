@@ -40,7 +40,7 @@ def on_key_press(key, modifiers):
 
 
 triangles = TriangleCollection("agg", transform=transform)
-paths = PathCollection("agg+", transform=transform)
+paths = PathCollection("agg+", transform=transform, linewidth='shared')
 paths["miter_limit"] = 4.0
 paths["linewidth"] = 1.0
 
@@ -91,7 +91,8 @@ for path, style in svg_open("tiger.svg"):
         P += (350,700,0)
         if style.stroke is not None:
             P[:,2] = z-1
-            paths.append(P, closed=closed, color=style.stroke.rgba)
+            paths.append(P, closed=closed, color=style.stroke.rgba,
+                         linewidth = style.stroke_width)
 
         if style.fill is not None:
             P,I = triangulate(P)
