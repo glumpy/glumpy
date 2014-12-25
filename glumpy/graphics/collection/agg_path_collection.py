@@ -189,7 +189,7 @@ class AggPathCollection(Collection):
             U = np.zeros(itemcount, dtype=self.utype)
             for name in self.utype.names:
                 if name not in ["__unused__"]:
-                    U[name] = kwargs.get(name, defaults[name])
+                    U[name] = kwargs.get(name, self._defaults[name])
         else:
             U = None
 
