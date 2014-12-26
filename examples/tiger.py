@@ -79,7 +79,7 @@ def length((x0,y0), (x1,y1)):
 
 z = 500
 for path, style in svg_open("tiger.svg"):
-    for V in path.segments:
+    for V in path.vertices:
         if len(V) < 3: continue
         closed = False
         if length(V[0], V[-1]) == 0:

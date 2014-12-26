@@ -114,8 +114,8 @@ class Arc(Command):
         x,y = x + ox, y + oy
         x0,y0 = current
         self.previous = x,y
-        segments = elliptical_arc(x0,y0, rx,ry, angle, large, sweep_flag, x, y)
-        return segments[1:]
+        vertices = elliptical_arc(x0,y0, rx,ry, angle, large, sweep_flag, x, y)
+        return vertices[1:]
 
 
 # ------------------------------------------------------------------- Cubic ---
@@ -132,8 +132,8 @@ class Cubic(Command):
         x2,y2 = x2+ox, y2+oy
         x3,y3 = x3+ox, y3+oy
         self.previous = x2,y2
-        segments = curves.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
-        return segments[1:]
+        vertices = curves.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
+        return vertices[1:]
 
 
 # --------------------------------------------------------------- Quadratic ---
@@ -149,9 +149,9 @@ class Quadratic(Command):
         x1,y1 = x1+ox, y1+oy
         x2,y2 = x+ox, y+oy
         self.previous = x1,y1
-        segments = curves.quadratic((x0,y0), (x1,y1), (x2,y2))
+        vertices = curves.quadratic((x0,y0), (x1,y1), (x2,y2))
 
-        return segments[1:]
+        return vertices[1:]
 
 
 
@@ -169,9 +169,9 @@ class SmoothCubic(Command):
         x3,y3 = x3+ox, y3+oy
         x1,y1 = 2*x0 - previous[0], 2*y0 - previous[1]
         self.previous = x2,y2
-        segments = curves.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
+        vertices = curves.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
 
-        return segments[1:]
+        return vertices[1:]
 
 
 # --------------------------------------------------------- SmoothQuadratic ---
@@ -187,37 +187,20 @@ class SmoothQuadratic(Command):
         x1,y1 = 2*x0 - previous[0], 2*y0 - previous[1]
         x2, y2 = x2+ox, y2+oy
         self.previous = x1,y1
-        segments = curves.quadratic( (x0,y0), (x1,y1), (x2,y2) )
+        vertices = curves.quadratic( (x0,y0), (x1,y1), (x2,y2) )
 
-        return segments[1:]
+        return vertices[1:]
 
 
 # -------------------------------------------------------------------- Path ---
 class Path(object):
-    """
-    Paths represent the outline of a shape which can be filled, stroked, used
-    as a clipping path, or any combination of the three.
-
-    A path is described using the concept of a current point. In an analogy
-    with drawing on paper, the current point can be thought of as the location
-    of the pen. The position of the pen can be changed, and the outline of a
-    shape (open or closed) can be traced by dragging the pen in either straight
-    lines or curves.
-
-    Paths represent the geometry of the outline of an object, defined in terms
-    of moveto (set a new current point), lineto (draw a straight line), curveto
-    (draw a curve using a cubic Bézier), arc (elliptical or circular arc) and
-    closepath (close the current shape by drawing a line to the last moveto)
-    elements. Compound paths (i.e., a path with multiple subpaths) are possible
-    to allow effects such as "donut holes" in objects.
-    """
 
     def __init__(self, description=None):
         # Description of path
         self._paths = []
 
         # Tesselated path
-        self._segments  =[]
+        self._vertices  =[]
 
         if description:
             self.parse(description)
@@ -284,9 +267,9 @@ class Path(object):
 
 
     def tesselate(self):
-        """ Tesselate the path into lists of line segments """
+        """ Tesselate the path into lists of line vertices """
 
-        self._segments = []
+        self._vertices = []
         current = 0,0
         previous = 0,0
 
@@ -308,7 +291,7 @@ class Path(object):
                     else:
                         vertices[-1] = vertices[0]
 
-            self._segments.append( vertices )
+            self._vertices.append( vertices )
 
 
     def __getitem__(self, key):
@@ -325,10 +308,10 @@ class Path(object):
 
 
     @property
-    def segments(self):
-        if not len(self._segments):
+    def vertices(self):
+        if not len(self._vertices):
             self.tesselate()
-        return self._segments
+        return self._vertices
 
 
     def __repr__(self):
@@ -343,12 +326,5 @@ class Path(object):
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
 
-    path = Path("""m 299.72 80.25 c 0.63 0.18 2.83 1.30 4.08 2.96 c 0.00 0.00 6.80 10.80 1.60 -7.60 c 0.00 0.00 -9.20 -28.80 -0.40 -17.60 c 0.00 0.00 6.00 7.20 2.80 -6.40 c -3.87 -16.43 -6.40 -22.80 -6.40 -22.80 c 0.00 0.00 11.60 4.80 -15.20 -34.80 l 8.80 3.60 c 0.00 0.00 -19.60 -39.60 -41.20 -44.80 l -8.00 -6.00 c 0.00 0.00 38.40 -38.00 25.60 -74.80 c 0.00 0.00 -6.80 -5.20 -16.40 4.00 c 0.00 0.00 -6.40 4.80 -12.40 3.20 c 0.00 0.00 -30.80 1.20 -32.80 1.20 c -2.00 0.00 -36.80 -37.20 -102.40 -19.60 c 0.00 0.00 -5.20 2.00 -9.60 0.80 c 0.00 0.00 -18.40 -16.00 -67.20 6.80 c 0.00 0.00 -10.00 2.00 -11.60 2.00 c -1.60 0.00 -4.40 0.00 -12.40 6.40 c -8.00 6.40 -8.40 7.20 -10.40 8.80 c 0.00 0.00 -16.40 11.20 -21.20 12.00 c 0.00 0.00 -11.60 6.40 -16.00 16.40 l -3.60 1.20 c 0.00 0.00 -1.60 7.20 -2.00 8.40 c 0.00 0.00 -4.80 3.60 -5.60 9.20 c 0.00 0.00 -8.80 6.00 -8.40 10.40 c 0.00 0.00 -1.60 5.20 -2.40 10.00 c 0.00 0.00 -7.20 4.80 -6.40 7.60 c 0.00 0.00 -7.60 14.00 -6.40 20.80 c 0.00 0.00 -6.40 -0.40 -9.20 2.00 c 0.00 0.00 -0.80 4.80 -2.40 5.20 c 0.00 0.00 -2.80 1.20 -0.40 5.20 c 0.00 0.00 -1.60 2.80 -2.00 4.40 c 0.00 0.00 0.80 2.80 -3.60 8.40 c 0.00 0.00 -6.40 18.80 -4.40 24.00 c 0.00 0.00 0.40 4.80 -2.40 6.40 c 0.00 0.00 -3.60 -0.40 4.80 11.60 c 0.00 0.00 0.80 1.20 -2.40 3.60 c 0.00 0.00 -17.20 3.60 -19.60 20.00 c 0.00 0.00 -13.60 14.80 -13.60 20.00 c 0.00 2.31 0.27 5.45 0.97 10.06 c 0.00 0.00 -0.57 8.34 27.03 9.14 c 27.60 0.80 402.72 -31.36 402.72 -31.36 z""")
-
-    V = path.segments[0]
-    for i in range(len(V)-1):
-        x0,y0 = V[i]
-        x1,y1 = V[i+1]
-        dx = x1-x0
-        dy = y1-y0
-        print i,math.sqrt(dx*dx+dy*dy)
+    path = Path("""M0 0 L 20 0 L 20 20 L 0 20 z""")
+    print path.vertices

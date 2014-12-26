@@ -4,11 +4,13 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 from . color import Color
+from . length import Length
 
 _converters = {
     "color":             Color,
     "fill":              Color,
-    "stroke":            Color
+    "stroke":            Color,
+    "stroke-width":      Length
 }
 
 
@@ -35,10 +37,10 @@ class Style(object):
         self.fill = None
         self.stroke = None
         self.color = None
+        self.stroke_width = Length("2.0")
 
         if description:
             self.parse(description)
-
 
 
     def parse(self, description):
@@ -49,7 +51,8 @@ class Style(object):
 
         for key,value in attributes.items():
             if key in _converters:
-                self.__setattr__(key, _converters[key](value))
+                key_ = key.replace("-","_")
+                self.__setattr__(key_, _converters[key](value))
 
 
 
@@ -58,5 +61,8 @@ class Style(object):
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
     style = Style("""fill: #ffffff;
-                     stroke:#000000;
-                     stroke-width:0.172""")
+                     stroke: #000000;
+                     stroke-width:0.172;""")
+    print style.fill.rgba
+    print style.stroke.rgba
+    print style.stroke_width
