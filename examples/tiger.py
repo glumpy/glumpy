@@ -10,7 +10,7 @@ import numpy as np
 import xml.dom
 import xml.dom.minidom
 
-from glumpy import app, gl
+from glumpy import app, gl, data
 from glumpy.graphics.svg import Style, Path
 from glumpy.graphics.collection import PathCollection
 from glumpy.graphics.collection import TriangleCollection
@@ -78,7 +78,7 @@ def length((x0,y0), (x1,y1)):
     return dx*dx+dy*dy
 
 z = 500
-for path, style in svg_open("tiger.svg"):
+for path, style in svg_open(data.get("tiger.svg")):
     for V in path.vertices:
         if len(V) < 3: continue
         closed = False

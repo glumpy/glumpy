@@ -102,6 +102,8 @@ def get(name):
         return np.load(filename)
     elif extension == 'obj':
         return objload(filename)
+    elif extension == 'svg':
+        return filename
     elif extension in ('png', 'jpg', 'jpeg', 'tif', 'tiff', 'tga'):
         if Image is not None:
             return np.array(Image.open(filename))
