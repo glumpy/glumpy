@@ -4,13 +4,13 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 from . color import Color
-from . length import Length
+#from . length import Length
 
 _converters = {
     "color":             Color,
     "fill":              Color,
     "stroke":            Color,
-    "stroke-width":      Length
+#    "stroke-width":      Length
 }
 
 
@@ -37,7 +37,7 @@ class Style(object):
         self.fill = None
         self.stroke = None
         self.color = None
-        self.stroke_width = Length("2.0")
+        self.stroke_width = 1.0 # Length("2.0")
 
         if description:
             self.parse(description)
