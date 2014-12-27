@@ -27,7 +27,9 @@ window.attach(transform)
 def on_draw(dt):
     window.clear()
     triangles.draw()
+    gl.glDepthMask(gl.GL_FALSE)
     paths.draw()
+    gl.glDepthMask(gl.GL_TRUE)
 
 @window.event
 def on_init():
