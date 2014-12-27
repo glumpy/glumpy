@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 from glumpy import app
 from glumpy.graphics.text import FontManager
-from glumpy.graphics.collection import GlyphCollection
+from glumpy.graphics.collections import GlyphCollection
 from glumpy.transforms import Position3D, Viewport, Trackball
 
 

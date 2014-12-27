@@ -6,7 +6,7 @@
 import numpy as np
 from glumpy import gl, library
 from glumpy.transforms import Position3D
-from glumpy.graphics.collection.collection import Collection
+from  . collection import Collection
 
 
 class RawPathCollection(Collection):

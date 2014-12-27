@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app
-from glumpy.graphics.collection import PointCollection
+from glumpy.graphics.collections import PointCollection
 
 window = app.Window(1024,1024, color=(1,1,1,1))
 

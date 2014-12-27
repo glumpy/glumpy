@@ -7,7 +7,7 @@
 import triangle
 import numpy as np
 from glumpy import app, gl
-from glumpy.graphics.collection import TriangleCollection, PathCollection
+from glumpy.graphics.collections import TriangleCollection, PathCollection
 from glumpy.transforms import Position3D, OrthographicProjection, PanZoom, Viewport
 
 

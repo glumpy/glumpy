@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from  glumpy import app
-from glumpy.graphics.collection import RawPathCollection
+from glumpy.graphics.collections import RawPathCollection
 
 
 vertex = """

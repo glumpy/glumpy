@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import unittest
 import numpy as np
-from collection import BaseCollection
+from . collection import BaseCollection
 
 vtype = [('position', 'f4', 2)]
 utype = [('color',    'f4', 3)]

@@ -6,7 +6,7 @@
 import numpy as np
 from glumpy import gl, data, library
 from glumpy.graphics.text import Font, FontManager
-from glumpy.graphics.collection.collection import Collection
+from . collection import Collection
 
 
 

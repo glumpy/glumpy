@@ -11,9 +11,7 @@ from . glyph_collection import GlyphCollection
 from . marker_collection import MarkerCollection
 from . segment_collection import SegmentCollection
 from . triangle_collection import TriangleCollection
-
 from . raw_path_collection import RawPathCollection
 from . raw_triangle_collection import RawTriangleCollection
-
 from . agg_path_collection import AggPathCollection
 from . agg_fast_path_collection import AggFastPathCollection

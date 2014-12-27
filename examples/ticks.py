@@ -8,10 +8,9 @@ import numpy as np
 from glumpy import app, glm
 from glumpy.graphics.text import FontManager
 from glumpy.transforms import Position3D, Viewport, Trackball
-
-from glumpy.graphics.collection import GlyphCollection
-from glumpy.graphics.collection import PathCollection
-from glumpy.graphics.collection import SegmentCollection
+from glumpy.graphics.collections import GlyphCollection
+from glumpy.graphics.collections import PathCollection
+from glumpy.graphics.collections import SegmentCollection
 
 
 window = app.Window(width=1000, height=800, color=(1,1,1,1))

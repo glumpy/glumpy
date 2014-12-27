@@ -15,8 +15,8 @@ import os
 import numpy as np
 from glumpy import gl
 from glumpy.gloo.program import Program
-from glumpy.graphics.collection.util import fetchcode
-from glumpy.graphics.collection.base_collection import BaseCollection
+from . util import fetchcode
+from . base_collection import BaseCollection
 
 
 class Collection(BaseCollection):

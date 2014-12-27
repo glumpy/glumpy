@@ -6,10 +6,10 @@
 import numpy as np
 from glumpy import gl, library
 from glumpy.transforms import Position3D
-from glumpy.graphics.collection.collection import Collection
+from . collection import Collection
 
 
-class RawTriangleCollection(Collection):
+class RawPolygonCollection(Collection):
     """
     """
 
@@ -17,7 +17,7 @@ class RawTriangleCollection(Collection):
                  vertex = None, fragment = None, **kwargs):
 
         base_dtype = [('position', (np.float32, 3), '!local', (0,0,0)),
-                      ('color',    (np.float32, 4), 'local', (0,0,0,1)) ]
+                      ('color',    (np.float32, 4), 'local',  (0,0,0,1)) ]
 
         dtype = base_dtype
         if user_dtype:

@@ -12,10 +12,8 @@ import xml.dom.minidom
 
 from glumpy import app, gl, data
 from glumpy.graphics.svg import Style, Path
-from glumpy.graphics.collection import PathCollection
-from glumpy.graphics.collection import TriangleCollection
+from glumpy.graphics.collections import PathCollection, TriangleCollection
 from glumpy.transforms import Position3D, OrthographicProjection, PanZoom, Viewport
-
 
 
 window = app.Window(1000, 1000, color=(1,1,1,1))

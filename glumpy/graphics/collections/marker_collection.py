@@ -11,7 +11,7 @@ This collection provides antialiased and accurate markers with a unique type.
 import numpy as np
 from glumpy import gl, library
 from glumpy.transforms import Position3D
-from glumpy.graphics.collection.collection import Collection
+from . collection import Collection
 
 
 class MarkerCollection(Collection):

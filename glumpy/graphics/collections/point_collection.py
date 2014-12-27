@@ -4,14 +4,17 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 """ """
-from raw_triangle_collection import RawTriangleCollection
+from . raw_point_collection import RawPointCollection
+from . agg_point_collection import AggPointCollection
 
 
-def TriangleCollection(mode="raw", *args, **kwargs):
+def PointCollection(mode="raw", *args, **kwargs):
     """
     mode: string
       - "raw"  (speed: fastest, size: small,   output: ugly)
       - "agg"  (speed: fast,    size: small,   output: beautiful)
     """
 
-    return RawTriangleCollection(*args, **kwargs)
+    if mode == "raw":
+        return RawPointCollection(*args, **kwargs)
+    return AggPointCollection(*args, **kwargs)

@@ -9,7 +9,7 @@ Antigrain Geometry Point Collection
 This collection provides fast points. Output quality is perfect.
 """
 from glumpy import library
-from glumpy.graphics.collection.raw_point_collection import RawPointCollection
+from . raw_point_collection import RawPointCollection
 
 
 class AggPointCollection(RawPointCollection):

@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 import unittest
 import numpy as np
-from array_list import ArrayList
+from . array_list import ArrayList
 
 
 class ArrayListDefault(unittest.TestCase):

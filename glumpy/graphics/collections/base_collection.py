@@ -14,8 +14,8 @@ import numpy as np
 from glumpy import gl
 from glumpy.gloo.texture import Texture2D
 from glumpy.gloo.buffer import VertexBuffer, IndexBuffer
-from glumpy.graphics.collection.util import dtype_reduce
-from glumpy.graphics.collection.array_list import ArrayList
+from . util import dtype_reduce
+from . array_list import ArrayList
 
 
 def next_power_of_2(n):

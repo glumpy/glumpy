@@ -15,5 +15,6 @@ from . app import Window
 from . app.window import key
 from . app.window import mouse
 
-#from . graphics.filter import *
+from . graphics import svg
+from . graphics import collections
 #from . graphics.collection import *

@@ -12,9 +12,7 @@ import numpy as np
 from functools import reduce
 from glumpy import gl
 from glumpy.gloo.program import Program
-from glumpy.shaders import get
-from glumpy.graphics.collection.util import fetchcode
-from glumpy.graphics.collection.collection import Collection
+from . collection import Collection
 
 
 

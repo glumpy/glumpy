@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from  glumpy import app
-from glumpy.graphics.collection import MarkerCollection
+from glumpy.graphics.collections import MarkerCollection
 
 n = 256
 C = MarkerCollection(orientation='local')

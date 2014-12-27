@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, glm, gl
-from glumpy.graphics.collection import PathCollection
+from glumpy.graphics.collections import PathCollection
 from glumpy.transforms import Position3D, Viewport, OrthographicProjection, PanZoom
 
 

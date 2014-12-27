@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, glm
-from glumpy.graphics.collection import SegmentCollection
+from glumpy.graphics.collections import SegmentCollection
 from glumpy.transforms import Position3D, OrthographicProjection, PanZoom, Viewport
 
 window = app.Window(width=1200, height=600, color=(1,1,1,1))
