@@ -41,7 +41,7 @@ window.attach(transform)
 
 
 labels = GlyphCollection(transform=transform)
-paths = PathCollection(mode="agg", transform=transform)
+paths = PathCollection(mode="agg+", transform=transform)
 ticks = SegmentCollection(mode="agg", transform=transform,
                           linewidth='local', color='local')
 
