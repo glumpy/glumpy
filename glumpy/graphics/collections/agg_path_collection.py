@@ -195,3 +195,11 @@ class AggPathCollection(Collection):
 
         Collection.append(self, vertices=V, uniforms=U,
                           indices=I, itemsize=itemsize*4-4)
+
+
+    def draw(self, mode = gl.GL_TRIANGLES):
+        """ Draw collection """
+
+        gl.glDepthMask(gl.GL_FALSE)
+        Collection.draw(self, mode)
+        gl.glDepthMask(gl.GL_TRUE)

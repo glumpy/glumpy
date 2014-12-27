@@ -117,7 +117,7 @@ void main (void)
 
     // Adjust vertex position
     if (uv.x == -1) {
-        z = p1_.z;
+        z = p1_.z / p1_.w;
 
         // Cap at start
         if( p0 == p1 ) {
@@ -138,7 +138,7 @@ void main (void)
         v_bevel_distance.x = uv.y*d0*point_to_line_distance(_p1+d0*n0*w, _p1+d0*n1*w, p);
         v_bevel_distance.y =        -point_to_line_distance(_p2+d1*n1*w, _p2+d1*n2*w, p);
     } else {
-        z = p2_.z;
+        z = p2_.z / p2_.w;
 
         // Cap at end
         if( p2 == p3 ) {

@@ -71,5 +71,5 @@ void main (void)
     if( abs(id) > 1.5 ) v_color.a = 0.0;
 
     v_distance = w*id;
-    gl_Position = viewport_to_NDC(P, viewport.zw, curr.z);
+    gl_Position = viewport_to_NDC(P, viewport.zw, curr_.z / curr_.w);
 }

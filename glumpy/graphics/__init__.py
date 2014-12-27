@@ -4,6 +4,6 @@
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
 #import svg
-import collections
+#import collections
 #from . text import Font
 #from . filter import Filter

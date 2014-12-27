@@ -222,3 +222,11 @@ class AggFastPathCollection(Collection):
                 I[0], I[-1] = 0, n-1
         I = np.repeat(I,2)
         return P[I]
+
+
+    def draw(self, mode = gl.GL_TRIANGLE_STRIP):
+        """ Draw collection """
+
+        gl.glDepthMask(gl.GL_FALSE)
+        Collection.draw(self, mode)
+        gl.glDepthMask(gl.GL_TRUE)

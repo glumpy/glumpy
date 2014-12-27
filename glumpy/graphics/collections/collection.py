@@ -140,7 +140,7 @@ class Collection(BaseCollection):
         BaseCollection.__setitem__(self, key, value)
 
 
-    def draw(self, mode = gl.GL_POINTS):
+    def draw(self, mode = None):
         """ Draw collection """
 
         if self._need_update:
