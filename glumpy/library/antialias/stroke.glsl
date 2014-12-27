@@ -19,10 +19,28 @@
    Fragment color (vec4)
 
    --------------------------------------------------------- */
+/*
+.. Antialias area ........................... y = linewidth/2 - antialias/2
+
+============================================= y = linewidth/2
+
+.. Antialias area ........................... y = linewidth/2 - antialias/2
+
+
+-- Actual line ------------------------------ y = 0
+
+
+.. Antialias area ........................... y = linewidth/2 - antialias/2
+
+============================================= y = linewidth/2
+
+.. Antialias area ........................... y = linewidth/2 + antialias/2
+
+*/
 vec4 stroke(float distance, float linewidth, float antialias, vec4 fg_color)
 {
     vec4 frag_color;
-    float t = linewidth/2.0 - antialias;
+    float t = linewidth/2.0 - antialias/2.0;
     float signed_distance = distance;
     float border_distance = abs(signed_distance) - t;
     float alpha = border_distance/antialias;
