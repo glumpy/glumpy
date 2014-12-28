@@ -11,13 +11,16 @@ import xml.dom
 import xml.dom.minidom
 
 from glumpy import app, gl, data
-from glumpy.graphics.svg import Style, Path
+from glumpy.graphics.svg import Document
 from glumpy.graphics.collections import PathCollection, TriangleCollection
 from glumpy.transforms import Position3D, OrthographicProjection, PanZoom, Viewport
 
 
-window = app.Window(1000, 1000, color=(1,1,1,1))
-transform = PanZoom(OrthographicProjection(Position3D())) + Viewport()
+tiger = Document(data.get("tiger.svg"))
+window = app.Window(int(tiger.viewport.width),
+                    int(tiger.viewport.height),
+                    color=(1,1,1,1))
+transform = PanZoom(OrthographicProjection(Position3D()), yinvert=True) + Viewport()
 window.attach(transform)
 
 
@@ -26,7 +29,6 @@ def on_draw(dt):
     window.clear()
     triangles.draw()
     paths.draw()
-
 
 @window.event
 def on_init():
@@ -59,44 +61,21 @@ def triangulate(P):
     V3[:,2] = z
     return V3, I
 
-def svg_open(filename):
-    dom = xml.dom.minidom.parse(filename)
-    tag = dom.documentElement
-    if tag.tagName != 'svg':
-        raise ValueError('document is <%s> instead of <svg>'%tag.tagName)
-    paths = []
-    for tag in tag.getElementsByTagName('g'):
-        style = Style(tag.getAttribute("style"))
-        for item in tag.getElementsByTagName('path'):
-            path = Path(item.getAttribute('d'))
-            paths.append( (path, style) )
-    return paths
 
-def length((x0,y0), (x1,y1)):
-    dx,dy = (x1-x0), (y1-y0)
-    return dx*dx+dy*dy
 
 z = 500
-for path, style in svg_open(data.get("tiger.svg")):
-    for V in path.vertices:
-        if len(V) < 3: continue
-        closed = False
-        if length(V[0], V[-1]) == 0:
-            closed = True
-            V = V[:-1]
-        P = np.zeros((len(V),3))
-        P[:,:2] = V
-        P *= (2,-2,1)
-        P += (350,700,0)
-        if style.stroke is not None:
-            P[:,2] = z-1
-            paths.append(P, closed=closed, color=style.stroke.rgba,
-                         linewidth = style.stroke_width)
-
-        if style.fill is not None:
-            P,I = triangulate(P)
-            P[:,2] = z
-            triangles.append(P, I, color=style.fill.rgba)
-        z -= 1
+for path in tiger.paths:
+    for vertices,closed in path.vertices:
+        if len(vertices) < 3:
+            continue
+        if path.style.stroke is not None:
+            vertices[:,2] = z-1
+            paths.append(vertices, closed=closed, color=path.style.stroke.rgba,
+                         linewidth = path.style.stroke_width or 0.1)
+        if path.style.fill is not None:
+             V,I = triangulate(vertices)
+             V[:,2] = z
+             triangles.append(V, I, color=path.style.fill.rgba)
+    z -= 1
 
 app.run()

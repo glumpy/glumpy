@@ -156,29 +156,17 @@ _keyword_colors = {
     "yellowgreen":          (154, 205,  50) }
 
 
-# ------------------------------------------------------------------- Color ---
 class Color(object):
-    """
-    """
 
-    def __init__(self, description=None):
+    def __init__(self, content):
 
-        if description:
-            self.parse(description)
-
-
-    def parse(self, description):
-        """ Parse an SVG color description """
-
-        color = description.strip()
-
+        color = content.strip()
         if color.startswith("#"):
             rgb = color[1:]
             if len(rgb) == 3:
                 r,g,b = tuple(ord((c+c).decode('hex')) for c in rgb)
             else:
                 r,g,b = tuple(ord(c) for c in rgb.decode('hex'))
-
         elif color.startswith("rgb("):
             rgb = color[4:-1]
             r,g,b = [value.strip() for value in rgb.split(',')]
@@ -188,21 +176,18 @@ class Color(object):
             else: g = int(r)
             if    b.endswith("%"): b = 255*int(b[:-1])//100
             else: b = int(r)
-
         elif color in _keyword_colors:
             r,g,b = _keyword_colors[color]
-
         else:
             text = "Unknown color (%s)" % color
-            raise RuntimeError(text)
-
+            r,g,b = 0, 0, 0
         self._rgb = r/255.,g/255.,b/255.
 
 
     @property
     def rgb(self):
-        return self._rgb
-
+        r,g,b = self._rgb
+        return rgb
 
     @property
     def rgba(self):
@@ -211,14 +196,6 @@ class Color(object):
 
 
     def __repr__(self):
-        return repr (self._rgb)
-
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    style = Color("#ffffff")
-    style = Color("#fff")
-    style = Color("rgb(255,255,255)")
-    style = Color("rgb(100%,100%,100%)")
-    style = Color("white")
+        r,g,b = self._rgb
+        r,g,b = int(r*255), int(g*255), int(b*255)
+        return "#%02x%02x%02x" % (r,g,b)

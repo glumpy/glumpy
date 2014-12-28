@@ -3,6 +3,15 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All rights reserved.
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
-from . path import Path
-from . style import Style
-from . color import Color
+from svg import SVG
+from base import namespace
+from xml.etree import ElementTree
+
+
+def Document(filename):
+    tree = ElementTree.parse(filename)
+    root = tree.getroot()
+    if root.tag != namespace + 'svg':
+        text = 'File "%s" does not seem to be a valid SVG file' % filename
+        raise TypeError(text)
+    return SVG(root)

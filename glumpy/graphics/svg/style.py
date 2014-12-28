@@ -3,66 +3,55 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-from . color import Color
-#from . length import Length
+from color import Color
+from number import Number
+from length import Length
 
 _converters = {
-    "color":             Color,
     "fill":              Color,
+    "fill-opacity":      Number,
     "stroke":            Color,
-#    "stroke-width":      Length
+    "stroke-opacity":    Number,
+    "opacity":           Number,
+    "stroke-width":      Length,
+#    "stroke-miterlimit": Number,
+#    "stroke-dasharray":  Lengths,
+#    "stroke-dashoffset": Length,
 }
 
-
-# ------------------------------------------------------------------- Style ---
 class Style(object):
-    """
-    SVG uses styling properties to describe many of its document
-    parameters. Styling properties define how the graphics elements in the SVG
-    content are to be rendered. SVG uses styling properties for the following:
+    def __init__(self):
+        self._unset = True
+        for key in _converters.keys():
+            key_ = key.replace("-","_")
+            self.__setattr__(key_, None)
 
-    * Parameters which are clearly visual in nature and thus lend themselves to
-      styling. Examples include all attributes that define how an object is
-      "painted," such as fill and stroke colors, linewidths and dash styles.
+    def update(self, content):
+        if not content:
+            return
 
-    * Parameters having to do with text styling such as font family and size.
-
-    * Parameters which impact the way that graphical elements are rendered,
-      such as specifying clipping paths, masks, arrowheads, markers and filter
-      effects.
-    """
-
-    def __init__(self, description=None):
-
-        self.fill = None
-        self.stroke = None
-        self.color = None
-        self.stroke_width = 1.0 # Length("2.0")
-
-        if description:
-            self.parse(description)
-
-
-    def parse(self, description):
-        """ Parse an SVG style description """
-
-        items = description.strip().split(";")
+        self._unset = False
+        items = content.strip().split(";")
 	attributes = dict([item.strip().split(":") for item in items if item])
-
         for key,value in attributes.items():
             if key in _converters:
                 key_ = key.replace("-","_")
                 self.__setattr__(key_, _converters[key](value))
 
+    @property
+    def xml(self):
+        return self._xml()
 
 
+    def _xml(self, prefix=""):
+        if self._unset:
+            return ""
 
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    style = Style("""fill: #ffffff;
-                     stroke: #000000;
-                     stroke-width:0.172;""")
-    print style.fill.rgba
-    print style.stroke.rgba
-    print style.stroke_width
+        s = 'style="'
+        for key in _converters.keys():
+            key_ = key.replace("-","_")
+            value = self.__getattribute__(key_)
+            if value is not None:
+                s += '%s:%s ' % (key, value)
+        s+= '"'
+        return s

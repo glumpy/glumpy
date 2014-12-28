@@ -5,15 +5,12 @@
 # -----------------------------------------------------------------------------
 import re
 import math
-from . import arcs, curves
-# import arcs, curves
+import numpy as np
 
-# Minimal distance separating two distinct points
-epsilon = 1e-8
-
-def length((x0,y0), (x1,y1)):
-    dx, dy = x1-x0, y1-y0
-    return math.sqrt(dx*dx+dy*dy)
+import geometry
+from style import Style
+from geometry import epsilon
+from transformable import Transformable
 
 
 # -------------------------------------------------------------------- Command ---
@@ -114,7 +111,7 @@ class Arc(Command):
         x,y = x + ox, y + oy
         x0,y0 = current
         self.previous = x,y
-        vertices = elliptical_arc(x0,y0, rx,ry, angle, large, sweep_flag, x, y)
+        vertices = geometry.elliptical_arc(x0,y0, rx,ry, angle, large, sweep_flag, x, y)
         return vertices[1:]
 
 
@@ -132,7 +129,7 @@ class Cubic(Command):
         x2,y2 = x2+ox, y2+oy
         x3,y3 = x3+ox, y3+oy
         self.previous = x2,y2
-        vertices = curves.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
+        vertices = geometry.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
         return vertices[1:]
 
 
@@ -149,7 +146,7 @@ class Quadratic(Command):
         x1,y1 = x1+ox, y1+oy
         x2,y2 = x+ox, y+oy
         self.previous = x1,y1
-        vertices = curves.quadratic((x0,y0), (x1,y1), (x2,y2))
+        vertices = geometry.quadratic((x0,y0), (x1,y1), (x2,y2))
 
         return vertices[1:]
 
@@ -169,7 +166,7 @@ class SmoothCubic(Command):
         x3,y3 = x3+ox, y3+oy
         x1,y1 = 2*x0 - previous[0], 2*y0 - previous[1]
         self.previous = x2,y2
-        vertices = curves.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
+        vertices = geometry.cubic((x0,y0), (x1,y1), (x2,y2), (x3,y3))
 
         return vertices[1:]
 
@@ -187,36 +184,25 @@ class SmoothQuadratic(Command):
         x1,y1 = 2*x0 - previous[0], 2*y0 - previous[1]
         x2, y2 = x2+ox, y2+oy
         self.previous = x1,y1
-        vertices = curves.quadratic( (x0,y0), (x1,y1), (x2,y2) )
+        vertices = geometry.quadratic( (x0,y0), (x1,y1), (x2,y2) )
 
         return vertices[1:]
 
 
-# -------------------------------------------------------------------- Path ---
-class Path(object):
 
-    def __init__(self, description=None):
-        # Description of path
+# -------------------------------------------------------------------- Path ---
+class Path(Transformable):
+
+    def __init__(self, content=None, parent=None):
+        Transformable.__init__(self, content, parent)
         self._paths = []
 
-        # Tesselated path
-        self._vertices  =[]
-
-        if description:
-            self.parse(description)
-
-
-
-    def parse(self, description):
-        """ Parse an SVG path description """
-
+        content = content.get("d", "")
         commands = re.compile(
             "(?P<command>[MLVHCSQTAZmlvhcsqtaz])(?P<points>[+\-0-9.e, \n\t]*)")
 
-        self._paths = []
         path = []
-
-        for match in re.finditer(commands, description):
+        for match in re.finditer(commands, content):
             command = match.group("command")
             points = match.group("points").replace(',', ' ')
             points = [float(v) for v in points.split()]
@@ -266,12 +252,45 @@ class Path(object):
             self._paths.append(path)
 
 
-    def tesselate(self):
-        """ Tesselate the path into lists of line vertices """
+    def __repr__(self):
+        s = ""
+        for path in self._paths:
+            for item in path:
+                s += repr(item)
+        return s
 
+    @property
+    def xml(self):
+        return self._xml()
+
+    def _xml(self, prefix=""):
+        s = prefix+ "<path "
+        s += 'id="%s" ' % self._id
+        s += self._style.xml
+        s += '\n'
+        t = '     ' + prefix+' d="'
+        s += t
+        prefix = ' '*len(t)
+        first = True
+        for i,path in enumerate(self._paths):
+            for j,item in enumerate(path):
+                if first:
+                    s += repr(item)
+                    first = False
+                else:
+                    s += prefix+repr(item)
+                if i < len(self._paths)-1 or j < len(path)-1:
+                    s += '\n'
+        s += '"/>\n'
+        return s
+
+
+    @property
+    def vertices(self):
         self._vertices = []
         current = 0,0
         previous = 0,0
+        transform = self.transform
 
         for path in self._paths:
             vertices = []
@@ -284,47 +303,20 @@ class Path(object):
                 else:
                     current = 0,0
 
+            closed = False
             if isinstance(command, Close):
-                if len(vertices) > 0:
-                    if length(vertices[-1], vertices[0]) > epsilon:
-                        vertices.append(vertices[0])
-                    else:
-                        vertices[-1] = vertices[0]
+                closed = True
+                if len(vertices) > 2:
+                    d = geometry.calc_sq_distance(vertices[-1][0], vertices[-1][1],
+                                                  vertices[0][0],  vertices[0][1])
+                    if d < epsilon:
+                        vertices = vertices[:-1]
 
-            self._vertices.append( vertices )
+            # Apply transformation
+            V = np.ones((len(vertices),3))
+            V[:,:2] = vertices
+            V = np.dot(V,self.transform.matrix.T)
+            V[:,2]  = 0
+            self._vertices.append( (V,closed) )
 
-
-    def __getitem__(self, key):
-        return self._paths[key]
-
-
-    def __len__(self):
-        return len(self._paths)
-
-
-    @property
-    def paths(self):
-        return self._paths
-
-
-    @property
-    def vertices(self):
-        if not len(self._vertices):
-            self.tesselate()
         return self._vertices
-
-
-    def __repr__(self):
-        s = ""
-        for path in self.paths:
-            for item in path:
-                s += repr(item)
-        return s
-
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-
-    path = Path("""M0 0 L 20 0 L 20 20 L 0 20 z""")
-    print path.vertices
