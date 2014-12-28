@@ -4,7 +4,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 """ """
-#from raw_polygon_collection import RawPolygonCollection
+from raw_polygon_collection import RawPolygonCollection
 #from agg_polygon_collection import AggPolygonCollection
 #from agg_fast_polygon_collection import AggPolygonCollection
 
@@ -17,8 +17,8 @@ def PolygonCollection(mode="raw", *args, **kwargs):
       - "agg+"  (speed: slow,    size: big,     output: perfect, no dash)
     """
 
-    if mode == "raw":
-        return RawPolygonCollection(*args, **kwargs)
-    elif mode == "agg":
-        return AggFastPolygonCollection(*args, **kwargs)
-    return AggPolygonCollection(*args, **kwargs)
+    #if mode == "raw":
+    return RawPolygonCollection(*args, **kwargs)
+    #elif mode == "agg":
+    #    return AggFastPolygonCollection(*args, **kwargs)
+    #return AggPolygonCollection(*args, **kwargs)
