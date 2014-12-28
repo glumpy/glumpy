@@ -18,7 +18,8 @@ tiger = Document(data.get("tiger.svg"))
 window = app.Window(int(tiger.viewport.width),
                     int(tiger.viewport.height),
                     color=(1,1,1,1))
-transform = PanZoom(OrthographicProjection(Position3D(), yinvert=True)) + Viewport()
+transform = PanZoom(OrthographicProjection(Position3D(), yinvert=True), aspect=None)
+transform += Viewport()
 window.attach(transform)
 
 
