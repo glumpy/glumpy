@@ -16,6 +16,9 @@ class Number(object):
     def __float__(self):
         return self._value
 
+    @property
+    def value(self):
+        return self._value
 
     def __repr__(self):
         return repr(self._value)

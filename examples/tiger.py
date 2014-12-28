@@ -48,8 +48,12 @@ for path in tiger.paths:
             continue
         if path.style.stroke is not None:
             vertices[:,2] = z + 0.5
+            if path.style.stroke_width:
+                stroke_width = path.style.stroke_width.value
+            else:
+                stroke_width = 2.0
             paths.append(vertices, closed=closed, color=path.style.stroke.rgba,
-                         linewidth = path.style.stroke_width or 0.1)
+                         linewidth=stroke_width)
         if path.style.fill is not None:
             vertices[:,2] = z
             polygons.append(vertices, color=path.style.fill.rgba)
