@@ -316,7 +316,7 @@ class Path(Transformable):
             V = np.ones((len(vertices),3))
             V[:,:2] = vertices
             V = np.dot(V,self.transform.matrix.T)
-            V[:,2]  = 0
+            V[:,2] = 0
             self._vertices.append( (V,closed) )
 
         return self._vertices

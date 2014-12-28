@@ -64,7 +64,7 @@ for path in tiger.paths:
         if len(vertices) < 3:
             continue
         if path.style.stroke is not None:
-            vertices[:,2] = z+0.5
+            vertices[:,2] = z + 0.5
             paths.append(vertices, closed=closed, color=path.style.stroke.rgba,
                          linewidth = path.style.stroke_width or 0.1)
         if path.style.fill is not None:
