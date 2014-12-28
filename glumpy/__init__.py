@@ -17,4 +17,3 @@ from . app.window import mouse
 
 from . graphics import svg
 from . graphics import collections
-#from . graphics.collection import *

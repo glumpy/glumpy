@@ -19,19 +19,6 @@ class PanZoom(Transform):
         aspect = kwargs["aspect"]
         del kwargs["aspect"]
 
-        self.mirror = np.array([1.,1.])
-
-        kwargs["xinvert"] = kwargs.get("xinvert", False)
-        if kwargs["xinvert"]:
-            self.mirror[0] = -1
-        del kwargs["xinvert"]
-
-        kwargs["yinvert"] = kwargs.get("yinvert", False)
-        if kwargs["yinvert"]:
-            self.mirror[1] = -1
-        del kwargs["yinvert"]
-
-
         self.scale = np.array([1.,1.])
         self.translate = np.array([0.,0.])
         self.bounds = (0.1, 10000.0)
@@ -42,7 +29,7 @@ class PanZoom(Transform):
     def on_attach(self, program):
         """ A new program is attached """
 
-        self["scale"]     = self.scale*self.mirror
+        self["scale"]     = self.scale
         self["translate"] = self.translate
 
 
@@ -60,10 +47,10 @@ class PanZoom(Transform):
             if self.aspect is not None:
                 self.translate *= aspect / self.aspect
                 self.aspect = aspect
-                self["scale"] = self.scale * self.aspect *self.mirror
+                self["scale"] = self.scale * self.aspect
             else:
                 self.translate *= aspect
-                self["scale"] = self.scale * self.mirror
+                self["scale"] = self.scale
         else:
             self.translate *= aspect
             self["scale"] = self.scale
@@ -82,9 +69,9 @@ class PanZoom(Transform):
         self.translate[1] = y - s[1] * (y - self.translate[1]) / self.scale[1]
         self.scale = s
         if self.aspect is not None:
-            self["scale"] = self.scale * self.aspect * self.mirror
+            self["scale"] = self.scale * self.aspect
         else:
-            self["scale"] = self.scale * self.mirror
+            self["scale"] = self.scale
         self["translate"] = self.translate
         Transform.on_mouse_scroll(self, x, y, dx, dy)
 
@@ -101,7 +88,7 @@ class PanZoom(Transform):
         self.scale = np.array([1.,1.])
         self.translate = np.array([0.,0.])
         if self.aspect is not None:
-            self["scale"] = np.array([1.,1.]) * self.aspect * self.mirror
+            self["scale"] = np.array([1.,1.]) * self.aspect
         else:
             self["scale"] = np.array([1.,1.])
         self["translate"] = np.array([0.,0.])

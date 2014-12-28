@@ -7,8 +7,6 @@
 import re
 import triangle
 import numpy as np
-import xml.dom
-import xml.dom.minidom
 
 from glumpy import app, gl, data
 from glumpy.graphics.svg import Document
@@ -20,7 +18,7 @@ tiger = Document(data.get("tiger.svg"))
 window = app.Window(int(tiger.viewport.width),
                     int(tiger.viewport.height),
                     color=(1,1,1,1))
-transform = PanZoom(OrthographicProjection(Position3D()), yinvert=True) + Viewport()
+transform = PanZoom(OrthographicProjection(Position3D(), yinvert=True)) + Viewport()
 window.attach(transform)
 
 
@@ -42,9 +40,6 @@ def on_key_press(key, modifiers):
 
 triangles = TriangleCollection("agg", transform=transform)
 paths = PathCollection("agg+", transform=transform, linewidth='shared')
-paths["miter_limit"] = 4.0
-paths["linewidth"] = 1.0
-
 
 def triangulate(P):
     P = np.array(P)
@@ -63,19 +58,19 @@ def triangulate(P):
 
 
 
-z = 500
+z = 0
 for path in tiger.paths:
     for vertices,closed in path.vertices:
         if len(vertices) < 3:
             continue
         if path.style.stroke is not None:
-            vertices[:,2] = z-1
+            vertices[:,2] = z+0.5
             paths.append(vertices, closed=closed, color=path.style.stroke.rgba,
                          linewidth = path.style.stroke_width or 0.1)
         if path.style.fill is not None:
              V,I = triangulate(vertices)
              V[:,2] = z
              triangles.append(V, I, color=path.style.fill.rgba)
-    z -= 1
+    z += 1
 
 app.run()

@@ -4,6 +4,7 @@
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
 import copy
+from glumpy.log import log
 from path import Path
 from style import Style
 from base import namespace
@@ -21,15 +22,13 @@ class Group(Transformable):
             if not element.tag.startswith(namespace):
                 continue
             tag = element.tag[len(namespace):]
-
             if tag == "g":
                 item = Group(element, self)
             elif tag == "path":
                 item = Path(element, self)
             else:
-                print "Unknown tag:", tag
+                log.warn("Unhandled SVG tag (%s)" % tag)
                 continue
-
             self._items.append(item)
 
 

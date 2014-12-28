@@ -7,7 +7,6 @@ from svg import SVG
 from base import namespace
 from xml.etree import ElementTree
 
-
 def Document(filename):
     tree = ElementTree.parse(filename)
     root = tree.getroot()
