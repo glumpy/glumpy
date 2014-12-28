@@ -5,8 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from  glumpy import app
-from glumpy.graphics.collections import RawPathCollection
+from  glumpy import app, collections
 
 
 vertex = """
@@ -66,10 +65,11 @@ void main(void)
 
 rows,cols = 16,20
 n, p = rows*cols, 1000
-lines = RawPathCollection(user_dtype = [("amplitude", (np.float32, 1), 'shared', 1),
-                                        ("selected",  (np.float32, 1), 'shared', 0),
-                                        ("xscale",    (np.float32, 1), 'shared', 1)],
-                          color="shared", vertex=vertex, fragment=fragment )
+lines = collections.RawPathCollection(
+    user_dtype = [("amplitude", (np.float32, 1), 'shared', 1),
+                  ("selected",  (np.float32, 1), 'shared', 0),
+                  ("xscale",    (np.float32, 1), 'shared', 1)],
+    color="shared", vertex=vertex, fragment=fragment )
 lines.append(np.random.uniform(-1,1,(n*p,3)), itemsize=p)
 
 
