@@ -37,7 +37,7 @@ class Group(Transformable):
         i = 0
         L = copy.deepcopy(self._items)
         while i < len(L):
-            while isinstance(L[i], Group):
+            while isinstance(L[i], Group) and len(L[i]._items):
                 L[i:i+1] = L[i]._items
             i += 1
         return L
