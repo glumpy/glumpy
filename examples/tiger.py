@@ -39,7 +39,7 @@ def on_key_press(key, modifiers):
         transform.reset()
 
 
-paths = PathCollection("agg+", transform=transform, linewidth='shared')
+paths = PathCollection("agg+", transform=transform, linewidth='shared', color="shared")
 polygons = PolygonCollection("agg", transform=transform)
 
 z = 0
@@ -56,8 +56,13 @@ for path in tiger.paths:
             paths.append(vertices, closed=closed, color=path.style.stroke.rgba,
                          linewidth=stroke_width)
         if path.style.fill is not None:
+            if path.style.stroke is None:
+                vertices[:,2] = z + 0.25
+                paths.append(vertices, closed=closed, color=path.style.fill.rgba,
+                             linewidth=1)
             vertices[:,2] = z
             polygons.append(vertices, color=path.style.fill.rgba)
+
     z += 1
 
 app.run()
