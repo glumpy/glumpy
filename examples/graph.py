@@ -184,19 +184,16 @@ def on_timer(dt):
 
 
 
+nodes,links = graph()
 
 transform = OrthographicProjection(Position3D(), aspect=None) + Viewport()
 window.attach(transform)
-
 markers = collections.MarkerCollection(marker='disc', transform=transform)
 segments = collections.SegmentCollection('agg', transform=transform)
 
-nodes,links = graph( )
-
-markers.append(nodes['position'], size=15, linewidth=2, itemsize=1,
+pos = nodes['position']
+markers.append(pos, size=15, linewidth=2, itemsize=1,
                fg_color=(1,1,1,1), bg_color=(1,.5,.5,1))
-
-
 
 src = nodes[links['source']]['position']
 tgt = nodes[links['target']]['position']
