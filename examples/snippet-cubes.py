@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy.geometry import primitives
 from glumpy import app, gl, glm, gloo, data
-from glumpy.graphics.collection import BaseCollection
+from glumpy.graphics.collections import BaseCollection
 
 vertex = """
 uniform mat4 model;
