@@ -54,7 +54,7 @@ if __name__ == "__main__":
                     'glumpy.graphics',
                     'glumpy.transforms',
                     'glumpy.graphics.text',
-                    'glumpy.graphics.collection'],
+                    'glumpy.graphics.collections'],
 
           package_data={
               'glumpy.data.arrays':         ['*.npy'],
