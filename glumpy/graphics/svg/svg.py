@@ -11,7 +11,6 @@ class SVG(Group):
 
     def __init__(self, content=None, parent=None):
         Group.__init__(self, content, parent)
-
         self._viewport = Viewport(content)
 
 

@@ -197,7 +197,9 @@ class Path(Transformable):
         Transformable.__init__(self, content, parent)
         self._paths = []
 
-        content = content.get("d", "")
+        if not isinstance(content, str):
+            content = content.get("d", "")
+
         commands = re.compile(
             "(?P<command>[MLVHCSQTAZmlvhcsqtaz])(?P<points>[+\-0-9.e, \n\t]*)")
 

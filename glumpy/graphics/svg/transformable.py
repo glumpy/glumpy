@@ -14,10 +14,14 @@ class Transformable(Element):
     def __init__(self, content=None, parent=None):
         Element.__init__(self, content, parent)
 
-        self._transform = Transform(content.get("transform",None))
-        self._computed_transform = self._transform
-        if parent:
-            self._computed_transform = self._transform + self.parent.transform
+        if isinstance(content, str):
+            self._transform = Transform()
+            self._computed_transform = self._transform
+        else:
+            self._transform = Transform(content.get("transform",None))
+            self._computed_transform = self._transform
+            if parent:
+                self._computed_transform = self._transform + self.parent.transform
 
     @property
     def transform(self):

@@ -12,14 +12,15 @@ class Element(object):
     """ Generic SVG element """
     def __init__(self, content=None, parent=None):
         self._parent = parent
-
         self._id = hex(id(self))
-        if content is not None:
-            self._id = content.get('id', self._id)
-
         self._style = Style()
-        self._style.update(content.get("style",None))
+        self._computed_style = Style()
 
+        if isinstance(content, str):
+            return
+
+        self._id = content.get('id', self._id)
+        self._style.update(content.get("style",None))
         self._computed_style = Style()
         if parent and parent.style:
             self._computed_style = copy.copy(parent.style)
