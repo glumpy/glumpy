@@ -3,6 +3,7 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+""" Orthographic projection transform. """
 from glumpy import glm, library
 from . transform import Transform
 
@@ -22,7 +23,7 @@ class OrthographicProjection(Transform):
             Whether to invert Y axis
 
         normalize: bool (default: False)
-            Whether to use normalized device coordinate
+            Whether to use normalized device coordinates
         """
 
         code = library.get("transforms/projection.glsl")
@@ -51,6 +52,9 @@ class OrthographicProjection(Transform):
 
 
     def on_resize(self, width, height):
+        """ Adjust projection to given size. """
+
+        # Compute new Projection
         xmin, xmax = 0, width
         ymin, ymax = 0, height
         if self.normalize:
@@ -61,6 +65,7 @@ class OrthographicProjection(Transform):
         if self.yinvert:
             ymin, ymax = ymax, ymin
         znear, zfar = self.znear, self.zfar
-
         self["projection"] = glm.ortho(xmin, xmax, ymin, ymax, znear, zfar)
+
+        # Propagate event to children
         Transform.on_resize(self, width, height)
