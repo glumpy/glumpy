@@ -378,6 +378,10 @@ class Viewport(event.EventDispatcher):
     #     gl.glPopAttrib( )
 
 
+    def on_draw(self, dt):
+        for child in self._children:
+            child.dispatch_event("on_draw", dt)
+
     def on_resize(self, width, height):
         if self.parent == None:
             self._requested_size = width, height
@@ -476,8 +480,7 @@ Viewport.register_event_type('on_mouse_scroll')
 Viewport.register_event_type('on_character')
 Viewport.register_event_type('on_key_press')
 Viewport.register_event_type('on_key_release')
-
-# Viewport.register_event_type('on_draw')
+Viewport.register_event_type('on_draw')
 
 # Window events
 #Viewport.register_event_type('on_init')
