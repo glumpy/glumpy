@@ -115,29 +115,34 @@ class Collection(BaseCollection):
         vertex += self._declarations["attributes"]
         vertex += saved
 
-        self._program = Program(vertex, fragment, geometry)
+        program = Program(vertex, fragment, geometry)
+        self._programs.append(program)
 
         # Initialize uniforms
         for name in self._uniforms.keys():
             self._uniforms[name] = self._defaults.get(name)
-            self._program[name] = self._uniforms[name]
+            program[name] = self._uniforms[name]
 
 
     def __getitem__(self, key):
 
-        for (name,gtype) in self._program.all_uniforms:
+        program = self._programs[0]
+        for (name,gtype) in program.all_uniforms:
             if name == key:
-                return self._program[key]
+                return program[key]
         return BaseCollection.__getitem__(self, key)
 
 
     def __setitem__(self, key, value):
 
-        for (name,gtype) in self._program.all_uniforms:
-            if name == key:
-                self._program[key] = value
-                return
-        BaseCollection.__setitem__(self, key, value)
+        found = False
+        for program in self._programs:
+            for (name,gtype) in program.all_uniforms:
+                if name == key:
+                    found = True
+                    program[key] = value
+        if not found:
+            BaseCollection.__setitem__(self, key, value)
 
 
     def draw(self, mode = None):
@@ -146,8 +151,10 @@ class Collection(BaseCollection):
         if self._need_update:
             self._update()
 
+        program = self._programs[0]
+
         mode = mode or self._mode
         if self._indices_list is not None:
-            self._program.draw(mode, self._indices_buffer)
+            program.draw(mode, self._indices_buffer)
         else:
-            self._program.draw(mode)
+            program.draw(mode)

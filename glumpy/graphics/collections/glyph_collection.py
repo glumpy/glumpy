@@ -24,10 +24,11 @@ class GlyphCollection(Collection):
         Collection.__init__(self, dtype=dtype, itype=np.uint32,
                             mode = gl.GL_TRIANGLES,
                             vertex=vertex, fragment=fragment)
+        program = self._programs[0]
         if transform is not None:
-            self._program["transform"] = transform
+            program["transform"] = transform
         else:
-            self._program["transform"] = Position3D("position")
+            program["transform"] = Position3D("position")
 
         manager = FontManager()
         atlas = manager.atlas

@@ -161,7 +161,7 @@ class BaseCollection(object):
             self._indices_list = ArrayList(dtype=itype)
 
         # No program yet
-        self._program = None
+        self._programs = []
 
         # Need to update buffers & texture
         self._need_update = True
@@ -504,11 +504,12 @@ class BaseCollection(object):
             self._uniforms_texture = texture.view(Texture2D)
             self._uniforms_texture.interpolation = gl.GL_NEAREST
 
-        if self._program is not None:
-            self._program.bind(self._vertices_buffer)
-            if self._uniforms_list is not None:
-                self._program["uniforms"] = self._uniforms_texture
-                self._program["uniforms_shape"] = self._ushape
+        if len(self._programs):
+            for program in self._programs:
+                program.bind(self._vertices_buffer)
+                if self._uniforms_list is not None:
+                    program["uniforms"] = self._uniforms_texture
+                    program["uniforms_shape"] = self._ushape
 
 
 

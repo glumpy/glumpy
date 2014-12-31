@@ -95,11 +95,12 @@ class AggPathCollection(Collection):
                             vertex=vertex, fragment=fragment, **kwargs)
 
         # Set hooks if necessary
-        if "transform" in self._program._hooks.keys():
+        program = self._programs[0]
+        if "transform" in program._hooks.keys():
             if transform is not None:
-                self._program["transform"] = transform
+                program["transform"] = transform
             else:
-                self._program["transform"] = Position3D() + Viewport()
+                program["transform"] = Position3D() + Viewport()
 
 
     def append(self, P, closed=False, itemsize=None, **kwargs):
