@@ -8,7 +8,7 @@ Antigrain Geometry Point Collection
 
 This collection provides fast points. Output quality is perfect.
 """
-from glumpy import library, gloo
+from glumpy import library
 from . raw_point_collection import RawPointCollection
 
 
@@ -52,35 +52,3 @@ class AggPointCollection(RawPointCollection):
 
         RawPointCollection.__init__(self, user_dtype=user_dtype, transform=transform,
                                     vertex=vertex, fragment=fragment, **kwargs)
-
-
-    def view(self, transform=None):
-        vertex = library.get("collections/agg-point.vert")
-        fragment= library.get("collections/agg-point.frag")
-        saved = vertex
-        vertex = ""
-        if self.utype is not None:
-            vertex += fetchcode(self.utype) + vertex
-        else:
-            vertex += "void fetch_uniforms(void) { }\n" + vertex
-        vertex += self._declarations["uniforms"]
-        vertex += self._declarations["attributes"]
-        vertex += saved
-        program = gloo.Program(vertex, fragment)
-
-        if "transform" in program._hooks.keys():
-            if transform is not None:
-                program["transform"] = transform
-            else:
-                program["transform"] = Position3D()
-
-        self._programs.append(program)
-
-        program.bind(self._vertices_buffer)
-        for name in self._uniforms.keys():
-            program[name] = self._uniforms[name]
-        if self._uniforms_list is not None:
-            program["uniforms"] = self._uniforms_texture
-            program["uniforms_shape"] = self._ushape
-
-        return program

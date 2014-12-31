@@ -13,7 +13,7 @@ interface.
 
 import os
 import numpy as np
-from glumpy import gl
+from glumpy import gloo, gl
 from glumpy.gloo.program import Program
 from . util import fetchcode
 from . base_collection import BaseCollection
@@ -115,6 +115,9 @@ class Collection(BaseCollection):
         vertex += self._declarations["attributes"]
         vertex += saved
 
+        self._vertex = vertex
+        self._fragment = fragment
+
         program = Program(vertex, fragment, geometry)
         self._programs.append(program)
 
@@ -122,6 +125,24 @@ class Collection(BaseCollection):
         for name in self._uniforms.keys():
             self._uniforms[name] = self._defaults.get(name)
             program[name] = self._uniforms[name]
+
+
+
+    def view(self, transform):
+        """ Return a view on the collection using provided transform """
+
+        program = gloo.Program(self._vertex, self._fragment)
+        if "transform" in program._hooks.keys():
+            program["transform"] = transform
+        self._programs.append(program)
+        program.bind(self._vertices_buffer)
+        for name in self._uniforms.keys():
+            program[name] = self._uniforms[name]
+        if self._uniforms_list is not None:
+            program["uniforms"] = self._uniforms_texture
+            program["uniforms_shape"] = self._ushape
+        return program
+
 
 
     def __getitem__(self, key):
