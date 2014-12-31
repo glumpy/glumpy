@@ -409,7 +409,7 @@ class Viewport(event.EventDispatcher):
             gl.glViewport(*self.viewport)
             gl.glScissor(*self.scissor)
 
-        self.dispatcher.dispatch_event("on_draw", dt)
+            self.dispatcher.dispatch_event("on_draw", dt)
 
         for child in self._children:
             x,y = child._viewport_position
