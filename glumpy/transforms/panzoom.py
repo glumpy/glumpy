@@ -79,11 +79,6 @@ class PanZoom(Transform):
     def on_mouse_drag(self, x, y, dx, dy, button):
         """ Mouse has been dragged """
 
-        # _, _, width, height = gl.glGetIntegerv(gl.GL_VIEWPORT)
-        # FIXME: Why 2* here ?
-        #dx =  2*(dx / self.width)
-        #dy = -2*(dy / self.height)
-
         dx =  2*(dx / self.width)
         dy = -2*(dy / self.height)
         self.translate += dx,dy
