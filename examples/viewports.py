@@ -40,28 +40,25 @@ def on_draw(dt):
     program.draw(gl.GL_TRIANGLE_STRIP)
     collection["transform"].aspect = None
     collection.draw()
+    collection["transform"].aspect = 1
 
 @vp1.event
 def on_draw(dt):
     program["color"] = 0.0, 1.0, 0.0, 1.0
     program.draw(gl.GL_TRIANGLE_STRIP)
-    collection["transform"].aspect = 1
     collection.draw()
 
 @vp2.event
 def on_draw(dt):
     program["color"] = 0.0, 0.0, 1.0, 1.0
     program.draw(gl.GL_TRIANGLE_STRIP)
-    collection["transform"].aspect = 1
     collection.draw()
 
 @vp3.event
 def on_draw(dt):
     program["color"] = 1.0, 0.0, 0.0, 1.0
     program.draw(gl.GL_TRIANGLE_STRIP)
-    collection["transform"].aspect = 1
     collection.draw()
-
 
 @vp0.event
 def on_mouse_press(x,y,button):

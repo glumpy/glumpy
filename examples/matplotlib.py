@@ -13,8 +13,7 @@ from glumpy.transforms import Position3D, Trackball, OrthographicProjection, Pan
 
 figure = matplotlib.Figure((16,8))
 left  = figure.add_axes([0.010, 0.01, 0.485, 0.98], facecolor=(1,0,0,0.25), aspect=1)
-_right = left.add_axes([0.505, 0.01, 0.485, 0.98], facecolor=(0,0,1,0.25), aspect=1)
-right = _right.add_axes([0.505, 0.01, 0.485, 0.48], facecolor=(0,0,1,0.25), aspect=1)
+right = figure.add_axes([0.505, 0.01, 0.485, 0.98], facecolor=(0,0,1,0.25), aspect=1)
 
 trackball = Trackball(Position3D())
 left.attach(trackball)
@@ -24,7 +23,7 @@ panzoom = PanZoom(OrthographicProjection(Position3D(), normalize=True))
 right.attach(panzoom)
 view = collection.view(transform=panzoom)
 
-collection.append(np.random.normal(0,.5,(100,3)))
+collection.append(np.random.normal(0,.5,(5000,3)))
 
 @left.event
 def on_draw(dt):
