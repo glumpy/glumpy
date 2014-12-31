@@ -5,25 +5,28 @@
 # -----------------------------------------------------------------------------
 from glumpy import app, gloo, gl
 
+
 class Figure(object):
-    def __init__(self, figsize=(10,10), dpi=72, color=(1,1,1,1)):
+    """ """
+
+    def __init__(self, figsize=(10,10), dpi=72, color=(.95,.95,.95,1)):
         width = int(round(figsize[0] * dpi))
         height = int(round(figsize[1] * dpi))
         self.window = app.Window(width=width, height=height, color=color,
                                  title = "Figure (matplotlib API)")
-        self.root = app.Viewport()
+        self.viewport = app.Viewport()
 
     def on_draw(self, dt):
         self.window.clear()
 
     def show(self):
-        self.window.push_handlers(self.root)
+        self.window.push_handlers(self.viewport)
         self.window.push_handlers(self)
         app.run()
 
-    def add_axes(self, rect):
-        axes = Axes(rect)
-        self.root.add(axes)
+    def add_axes(self, rect, facecolor=(1,1,1,1), aspect=None):
+        axes = Axes(rect, facecolor, aspect)
+        self.viewport.add(axes)
         return axes
 
 
@@ -31,7 +34,7 @@ vertex = """
 attribute vec2 position;
 void main()
 {
-    gl_Position = <transform(vec4(position,0,1))>;
+    gl_Position = vec4(position,0,1);
 }
 """
 
@@ -39,29 +42,28 @@ fragment = """
 uniform vec4 color;
 void main()
 {
-    <clipping>;
     gl_FragColor = color;
 }
 """
 
 class Axes(app.Viewport):
+    """ """
 
-    def __init__(self, rect, color=(1,0,0,1)):
-        position = rect[0], rect[1]
+    def __init__(self, rect, facecolor=(1,1,1,1), aspect=None):
         size = rect[2], rect[3]
-        anchor = 0,0
-        aspect = None
-        app.Viewport.__init__(self,size, position, anchor, aspect)
-
-
+        position = rect[0]+size[0]/2, rect[1]+size[1]/2
+        anchor = 0.5, 0.5
+        app.Viewport.__init__(self, size, position, anchor, aspect)
         self.program = gloo.Program(vertex, fragment, count=4)
         self.program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
-        self.program['color'] = color
+        self.program['color'] = facecolor
 
-        # WARNING: copy=false is mandatory here
-        self.program["transform"] = self.transform(copy=False)
-        self.program["clipping"] = self.clipping(copy=False)
 
+    def add_axes(self, rect, facecolor=(1,1,1,1), aspect=None):
+        axes = Axes(rect, facecolor, aspect)
+        self.add(axes)
+        return axes
 
     def on_draw(self, dt):
         self.program.draw(gl.GL_TRIANGLE_STRIP)
+        app.Viewport.on_draw(self,dt)
