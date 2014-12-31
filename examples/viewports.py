@@ -62,4 +62,21 @@ def on_draw(dt):
     collection["transform"].aspect = 1
     collection.draw()
 
+
+@vp0.event
+def on_mouse_press(x,y,button):
+    print "VP0: mouse press at (%d,%d)" % (x,y)
+
+@vp1.event
+def on_mouse_press(x,y,button):
+    print "VP1: mouse press at (%d,%d)" % (x,y)
+
+@vp2.event
+def on_mouse_press(x,y,button):
+    print "VP2: mouse press at (%d,%d)" % (x,y)
+
+@vp3.event
+def on_mouse_press(x,y,button):
+    print "VP3: mouse press at (%d,%d)" % (x,y)
+
 app.run()
