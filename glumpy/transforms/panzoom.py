@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import library
+from glumpy import gl,library
 from . transform import Transform
 
 
@@ -61,8 +61,9 @@ class PanZoom(Transform):
     def on_mouse_scroll(self, x, y, dx, dy):
         """ Mouse has been scrolled """
 
-        x = x/(self.width/2) - 1
-        y = 1 - y/(self.height/2)
+        x = x/(self.width/2.) - 1.
+        y = 1. - y/(self.height/2.)
+
         scale_min, scale_max = self.bounds
         s = np.minimum(np.maximum(self.scale*(1+dy/100.0), scale_min), scale_max)
         self.translate[0] = x - s[0] * (x - self.translate[0]) / self.scale[0]
@@ -78,8 +79,16 @@ class PanZoom(Transform):
     def on_mouse_drag(self, x, y, dx, dy, button):
         """ Mouse has been dragged """
 
-        self.translate += (2*dx/self.width, -2*dy/self.height)
+        # _, _, width, height = gl.glGetIntegerv(gl.GL_VIEWPORT)
+        # FIXME: Why 2* here ?
+        #dx =  2*(dx / self.width)
+        #dy = -2*(dy / self.height)
+
+        dx =  2*(dx / self.width)
+        dy = -2*(dy / self.height)
+        self.translate += dx,dy
         self["translate"] = self.translate
+
         Transform.on_mouse_drag(self, x, y, dx, dy, button)
 
     def reset(self):

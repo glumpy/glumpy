@@ -110,7 +110,7 @@ class Viewport(event.EventDispatcher):
         # Aspect ratio (width/height)
         self._aspect = aspect
         if aspect:
-            log.info("Enforcing %.1f aspect ratio" % aspect)
+            log.info("Enforcing viewport aspect ratio (%g)" % aspect)
 
         # Anchor point for placement
         self._anchor = anchor
@@ -191,7 +191,7 @@ class Viewport(event.EventDispatcher):
 
         if not self._parent:
             return self
-        return self._parent
+        return self._parent.root
 
     @property
     def parent(self):
@@ -381,10 +381,11 @@ class Viewport(event.EventDispatcher):
     def __contains__(self, (x,y)):
         # WARN: mouse pointer is usually upside down
         y = self.root.size[1] - y
-        return ( x >= self._viewport_position[0] and
-                 x < self._viewport_position[0] + self._viewport_size[0] and
-                 y >= self._viewport_position[1] and
-                 y < self._viewport_position[1] + self._viewport_size[1])
+        xmin = self._viewport_position[0]
+        xmax = xmin + self._viewport_size[0]
+        ymin = self._viewport_position[1]
+        ymax = ymin + self._viewport_size[1]
+        return  xmin <= x < xmax and  ymin <= y < ymax
 
     # def lock(self):
     #     vx, vy = self._viewport_position
@@ -401,13 +402,13 @@ class Viewport(event.EventDispatcher):
 
 
     def on_draw(self, dt):
+
         # Root viewport
         if self.parent is None:
             gl.glEnable(gl.GL_SCISSOR_TEST)
             gl.glViewport(*self.viewport)
             gl.glScissor(*self.scissor)
 
-        #    gl.glPushAttrib( gl.GL_VIEWPORT_BIT | gl.GL_SCISSOR_BIT )
         self.dispatcher.dispatch_event("on_draw", dt)
 
         for child in self._children:
@@ -427,11 +428,6 @@ class Viewport(event.EventDispatcher):
         if self.parent is None:
             gl.glDisable(gl.GL_SCISSOR_TEST)
             gl.glViewport(*self.viewport)
-            gl.glScissor(*self.scissor)
-
-        # Root viewport
-        #if self.parent is None:
-        #    gl.glPopAttrib()
 
 
     def on_resize(self, width, height):
@@ -443,7 +439,7 @@ class Viewport(event.EventDispatcher):
 
         for child in self._children:
             child.dispatch_event("on_resize", width, height)
-            child.dispatcher.dispatch_event("on_resize", child.size[0], child.size[1])
+            #child.dispatcher.dispatch_event("on_resize", child.size[0], child.size[1])
 
 
     def on_key_press(self, key, modifiers):
@@ -457,7 +453,6 @@ class Viewport(event.EventDispatcher):
     def on_mouse_press(self, x, y, button):
         self.dispatcher.dispatch_event("on_mouse_press",
                                        x-self.position[0], y-self.position[1], button)
-
         if self.parent == None:
             self._active_viewports = []
 
@@ -466,7 +461,6 @@ class Viewport(event.EventDispatcher):
                 self.root._active_viewports.append(child)
                 ox, oy = child.position
                 child.dispatch_event("on_mouse_press", x, y, button)
-                child.dispatcher.dispatch_event("on_mouse_press", x-ox, y-oy, button)
 
 
     def on_mouse_release(self, x, y, button):
@@ -477,7 +471,6 @@ class Viewport(event.EventDispatcher):
             for child in self._active_viewports:
                 ox, oy = child.position
                 child.dispatch_event("on_mouse_release", x, y, button)
-                child.dispatcher.dispatch_event("on_mouse_release", x-ox, y-oy, button)
 
 
     def on_mouse_drag(self, x, y, dx, dy, button):
@@ -485,11 +478,11 @@ class Viewport(event.EventDispatcher):
             "on_mouse_drag", x-self.position[0], y-self.position[1], dx, dy, button)
 
         if self.parent == None:
-            if self.root._active_viewports:
-                child = self.root._active_viewports[-1]
-                ox, oy = child.position
-                child.dispatch_event("on_mouse_drag", x, y, dx, dy, button)
-                child.dispatcher.dispatch_event("on_mouse_drag", x-ox, y-oy, dx, dy, button)
+            if len(self.root._active_viewports):
+                #child = self.root._active_viewports[-1]
+                for child in self.root._active_viewports:
+                    ox, oy = child.position
+                    child.dispatch_event("on_mouse_drag", x, y, dx, dy, button)
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
@@ -498,10 +491,11 @@ class Viewport(event.EventDispatcher):
 
         if self.parent == None:
             if self.root._active_viewports:
-                child = self.root._active_viewports[-1]
-                ox, oy = child.position
-                child.dispatch_event("on_mouse_scroll", x, y, dx, dy)
-                child.dispatcher.dispatch_event("on_mouse_scroll", x-ox, y-oy, dx, dy)
+                # child = self.root._active_viewports[-1]
+                for child in self.root._active_viewports:
+                    ox, oy = child.position
+                    child.dispatch_event("on_mouse_scroll", x, y, dx, dy)
+
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.dispatcher.dispatch_event(
@@ -516,11 +510,9 @@ class Viewport(event.EventDispatcher):
                 self.active = False
                 child._active = True
                 child.dispatch_event("on_mouse_motion", x, y, dx, dy)
-                child.dispatcher.dispatch_event("on_mouse_motion", x-ox, y-oy, dx, dy)
             else:
                 if child._active:
                     child.dispatch_event("on_leave")
-                    child.dispatcher.dispatch_event("on_leave")
                 child.active = False
                 if (x,y) in self:
                     self._active = True

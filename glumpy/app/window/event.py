@@ -352,6 +352,9 @@ class EventDispatcher(object):
 
         invoked = False
 
+        #if event_type == "on_draw":
+        #    print self._event_stack[0]["on_draw"]
+
         # Search handler stack for matching event handlers
         for frame in list(self._event_stack):
             handler = frame.get(event_type, None)

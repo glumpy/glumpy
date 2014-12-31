@@ -127,9 +127,14 @@ class Collection(BaseCollection):
     def __getitem__(self, key):
 
         program = self._programs[0]
+
+        if key in program._hooks.keys():
+            return program._hooks[key][1]
+
         for (name,gtype) in program.all_uniforms:
             if name == key:
                 return program[key]
+
         return BaseCollection.__getitem__(self, key)
 
 

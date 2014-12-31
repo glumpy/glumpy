@@ -15,6 +15,7 @@ class Transform(Snippet,EventDispatcher):
     def __init__(self, code, *args, **kwargs):
         Snippet.__init__(self, code, None, *args, **kwargs)
         EventDispatcher.__init__(self)
+        self._window = None
 
 
     def attach(self, program):

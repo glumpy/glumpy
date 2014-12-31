@@ -16,6 +16,10 @@ class Trackball(Transform):
         code = library.get("transforms/pvm.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
+        kwargs["aspect"] = kwargs.get("aspect", None)
+        self._aspect = kwargs["aspect"]
+        del kwargs["aspect"]
+
         self._fovy = 25
         self._znear, self._zfar = 2.0, 100.0
         self._trackball = _trackball.Trackball(45,45)
@@ -23,7 +27,6 @@ class Trackball(Transform):
         self._model = self._trackball.model
         self._projection = np.eye(4, dtype=np.float32)
         self._view = np.eye(4, dtype=np.float32)
-        self._aspect = 1.0
         glm.translate(self._view, 0, 0, -8)
 
 
@@ -56,9 +59,31 @@ class Trackball(Transform):
 
     @phi.setter
     def zoom(self, value):
+        width, height = self._viewport
+        if self._aspect is None:
+            aspect = width / float(height)
+        else:
+            aspect = self._aspect
         self._fovy = np.minimum(np.maximum(value, 1.0), 179.0)
-        self['projection'] = glm.perspective(self._fovy, self._aspect,
+        self['projection'] = glm.perspective(self._fovy, aspect,
                                              self._znear, self._zfar)
+
+    @property
+    def aspect(self):
+        """ Projection aspect """
+        return self._aspect
+
+    @aspect.setter
+    def aspect(self, value):
+        self._aspect = value
+        width, height = self._viewport
+        if self._aspect is None:
+            aspect = width / float(height)
+        else:
+            aspect = self._aspect
+        self['projection'] = glm.perspective(self._fovy, aspect,
+                                             self._znear, self._zfar)
+
 
 
     def on_attach(self, program):
@@ -69,8 +94,11 @@ class Trackball(Transform):
 
     def on_resize(self, width, height):
         self._viewport = width, height
-        self._aspect = width / float(height)
-        self['projection'] = glm.perspective(self._fovy, self._aspect,
+        if self._aspect is None:
+            aspect = width / float(height)
+        else:
+            aspect = self._aspect
+        self['projection'] = glm.perspective(self._fovy, aspect,
                                              self._znear, self._zfar)
         Transform.on_resize(self, width, height)
 
@@ -89,8 +117,13 @@ class Trackball(Transform):
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
+        width, height = self._viewport
+        if self._aspect is None:
+            aspect = width / float(height)
+        else:
+            aspect = self._aspect
 
         self._fovy = np.minimum(np.maximum(self._fovy*(1-dy/100), 1.0), 179.0)
-        self['projection'] = glm.perspective(self._fovy, self._aspect,
+        self['projection'] = glm.perspective(self._fovy, aspect,
                                              self._znear, self._zfar)
         # Transform.on_mouse_scroll(self, x, y, dx, dy)
