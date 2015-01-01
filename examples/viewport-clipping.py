@@ -5,9 +5,9 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, gloo, library
-from glumpy.graphics.collections import PointCollection
 from glumpy.transforms import Transform
+from glumpy import app, gl, gloo, library
+
 
 vertex = """
 attribute vec2 position;
