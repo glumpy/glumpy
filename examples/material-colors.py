@@ -18,6 +18,12 @@ def on_draw(dt):
     quads.draw()
     labels.draw()
 
+@window.event
+def on_key_press(key, modifiers):
+    if key == app.window.key.SPACE:
+        transform.pan = 0.0,0.0
+        transform.zoom = 0.165
+
 
 def add(names, values, xmin, xmax, ymin, ymax, header=None):
     colors = color.Colors(values)
@@ -60,9 +66,8 @@ def add(names, values, xmin, xmax, ymin, ymax, header=None):
 
 
 transform = PanZoom(OrthographicProjection(Position3D(), normalize=True)) + Viewport()
-transform.scale = np.array([.16,.16])
-
 window.attach(transform)
+transform.zoom = 0.165
 
 quads  = collections.TriangleCollection(transform = transform)
 labels = collections.GlyphCollection(transform = transform)
