@@ -5,6 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
+from glumpy import library
 from glumpy.transforms.transform import Transform
 
 
@@ -13,7 +14,13 @@ class Translate(Transform):
     Translation transform
     """
 
-    def __init__(self, translate=(0,0,0)):
-        Transform.__init__(self, "translate.glsl")
-        self["translate"] = np.zeros(3,np.float32)
-        self["translate"][...] = translate
+    def __init__(self, *args, **kwargs):
+        code = library.get("transforms/translate-forward.glsl")
+        Transform.__init__(self, code, *args, **kwargs)
+        self.translate = np.zeros(3,np.float32)
+
+
+    def on_attach(self, program):
+        """ A new program is attached """
+
+        self["translate"] = self.translate

@@ -7,6 +7,7 @@ from panzoom import PanZoom
 from viewport import Viewport
 from trackball import Trackball
 from transform import Transform
+from translate import Translate
 from position2d import Position2D
 from position3d import Position3D
 from linear_scale import LinearScale

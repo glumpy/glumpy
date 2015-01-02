@@ -23,7 +23,7 @@ class Trackball(Transform):
         self._fovy = 25
         self._znear, self._zfar = 2.0, 100.0
         self._trackball = _trackball.Trackball(45,45)
-        self._viewport = None
+        self._viewport = 1,1
         self._model = self._trackball.model
         self._projection = np.eye(4, dtype=np.float32)
         self._view = np.eye(4, dtype=np.float32)

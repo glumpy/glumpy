@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import gl,library
+from glumpy import gl, library
 from . transform import Transform
 
 
@@ -25,6 +25,18 @@ class PanZoom(Transform):
         self.aspect = None
         if aspect is not None:
             self.aspect = aspect*np.ones(2)
+
+
+    def __getitem__(self, key, value):
+        if key in ["scale", "translate"]:
+            key = "panzoom_" + key
+        return Transform.__getitem__(self, key)
+
+    def __setitem__(self, key, value):
+        if key in ["scale", "translate"]:
+            key = "panzoom_" + key
+        Transform.__setitem__(self, key, value)
+
 
     def on_attach(self, program):
         """ A new program is attached """

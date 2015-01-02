@@ -16,6 +16,9 @@ class OrthographicProjection(Transform):
         Paremeters
         ----------
 
+        aspect : float (default: None)
+            Aspect ratio (width/height) to be enforced
+
         xinvert: bool (default: False)
             Whether to invert X axis
 
@@ -27,6 +30,10 @@ class OrthographicProjection(Transform):
         """
 
         code = library.get("transforms/projection.glsl")
+
+        kwargs["aspect"] = kwargs.get("aspect", None)
+        self.aspect = kwargs["aspect"]
+        del kwargs["aspect"]
 
         kwargs["xinvert"] = kwargs.get("xinvert", False)
         self.xinvert = kwargs["xinvert"]
@@ -64,6 +71,16 @@ class OrthographicProjection(Transform):
             xmin, xmax = xmax, xmin
         if self.yinvert:
             ymin, ymax = ymax, ymin
+
+        aspect = self.aspect
+        if aspect is not None:
+            if aspect > 1.0:
+                xmin *= (aspect*width)/height
+                xmax *= (aspect*width)/height
+            else:
+                ymin /= (aspect*width)/height
+                ymax /= (aspect*width)/height
+
         znear, zfar = self.znear, self.zfar
         self["projection"] = glm.ortho(xmin, xmax, ymin, ymax, znear, zfar)
 

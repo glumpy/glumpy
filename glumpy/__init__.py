@@ -17,4 +17,5 @@ from . app.window import key
 from . app.window import mouse
 
 from . graphics import svg
+from . graphics import color
 from . graphics import collections

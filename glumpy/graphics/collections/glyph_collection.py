@@ -5,6 +5,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import gl, data, library
+from glumpy.transforms import Position3D, Viewport
 from glumpy.graphics.text import Font, FontManager
 from . collection import Collection
 
@@ -28,7 +29,7 @@ class GlyphCollection(Collection):
         if transform is not None:
             program["transform"] = transform
         else:
-            program["transform"] = Position3D("position")
+            program["transform"] = Position3D() + Viewport()
 
         manager = FontManager()
         atlas = manager.atlas
