@@ -302,6 +302,12 @@ class Snippet(object):
                 all.extend(snippet.snippets)
         return all
 
+    @property
+    def is_attached(self):
+        """ Wheter snippet is attached to a program """
+        return len(self._programs) > 0
+
+
 
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
