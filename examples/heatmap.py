@@ -19,7 +19,7 @@ vertex = """
     {
         gl_Position = <transform>;
         v_texcoord = texcoord;
-        v_quadsize = viewport.zw * scale;
+        v_quadsize = viewport.zw * panzoom_scale;
         v_pixcoord = texcoord * v_quadsize;
     }
 """

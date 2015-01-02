@@ -83,7 +83,6 @@ for i,name in enumerate(["Red", "Pink", "Purple",  "Deep Purple", "Indigo", "Blu
     if i > 0 and (i % 6) == 0:
         y -= 4
         x = -2.5*2.6
-
     if name not in ["Brown", "Grey"]:
         names  = color.get(family).keys()[:-1][::-1]
         values = color.get(family+":*")[:-4][::-1]
@@ -91,7 +90,6 @@ for i,name in enumerate(["Red", "Pink", "Purple",  "Deep Purple", "Indigo", "Blu
         names  = color.get(family).keys()[::-1]
         values = color.get(family+":*")[::-1]
     add(names, values, x-1.25, x+1.25, y-1.000, y+1.000)
-
     if name not in ["Brown", "Grey"]:
         names  = ["A"+ v for v in color.get(family+":accent").keys()[::-1]]
         values = color.get(family+":accent:*")[::-1]
