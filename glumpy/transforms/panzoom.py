@@ -46,7 +46,7 @@ class PanZoom(Transform):
         -----------------
 
         aspect : float (default is None)
-           Indicate what is the apsect ratio of the object displayed. This is
+           Indicate what is the aspect ratio of the object displayed. This is
            necessary to convert pixel drag move in oject space coordinates.
 
         pan : float, float (default is 0,0)
@@ -98,7 +98,6 @@ class PanZoom(Transform):
         """ Panning (translation) """
 
         self._pan = np.asarray(value)
-
         if self.is_attached:
             self["pan"] = self._pan
 
@@ -146,7 +145,7 @@ class PanZoom(Transform):
         self._zoom_max = max(value, self._zoom_min)
 
 
-    def __getitem__(self, key, value):
+    def __getitem__(self, key):
         """ Override getitem to enforce panzoom aliases """
 
         if key in PanZoom.aliases.keys():

@@ -1,4 +1,7 @@
-// --- Pan/Zoom ---
+// ----------------------------------------------------------------------------
+// Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+// Distributed under the (new) BSD License.
+// ----------------------------------------------------------------------------
 uniform vec2 panzoom_scale;
 uniform vec2 panzoom_translate;
 vec4 panzoom(vec4 position)
