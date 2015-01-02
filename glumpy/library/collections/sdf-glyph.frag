@@ -62,7 +62,7 @@ void main(void)
     float alpha = contour( dist, width );
 
     // Supersampled version (when scale is small)
-    if (v_scale < 25)
+    if (v_scale < 30)
     {
         // Debug
         // color = vec4(1,0,0,1);

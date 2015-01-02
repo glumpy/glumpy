@@ -512,6 +512,10 @@ def get(name):
             values.append(d)
         return values
 
+    name = name.lower().strip()
+    name = name.replace(' ','')
+    name = name.replace('-','')
+
     items = name.split(":")
     if len(items) == 1:
         domain = colors['svg']

@@ -171,9 +171,11 @@ if __name__ == '__main__':
 
     #print Color(1,1,1,1)
     print Color("material:red:50")
-    print Colors("material:red:*").rgba
+    print Color("material:red:50").rgba
+    print Color("material:red:50").hsv
 
-    print Colors("material:red:*").hsv
+    print Colors("material:red:*").rgba
+    # print Colors("material:red:*").hsv
 
     # colors = Colors(['red', 'lime', 'blue'])
     # print colors.rgba
