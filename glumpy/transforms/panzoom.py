@@ -65,7 +65,7 @@ class PanZoom(Transform):
         code = library.get("transforms/panzoom.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
-        self._aspect = Transform.get("aspect", kwargs) or 1
+        self._aspect = Transform.get("aspect", kwargs) or None
         self._pan = np.array(Transform.get("pan", kwargs) or (0.,0.))
         self._zoom_min = Transform.get("zoom_min", kwargs) or 0.01
         self._zoom_max = Transform.get("zoom_max", kwargs) or 1000
@@ -115,7 +115,9 @@ class PanZoom(Transform):
         self._zoom = np.clip(value, self._zoom_min, self._zoom_max)
 
         if self.is_attached:
-            aspect = self._window_aspect * self._aspect
+            aspect = 1.0
+            if self._aspect is not None:
+                aspect = self._window_aspect * self._aspect
             self["zoom"] = self._zoom * aspect
 
 
@@ -165,7 +167,9 @@ class PanZoom(Transform):
         """ Initialization event """
 
         self["pan"] = self.pan
-        aspect = self._window_aspect * self._aspect
+        aspect = 1.0
+        if self._aspect is not None:
+            aspect = self._window_aspect * self._aspect
         self["zoom"] = self.zoom * aspect
 
 
@@ -179,7 +183,10 @@ class PanZoom(Transform):
             self._window_aspect = np.array([1.0/aspect, 1.0])
         else:
             self._window_aspect = np.array([1.0, aspect/1.0])
-        aspect = self._window_aspect * self._aspect
+
+        aspect = 1.0
+        if self._aspect is not None:
+            aspect = self._window_aspect * self._aspect
         self["zoom"] = self.zoom * aspect
 
         # Transmit signal to other transforms

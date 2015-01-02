@@ -65,7 +65,8 @@ def add(names, values, xmin, xmax, ymin, ymax, header=None):
 
 
 
-transform = PanZoom(OrthographicProjection(Position3D(), normalize=True)) + Viewport()
+transform = PanZoom(OrthographicProjection(Position3D(),normalize=True),aspect=1)
+transform += Viewport()
 window.attach(transform)
 transform.zoom = 0.165
 

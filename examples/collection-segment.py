@@ -27,7 +27,7 @@ P1 = np.dstack((np.linspace(110,1110,n),np.ones(n)*550,np.zeros(n))).reshape(n,3
 
 # Viewport is a transform that update a uniform (viewport) describing the
 # current viewport. It is required for computing the line width.
-transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
+transform = PanZoom(OrthographicProjection(Position3D())) + Viewport()
 window.attach(transform)
 
 collection = SegmentCollection(mode="agg", linewidth='local', transform=transform)
