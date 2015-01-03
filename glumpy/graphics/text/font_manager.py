@@ -3,6 +3,7 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+""" Font Manager """
 import os
 import numpy as np
 from glumpy import data
@@ -12,6 +13,14 @@ from glumpy.graphics.text import Font
 
 
 class FontManager(object):
+    """
+    Font Manager
+
+    The Font manager takes care of caching already loaded font. Currently, the only
+    way to get a font is to get it via its filename. If the font is not available
+    on the local data directory, it will be fetched from the font server which
+    lives at https://github.com/glumpy/glumpy-font/.
+    """
 
     # Default atlas
     _atlas = None
@@ -30,6 +39,11 @@ class FontManager(object):
 
     @classmethod
     def get(cls, filename):
+        """
+        Get a font from the cache, the local data directory or the distant server
+        (in that order).
+        """
+
         filename = data.get(filename)
         dirname  = os.path.dirname(filename)
         basename = os.path.basename(filename)
@@ -39,13 +53,10 @@ class FontManager(object):
         return FontManager._cache[basename]
 
 
-    # def get_font(self, family, weight=400, stretch='regular', slant='regular'):
-    #     log.warn("Not yet implemented")
-    #     return self.get_file('')
-
-
     @property
     def atlas(self):
+        """ Texture atlas """
+
         if FontManager._atlas is None:
             FontManager._atlas = np.zeros((1024,1024),np.float32).view(Atlas)
         return FontManager._atlas
@@ -53,4 +64,6 @@ class FontManager(object):
 
     @property
     def cache(self):
+        """ Font cache """
+
         return FontManager._cache
