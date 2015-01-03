@@ -5,6 +5,7 @@
 # -----------------------------------------------------------------------------
 import os
 import numpy as np
+from glumpy import data
 from glumpy.log import log
 from glumpy.gloo.atlas import Atlas
 from glumpy.graphics.text import Font
@@ -27,34 +28,20 @@ class FontManager(object):
             cls._instance = object.__new__(cls, *args, **kwargs)
         return cls._instance
 
-
-    def __init__(self, atlas=None):
-        pass
-
-
-    def get_file(self, filename):
+    @classmethod
+    def get(cls, filename):
+        filename = data.get(filename)
         dirname  = os.path.dirname(filename)
         basename = os.path.basename(filename)
-
-        if basename in self.cache.keys():
-            return self.cache[basename]
-
-        if not os.path.exists(filename):
-            log.warn("Font not found, falling back to Roboto font")
-            path = os.path.dirname(__file__) or '.'
-            path = os.path.join(path, "../../data/fonts/Roboto-Regular.ttf")
-            path = os.path.normpath(path)
-            filename = os.path.abspath(path)
-            dirname  = os.path.dirname(filename)
-            basename = os.path.basename(filename)
-
-        self.cache[basename] = Font(filename, self.atlas)
-        return self.cache[basename]
+        if basename in FontManager._cache.keys():
+            return FontManager._cache[basename]
+        FontManager._cache[basename] = Font(filename, FontManager._atlas)
+        return FontManager._cache[basename]
 
 
-    def get_font(self, family, weight=400, stretch='regular', slant='regular'):
-        log.warn("Not yet implemented")
-        return self.get_file('')
+    # def get_font(self, family, weight=400, stretch='regular', slant='regular'):
+    #     log.warn("Not yet implemented")
+    #     return self.get_file('')
 
 
     @property

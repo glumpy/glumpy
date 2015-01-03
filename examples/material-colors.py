@@ -72,7 +72,7 @@ transform.zoom = 0.165
 
 quads  = collections.TriangleCollection(transform = transform)
 labels = collections.GlyphCollection(transform = transform)
-regular = FontManager().get_file("../glumpy/data/fonts/OpenSans-Regular.ttf")
+regular = FontManager.get("OpenSans-Regular.ttf")
 
 
 x,y = -2.5*2.6,+4

@@ -55,8 +55,8 @@ ymin,ymax = -1,1
 
 z = 0
 
-regular = FontManager().get_file("../glumpy/data/fonts/OpenSans-Regular.ttf")
-bold    = FontManager().get_file("../glumpy/data/fonts/OpenSans-Bold.ttf")
+regular = FontManager.get("OpenSans-Regular.ttf")
+bold    = FontManager.get("OpenSans-Bold.ttf")
 n = 11
 scale = 0.001
 for i,y in enumerate(np.linspace(xmin,xmax,n)):

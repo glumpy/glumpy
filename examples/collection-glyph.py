@@ -53,7 +53,6 @@ transform = Trackball(Position3D()) + Viewport()
 window.attach(transform)
 
 C = GlyphCollection(transform=transform)
-font = FontManager().get_file("../glumpy/data/fonts/Roboto-Regular.ttf")
-C.append(jabberwocky, font)
+C.append(jabberwocky, FontManager.get("Roboto-Regular.ttf"))
 
 app.run()

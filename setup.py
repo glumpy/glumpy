@@ -25,6 +25,7 @@ if __name__ == "__main__":
           maintainer_email="Nicolas.Rougier@inria.fr",
           license = "BSD License",
           packages=['glumpy',
+                    'glumpy.data',
                     'glumpy.ext',
                     'glumpy.ext.sdf',
                     'glumpy.ext.freetype',
@@ -33,12 +34,6 @@ if __name__ == "__main__":
                     'glumpy.app.window',
                     'glumpy.app.window.backends',
                     'glumpy.gloo',
-
-                    'glumpy.data',
-                    'glumpy.data.arrays',
-                    'glumpy.data.fonts',
-                    'glumpy.data.images',
-                    'glumpy.data.objects',
 
                     'glumpy.library',
                     'glumpy.library.math',
@@ -57,10 +52,8 @@ if __name__ == "__main__":
                     'glumpy.graphics.collections'],
 
           package_data={
-              'glumpy.data.arrays':         ['*.npy'],
-              'glumpy.data.fonts':          ['*.ttf', '*.txt'],
-              'glumpy.data.images':         ['*.png', '*.jpg'],
-              'glumpy.data.objects':        ['*.obj', "*.txt"],
+              'glumpy.data':                ['*.npy', '*.ttf', '*.txt',
+                                             '*.png', '*.jpg', '*.svg', '*.obj']
               'glumpy.library':             ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.math':        ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.misc':        ['*.vert','*.frag', "*.geom", "*.glsl"],
