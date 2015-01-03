@@ -5,8 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy.graphics import Filter
 from glumpy.geometry import primitives
+from glumpy.graphics.filter import Filter
 from glumpy import gl, app, glm, gloo, data
 
 
