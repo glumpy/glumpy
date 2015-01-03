@@ -158,9 +158,6 @@ numpy array).
 
 
 
-
-
-
 Computation
 ===========
 
@@ -185,9 +182,24 @@ Simple computation can be directly written using the GPU (no Cuda, no OpenCL):
 Post-processing filters
 =======================
 
-* Sepia colors
-* Gaussian blur
-* Filter composition
+Post-processing filters are easily implemented using the Filter object. You
+draw tour scene normally but the draw calls are surrounded by a ```with
+Filter(shader)`` where the shader transform the otuput.
+
+* `filter-pixelate.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/filter-sepia.py>`_
+
+  Pixelating filter with pixelation level controlled by mouse scroll.
+
+
+* `filter-blur.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/filter-blur.py>`_
+
+  Simple 2D Gaussian blur using two 1D kernels.
+
+
+* `filter-composition.py `<https://github.com/glumpy/glumpy/blob/master/examples/smoke/filter-composition.py>`_
+
+  This example show how to compose filters together.
+
 
 
 Snippets
@@ -201,9 +213,30 @@ Snippets
 Transforms
 ==========
 
-* Pan-zoom
-* Trackball
-* Projection / Model / View
+Transforms are snippets that can be attached to events (resize, mouse_scroll,
+etc.) and inserted into other shader code using hooks.
+
+* `transform-pan-zoom.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-pan-zoom.py>`_
+
+  The panzoom transform allow to translate and scale an object in the window
+  space coordinate (2D).
+
+
+* `transform-trackball.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-trackball.py>`_
+
+  The trackball transform simulates a virtual trackball (3D) that can rotate
+  around the origin using intuitive mouse gestures.
+
+
+* `transform-pvm.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-pvm.py>`_
+
+  Projection / Model / View transform (equivalen to the deprecated GL api)
+
+
+* `transform-ortho.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-ortho.py>`_
+
+  The orthographic projection can be combined with the panzoom tranform.
+
 
 
 Eye-candy demonstrations
@@ -214,6 +247,7 @@ Eye-candy demonstrations
 * Voronoi
 * Quiver plot
 * Realtime signals
+* Tiger
 
 
 Collections
