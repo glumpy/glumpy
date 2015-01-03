@@ -5,8 +5,8 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy.graphics import Filter
 from glumpy import app, gl, glm, gloo
+from glumpy.graphics.filter import Filter
 
 cone_vertex = """
 uniform mat4 projection;
