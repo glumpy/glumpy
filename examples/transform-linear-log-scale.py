@@ -17,12 +17,12 @@ def on_draw(dt):
     points.draw()
 
 # lin-lin
-# x_transform = LinearScale("position.x", domain=(0.0,10.0))
-# y_transform = LinearScale("position.y", domain=(0.0,10.0))
+# x_transform = LinearScale("position.x", domain=(0,10))
+# y_transform = LinearScale("position.y", domain=(0,10))
 
 # log-lin
-x_transform = LogScale("position.x",    domain=(-1.0, 3.0))
-y_transform = LinearScale("position.y", domain=(0.0,10.0))
+x_transform = LogScale("position.x",    domain=(-1,3))
+y_transform = LinearScale("position.y", domain=(0,10))
 
 # lin-log
 # x_transform = LinearScale("position.x", domain=(0,10))

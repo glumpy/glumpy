@@ -17,13 +17,8 @@ from log_scale import LogScale
 from power_scale import PowerScale
 from linear_scale import LinearScale
 
-
+# from pvm import PVM
 # from polar import Polar
 # from rotate import Rotate
-#from pvm import PVM
-#from translate import Translate
-#from translate_scale import TranslateScale
-#from scale_translate import ScaleTranslate
-#from symlog_scale import SymLogScale
-#from perpective_projection import PerspectiveProjection
-#from orthographic_projection import OrthographicProjection
+# from perpective_projection import PerspectiveProjection
+# from orthographic_projection import OrthographicProjection
