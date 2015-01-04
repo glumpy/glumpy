@@ -70,7 +70,7 @@ program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['data'] = np.random.uniform(0,1,(n,n))
 program['data_shape'] = program['data'].shape[:2]
-transform = PanZoom(Position2D("position"))
+transform = PanZoom(Position2D("position"),aspect=1)
 program['transform'] = transform
 window.attach(transform)
 
