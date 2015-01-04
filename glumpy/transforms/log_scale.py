@@ -5,14 +5,21 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 """
-Power scale transform
+Log scale transform
 
-Power scales are similar to linear scales, except there's an exponential
-transform that is applied to the input domain value before the output range
-value is computed. The mapping to the output range value y can be expressed as
-a function of the input domain value x: y = mx^k + b, where k is the exponent
-value. Power scales also support negative values, in which case the input value
-is multiplied by -1, and the resulting output value is also multiplied by -1.
+Log scales are similar to linear scales, except there's a logarithmic transform
+that is applied to the input domain value before the output range value is
+computed. The mapping to the output range value y can be expressed as a
+function of the input domain value x: y = m log(x) + b.
+
+As log(0) is negative infinity, a log scale must have either an
+exclusively-positive or exclusively-negative domain; the domain must not
+include or cross zero. A log scale with a positive domain has a well-defined
+behavior for positive values, and a log scale with a negative domain has a
+well-defined behavior for negative values (the input value is multiplied by -1,
+and the resulting output value is also multiplied by -1). The behavior of the
+scale is undefined if you pass a negative value to a log scale with a positive
+domain or vice versa.
 
 The transform is connected to the following events:
 

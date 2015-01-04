@@ -238,6 +238,36 @@ etc.) and inserted into other shader code using hooks.
   The orthographic projection can be combined with the panzoom tranform.
 
 
+* `transform-linear-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-linear-scale.py>`_
+
+  Simple linear scale that maps point from a domain to a given range.
+
+* `transform-power-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-power-scale.py>`_
+
+  Power scales are similar to linear scales, except there's an exponential
+  transform that is applied to the input domain value before the output range
+  value is computed.
+
+* `transform-log-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-log-scale.py>`_
+
+  Log scales are similar to linear scales, except there's a logarithmic
+  transform that is applied to the input domain value before the output range
+  value is computed.
+
+* `transform-lin-log-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-linear-log-scale.py>`_
+
+  This example show how to use different scales on x, y, or z.
+
+* `transform-polar.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-polar.py>`_
+
+  Simple polar projection.
+
+* `transform-log-polar.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-log-polar.py>`_
+
+  Simple composition of a polar projection and a log scale on the radius.
+
+
+
 
 Eye-candy demonstrations
 ========================

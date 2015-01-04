@@ -50,7 +50,7 @@ program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['texture'] = data.get("lena.png")
 
-transform = PanZoom(Position2D("position"))
+transform = PanZoom(Position2D("position"), aspect=1)
 program['transform'] = transform
 window.attach(transform)
 

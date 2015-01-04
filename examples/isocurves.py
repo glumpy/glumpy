@@ -92,7 +92,7 @@ program['data_shape'] = Z.shape[1], Z.shape[0]
 program['u_kernel'] = data.get("spatial-filters.npy")
 program['u_kernel'].interpolation = gl.GL_LINEAR
 
-transform = PanZoom()
+transform = PanZoom(aspect=1)
 program['transform'] = transform
 window.attach(transform)
 app.run()
