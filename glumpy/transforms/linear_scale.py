@@ -105,7 +105,7 @@ class LinearScale(Transform):
     def ydomain(self, value):
         self._scales[1,:2] = value
         if self.is_attached:
-            self["linear_scale_y"] = self._yscale
+            self["linear_scale_y"] = self._scales[1]
 
     @property
     def zdomain(self):
