@@ -24,9 +24,9 @@ def on_mouse_scroll(x,y,dx,dy):
         transform["base"] = np.maximum(1., transform["base"]/1.1)
 
 transform = Position3D(LogScale()) + Viewport()
-transform["domain"] = .1,2 # = base^.1, base^2
+transform["domain"] = -1,2 # = [base^-1, base^2]
 points = PointCollection("agg", transform = transform)
-P = np.random.uniform(1,10,(10000,3))
+P = np.random.uniform(0,10,(10000,3))
 points.append(P*P)
 
 app.run()

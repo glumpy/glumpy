@@ -48,13 +48,13 @@ class LinearScale(QuantitativeScale):
         -----------------
 
         domain : tuple of 2 floats (default is (-1,1))
-            Input domains for xyz
+            Input domain
 
         range : tuple of 2 floats (default is (-1,1))
-            Output ranges for xyz
+            Output range
 
         clamp : bool (default is True)
-           Clamping test for xyz
+           Clamping test
         """
         code = library.get("transforms/linear-scale-forward.glsl")
         QuantitativeScale.__init__(self, code, *args, **kwargs)

@@ -48,18 +48,18 @@ class LogScale(QuantitativeScale):
         base : float (default is 10)
             Log base
 
-        domain : tuple of 2 floats (default is (1,10))
-            Input domains for xyz
+        domain : tuple of 2 floats (default is (-1,3))
+            Input domain
 
         range : tuple of 2 floats (default is (-1,1))
-            Output ranges for xyz
+            Output range
 
         clamp : bool (default is True)
-           Clamping test for xyz
+           Clamping test
         """
 
         self._base = float(Transform._get_kwarg("base", kwargs) or 10.0)
-        kwargs["domain"] = kwargs.get("domain", (1.,10.))
+        kwargs["domain"] = kwargs.get("domain", (-1,3))
         code = library.get("transforms/log-scale-forward.glsl")
         QuantitativeScale.__init__(self, code, *args, **kwargs)
 
