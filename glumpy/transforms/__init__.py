@@ -13,12 +13,14 @@ from position3d import Position3D
 from pvm_projection import PVMProjection
 from orthographic_projection import OrthographicProjection
 
+from polar import PolarProjection
+
 from log_scale import LogScale
 from power_scale import PowerScale
 from linear_scale import LinearScale
 
 # from pvm import PVM
-# from polar import Polar
+
 # from rotate import Rotate
 # from perpective_projection import PerspectiveProjection
 # from orthographic_projection import OrthographicProjection
