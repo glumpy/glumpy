@@ -28,7 +28,7 @@ from glumpy.app.window.event import EventDispatcher
 class Transform(Snippet,EventDispatcher):
 
     @classmethod
-    def get(cls, key, kwargs):
+    def _get_kwarg(cls, key, kwargs):
         """ Return a given parameter from the kwargs and remove it """
         if  key in kwargs.keys():
             value = kwargs[key]

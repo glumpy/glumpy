@@ -65,11 +65,11 @@ class PanZoom(Transform):
         code = library.get("transforms/panzoom.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
-        self._aspect = Transform.get("aspect", kwargs) or None
-        self._pan = np.array(Transform.get("pan", kwargs) or (0.,0.))
-        self._zoom_min = Transform.get("zoom_min", kwargs) or 0.01
-        self._zoom_max = Transform.get("zoom_max", kwargs) or 1000
-        self._zoom = Transform.get("zoom", kwargs) or 1
+        self._aspect = Transform._get_kwarg("aspect", kwargs) or None
+        self._pan = np.array(Transform._get_kwarg("pan", kwargs) or (0.,0.))
+        self._zoom_min = Transform._get_kwarg("zoom_min", kwargs) or 0.01
+        self._zoom_max = Transform._get_kwarg("zoom_max", kwargs) or 1000
+        self._zoom = Transform._get_kwarg("zoom", kwargs) or 1
         self._width = 1
         self._height = 1
         self._window_aspect = np.asarray([1.,1.])

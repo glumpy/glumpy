@@ -69,13 +69,13 @@ class Trackball(Transform):
         code = library.get("transforms/trackball.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
-        self._aspect = Transform.get("aspect", kwargs) or 1
-        self._znear = Transform.get("znear", kwargs) or 2.0
-        self._zfar = Transform.get("zfar", kwargs) or 1000.0
-        theta = Transform.get("theta", kwargs) or 45
-        phi = Transform.get("phi", kwargs) or 45
-        self._distance = Transform.get("distance", kwargs) or 8
-        self._zoom = Transform.get("zoom", kwargs) or 35
+        self._aspect = Transform._get_kwarg("aspect", kwargs) or 1
+        self._znear = Transform._get_kwarg("znear", kwargs) or 2.0
+        self._zfar = Transform._get_kwarg("zfar", kwargs) or 1000.0
+        theta = Transform._get_kwarg("theta", kwargs) or 45
+        phi = Transform._get_kwarg("phi", kwargs) or 45
+        self._distance = Transform._get_kwarg("distance", kwargs) or 8
+        self._zoom = Transform._get_kwarg("zoom", kwargs) or 35
         self._width = 1
         self._height = 1
         self._window_aspect = 1

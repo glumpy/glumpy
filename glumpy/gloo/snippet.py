@@ -58,6 +58,9 @@ class Snippet(object):
         # Attached programs
         self._programs = []
 
+        #
+        self._done = True
+
 
     def lookup(self, name, deepsearch=True):
         """ Search for a specific symbol """
@@ -359,14 +362,130 @@ class Snippet(object):
     def __str__(self):
         return self.generate_call()
 
-    def __getitem__(self, key):
-        if len(self._programs) == 0:
-            raise RuntimeError("Snippet is not attached to a program")
 
-        name = self.lookup(key)
-        if name is not None:
-            program = self._programs[0]
-            return program[name]
+
+    # def get(self, name):
+
+    #     # Get all snippets of a specific class
+    #     # ------------------------------------
+    #     if type(name) is type and issubclass(name, Snippet):
+    #         instances = []
+
+    #         if isinstance(self, name):
+    #             instances.append(self)
+
+    #         for snippet in self._args:
+    #             if isinstance(snippet, Snippet):
+    #                 instances.extend( snippet.get(name) )
+    #         if self._next:
+    #             operand,snippet = self._next
+    #             if isinstance(snippet, Snippet):
+    #                 instances.extend( snippet.get(name) )
+    #         return instances
+
+    #     # Search for a given attribute in all snippets
+    #     # --------------------------------------------
+    #     for snippet in self._args:
+    #         if isinstance(snippet, Snippet):
+    #             if hasattr(snippet, name):
+    #                 return getattr(snippet,name)
+    #     if self._next:
+    #         operand,snippet = self._next
+    #         if isinstance(snippet, Snippet):
+    #             if hasattr(snippet, name):
+    #                 return getattr(snippet,name)
+
+    #     raise AttributeError
+
+
+    # def set(self, name, value):
+    #     pass
+
+    #     if not hasattr(self, "_done"):
+    #         return object.__setattr__(self, name, value)
+
+    #     for snippet in self._args:
+    #         if isinstance(snippet, Snippet):
+    #             try:
+    #                 snippet.__setattr__(name, value)
+    #             except AttributeError:
+    #                 pass
+    #             finally:
+    #                 return
+    #     if self._next:
+    #         operand,snippet = self._next
+    #         if isinstance(snippet, Snippet):
+    #             try:
+    #                 snippet.__setattr__(name, value)
+    #             except AttributeError:
+    #                 pass
+    #             finally:
+    #                 return
+
+
+
+    def __getitem__(self, key):
+        """
+        Get an item from:
+
+          1. this snippet
+          2. the children (args)
+          3. the sibling (next)
+          4. the attached programs
+        """
+
+        # First we look in all snippets
+        for snippet in self.snippets:
+            if hasattr(snippet, key):
+                return getattr(snippet, key)
+
+        # Then we look into all attached program
+        if len(self._programs) > 0:
+            name = self.lookup(key)
+            for program in self._programs:
+                try:
+                    return program[name]
+                except AttributeError:
+                    pass
+
+        # No luck, we raise exception
+        raise AttributeError
+
+
+    def __setitem__(self, key, value):
+        """
+        Set an item in:
+
+          1. this snippet
+          2. the children (args)
+          3. the sibling (next)
+          4. the attached programs
+        """
+
+        found = False
+
+        # First we look in all snippets
+        for snippet in self.snippets:
+            if hasattr(snippet, key):
+                setattr(snippet, key, value)
+                found = True
+
+        # Then we look into all attached program
+        if len(self._programs) > 0:
+            name = self.lookup(key)
+
+            for program in self._programs:
+                try:
+                    program[name] = value
+                except IndexError:
+                    pass
+                else:
+                    found = True
+        if not found:
+            raise IndexError
+
+
+
 
         # values = []
         # for program in self._programs:
@@ -386,22 +505,22 @@ class Snippet(object):
         # else:
         #     return values
 
-    def __setitem__(self, key, value):
-        if len(self._programs) == 0:
-            raise RuntimeError("Snippet is not attached to a program")
+    # def __setitem__(self, key, value):
+    #     if len(self._programs) == 0:
+    #         raise RuntimeError("Snippet is not attached to a program")
 
-        name = self.lookup(key)
-        if name is not None:
-            for program in self._programs:
-                program[name] = value
+    #     name = self.lookup(key)
+    #     if name is not None:
+    #         for program in self._programs:
+    #             program[name] = value
 
-        for snippet in self._args:
-            if isinstance(snippet, Snippet):
-                snippet[key] = value
-            if self._next:
-                operand,snippet = self._next
-                if isinstance(snippet, Snippet):
-                    snippet[key] = value
+    #     for snippet in self._args:
+    #         if isinstance(snippet, Snippet):
+    #             snippet[key] = value
+    #         if self._next:
+    #             operand,snippet = self._next
+    #             if isinstance(snippet, Snippet):
+    #                 snippet[key] = value
 
 
 
