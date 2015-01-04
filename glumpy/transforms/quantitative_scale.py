@@ -53,7 +53,6 @@ class QuantitativeScale(Transform):
         self._scales[0] = -1,+1, -1,+1
         self._scales[1] = -1,+1, -1,+1
         self._scales[2] = -1,+1, -1,+1
-
         self.domain = Transform._get_kwarg("domain", kwargs) or (-1,+1)
         self.range  = Transform._get_kwarg("range", kwargs) or (-1,+1)
         self.clamp  = Transform._get_kwarg("clamp", kwargs) or False
