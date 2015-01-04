@@ -46,17 +46,16 @@ class Transform(Snippet,EventDispatcher):
     def attach(self, program):
         """ Attach the transform to a program """
 
-        Snippet.attach(self,program)
+        if program not in self._programs:
+            self._programs.append(program)
+        program._build_uniforms()
+        program._build_attributes()
+
+        for snippet in self.snippets[1:]:
+            snippet.attach(program)
+
         self.dispatch_event("on_attach", program)
 
-
-    def on_attach(self, program):
-        for snippet in list(self._args):
-            if isinstance(snippet, Snippet):
-                snippet.dispatch_event("on_attach", program)
-        if self._next:
-            operator, snippet = self._next
-            snippet.dispatch_event("on_attach", program)
 
     def on_resize(self, width, height):
         for snippet in list(self._args):

@@ -16,10 +16,10 @@ def on_draw(dt):
     window.clear()
     points.draw()
 
-@window.event
-def on_mouse_scroll(x,y,dx,dy):
-    if dy < 0: transform["ydomain"] = 1.1*transform["ydomain"]
-    else:      transform["ydomain"] = transform["ydomain"]/1.1
+#@window.event
+#def on_mouse_scroll(x,y,dx,dy):
+#    if dy < 0: transform["ydomain"] = 1.1*transform["ydomain"]
+#    else:      transform["ydomain"] = transform["ydomain"]/1.1
 
 transform = Position3D(LinearScale()) + Viewport()
 points = PointCollection("agg", transform = transform)
