@@ -10,9 +10,11 @@ from transform import Transform
 from translate import Translate
 from position2d import Position2D
 from position3d import Position3D
-from linear_scale import LinearScale
 from pvm_projection import PVMProjection
 from orthographic_projection import OrthographicProjection
+
+from power_scale import PowerScale
+from linear_scale import LinearScale
 
 
 # from polar import Polar

@@ -244,7 +244,6 @@ class Snippet(object):
             if self._next:
                 operand, other = self.next
                 s = str(other)
-                print s
         return s
 
 #    def __getattr__(self, key):
@@ -473,7 +472,6 @@ class Snippet(object):
         # Then we look into all attached program
         if len(self._programs) > 0:
             name = self.lookup(key)
-
             for program in self._programs:
                 try:
                     program[name] = value
@@ -481,11 +479,10 @@ class Snippet(object):
                     pass
                 else:
                     found = True
+
         if not found:
-            raise IndexError
-
-
-
+            error = 'Snippet does not have such key ("%s")' % key
+            raise IndexError(error)
 
         # values = []
         # for program in self._programs:
