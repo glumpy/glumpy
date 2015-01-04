@@ -186,17 +186,17 @@ Post-processing filters are easily implemented using the Filter object. You
 draw tour scene normally but the draw calls are surrounded by a ```with
 Filter(shader)`` where the shader transform the otuput.
 
-* `filter-pixelate.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/filter-sepia.py>`_
+* `filter-pixelate.py <https://github.com/glumpy/glumpy/blob/master/examples/filter-sepia.py>`_
 
   Pixelating filter with pixelation level controlled by mouse scroll.
 
 
-* `filter-blur.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/filter-blur.py>`_
+* `filter-blur.py <https://github.com/glumpy/glumpy/blob/master/examples/filter-blur.py>`_
 
   Simple 2D Gaussian blur using two 1D kernels.
 
 
-* `filter-composition.py `<https://github.com/glumpy/glumpy/blob/master/examples/smoke/filter-composition.py>`_
+* `filter-composition.py `<https://github.com/glumpy/glumpy/blob/master/examples/filter-composition.py>`_
 
   This example show how to compose filters together.
 
@@ -216,53 +216,53 @@ Transforms
 Transforms are snippets that can be attached to events (resize, mouse_scroll,
 etc.) and inserted into other shader code using hooks.
 
-* `transform-pan-zoom.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-pan-zoom.py>`_
+* `transform-pan-zoom.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-pan-zoom.py>`_
 
   The panzoom transform allow to translate and scale an object in the window
   space coordinate (2D).
 
 
-* `transform-trackball.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-trackball.py>`_
+* `transform-trackball.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-trackball.py>`_
 
   The trackball transform simulates a virtual trackball (3D) that can rotate
   around the origin using intuitive mouse gestures.
 
 
-* `transform-pvm.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-pvm.py>`_
+* `transform-pvm.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-pvm.py>`_
 
   Projection / Model / View transform (equivalen to the deprecated GL api)
 
 
-* `transform-ortho.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-ortho.py>`_
+* `transform-ortho.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-ortho.py>`_
 
   The orthographic projection can be combined with the panzoom tranform.
 
 
-* `transform-linear-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-linear-scale.py>`_
+* `transform-linear-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-linear-scale.py>`_
 
   Simple linear scale that maps point from a domain to a given range.
 
-* `transform-power-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-power-scale.py>`_
+* `transform-power-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-power-scale.py>`_
 
   Power scales are similar to linear scales, except there's an exponential
   transform that is applied to the input domain value before the output range
   value is computed.
 
-* `transform-log-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-log-scale.py>`_
+* `transform-log-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-log-scale.py>`_
 
   Log scales are similar to linear scales, except there's a logarithmic
   transform that is applied to the input domain value before the output range
   value is computed.
 
-* `transform-lin-log-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-linear-log-scale.py>`_
+* `transform-lin-log-scale.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-linear-log-scale.py>`_
 
   This example show how to use different scales on x, y, or z.
 
-* `transform-polar.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-polar.py>`_
+* `transform-polar.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-polar.py>`_
 
   Simple polar projection.
 
-* `transform-log-polar.py <https://github.com/glumpy/glumpy/blob/master/examples/smoke/transform-log-polar.py>`_
+* `transform-log-polar.py <https://github.com/glumpy/glumpy/blob/master/examples/transform-log-polar.py>`_
 
   Simple composition of a polar projection and a log scale on the radius.
 
