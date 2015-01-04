@@ -13,43 +13,32 @@
   (measured in pixels) in a histogram.
 */
 uniform int  linear_scale_clamp;
-uniform vec4 linear_scale_x;
-uniform vec4 linear_scale_y;
-uniform vec4 linear_scale_z;
-
+uniform vec2 linear_scale_range;
+uniform vec2 linear_scale_domain;
 
 float linear_scale_forward(float value)
 {
-    float domain_inf = linear_scale_x.x;
-    float domain_sup = linear_scale_x.y;
-    float range_inf  = linear_scale_x.z;
-    float range_sup  = linear_scale_x.w;
-
-    float t = (value - domain_inf) /(domain_sup - domain_inf);
+    vec2 domain = linear_scale_domain;
+    vec2 range = linear_scale_range;
+    float t = (value - domain.x) /(domain.y - domain.x);
     if (linear_scale_clamp > 0) t = clamp(t,0.0,1.0);
-    return range_inf + t*(range_sup - range_inf);
+    return range.x + t*(range.y - range.x);
 }
 
 vec2 linear_scale_forward(vec2 value)
 {
-    vec2 domain_inf = vec2(linear_scale_x.x, linear_scale_y.x);
-    vec2 domain_sup = vec2(linear_scale_x.y, linear_scale_y.y);
-    vec2 range_inf  = vec2(linear_scale_x.z, linear_scale_y.z);
-    vec2 range_sup  = vec2(linear_scale_x.w, linear_scale_y.w);
-
-    vec2 t = (value - domain_inf) /(domain_sup - domain_inf);
-    if (linear_scale_clamp > 0)  t = clamp(t,0.0,1.0);
-    return range_inf + t*(range_sup - range_inf);
+    vec2 domain = linear_scale_domain;
+    vec2 range = linear_scale_range;
+    vec2 t = (value - domain.x) /(domain.y - domain.x);
+    if (linear_scale_clamp > 0) t = clamp(t,0.0,1.0);
+    return range.x + t*(range.y - range.x);
 }
 
 vec3 linear_scale_forward(vec3 value)
 {
-    vec3 domain_inf = vec3(linear_scale_x.x, linear_scale_y.x, linear_scale_z.x);
-    vec3 domain_sup = vec3(linear_scale_x.y, linear_scale_y.y, linear_scale_z.y);
-    vec3 range_inf  = vec3(linear_scale_x.z, linear_scale_y.z, linear_scale_z.z);
-    vec3 range_sup  = vec3(linear_scale_x.w, linear_scale_y.w, linear_scale_z.w);
-
-    vec3 t = (value - domain_inf) /(domain_sup - domain_inf);
+    vec2 domain = linear_scale_domain;
+    vec2 range = linear_scale_range;
+    vec3 t = (value - domain.x) /(domain.y - domain.x);
     if (linear_scale_clamp > 0) t = clamp(t,0.0,1.0);
-    return range_inf + t*(range_sup - range_inf);
+    return range.x + t*(range.y - range.x);
 }

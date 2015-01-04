@@ -31,11 +31,10 @@ from . quantitative_scale import QuantitativeScale
 class LogScale(QuantitativeScale):
     """ Log scale transform """
 
-    aliases = { "scale_x"  : "log_scale_x",
-                "scale_y"  : "log_scale_y",
-                "scale_z"  : "log_scale_z",
-                "clamp"    : "log_scale_clamp",
-                "base"     : "log_scale_base" }
+    aliases = { "domain" : "log_scale_domain",
+                "range"  : "log_scale_range",
+                "clamp"  : "log_scale_clamp",
+                "base"   : "log_scale_base" }
 
 
     def __init__(self, *args, **kwargs):
@@ -59,10 +58,8 @@ class LogScale(QuantitativeScale):
            Clamping test for xyz
         """
 
-        self._bases = np.ones(3, dtype=np.float32)
-        self._bases[...] = Transform._get_kwarg("base", kwargs) or 10
-
-        kwargs["domain"] = kwargs.get("domain", (1,10))
+        self._base = float(Transform._get_kwarg("base", kwargs) or 10.0)
+        kwargs["domain"] = kwargs.get("domain", (1.,10.))
         code = library.get("transforms/log-scale-forward.glsl")
         QuantitativeScale.__init__(self, code, *args, **kwargs)
 
@@ -70,33 +67,25 @@ class LogScale(QuantitativeScale):
     @property
     def base(self):
         """ Input base for xyz """
-        return self._bases
+        return self._base
+
 
     @base.setter
     def base(self, value):
-        self._bases[...] = np.abs(value)
+        self._base = np.abs(float(value))
         if self.is_attached:
-            self["base"] = self._bases
-            self["scale_x"] = self._x_scale()
-            self["scale_y"] = self._y_scale()
-            self["scale_z"] = self._z_scale()
+            self["base"] = np.log(self._base)
+            self["domain"] = self._process_domain()
+
 
     def on_attach(self, program):
         """ Initialization event """
 
         QuantitativeScale.on_attach(self, program)
-        self["base"] = self._bases
+        self["base"] = np.log(self._base)
 
 
     def _scale(self,index):
-        scale = self._scales[index].copy()
-        domain = scale[:2]
-        base = self._bases[index]
-        scale[:2] = np.copysign(1,domain) * np.log(np.abs(domain))/np.log(base)
-        return scale
-
-    def _x_scale(self): return self._scale(0)
-
-    def _y_scale(self): return self._scale(1)
-
-    def _z_scale(self): return self._scale(2)
+        domain = self._domain
+        base = np.log(self._base)
+        return np.copysign(1.0,domain) * np.log(np.abs(domain))/base

@@ -34,10 +34,9 @@ from . quantitative_scale import QuantitativeScale
 class LinearScale(QuantitativeScale):
     """ Linear scale transform """
 
-    aliases = { "scale_x" : "linear_scale_x",
-                "scale_y" : "linear_scale_y",
-                "scale_z" : "linear_scale_z",
-                "clamp"   : "linear_scale_clamp" }
+    aliases = { "domain" : "linear_scale_domain",
+                "range"  : "linear_scale_range",
+                "clamp"  : "linear_scale_clamp" }
 
 
     def __init__(self, *args, **kwargs):

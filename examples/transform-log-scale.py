@@ -17,7 +17,7 @@ def on_draw(dt):
     points.draw()
 
 transform = Position3D(LogScale()) + Viewport()
-transform["domain"] = 1,100
+transform["domain"] = 1,2
 
 points = PointCollection("agg", transform = transform)
 P = np.random.uniform(1,10,(10000,3))

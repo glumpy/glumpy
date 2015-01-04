@@ -49,10 +49,8 @@ class QuantitativeScale(Transform):
         Transform.__init__(self, code, *args, **kwargs)
 
         self._clamp = False
-        self._scales = np.zeros((3,4), dtype=np.float32)
-        self._scales[0] = -1,+1, -1,+1
-        self._scales[1] = -1,+1, -1,+1
-        self._scales[2] = -1,+1, -1,+1
+        self._domain = -1,+1
+        self._range = -1,+1
         self.domain = Transform._get_kwarg("domain", kwargs) or (-1,+1)
         self.range  = Transform._get_kwarg("range", kwargs) or (-1,+1)
         self.clamp  = Transform._get_kwarg("clamp", kwargs) or False
@@ -60,36 +58,33 @@ class QuantitativeScale(Transform):
 
     @property
     def domain(self):
-        """ Input domain for xyz """
+        """ Input domain """
 
-        return self._scales[:,:2]
+        return self._domain
 
     @domain.setter
     def domain(self, value):
-        """ Input domain for xyz """
+        """ Input domain """
 
-        self._scales[:,:2] = value
+        self._domain = np.asarray(value,dtype=np.float32)
         if self.is_attached:
-            self["linear_scale_x"] = self._x_scale()
-            self["linear_scale_y"] = self._y_scale()
-            self["linear_scale_z"] = self._z_scale()
+            self["domain"] = self._process_domain()
+
 
     @property
     def range(self):
         """ Output range for xyz """
 
-        return self._scales[:,2:]
+        return self._range
 
 
     @range.setter
     def range(self, value):
         """ Output range for xyz """
 
-        self._scales[:,2:] = value
+        self._range = np.asarray(value, dtype=np.float32)
         if self.is_attached:
-            self["linear_scale_x"] = self._x_scale()
-            self["linear_scale_y"] = self._y_scale()
-            self["linear_scale_z"] = self._z_scale()
+            self["range"] = self._process_range()
 
     @property
     def clamp(self):
@@ -121,22 +116,18 @@ class QuantitativeScale(Transform):
         Transform.__setitem__(self, key, value)
 
 
-    def _x_scale(self):
+    def _process_range(self):
         # To be overridden
-        return self._scales[0]
+        return self._range
 
-    def _y_scale(self):
+    def _process_domain(self):
         # To be overridden
-        return self._scales[1]
+        return self._domain
 
-    def _z_scale(self):
-        # To be overridden
-        return self._scales[2]
 
     def on_attach(self, program):
         """ Initialization event """
 
-        self["clamp"]   = self._clamp
-        self["scale_x"] = self._x_scale()
-        self["scale_y"] = self._y_scale()
-        self["scale_z"] = self._z_scale()
+        self["clamp"] = self._clamp
+        self["range"] = self._process_range()
+        self["domain"] = self._process_domain()

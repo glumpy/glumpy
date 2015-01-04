@@ -19,11 +19,10 @@ def on_draw(dt):
 @window.event
 def on_mouse_scroll(x,y,dx,dy):
 
-    xdomain, ydomain, zdomain = transform["domain"]
-    if dy < 0: ydomain *= 1.1
-    else:      ydomain /= 1.1
-    transform["domain"] = xdomain, ydomain, zdomain
-
+    domain = transform["domain"]
+    if dy < 0: domain *= 1.1
+    else:      domain /= 1.1
+    transform["domain"] = domain
 
 transform = Position3D(LinearScale()) + Viewport()
 points = PointCollection("agg", transform = transform)

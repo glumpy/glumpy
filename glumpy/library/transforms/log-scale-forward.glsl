@@ -17,55 +17,46 @@
   the scale is undefined if you pass a negative value to a log scale with a
   positive domain or vice versa.
 */
-
 uniform int  log_scale_clamp;
-uniform vec3 log_scale_base;
-uniform vec4 log_scale_x;
-uniform vec4 log_scale_y;
-uniform vec4 log_scale_z;
-
+uniform vec2 log_scale_range;
+uniform vec2 log_scale_domain;
+uniform float log_scale_base;
 
 float log_scale_forward(float value)
 {
-    float domain_inf = log_scale_x.x;
-    float domain_sup = log_scale_x.y;
-    float range_inf  = log_scale_x.z;
-    float range_sup  = log_scale_x.w;
-    float base       = log_scale_base.x;
+    vec2 domain = log_scale_domain;
+    vec2 range = log_scale_range;
+    float base = log_scale_base;
 
-    float v = log(value) / log(base);
-
-    float t = (v - domain_inf) /(domain_sup - domain_inf);
+    float v = log(value) / base;
+    float t = (v - domain.x) /(domain.y - domain.x);
     if (log_scale_clamp > 0) t = clamp(t,0.0,1.0);
-    return sign(value) * (range_inf + t*(range_sup - range_inf));
+
+    return sign(value) * (range.x + t*(range.y - range.x));
 }
 
 vec2 log_scale_forward(vec2 value)
 {
-    vec2 domain_inf = vec2(log_scale_x.x, log_scale_y.x);
-    vec2 domain_sup = vec2(log_scale_x.y, log_scale_y.y);
-    vec2 range_inf  = vec2(log_scale_x.z, log_scale_y.z);
-    vec2 range_sup  = vec2(log_scale_x.w, log_scale_y.w);
-    vec2 base       = log_scale_base.xy;
+    vec2 domain = log_scale_domain;
+    vec2 range = log_scale_range;
+    float base = log_scale_base;
 
-    vec2 v = log(value) / log(base);
+    vec2 v = log(value) / base;
+    vec2 t = (v - domain.x) /(domain.y - domain.x);
+    if (log_scale_clamp > 0) t = clamp(t,0.0,1.0);
 
-    vec2 t = (v - domain_inf) /(domain_sup - domain_inf);
-    if (log_scale_clamp > 0)  t = clamp(t,0.0,1.0);
-    return sign(value) * (range_inf + t*(range_sup - range_inf));
+    return sign(value) * (range.x + t*(range.y - range.x));
 }
 
 vec3 log_scale_forward(vec3 value)
 {
-    vec3 domain_inf = vec3(log_scale_x.x, log_scale_y.x, log_scale_z.x);
-    vec3 domain_sup = vec3(log_scale_x.y, log_scale_y.y, log_scale_z.y);
-    vec3 range_inf  = vec3(log_scale_x.z, log_scale_y.z, log_scale_z.z);
-    vec3 range_sup  = vec3(log_scale_x.w, log_scale_y.w, log_scale_z.w);
-    vec3 base       = log_scale_base.xyz;
+    vec2 domain = log_scale_domain;
+    vec2 range = log_scale_range;
+    float base = log_scale_base;
 
-    vec3 v = log(value) / log(base);
-
-    vec3 t = (v - domain_inf) /(domain_sup - domain_inf);
+    vec3 v = log(value) / base;
+    vec3 t = (v - domain.x) /(domain.y - domain.x);
     if (log_scale_clamp > 0) t = clamp(t,0.0,1.0);
-    return sign(value) * (range_inf + t*(range_sup - range_inf));
+
+    return sign(value) * (range.x + t*(range.y - range.x));
 }

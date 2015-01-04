@@ -31,9 +31,8 @@ from . quantitative_scale import QuantitativeScale
 class PowerScale(QuantitativeScale):
     """ Power scale transform """
 
-    aliases = { "scale_x"  : "power_scale_x",
-                "scale_y"  : "power_scale_y",
-                "scale_z"  : "power_scale_z",
+    aliases = { "domain"   : "power_scale_domain",
+                "range"    : "power_scale_range",
                 "clamp"    : "power_scale_clamp",
                 "exponent" : "power_scale_exponent" }
 
@@ -59,8 +58,7 @@ class PowerScale(QuantitativeScale):
            Clamping test for xyz
         """
 
-        self._exponents = np.ones(3, dtype=np.float32)
-        self._exponents[...] = Transform._get_kwarg("exponent", kwargs) or 1
+        self._exponents = Transform._get_kwarg("exponent", kwargs) or 1.0
         code = library.get("transforms/power-scale-forward.glsl")
         QuantitativeScale.__init__(self, code, *args, **kwargs)
 
@@ -70,14 +68,14 @@ class PowerScale(QuantitativeScale):
         """ Input exponent for xyz """
         return self._exponents
 
+
     @exponent.setter
     def exponent(self, value):
-        self._exponents[...] = np.abs(value)
+        self._exponents = abs(float(value))
         if self.is_attached:
             self["exponent"] = self._exponents
-            self["scale_x"] = self._x_scale()
-            self["scale_y"] = self._y_scale()
-            self["scale_z"] = self._z_scale()
+            self["domain"] = self._process_domain()
+
 
     def on_attach(self, program):
         """ Initialization event """
@@ -86,15 +84,8 @@ class PowerScale(QuantitativeScale):
         self["exponent"] = self._exponents
 
 
-    def _scale(self,index):
-        scale = self._scales[index].copy()
-        domain = scale[:2]
-        exponent = self._exponents[index]
-        scale[:2] = np.copysign(1,domain) * np.power(np.abs(domain), exponent)
-        return scale
-
-    def _x_scale(self): return self._scale(0)
-
-    def _y_scale(self): return self._scale(1)
-
-    def _z_scale(self): return self._scale(2)
+    def _process_domain(self):
+        domain = self._domain
+        exponent = self._exponents
+        domain = np.copysign(1,domain) * np.power(np.abs(domain), exponent)
+        return domain

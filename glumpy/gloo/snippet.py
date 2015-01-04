@@ -315,7 +315,9 @@ class Snippet(object):
         """ __call__(self, *args) <==> self(*args) """
 
         # WARN: Do we copy arguments by default ?
-        kwargs["copy"] = kwargs.get("copy", True)
+        # kwargs["copy"] = kwargs.get("copy", True)
+        kwargs["copy"] = kwargs.get("copy", False)
+
         if kwargs["copy"]:
             S = self.copy()
         else:
