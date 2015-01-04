@@ -17,12 +17,12 @@ def on_draw(dt):
     window.clear()
     points.draw()
 
-x_transform = LogScale("position.x", domain=(-1,2), range=(0,1))
+x_transform = LogScale("position.x", domain=(-1,3), range=(0,1))
 transform = Position2D(PolarProjection(x_transform, "position.y")) + Viewport()
 points = PointCollection("agg", transform = transform)
 
 n = 10000
-R = np.random.uniform(0,100,n)
+R = np.random.uniform(0,1000,n)
 T = np.random.uniform(0,2*np.pi,n)
 Z = np.zeros(n)
 
