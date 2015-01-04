@@ -16,9 +16,15 @@ def on_draw(dt):
     window.clear()
     points.draw()
 
-transform = Position3D(LogScale()) + Viewport()
-transform["domain"] = 1,2
+@window.event
+def on_mouse_scroll(x,y,dx,dy):
+    if dy < 0:
+        transform["base"] = np.minimum(20., 1.1*transform["base"])
+    else:
+        transform["base"] = np.maximum(1., transform["base"]/1.1)
 
+transform = Position3D(LogScale()) + Viewport()
+transform["domain"] = .1,2 # = base^.1, base^2
 points = PointCollection("agg", transform = transform)
 P = np.random.uniform(1,10,(10000,3))
 points.append(P*P)

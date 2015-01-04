@@ -74,7 +74,7 @@ class LogScale(QuantitativeScale):
     def base(self, value):
         self._base = np.abs(float(value))
         if self.is_attached:
-            self["base"] = np.log(self._base)
+            self["base"] = self._base
             self["domain"] = self._process_domain()
 
 
@@ -82,10 +82,10 @@ class LogScale(QuantitativeScale):
         """ Initialization event """
 
         QuantitativeScale.on_attach(self, program)
-        self["base"] = np.log(self._base)
+        self["base"] = self._base
 
 
     def _scale(self,index):
         domain = self._domain
-        base = np.log(self._base)
-        return np.copysign(1.0,domain) * np.log(np.abs(domain))/base
+        base = self._base
+        return np.copysign(1.0,domain) * np.log(np.abs(domain))/np.log(base)

@@ -28,7 +28,7 @@ float log_scale_forward(float value)
     vec2 range = log_scale_range;
     float base = log_scale_base;
 
-    float v = log(value) / base;
+    float v = log(value) / log(base);
     float t = (v - domain.x) /(domain.y - domain.x);
     if (log_scale_clamp > 0) t = clamp(t,0.0,1.0);
 
@@ -41,7 +41,7 @@ vec2 log_scale_forward(vec2 value)
     vec2 range = log_scale_range;
     float base = log_scale_base;
 
-    vec2 v = log(value) / base;
+    vec2 v = log(value) / log(base);
     vec2 t = (v - domain.x) /(domain.y - domain.x);
     if (log_scale_clamp > 0) t = clamp(t,0.0,1.0);
 
@@ -54,7 +54,7 @@ vec3 log_scale_forward(vec3 value)
     vec2 range = log_scale_range;
     float base = log_scale_base;
 
-    vec3 v = log(value) / base;
+    vec3 v = log(value) / log(base);
     vec3 t = (v - domain.x) /(domain.y - domain.x);
     if (log_scale_clamp > 0) t = clamp(t,0.0,1.0);
 
