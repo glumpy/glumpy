@@ -21,7 +21,6 @@ transform["domain"] = 1,100
 
 points = PointCollection("agg", transform = transform)
 P = np.random.uniform(1,10,(10000,3))
-
 points.append(P*P)
 
 app.run()
