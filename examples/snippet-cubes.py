@@ -142,7 +142,7 @@ view = np.eye(4, dtype=np.float32)
 model = np.eye(4, dtype=np.float32)
 projection = np.eye(4, dtype=np.float32)
 glm.translate(view, 0, 0, -3)
-program['texture'] = data.checkerboard()
+program['texture'] = data.get("checkerboard")
 program['model'] = model
 program['view'] = view
 program['grid'] = Grid("pos", "index")

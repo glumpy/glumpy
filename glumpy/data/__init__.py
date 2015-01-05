@@ -125,12 +125,12 @@ def _checkerboard(grid_num=8, grid_size=32):
 def get(name, depth=0):
     """ Retrieve data content from a name """
 
+    if name == "checkerboard":
+        return _checkerboard(8,16)
+
     extension = os.path.basename(name).split('.')[-1]
     filename = _fetch_file(name)
-
-    if name == "checkerboard":
-        return _checkerboard(16,32)
-    elif extension == 'npy':
+    if extension == 'npy':
         return np.load(filename)
     elif extension in ['ttf', 'otf']:
         if filename is not None:

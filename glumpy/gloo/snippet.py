@@ -464,17 +464,19 @@ class Snippet(object):
           4. the attached programs
         """
 
+        name = self.lookup(key) or key
+
         found = False
 
-        # First we look in all snippets
+        # First we look in all snippets for the actual key
         for snippet in self.snippets:
-            if hasattr(snippet, key):
-                setattr(snippet, key, value)
+            if hasattr(snippet, name):
+                setattr(snippet, name, value)
                 found = True
+
 
         # Then we look into all attached program
         if len(self._programs) > 0:
-            name = self.lookup(key)
             for program in self._programs:
                 try:
                     program[name] = value
