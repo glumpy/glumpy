@@ -196,7 +196,7 @@ Filter(shader)`` where the shader transform the otuput.
   Simple 2D Gaussian blur using two 1D kernels.
 
 
-* `filter-composition.py `<https://github.com/glumpy/glumpy/blob/master/examples/filter-composition.py>`_
+* `filter-composition.py <https://github.com/glumpy/glumpy/blob/master/examples/filter-composition.py>`_
 
   This example show how to compose filters together.
 
