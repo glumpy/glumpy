@@ -107,6 +107,16 @@ class Program(GLObject):
             return None
 
 
+    @property
+    def vertex(self):
+        return self._vertex
+
+
+    @property
+    def fragment(self):
+        return self._fragment
+
+
     def _setup(self):
         """ Setup the program by resolving all pending hooks. """
         pass
@@ -202,15 +212,8 @@ class Program(GLObject):
         self._hooks = {}
         for shader in shaders:
             for (hook,subhook) in shader.hooks:
-                self._hooks[hook] = [shader, subhook, None]
-
-        # for shader in shaders:
-        #     for (hook,subhook) in shader.hooks:
-        #         if hook in self._hooks.keys():
-        #             if subhook not in self._hooks[hook][1]:
-        #             self._hooks[hook][1].append(subhook)
-        #         else:
-        #             self._hooks[hook] = [shader, [subhook], None]
+                # self._hooks[hook] = [shader, subhook, None]
+                self._hooks[hook] = shader, None
 
 
 
@@ -261,32 +264,25 @@ class Program(GLObject):
 
 
     def __setitem__(self, name, data):
+
         if name in self._hooks.keys():
+            shader, snippet = self._hooks[name]
             snippet = data
-            shader = self._hooks[name][0]
-            function = self._hooks[name][1]
-
-            if isinstance(data, Snippet):
-                snippet._default = function
-            self._hooks[name][1] = snippet
-
-            if function is not None:
-                shader["%s.%s" %(name,function)] = snippet
-            else:
-                shader["%s" % (name)] = snippet
-
+            shader[name] = snippet
+            self._hooks[name] = shader, snippet
             if isinstance(data, Snippet):
                 snippet.attach(self)
+                snippet._code_included = True
+
             self._build_uniforms()
             self._build_attributes()
             self._need_update = True
-
         elif name in self._uniforms.keys():
             self._uniforms[name].set_data(data)
         elif name in self._attributes.keys():
             self._attributes[name].set_data(data)
         else:
-            raise IndexError("Unknown uniform or attribute")
+            raise IndexError("Unknown item (no corresponding hook, uniform or attribute)")
 
 
     def __getitem__(self, name):
@@ -297,8 +293,7 @@ class Program(GLObject):
         elif name in self._attributes.keys():
             return self._attributes[name].data
         else:
-            raise IndexError("Unknown uniform or attribute")
-
+            raise IndexError("Unknown item (no corresponding hook, uniform or attribute)")
 
     def keys(self):
         """ Uniforme and attribute names """

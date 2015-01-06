@@ -59,7 +59,7 @@ class Snippet(object):
         self._programs = []
 
         #
-        self._done = True
+        self._code_included = False
 
 
     def lookup(self, name, deepsearch=True):
@@ -126,7 +126,7 @@ class Snippet(object):
     def code(self):
         """ Mangled code """
 
-        Snippet._id_counter = 0
+#        Snippet._id_counter = 0
         snippets = self.snippets
         funnames, varnames = [], []
         for snippet in snippets:
@@ -208,22 +208,25 @@ class Snippet(object):
         return self.generate_call()
 
 
-    def generate_call(self, arguments=None):
+    def generate_call(self, function=None, arguments=None):
         """ Generate mangled call """
+
 
         s = ""
         if len(self._objects["functions"]):
-            if self._default:
-                name = self._default
+            # if self._default:
+            if function:
+                name = function
             else:
                 _,name,_,_ = self._objects["functions"][0]
 
             s = self.lookup(name, deepsearch=False) or name
+
             if len(self._args):
                 s += "("
                 for i,arg in enumerate(self._args):
                     if isinstance(arg,Snippet):
-                        s += arg.generate_call(arguments)
+                        s += arg.generate_call(function,arguments)
                     else:
                         s += str(arg)
                     if i < (len(self._args)-1):
@@ -529,109 +532,148 @@ class Snippet(object):
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
-    scale = """
-// Forward
-vec4 forward(vec4 position, vec3 scale)
-{
-    return vec4( position.xyz * translate, position.w );
-}
+    from glumpy import gloo
 
-// Inverse
-vec4 inverse(vec4 position, vec3 scale)
-{
-    return vec4( position.xyz / scale, position.w );
-}
-"""
+    transform = Snippet("""
+    vec2 forward(float x) { return x; }
+    vec2 inverse(float x) { return x; } """)
 
-    translate = """
-// Forward
-vec4 forward(vec4 position, vec3 translate)
-{
-    return vec4( position.xyz + translate, position.w );
-}
+    code= """
+    void main(void)
+    {
+        // ---
 
-// Inverse
-vec4 inverse(vec4 position, vec3 translate)
-{
-    return vec4( position.xyz - translate, position.w );
-}
+        // Argument must be given through snippet
+        <transform>;
 
-"""
-    # Scale = Snippet(scale)
-    # Translate = Snippet(translate)
-    # Position4D = "position"
-    # Position3D = "vec4( position.xyz, 1.0)"
-    # Position2D = "vec4( position.xy, 0.0, 1.0)"
+        // Argument cannot be given through snippet
+        <transform>(P);
 
-    # R = Translate(Position3D,"translate") + Scale(Position3D,"scale")
-    # print R.code
-    # print R.call
+        // Argument can be override throught snippet
+        <transform(P)>;
 
-    # # print "---"
+        // ---
+
+        // Default function (first defined) is used
+        <transform>;
+
+        // Forward function is used
+        <transform.forward>;
+
+        // Inverse function is used
+        <transform.inverse>;
+
+        // ---
+    } """
 
 
-    translate = """
-uniform vec3 translate;
 
-// Forward
-vec4 forward(vec4 position)
-{
-    return vec4( position.xyz + translate, position.w );
-}
-
-// Inverse
-vec4 inverse(vec4 position)
-{
-    return vec4( position.xyz - translate, position.w );
-}
-
-"""
-    scale = """
-uniform vec3 scale;
-
-// Forward
-vec4 forward(vec4 position)
-{
-    return vec4( position.xyz * scale, position.w );
-}
-
-// Inverse
-vec4 inverse(vec4 position)
-{
-    return vec4( position.xyz / scale, position.w );
-}
-"""
-
-    Scale = Snippet(scale)
-    Translate = Snippet(translate)
-    Position4D = "position"
-    Position3D = "vec4(position.xyz, 1.0)"
-    Position2D = "vec4(position.xy, 0.0, 1.0)"
-
-    R = Translate(Position3D)
-    R = Translate(Translate(Position3D))
-    #R = Translate.forward(Position3D)
-    print R.code
-    print R.call
+#    Snippet( xy = Transform.forward(), z = Transform.inverse() )
 
 
-#     T = Snippet("""
-# varying float v_index;
-# vec2 transform(float index)
+#     scale = """
+# // Forward
+# vec4 forward(vec4 position, vec3 scale)
 # {
-#     v_index = index;
+#     return vec4( position.xyz * translate, position.w );
 # }
-# """)
-#     TT = T( T(v_index="toto"), v_index="titi")
 
-#     print TT
+# // Inverse
+# vec4 inverse(vec4 position, vec3 scale)
+# {
+#     return vec4( position.xyz / scale, position.w );
+# }
+# """
 
-# #    print T.code
-# #    print TT.code
+#     translate = """
+# // Forward
+# vec4 forward(vec4 position, vec3 translate)
+# {
+#     return vec4( position.xyz + translate, position.w );
+# }
 
-# #    print TT.lookup("v_index")
-# #    print TT.args[0].lookup("v_index")
+# // Inverse
+# vec4 inverse(vec4 position, vec3 translate)
+# {
+#     return vec4( position.xyz - translate, position.w );
+# }
 
-# #    S = Snippet("""varying float v_index;""")(v_index = T.lookup("v_index"))
+# """
+#     # Scale = Snippet(scale)
+#     # Translate = Snippet(translate)
+#     # Position4D = "position"
+#     # Position3D = "vec4( position.xyz, 1.0)"
+#     # Position2D = "vec4( position.xy, 0.0, 1.0)"
 
-#     # print C.code
+#     # R = Translate(Position3D,"translate") + Scale(Position3D,"scale")
+#     # print R.code
+#     # print R.call
+
+#     # # print "---"
+
+
+#     translate = """
+# uniform vec3 translate;
+
+# // Forward
+# vec4 forward(vec4 position)
+# {
+#     return vec4( position.xyz + translate, position.w );
+# }
+
+# // Inverse
+# vec4 inverse(vec4 position)
+# {
+#     return vec4( position.xyz - translate, position.w );
+# }
+
+# """
+#     scale = """
+# uniform vec3 scale;
+
+# // Forward
+# vec4 forward(vec4 position)
+# {
+#     return vec4( position.xyz * scale, position.w );
+# }
+
+# // Inverse
+# vec4 inverse(vec4 position)
+# {
+#     return vec4( position.xyz / scale, position.w );
+# }
+# """
+
+#     Scale = Snippet(scale)
+#     Translate = Snippet(translate)
+#     Position4D = "position"
+#     Position3D = "vec4(position.xyz, 1.0)"
+#     Position2D = "vec4(position.xy, 0.0, 1.0)"
+
+#     R = Translate(Position3D)
+#     R = Translate(Translate(Position3D))
+#     #R = Translate.forward(Position3D)
+#     print R.code
+#     print R.call
+
+
+# #     T = Snippet("""
+# # varying float v_index;
+# # vec2 transform(float index)
+# # {
+# #     v_index = index;
+# # }
+# # """)
+# #     TT = T( T(v_index="toto"), v_index="titi")
+
+# #     print TT
+
+# # #    print T.code
+# # #    print TT.code
+
+# # #    print TT.lookup("v_index")
+# # #    print TT.args[0].lookup("v_index")
+
+# # #    S = Snippet("""varying float v_index;""")(v_index = T.lookup("v_index"))
+
+# #     # print C.code

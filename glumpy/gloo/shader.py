@@ -62,27 +62,41 @@ class Shader(GLObject):
     def __setitem__(self, name, data):
         """ """
 
+        re_hook = r"(?P<hook>%s)(\.(?P<subhook>\w+))?" % name
+        re_args = r"(\((?P<args>[^<>]+)\))?"
+        re_hooks = re.compile("\<"+re_hook+re_args+"\>" , re.VERBOSE )
+
         if not isinstance(data,Snippet):
             pattern = re.compile(r"<%s>" % name)
             self._hooked = re.sub(pattern, data, self._hooked)
             return
 
-        # Function code
-        self._hooked = data.code + self._hooked
+        # Snippet code
+        if not data._code_included:
+            self._hooked = data.code + self._hooked
 
-        # Replace expression of type <function(args)>
-        # Arguments have been given in the shader
-        def replace(match):
-            call = data.generate_call(match.group("args"))
-            return call
-        pattern = re.compile(r"<(?P<name>%s)\((?P<args>[^<>]+)\)>" % name)
-        for match in re.finditer(pattern, self._hooked):
-            self._hooked = re.sub(pattern, replace, self._hooked)
+        # Replace expression of type <hook.subhook(args)>
+        def replace_with_args(match):
+            hook = match.group('hook')
+            subhook = match.group('subhook')
+            args = match.group('args')
+            return data.generate_call(subhook, match.group("args"))
 
-        # Replace expression of type <function>
-        # Arguments have been given from within python
+        pattern = "\<" + re_hook + re_args + "\>"
+        #for match in re.finditer(pattern, self._hooked):
+        self._hooked = re.sub(pattern, replace_with_args, self._hooked)
+
+        # Replace expression of type <hook.subhook>
+        def replace_without_args(match):
+            hook = match.group('hook')
+            subhook = match.group('subhook')
+            return data.generate_call(subhook)
+
+        pattern = "\<" + re_hook + "\>"
         pattern = re.compile(r"<%s>" % name)
-        self._hooked = re.sub(pattern, data.call, self._hooked)
+        self._hooked = re.sub(pattern, replace_without_args, self._hooked)
+        # self._hooked = re.sub(pattern, data.call, self._hooked)
+
 
 
     @property

@@ -20,7 +20,7 @@ transform = Position2D(PolarProjection()) + Viewport()
 points = PointCollection("agg", transform = transform)
 
 n = 10000
-R = np.random.uniform(0.2,1.5,n)
+R = np.random.uniform(0.2,0.8,n)
 T = np.random.uniform(0,2*np.pi,n)
 Z = np.zeros(n)
 

@@ -133,10 +133,12 @@ def get_hooks(code):
                               (\([^<>]+\))?\>""", re.VERBOSE )
     # re_hooks = re.compile("\<(?P<hook>\w+)\>", re.VERBOSE)
     for match in re.finditer(re_hooks, code):
-        hooks.append( (match.group('hook'),match.group('subhook')) )
+        # hooks.append( (match.group('hook'),match.group('subhook')) )
+        hooks.append((match.group('hook'), None))
         # print match.group('hook')
         # print match.group('subhook')
-    return hooks
+    # print set(hooks)
+    return list(set(hooks))
 
 def get_args(code):
     return get_declarations(code, qualifier = "")
