@@ -272,8 +272,7 @@ class Program(GLObject):
             self._hooks[name] = shader, snippet
             if isinstance(data, Snippet):
                 snippet.attach(self)
-                snippet._code_included = True
-
+#                snippet._code_included = True
             self._build_uniforms()
             self._build_attributes()
             self._need_update = True

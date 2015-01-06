@@ -43,7 +43,7 @@ class Snippet(object):
         # Default function to be called if none given
         self._default = default
 
-        # No args yet
+        # args yet
         self._args = list(args)
 
         # No chained snippet yet
@@ -189,13 +189,15 @@ class Snippet(object):
         if len(self._args):
             for snippet in self._args:
                 if isinstance(snippet, Snippet):
-                    code += snippet.generate_code(fdup, vdup)
+                    if not snippet._code_included:
+                        code += snippet.generate_code(fdup, vdup)
 
         # Get code from next snippet
         if self.next:
             operand, snippet = self._next
             if isinstance(snippet, Snippet):
-                code += snippet.generate_code(fdup, vdup)
+                if not snippet._code_included:
+                    code += snippet.generate_code(fdup, vdup)
 
         return code
 
@@ -211,10 +213,15 @@ class Snippet(object):
     def generate_call(self, function=None, arguments=None):
         """ Generate mangled call """
 
-
         s = ""
+
+        # Is there a function defined in the snippet ?
+        # (It may happen a snippet only has uniforms, like the Viewport snippet)
+        # WARN: what about Viewport(Transform) ?
         if len(self._objects["functions"]):
-            # if self._default:
+
+            # Is there a function specified in the shade source ?
+            # Such as <transform.forward>
             if function:
                 name = function
             else:
@@ -237,33 +244,20 @@ class Snippet(object):
                 # This handles hooks of the form <transform(args)>
                 if arguments is not None:
                     s += "(%s)" % arguments
+
                 else:
                     s += "()"
             if self.next:
                 operand, other = self._next
                 if str(other).strip():
                     s += " %s " % operand + str(other)
+
+        # No function defined in this snippet, we look for next one
         else:
             if self._next:
                 operand, other = self.next
                 s = str(other)
         return s
-
-#    def __getattr__(self, key):
-#        for  (rtype, name, args, code) in self._objects["functions"]:
-#            if name == key:
-#                S = self.copy()
-#                S._default = key
-#                return S
-##                source = "%s %s(%s)\n{%s}\n" % (rtype, name, args, code)
-##                return Snippet(source)
-#        return object.__getattribute__(self,key)
-
-
-    def copy(self):
-        """ Copy snippet """
-
-        return copy.deepcopy(self)
 
 
     @property
@@ -313,6 +307,11 @@ class Snippet(object):
         return len(self._programs) > 0
 
 
+    def copy(self):
+        """ Copy snippet """
+
+        return copy.deepcopy(self)
+
 
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
@@ -323,11 +322,13 @@ class Snippet(object):
 
         if kwargs["copy"]:
             S = self.copy()
+            S._code_included = False
         else:
             S = self
         del kwargs["copy"]
 
         S._args = args
+
         for symbol in kwargs.keys():
             S._aliases[symbol] = kwargs[symbol]
         return S
@@ -366,67 +367,6 @@ class Snippet(object):
 
     def __str__(self):
         return self.generate_call()
-
-
-
-    # def get(self, name):
-
-    #     # Get all snippets of a specific class
-    #     # ------------------------------------
-    #     if type(name) is type and issubclass(name, Snippet):
-    #         instances = []
-
-    #         if isinstance(self, name):
-    #             instances.append(self)
-
-    #         for snippet in self._args:
-    #             if isinstance(snippet, Snippet):
-    #                 instances.extend( snippet.get(name) )
-    #         if self._next:
-    #             operand,snippet = self._next
-    #             if isinstance(snippet, Snippet):
-    #                 instances.extend( snippet.get(name) )
-    #         return instances
-
-    #     # Search for a given attribute in all snippets
-    #     # --------------------------------------------
-    #     for snippet in self._args:
-    #         if isinstance(snippet, Snippet):
-    #             if hasattr(snippet, name):
-    #                 return getattr(snippet,name)
-    #     if self._next:
-    #         operand,snippet = self._next
-    #         if isinstance(snippet, Snippet):
-    #             if hasattr(snippet, name):
-    #                 return getattr(snippet,name)
-
-    #     raise AttributeError
-
-
-    # def set(self, name, value):
-    #     pass
-
-    #     if not hasattr(self, "_done"):
-    #         return object.__setattr__(self, name, value)
-
-    #     for snippet in self._args:
-    #         if isinstance(snippet, Snippet):
-    #             try:
-    #                 snippet.__setattr__(name, value)
-    #             except AttributeError:
-    #                 pass
-    #             finally:
-    #                 return
-    #     if self._next:
-    #         operand,snippet = self._next
-    #         if isinstance(snippet, Snippet):
-    #             try:
-    #                 snippet.__setattr__(name, value)
-    #             except AttributeError:
-    #                 pass
-    #             finally:
-    #                 return
-
 
 
     def __getitem__(self, key):
@@ -491,189 +431,3 @@ class Snippet(object):
         if not found:
             error = 'Snippet does not have such key ("%s")' % key
             raise IndexError(error)
-
-        # values = []
-        # for program in self._programs:
-        #     values.append(program[key])
-
-        # for snippet in self._args:
-        #     if isinstance(snippet, Snippet):
-        #         for program in snippet._programs:
-        #             values.append(program[key])
-        #     if self._next:
-        #         operand,snippet = self._next
-        #         if isinstance(snippet, Snippet):
-        #             for program in snippet._programs:
-        #                 values.append(self._program[key])
-        # if len(values) == 1:
-        #     return values[0]
-        # else:
-        #     return values
-
-    # def __setitem__(self, key, value):
-    #     if len(self._programs) == 0:
-    #         raise RuntimeError("Snippet is not attached to a program")
-
-    #     name = self.lookup(key)
-    #     if name is not None:
-    #         for program in self._programs:
-    #             program[name] = value
-
-    #     for snippet in self._args:
-    #         if isinstance(snippet, Snippet):
-    #             snippet[key] = value
-    #         if self._next:
-    #             operand,snippet = self._next
-    #             if isinstance(snippet, Snippet):
-    #                 snippet[key] = value
-
-
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-    from glumpy import gloo
-
-    transform = Snippet("""
-    vec2 forward(float x) { return x; }
-    vec2 inverse(float x) { return x; } """)
-
-    code= """
-    void main(void)
-    {
-        // ---
-
-        // Argument must be given through snippet
-        <transform>;
-
-        // Argument cannot be given through snippet
-        <transform>(P);
-
-        // Argument can be override throught snippet
-        <transform(P)>;
-
-        // ---
-
-        // Default function (first defined) is used
-        <transform>;
-
-        // Forward function is used
-        <transform.forward>;
-
-        // Inverse function is used
-        <transform.inverse>;
-
-        // ---
-    } """
-
-
-
-#    Snippet( xy = Transform.forward(), z = Transform.inverse() )
-
-
-#     scale = """
-# // Forward
-# vec4 forward(vec4 position, vec3 scale)
-# {
-#     return vec4( position.xyz * translate, position.w );
-# }
-
-# // Inverse
-# vec4 inverse(vec4 position, vec3 scale)
-# {
-#     return vec4( position.xyz / scale, position.w );
-# }
-# """
-
-#     translate = """
-# // Forward
-# vec4 forward(vec4 position, vec3 translate)
-# {
-#     return vec4( position.xyz + translate, position.w );
-# }
-
-# // Inverse
-# vec4 inverse(vec4 position, vec3 translate)
-# {
-#     return vec4( position.xyz - translate, position.w );
-# }
-
-# """
-#     # Scale = Snippet(scale)
-#     # Translate = Snippet(translate)
-#     # Position4D = "position"
-#     # Position3D = "vec4( position.xyz, 1.0)"
-#     # Position2D = "vec4( position.xy, 0.0, 1.0)"
-
-#     # R = Translate(Position3D,"translate") + Scale(Position3D,"scale")
-#     # print R.code
-#     # print R.call
-
-#     # # print "---"
-
-
-#     translate = """
-# uniform vec3 translate;
-
-# // Forward
-# vec4 forward(vec4 position)
-# {
-#     return vec4( position.xyz + translate, position.w );
-# }
-
-# // Inverse
-# vec4 inverse(vec4 position)
-# {
-#     return vec4( position.xyz - translate, position.w );
-# }
-
-# """
-#     scale = """
-# uniform vec3 scale;
-
-# // Forward
-# vec4 forward(vec4 position)
-# {
-#     return vec4( position.xyz * scale, position.w );
-# }
-
-# // Inverse
-# vec4 inverse(vec4 position)
-# {
-#     return vec4( position.xyz / scale, position.w );
-# }
-# """
-
-#     Scale = Snippet(scale)
-#     Translate = Snippet(translate)
-#     Position4D = "position"
-#     Position3D = "vec4(position.xyz, 1.0)"
-#     Position2D = "vec4(position.xy, 0.0, 1.0)"
-
-#     R = Translate(Position3D)
-#     R = Translate(Translate(Position3D))
-#     #R = Translate.forward(Position3D)
-#     print R.code
-#     print R.call
-
-
-# #     T = Snippet("""
-# # varying float v_index;
-# # vec2 transform(float index)
-# # {
-# #     v_index = index;
-# # }
-# # """)
-# #     TT = T( T(v_index="toto"), v_index="titi")
-
-# #     print TT
-
-# # #    print T.code
-# # #    print TT.code
-
-# # #    print TT.lookup("v_index")
-# # #    print TT.args[0].lookup("v_index")
-
-# # #    S = Snippet("""varying float v_index;""")(v_index = T.lookup("v_index"))
-
-# #     # print C.code
