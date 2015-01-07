@@ -14,8 +14,8 @@ float inverse(float x) { return scale*x; }
 
 transform_2 = gloo.Snippet("""
 uniform float scale;
-float forward(float x) { return x*scale; }
-float inverse(float x) { return x*scale; }
+float forward(float x) { return scale*x; }
+float inverse(float x) { return scale*x; }
 """)
 
 transform_3 = gloo.Snippet("""
@@ -24,13 +24,14 @@ vec2 compose(vec2 xy) { return xy; }
 """)
 
 code= """
+uniform float scale;
+
 void main(void)
 {
     // ---
 
-    float scale = <transform_1.scale>;
-    float scale = <transform_2.scale>;
-
+    float scale_t1 = <transform_1.scale>;
+    float scale_t2 = <transform_2.scale>;
 
     // ---
 
@@ -79,12 +80,13 @@ print program.vertex.code
 
 # Make sure that if snippet code has been already included in another program
 # it is nonetheless included in the new program
-code= """
-void main(void)
-{
-    // Argument must be given through snippet
-    <transform>;
-"""
-program = gloo.Program(code,"void main(){}")
-program["transform"] = transform_1("A")
-print program.vertex.code
+# code= """
+# void main(void)
+# {
+#     // Argument must be given through snippet
+#     <transform>;
+# }
+# """
+# program = gloo.Program(code,"void main(){}")
+# program["transform"] = transform_1("A")
+# print program.vertex.code

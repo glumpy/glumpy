@@ -55,6 +55,7 @@ class Shader(GLObject):
         self._code = None
         self._source = None
         self._hooked = None
+        self._snippets = []
         self.code = preprocess(code)
         self._program = None
 
@@ -72,15 +73,14 @@ class Shader(GLObject):
             return
 
         # Snippet code
-        if not data._code_included:
-            self._hooked = data.code + self._hooked
+        self._snippets.append(data)
 
         # Replace expression of type <hook.subhook(args)>
         def replace_with_args(match):
             hook = match.group('hook')
             subhook = match.group('subhook')
             args = match.group('args')
-            return data.generate_call(subhook, match.group("args"))
+            return data.mangled_call(subhook, match.group("args"))
 
         pattern = "\<" + re_hook + re_args + "\>"
         #for match in re.finditer(pattern, self._hooked):
@@ -90,7 +90,7 @@ class Shader(GLObject):
         def replace_without_args(match):
             hook = match.group('hook')
             subhook = match.group('subhook')
-            return data.generate_call(subhook)
+            return data.mangled_call(subhook)
 
         pattern = "\<" + re_hook + "\>"
         pattern = re.compile(r"<%s>" % name)
@@ -99,11 +99,24 @@ class Shader(GLObject):
 
 
 
+    def reset(self):
+        """ Reset shader snippets """
+
+        self._snippets = []
+
+
     @property
     def code(self):
-        """ Shader source code """
+        """ Shader source code (built from original and snuippet codes) """
 
-        return self._hooked
+        snippet_code = "// --- Snippets code : start --- //"
+        deps = []
+        for snippet in self._snippets:
+            deps.extend(snippet.dependencies)
+        for snippet in list(set(deps)):
+            snippet_code += snippet.mangled_code()
+        snippet_code += "// --- Snippets code : end --- //\n"
+        return snippet_code + self._hooked
 
 
     @code.setter
@@ -117,14 +130,9 @@ class Shader(GLObject):
         else:
             self._code   = code
             self._source = '<string>'
+        self._snippets = []
         self._hooked = self._code
         self._need_update = True
-
-
-#    @property
-#    def source(self):
-#        """ Shader source (string or filename) """
-#        return self._source
 
 
     def _create(self):
@@ -163,6 +171,9 @@ class Shader(GLObject):
             error = gl.glGetShaderInfoLog(self._handle)
             lineno, mesg = self._parse_error(error)
             self._print_error(mesg, lineno-1)
+
+            print self.code
+
             raise RuntimeError("Shader compilation error")
 
 

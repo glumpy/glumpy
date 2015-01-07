@@ -29,8 +29,8 @@ class Snippet(object):
     calling a snippet, using keyword arguments (snippet(var="b"))
     """
 
-    # (Transient) internal id counter for automatic snippets naming
-    _id_counter = 0
+    # Internal id counter for automatic snippets name mangling
+    _id_counter = 1
 
     def __init__(self, code=None, default=None, *args, **kwargs):
 
@@ -40,42 +40,63 @@ class Snippet(object):
         # Variables and functions name parsed from source code
         self._objects = parse(code)
 
-        # args
+        # Arguments (other snippets or strings)
         self._args = list(args)
+        for arg in self._args:
+            if isinstance(arg, Snippet):
+                arg._root = self
 
         # No chained snippet yet
         self._next = None
 
-        # Symbol & alias tables
-        self._aliases = {}
-        for symbol in kwargs.keys():
-            self._aliases[symbol] = kwargs[symbol]
+        # Snippet identification
+        self._id = Snippet._id_counter
+        Snippet._id_counter += 1
+
+        # Snippet name
+        self._name = kwargs.get("name", None)
+        if "name" in kwargs.keys(): del kwargs["name"]
+        if self._name is None:
+            classname = self.__class__.__name__
+            self._name = "%s_%d" % (classname, self._id)
+
+        # Symbol table
         self._symbols = {}
+        for (name,dtype) in self._objects["attributes"]:
+            self._symbols[name] = "%s_%d" % (name,self._id)
+        for (name,dtype) in self._objects["uniforms"]:
+            self._symbols[name] = "%s_%d" % (name,self._id)
+        for (name,dtype) in self._objects["varyings"]:
+            self._symbols[name] = "%s_%d" % (name,self._id)
+        for (name,dtype) in self._objects["consts"]:
+            self._symbols[name] = "%s_%d" % (name,self._id)
+        for (rtype,name,args,code) in self._objects["functions"]:
+            self._symbols[name] = "%s_%d" % (name,self._id)
+
+        # Aliases (through kwargs)
+        for symbol in kwargs.keys():
+            self._symbols[symbol] = kwargs[symbol]
 
         # Attached programs
         self._programs = []
 
-        # Has the snippet code been already included in the main program ?
-        self._code_included = False
+        # Root snippet
+        self._root = self
+        self._included = []
 
 
-    def lookup(self, name, deepsearch=True):
-        """ Search for a specific symbol """
+    @property
+    def name(self):
+        """ Name of the snippet """
 
-        if deepsearch:
-            for snippet in self.snippets:
-                if name in snippet._symbols.keys():
-                    return snippet._symbols[name]
-                elif name in snippet._aliases.keys():
-                    return snippet._aliases[name]
-            return None
-        else:
-            if name in self._symbols.keys():
-                return self._symbols[name]
-            elif name in self._aliases.keys():
-                return self._aliases[name]
-            else:
-                return None
+        return self._name
+
+
+    @name.setter
+    def name(self, name):
+        """ Name of the snippet """
+
+        self._name = name
 
 
     @property
@@ -87,178 +108,32 @@ class Snippet(object):
 
     @property
     def symbols(self):
-        """ Table of symbols """
+        """ Symbols """
 
-        # Do we also return aliases ?
-        symbols = self._symbols.copy()
-        symbols.update(self._aliases)
+        return self.globals
+
+    @property
+    def objects(self):
+        """ Symbols """
+
+        return self._objects
+
+
+    @property
+    def locals(self):
+        """ Local symbols """
+
+        return self._symbols
+
+
+    @property
+    def globals(self):
+        """ Global symbols """
+
+        symbols = {}
+        for snippet in self.snippets:
+            symbols.update(snippet.locals)
         return symbols
-
-
-    def attach(self, program):
-        """ Attach this snippet to a program """
-
-        if program not in self._programs:
-            self._programs.append(program)
-        for snippet in list(self._args) + [self.next]:
-            if isinstance(snippet, Snippet):
-                snippet.attach(program)
-        # WARN: Do we need to build hooks ?
-        # program._build_hooks()
-        program._build_uniforms()
-        program._build_attributes()
-
-
-    def detach(self, program):
-        """ Detach this snippet from a program """
-
-        if program in self._programs:
-            index = self._programs.indexof(program)
-            del self._programs[index]
-        for snippet in list(self._args) + [self.next]:
-            if isinstance(snippet, Snippet):
-                snippet.detach(program)
-
-
-    @property
-    def code(self):
-        """ Mangled code """
-
-#        Snippet._id_counter = 0
-        snippets = self.snippets
-        funnames, varnames = [], []
-        for snippet in snippets:
-            for _,name,_,_ in snippet._objects["functions"]:
-                funnames.append(name)
-            for name,_ in snippet._objects["uniforms"]:
-                varnames.append(name)
-            for name,_ in snippet._objects["attributes"]:
-                varnames.append(name)
-            for name,_ in snippet._objects["varyings"]:
-                varnames.append(name)
-
-        def find_duplicates(l):
-            seen = set()
-            seen_add = seen.add
-            seen_twice = set( x for x in l if x in seen or seen_add(x) )
-            return list( seen_twice )
-
-        fdup = find_duplicates(funnames)
-        vdup = find_duplicates(varnames)
-#        fdup = funnames
-#        vdup = varnames
-
-        code = self.generate_code(fdup, vdup)
-        return code
-
-
-    def generate_code(self, fdup=[], vdup=[]):
-        """ Generate mangled code """
-
-        Snippet._id_counter += 1
-        self._id = Snippet._id_counter
-        code = self._source_code
-
-        # Functions (always mangled)
-        for _,name,_,_ in self._objects["functions"]:
-            mangled_name = "%s_%d" % (name,self._id)
-            self._symbols[name] = mangled_name
-            code = re.sub(r"(?<=[^\w])(%s)(?=\()" % name,
-                          lambda _ : mangled_name, code)
-
-        # Variables
-        vars = self._objects["uniforms"]     \
-               + self._objects["attributes"] \
-               + self._objects["varyings"]
-        for name,_ in vars:
-            mangled_name = None
-            if name in self._aliases.keys():
-                mangled_name = self._aliases[name]
-            elif name in vdup:
-                mangled_name = "%s_%d" % (name,self._id)
-            if mangled_name:
-                self._symbols[name] = mangled_name
-                code = re.sub(r"(?<=[^\w])(%s)(?=[^\w])" % name,
-                              lambda _ : mangled_name, code)
-            else:
-                self._symbols[name] = name
-
-        # Get rid of externs
-        code = re.sub(r"\s*extern[^;]*;", lambda _ : "", code)
-
-        # Get code from args
-        if len(self._args):
-            for snippet in self._args:
-                if isinstance(snippet, Snippet):
-                    if not snippet._code_included:
-                        code += snippet.generate_code(fdup, vdup)
-
-        # Get code from next snippet
-        if self.next:
-            operand, snippet = self._next
-            if isinstance(snippet, Snippet):
-                if not snippet._code_included:
-                    code += snippet.generate_code(fdup, vdup)
-
-        return code
-
-
-    @property
-    def call(self):
-        """ Mangled call """
-        # This force code to be built and name mangled
-        code = self.code
-        return self.generate_call()
-
-
-    def generate_call(self, function=None, arguments=None):
-        """ Generate mangled call """
-
-        s = ""
-
-        # Is there a function defined in the snippet ?
-        # (It may happen a snippet only has uniforms, like the Viewport snippet)
-        # WARN: what about Viewport(Transform) ?
-        if len(self._objects["functions"]):
-
-            # Is there a function specified in the shade source ?
-            # Such as <transform.forward>
-            if function:
-                name = function
-            else:
-                _,name,_,_ = self._objects["functions"][0]
-
-            s = self.lookup(name, deepsearch=False) or name
-
-            if len(self._args):
-                s += "("
-                for i,arg in enumerate(self._args):
-                    if isinstance(arg,Snippet):
-                        s += arg.generate_call(function,arguments)
-                    else:
-                        s += str(arg)
-                    if i < (len(self._args)-1):
-                        s += ", "
-                s += ")"
-            else:
-                # If an argument has been given, we put it at the end
-                # This handles hooks of the form <transform(args)>
-                if arguments is not None:
-                    s += "(%s)" % arguments
-
-                else:
-                    s += "()"
-            if self.next:
-                operand, other = self._next
-                if str(other).strip():
-                    s += " %s " % operand + str(other)
-
-        # No function defined in this snippet, we look for next one
-        else:
-            if self._next:
-                operand, other = self.next
-                s = str(other)
-        return s
 
 
     @property
@@ -302,42 +177,208 @@ class Snippet(object):
                 all.extend(snippet.snippets)
         return all
 
+
     @property
     def is_attached(self):
         """ Wheter snippet is attached to a program """
         return len(self._programs) > 0
 
 
-    def copy(self):
-        """ Copy snippet """
 
-        return copy.deepcopy(self)
+    def lookup(self, name, deepsearch=True):
+        """ Search for a specific symbol """
+
+        if deepsearch:
+            for snippet in self.snippets:
+                symbols = snippet.symbols
+                if name in symbols.keys():
+                    return symbols[name]
+            return None
+
+        return self._symbols.get(name,None)
+
+
+    def attach(self, program):
+        """ Attach this snippet to a program """
+
+        if program not in self._programs:
+            self._programs.append(program)
+
+        for snippet in self.snippets[1:]:
+            if isinstance(snippet, Snippet):
+                snippet.attach(program)
+
+        # WARN: Do we need to build hooks ?
+        # program._build_hooks()
+        program._build_uniforms()
+        program._build_attributes()
+
+
+    def detach(self, program):
+        """ Detach this snippet from a program """
+
+        if program in self._programs:
+            index = self._programs.indexof(program)
+            del self._programs[index]
+        for snippet in list(self._args) + [self.next]:
+            if isinstance(snippet, Snippet):
+                snippet.detach(program)
+
+
+
+    @property
+    def dependencies(self):
+        """ Compute snippet dependencies """
+
+        deps = [self]
+        for snippet in self._args:
+            if isinstance(snippet, Snippet):
+                deps.extend(snippet.dependencies)
+        if self.next:
+            operand, snippet = self._next
+            if isinstance(snippet, Snippet):
+                deps.extend(snippet.dependencies)
+
+        return list(set(deps))
+
+    @property
+    def code(self):
+        """ Mangled code """
+
+        code = ""
+        for snippet in self.dependencies:
+            code += snippet.mangled_code()
+        #return "".join(self.mangled_code().values())
+        return code
+
+
+    def mangled_code(self):
+        """ Generate mangled code """
+
+        #codes = codes or {}
+        #if self._id in codes.keys():
+        #    return codes
+
+        code = self._source_code
+        objects = self._objects
+        functions = objects["functions"]
+        vars = objects["uniforms"] + objects["attributes"] + objects["varyings"]
+        for _,name,_,_ in functions:
+            symbol = self._symbols[name]
+            code = re.sub(r"(?<=[^\w])(%s)(?=\()" % name, symbol, code)
+
+        for name,_ in vars:
+            symbol = self._symbols[name]
+            code = re.sub(r"(?<=[^\w])(%s)(?=[^\w])" % name, symbol, code)
+
+        return code
+
+        # Get rid of externs (if any)
+        # code = re.sub(r"\s*extern[^;]*;", "", code)
+
+        # Register this snippet code
+        #codes[self._id] = code
+
+        # Get code from args and next
+        # for snippet in self._args:
+        #     if isinstance(snippet, Snippet):
+        #         codes.update(snippet.mangled_code(codes))
+        # if self.next:
+        #     operand, snippet = self._next
+        #     if isinstance(snippet, Snippet):
+        #         codes.update(snippet.mangled_code(codes))
+
+        # return codes
+
+
+    @property
+    def call(self):
+        """ Mangled call """
+
+        self.mangled_code()
+        return self.mangled_call()
+
+
+    def mangled_call(self, function=None, arguments=None):
+        """ Generate mangled call """
+
+        s = ""
+
+        # Is there a function defined in the snippet ?
+        # (It may happen a snippet only has uniforms, like the Viewport snippet)
+        # WARN: what about Viewport(Transform) ?
+        if len(self._objects["functions"]):
+
+            # Is there a function specified in the shade source ?
+            # Such as <transform.forward>
+            if function:
+                name = function
+            else:
+                _,name,_,_ = self._objects["functions"][0]
+
+            s = self.lookup(name, deepsearch=False) or name
+
+            if len(self._args):
+                s += "("
+                for i,arg in enumerate(self._args):
+                    if isinstance(arg,Snippet):
+                        s += arg.mangled_call(function,arguments)
+                    else:
+                        s += str(arg)
+                    if i < (len(self._args)-1):
+                        s += ", "
+                s += ")"
+            else:
+                # If an argument has been given, we put it at the end
+                # This handles hooks of the form <transform(args)>
+                if arguments is not None:
+                    s += "(%s)" % arguments
+
+                else:
+                    s += "()"
+            if self.next:
+                operand, other = self._next
+                call = other.mangled_call(function,arguments).strip()
+                if len(call):
+                    s += operand + call
+
+        # No function defined in this snippet, we look for next one
+        else:
+            if self._next:
+                operand, other = self.next
+                s = other.mangled_call(function,arguments)
+        return s
+
 
 
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
 
-        # WARN: Do we copy arguments by default ?
-        # kwargs["copy"] = kwargs.get("copy", True)
-        kwargs["copy"] = kwargs.get("copy", False)
+        self._args = args
+        for arg in self._args:
+            if isinstance(arg, Snippet):
+                arg._root = self
+        return self
 
-        if kwargs["copy"]:
-            S = self.copy()
-            S._code_included = False
-        else:
-            S = self
-        del kwargs["copy"]
 
-        S._args = args
+    def copy(self):
+        snippet = Snippet()
+        snippet._next = None
+        snippet._root = self
+        snippet._id = self._id
+        snippet._args = self._args
+        snippet._name = self._name
+        snippet._symbols = self._symbols
+        snippet._objects = self._objects
+        snippet._source_code = self._source_code
 
-        for symbol in kwargs.keys():
-            S._aliases[symbol] = kwargs[symbol]
-        return S
+        return snippet
+
 
     def __op__(self, operand, other):
-        S = self.copy()
-        S.last._next = (operand,other)
-        return S
+        snippet = self.copy()
+        snippet.last._next = operand,other
+        return snippet
 
     def __add__(self, other):
         return self.__op__("+", other)
@@ -366,8 +407,23 @@ class Snippet(object):
     def __rshift__(self, other):
         return self.__op__(";", other)
 
-    def __str__(self):
-        return self.generate_call()
+    def __repr__(self):
+        # return self.generate_call()
+
+        s = self._name
+        s += "("
+        if len(self._args):
+            s += " "
+            for i,snippet in enumerate(self._args):
+                s += repr(snippet)
+                if i < len(self._args)-1:
+                    s+= ", "
+            s += " "
+        s += ")"
+        if self._next:
+            s += " %s %s" % self._next
+
+        return s
 
 
     def __getitem__(self, key):
@@ -382,6 +438,9 @@ class Snippet(object):
 
         # First we look in all snippets
         for snippet in self.snippets:
+            if snippet.name == key:
+                return snippet
+
             if hasattr(snippet, key):
                 return getattr(snippet, key)
 
@@ -432,3 +491,38 @@ class Snippet(object):
         if not found:
             error = 'Snippet does not have such key ("%s")' % key
             raise IndexError(error)
+
+
+# -----------------------------------------------------------------------------
+if __name__ == '__main__':
+
+    A = Snippet("uniform float a;\nvoid function_A(void) {};\n\n", name = "Snippet_A")
+    B = Snippet("uniform float b;\nvoid function_B(void) {};\n\n", name = "Snippet_B")
+    C = Snippet("uniform float c;\n\n", name = "Snippet_C")
+    D = A(B("A")) + C()
+
+    # print D["Snippet_A"]
+    # print D["Snippet_B"]
+    # print D["Snippet_C"]
+
+    #print D.locals
+    #print D.globals
+
+    #print D["Snippet_A"].locals
+    #print D["Snippet_B"].locals
+    #print D["Snippet_C"].locals
+
+    # print D.objects
+    # print D.symbols
+    # print D
+
+    print D
+    print [snippet._id for snippet in D.dependencies]
+
+    print
+    print "Call:"
+    print D.call
+    print
+    print "Code:"
+    print D.code
+    print

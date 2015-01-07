@@ -65,4 +65,9 @@ for path in tiger.paths:
 
     z += 1
 
+print transform
+
+print polygons._programs[0].vertex.code
+
+
 app.run()
