@@ -7,13 +7,15 @@
 from glumpy import gloo
 
 transform_1 = gloo.Snippet("""
-float forward(float x) { return x; }
-float inverse(float x) { return x; }
+uniform float scale;
+float forward(float x) { return scale*x; }
+float inverse(float x) { return scale*x; }
 """)
 
 transform_2 = gloo.Snippet("""
-float forward(float x) { return x; }
-float inverse(float x) { return x; }
+uniform float scale;
+float forward(float x) { return x*scale; }
+float inverse(float x) { return x*scale; }
 """)
 
 transform_3 = gloo.Snippet("""
@@ -24,6 +26,14 @@ vec2 compose(vec2 xy) { return xy; }
 code= """
 void main(void)
 {
+    // ---
+
+    float scale = <transform_1.scale>;
+    float scale = <transform_2.scale>;
+
+
+    // ---
+
     // Argument must be given through snippet
     <transform_1>;
 
@@ -51,7 +61,7 @@ void main(void)
 
     // Compose snippet with generic field affectation
     // Note yet done
-    <transform_8(H)>;
+    // <transform_8(H)>;
 
 } """
 
@@ -63,6 +73,18 @@ program["transform_4"] = transform_1("D")
 program["transform_5"] = transform_2("E")
 program["transform_6"] = transform_2("F")
 program["transform_7"] = transform_3(transform_1("G.x"), transform_2("G.y"))
-program["transform_8"] = transform_3( ('x',transform_1()), ('y',transform_2()) )
+#program["transform_8"] = transform_3( ('x',transform_1()), ('y',transform_2()) )
+print program.vertex.code
 
+
+# Make sure that if snippet code has been already included in another program
+# it is nonetheless included in the new program
+code= """
+void main(void)
+{
+    // Argument must be given through snippet
+    <transform>;
+"""
+program = gloo.Program(code,"void main(){}")
+program["transform"] = transform_1("A")
 print program.vertex.code

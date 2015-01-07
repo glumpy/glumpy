@@ -40,10 +40,7 @@ class Snippet(object):
         # Variables and functions name parsed from source code
         self._objects = parse(code)
 
-        # Default function to be called if none given
-        self._default = default
-
-        # args yet
+        # args
         self._args = list(args)
 
         # No chained snippet yet
@@ -58,7 +55,7 @@ class Snippet(object):
         # Attached programs
         self._programs = []
 
-        #
+        # Has the snippet code been already included in the main program ?
         self._code_included = False
 
 
@@ -86,6 +83,7 @@ class Snippet(object):
         """ Attached programs """
 
         return self._programs
+
 
     @property
     def symbols(self):
@@ -147,6 +145,9 @@ class Snippet(object):
 
         fdup = find_duplicates(funnames)
         vdup = find_duplicates(varnames)
+#        fdup = funnames
+#        vdup = varnames
+
         code = self.generate_code(fdup, vdup)
         return code
 
