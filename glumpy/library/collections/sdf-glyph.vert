@@ -35,16 +35,16 @@ void main()
 
     vec3 P1 = origin + scale*(tangent*position.x + ortho*position.y);
     vec4 P1_ = <transform(P1)>;
-    vec2 p1 = NDC_to_viewport(P1_, viewport.zw);
+    vec2 p1 = NDC_to_viewport(P1_, <transform.viewport>.zw);
 
     // This compute an estimation of the actual size of the glyph
     vec3 P2 = origin + scale*(tangent*(position.x+64.0) + ortho*(position.y));
     vec4 P2_ = <transform(P2)>;
-    vec2 p2 = NDC_to_viewport(P2_, viewport.zw);
+    vec2 p2 = NDC_to_viewport(P2_, <transform.viewport>.zw);
 
     vec3 P3 = origin + scale*(tangent*(position.x) + ortho*(position.y+64.0));
     vec4 P3_ = <transform(P3)>;
-    vec2 p3 = NDC_to_viewport(P3_, viewport.zw);
+    vec2 p3 = NDC_to_viewport(P3_, <transform.viewport>.zw);
 
     float d2 = length(p2 - p1);
     float d3 = length(p3 - p1);

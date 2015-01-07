@@ -74,8 +74,8 @@ class Shader(GLObject):
                 hook = match.group('hook')
                 subhook = match.group('subhook')
                 if subhook:
-                    return hook + '.' + subhook
-                return hook
+                    return snippet + '.' + subhook
+                return snippet
             self._hooked = re.sub(pattern, replace, self._hooked)
             return
 
