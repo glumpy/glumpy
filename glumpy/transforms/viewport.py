@@ -12,5 +12,16 @@ class Viewport(Transform):
         code = library.get("transforms/viewport.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
+    def on_attach(self, program):
+        """ Initialization event """
+
+        print "Viewport:on_attach"
+
     def on_resize(self, width, height):
+
+        print "Viewport:on_resize"
+
         self["viewport"] = 0, 0, width, height
+
+        # Transmit signal to other transforms
+        Transform.on_resize(self, width, height)

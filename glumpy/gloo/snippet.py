@@ -42,9 +42,6 @@ class Snippet(object):
 
         # Arguments (other snippets or strings)
         self._args = list(args)
-        for arg in self._args:
-            if isinstance(arg, Snippet):
-                arg._root = self
 
         # No chained snippet yet
         self._next = None
@@ -80,10 +77,6 @@ class Snippet(object):
         # Attached programs
         self._programs = []
 
-        # Root snippet
-        self._root = self
-        self._included = []
-
 
     @property
     def name(self):
@@ -107,22 +100,6 @@ class Snippet(object):
 
 
     @property
-    def vars(self):
-        """ Snippet variable names """
-
-        objects = self._objects
-        names = []
-        for name,dtype in objects["uniforms"]+ objects["attributes"] + objects["varyings"]:
-            names.append(name)
-        return names
-
-    @property
-    def symbols(self):
-        """ Symbols """
-
-        return self.globals
-
-    @property
     def objects(self):
         """ Symbols """
 
@@ -133,6 +110,10 @@ class Snippet(object):
     def locals(self):
         """ Local symbols """
 
+        symbols = {}
+        objects = self._objects
+        for name,dtype in objects["uniforms"]+ objects["attributes"] + objects["varyings"]:
+            symbols[name] = self._symbols[name]
         return self._symbols
 
 
@@ -194,13 +175,12 @@ class Snippet(object):
         return len(self._programs) > 0
 
 
-
     def lookup(self, name, deepsearch=True):
         """ Search for a specific symbol """
 
         if deepsearch:
             for snippet in self.snippets:
-                symbols = snippet.symbols
+                symbols = snippet._symbols
                 if name in symbols.keys():
                     return symbols[name]
             return None
@@ -235,7 +215,6 @@ class Snippet(object):
                 snippet.detach(program)
 
 
-
     @property
     def dependencies(self):
         """ Compute snippet dependencies """
@@ -250,6 +229,7 @@ class Snippet(object):
                 deps.extend(snippet.dependencies)
 
         return list(set(deps))
+
 
     @property
     def code(self):
@@ -267,11 +247,11 @@ class Snippet(object):
         code = self._source_code
         objects = self._objects
         functions = objects["functions"]
-        vars = objects["uniforms"] + objects["attributes"] + objects["varyings"]
+        names = objects["uniforms"] + objects["attributes"] + objects["varyings"]
         for _,name,_,_ in functions:
             symbol = self._symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=\()" % name, symbol, code)
-        for name,_ in vars:
+        for name, _ in names:
             symbol = self._symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=[^\w])" % name, symbol, code)
         return code
@@ -341,16 +321,12 @@ class Snippet(object):
         """ __call__(self, *args) <==> self(*args) """
 
         self._args = args
-        for arg in self._args:
-            if isinstance(arg, Snippet):
-                arg._root = self
         return self
 
 
     def copy(self):
         snippet = Snippet()
         snippet._next = None
-        snippet._root = self
         snippet._id = self._id
         snippet._args = self._args
         snippet._name = self._name
@@ -362,7 +338,7 @@ class Snippet(object):
 
 
     def __op__(self, operand, other):
-        snippet = self.copy()
+        snippet = self #.copy()
         snippet.last._next = operand,other
         return snippet
 
@@ -510,5 +486,5 @@ if __name__ == '__main__':
     print D.call
     print
     print "Code:"
-    print D.code
+    print D.globals
     print

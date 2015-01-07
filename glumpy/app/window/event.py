@@ -183,6 +183,7 @@ class EventDispatcher(object):
         object may also be specified, in which case it will be searched for
         callables with event names.
         '''
+
         self.push_handlers(*args, **kwargs)
 
 

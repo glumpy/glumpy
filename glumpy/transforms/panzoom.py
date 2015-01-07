@@ -166,6 +166,8 @@ class PanZoom(Transform):
     def on_attach(self, program):
         """ Initialization event """
 
+        print "PanZoom:on_attach"
+
         self["pan"] = self.pan
         aspect = 1.0
         if self._aspect is not None:
@@ -175,6 +177,8 @@ class PanZoom(Transform):
 
     def on_resize(self, width, height):
         """ Update event """
+
+        print "PanZoom:on_resize"
 
         self._width = float(width)
         self._height = float(height)

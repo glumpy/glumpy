@@ -59,7 +59,6 @@ void main(void)
     // Compose snippet with generic field affectation
     // Note yet done
     // <transform_8(H)>;
-
 } """
 
 program = gloo.Program(code,"void main(){}")
@@ -67,12 +66,11 @@ program["transform_1"] = transform_1("A")
 program["transform_2"] = "forward"
 program["transform_3"] = transform_1()
 program["transform_4"] = transform_1("D")
-program["transform_5"] = transform_2("E")
+program["transform_5"] = transform_1(transform_2("E"))
 program["transform_6"] = transform_2("F")
 program["transform_7"] = transform_3(transform_1("G.x"), transform_2("G.y"))
-#program["transform_8"] = transform_3( ('x',transform_1()), ('y',transform_2()) )
+# program["transform_8"] = transform_3( ('x',transform_1()), ('y',transform_2()) )
 print program.vertex.code
-
 
 # Make sure that if snippet code has been already included in another program
 # it is nonetheless included in the new program
@@ -83,6 +81,6 @@ void main(void)
     <transform>;
 }
 """
-program = gloo.Program(code,"void main(){}")
+program = gloo.Program(code, "void main(){}")
 program["transform"] = transform_1("A")
 print program.vertex.code

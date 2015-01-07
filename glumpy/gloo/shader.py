@@ -82,17 +82,21 @@ class Shader(GLObject):
         # Snippet code
         self._snippets.append(snippet)
 
-
         # Replace expression of type <hook.subhook(args)>
         def replace_with_args(match):
             hook = match.group('hook')
             subhook = match.group('subhook')
             args = match.group('args')
-            if subhook in snippet.vars:
-                return snippet.locals[subhook]
+
+            #if subhook in snippet.vars:
+            #    return snippet.locals[subhook]
+
+            if subhook in snippet.globals:
+                return snippet.globals[subhook]
 
             return snippet.mangled_call(subhook, match.group("args"))
-        pattern = "\<" + re_hook + re_args + "\>"
+
+        # pattern = "\<" + re_hook + re_args + "\>"
         self._hooked = re.sub(pattern, replace_with_args, self._hooked)
 
         # # Replace expression of type <hook.subhook>
@@ -119,7 +123,7 @@ class Shader(GLObject):
     def code(self):
         """ Shader source code (built from original and snuippet codes) """
 
-        snippet_code = "// --- Snippets code : start --- //"
+        snippet_code = "// --- Snippets code : start --- //\n"
         deps = []
         for snippet in self._snippets:
             deps.extend(snippet.dependencies)
@@ -181,9 +185,6 @@ class Shader(GLObject):
             error = gl.glGetShaderInfoLog(self._handle)
             lineno, mesg = self._parse_error(error)
             self._print_error(mesg, lineno-1)
-
-            print self.code
-
             raise RuntimeError("Shader compilation error")
 
 
