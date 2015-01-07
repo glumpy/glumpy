@@ -107,6 +107,16 @@ class Snippet(object):
 
 
     @property
+    def vars(self):
+        """ Snippet variable names """
+
+        objects = self._objects
+        names = []
+        for name,dtype in objects["uniforms"]+ objects["attributes"] + objects["varyings"]:
+            names.append(name)
+        return names
+
+    @property
     def symbols(self):
         """ Symbols """
 
@@ -248,16 +258,11 @@ class Snippet(object):
         code = ""
         for snippet in self.dependencies:
             code += snippet.mangled_code()
-        #return "".join(self.mangled_code().values())
         return code
 
 
     def mangled_code(self):
         """ Generate mangled code """
-
-        #codes = codes or {}
-        #if self._id in codes.keys():
-        #    return codes
 
         code = self._source_code
         objects = self._objects
@@ -266,29 +271,10 @@ class Snippet(object):
         for _,name,_,_ in functions:
             symbol = self._symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=\()" % name, symbol, code)
-
         for name,_ in vars:
             symbol = self._symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=[^\w])" % name, symbol, code)
-
         return code
-
-        # Get rid of externs (if any)
-        # code = re.sub(r"\s*extern[^;]*;", "", code)
-
-        # Register this snippet code
-        #codes[self._id] = code
-
-        # Get code from args and next
-        # for snippet in self._args:
-        #     if isinstance(snippet, Snippet):
-        #         codes.update(snippet.mangled_code(codes))
-        # if self.next:
-        #     operand, snippet = self._next
-        #     if isinstance(snippet, Snippet):
-        #         codes.update(snippet.mangled_code(codes))
-
-        # return codes
 
 
     @property

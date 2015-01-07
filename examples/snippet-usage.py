@@ -29,12 +29,10 @@ uniform float scale;
 void main(void)
 {
     // ---
-
     float scale_t1 = <transform_1.scale>;
     float scale_t2 = <transform_2.scale>;
 
     // ---
-
     // Argument must be given through snippet
     <transform_1>;
 
@@ -45,7 +43,6 @@ void main(void)
     <transform_3(C)>;
 
     // ---
-
     // Default function (first defined) is used
     <transform_4>;
 
@@ -56,8 +53,7 @@ void main(void)
     <transform_6.inverse>;
 
     // ---
-
-    // Compose snippet with speficif field affectation
+    // Compose snippet with specific field affectation
     <transform_7>;
 
     // Compose snippet with generic field affectation
@@ -80,13 +76,13 @@ print program.vertex.code
 
 # Make sure that if snippet code has been already included in another program
 # it is nonetheless included in the new program
-# code= """
-# void main(void)
-# {
-#     // Argument must be given through snippet
-#     <transform>;
-# }
-# """
-# program = gloo.Program(code,"void main(){}")
-# program["transform"] = transform_1("A")
-# print program.vertex.code
+code= """
+void main(void)
+{
+    // Argument must be given through snippet
+    <transform>;
+}
+"""
+program = gloo.Program(code,"void main(){}")
+program["transform"] = transform_1("A")
+print program.vertex.code

@@ -60,42 +60,52 @@ class Shader(GLObject):
         self._program = None
 
 
-    def __setitem__(self, name, data):
+    def __setitem__(self, name, snippet):
         """ """
 
         re_hook = r"(?P<hook>%s)(\.(?P<subhook>\w+))?" % name
         re_args = r"(\((?P<args>[^<>]+)\))?"
         re_hooks = re.compile("\<"+re_hook+re_args+"\>" , re.VERBOSE )
+        pattern = "\<" + re_hook + re_args + "\>"
 
-        if not isinstance(data,Snippet):
-            pattern = re.compile(r"<%s>" % name)
-            self._hooked = re.sub(pattern, data, self._hooked)
+        # snippet is not a Snippet (it should be a string)
+        if not isinstance(snippet,Snippet):
+            def replace(match):
+                hook = match.group('hook')
+                subhook = match.group('subhook')
+                if subhook:
+                    return hook + '.' + subhook
+                return hook
+            self._hooked = re.sub(pattern, replace, self._hooked)
             return
 
         # Snippet code
-        self._snippets.append(data)
+        self._snippets.append(snippet)
+
 
         # Replace expression of type <hook.subhook(args)>
         def replace_with_args(match):
             hook = match.group('hook')
             subhook = match.group('subhook')
             args = match.group('args')
-            return data.mangled_call(subhook, match.group("args"))
+            if subhook in snippet.vars:
+                return snippet.locals[subhook]
 
+            return snippet.mangled_call(subhook, match.group("args"))
         pattern = "\<" + re_hook + re_args + "\>"
-        #for match in re.finditer(pattern, self._hooked):
         self._hooked = re.sub(pattern, replace_with_args, self._hooked)
 
-        # Replace expression of type <hook.subhook>
-        def replace_without_args(match):
-            hook = match.group('hook')
-            subhook = match.group('subhook')
-            return data.mangled_call(subhook)
+        # # Replace expression of type <hook.subhook>
+        # def replace_without_args(match):
+        #     hook = match.group('hook')
+        #     subhook = match.group('subhook')
+        #     if subhook in snippet.vars:
+        #         return hook+'.'+subhook
+        #     return snippet.mangled_call(subhook)
 
-        pattern = "\<" + re_hook + "\>"
-        pattern = re.compile(r"<%s>" % name)
-        self._hooked = re.sub(pattern, replace_without_args, self._hooked)
-        # self._hooked = re.sub(pattern, data.call, self._hooked)
+        # pattern = "\<" + re_hook + "\>"
+        # pattern = re.compile(r"<%s>" % name)
+        # self._hooked = re.sub(pattern, replace_without_args, self._hooked)
 
 
 
