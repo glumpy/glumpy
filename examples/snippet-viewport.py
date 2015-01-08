@@ -58,8 +58,7 @@ viewport = app.Viewport()
 window.attach(viewport)
 viewport.add(child)
 
-# WARNING: copy=false is mandatory here
-program["transform"] = child.transform(Position2D("position"),copy=False)
+program["transform"] = child.transform(Position2D("position"))
 program["clipping"] = child.clipping(copy=False)
 
 app.run()
