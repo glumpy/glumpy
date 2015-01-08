@@ -23,9 +23,9 @@ class PVMProjection(Transform):
         glm.translate(self._view, 0, 0, -5)
 
     def on_attach(self, program):
-        program["view"] = self._view
-        program["model"] = self._model
-        program["projection"] = self._projection
+        self["view"] = self._view
+        self["model"] = self._model
+        self["projection"] = self._projection
 
     def on_resize(self, width, height):
         fovy = self._fovy

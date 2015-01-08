@@ -61,7 +61,7 @@ def on_draw(dt):
     model = np.eye(4, dtype=np.float32)
     glm.rotate(model, theta, 0, 0, 1)
     glm.rotate(model, phi, 0, 1, 0)
-    cube['model'] = model
+    transform['model'] = model
 
 
 # Build cube data
