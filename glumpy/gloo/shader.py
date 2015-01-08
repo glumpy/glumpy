@@ -15,6 +15,7 @@ from . parser import (remove_comments, preprocess,
 
 
 
+# ------------------------------------------------------------ Shader class ---
 class Shader(GLObject):
     """Abstract shader class."""
 
@@ -52,16 +53,25 @@ class Shader(GLObject):
 
         GLObject.__init__(self)
         self._target = target
-        self._code = None
-        self._source = None
-        self._hooked = None
         self._snippets = []
-        self.code = preprocess(code)
+
+        if os.path.isfile(code):
+            with open(code, 'rt') as file:
+                self._code = preprocess(file.read())
+                self._source = os.path.basename(code)
+        else:
+            self._code = preprocess(code)
+            self._source = '<string>'
+
+        self._hooked = self._code
+        self._need_update = True
         self._program = None
 
 
     def __setitem__(self, name, snippet):
-        """ """
+        """
+        Set a snippet on the given hook in the source code.
+        """
 
         re_hook = r"(?P<hook>%s)(\.(?P<subhook>\w+))?" % name
         re_args = r"(\((?P<args>[^<>]+)\))?"
@@ -79,7 +89,7 @@ class Shader(GLObject):
             self._hooked = re.sub(pattern, replace, self._hooked)
             return
 
-        # Snippet code
+        # Store snippet code for later inclusion
         self._snippets.append(snippet)
 
         # Replace expression of type <hook.subhook(args)>
@@ -88,29 +98,13 @@ class Shader(GLObject):
             subhook = match.group('subhook')
             args = match.group('args')
 
-            #if subhook in snippet.vars:
-            #    return snippet.locals[subhook]
-
+            # If subhook is a variable (uniform/attribute/varying)
             if subhook in snippet.globals:
                 return snippet.globals[subhook]
 
             return snippet.mangled_call(subhook, match.group("args"))
 
-        # pattern = "\<" + re_hook + re_args + "\>"
         self._hooked = re.sub(pattern, replace_with_args, self._hooked)
-
-        # # Replace expression of type <hook.subhook>
-        # def replace_without_args(match):
-        #     hook = match.group('hook')
-        #     subhook = match.group('subhook')
-        #     if subhook in snippet.vars:
-        #         return hook+'.'+subhook
-        #     return snippet.mangled_call(subhook)
-
-        # pattern = "\<" + re_hook + "\>"
-        # pattern = re.compile(r"<%s>" % name)
-        # self._hooked = re.sub(pattern, replace_without_args, self._hooked)
-
 
 
     def reset(self):
@@ -132,21 +126,6 @@ class Shader(GLObject):
         snippet_code += "// --- Snippets code : end --- //\n"
         return snippet_code + self._hooked
 
-
-    @code.setter
-    def code(self, code):
-        """ Shader source code """
-
-        if os.path.isfile(code):
-            with open(code, 'rt') as file:
-                self._code = file.read()
-                self._source = os.path.basename(code)
-        else:
-            self._code   = code
-            self._source = '<string>'
-        self._snippets = []
-        self._hooked = self._code
-        self._need_update = True
 
 
     def _create(self):
@@ -173,9 +152,8 @@ class Shader(GLObject):
         if len(self.hooks):
             raise RuntimeError("Shader has pending hooks, cannot compile")
 
-        # Set shader source
+        # Set shader version
         code = "#version 120\n" + self.code
-        # code = self.code
         gl.glShaderSource(self._handle, code)
 
         # Actual compilation
