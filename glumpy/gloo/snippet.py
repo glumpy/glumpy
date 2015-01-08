@@ -326,14 +326,14 @@ class Snippet(object):
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
 
-        snippet = self #.copy()
+        snippet = self.copy()
         snippet._args = args
 
         # Aliases
         for symbol in kwargs.keys():
             self._symbols[symbol] = kwargs[symbol]
 
-        return self
+        return snippet
 
 
     def copy(self, deep=False):
