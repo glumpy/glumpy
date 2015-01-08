@@ -41,12 +41,14 @@ def remove_version(code):
 def merge_includes(code):
     """ Merge all includes recursively """
 
-    pattern = '\#\s*include\s*"(?P<filename>[a-zA-Z0-9\-\.\/]+)"[^\r\n]*\n'
+    # pattern = '\#\s*include\s*"(?P<filename>[a-zA-Z0-9\-\.\/]+)"[^\r\n]*\n'
+    pattern = '\#\s*include\s*"(?P<filename>[a-zA-Z0-9\-\.\/]+)"'
     regex = re.compile(pattern)
     includes = []
 
     def replace(match):
         filename = match.group("filename")
+
         if filename not in includes:
             includes.append(filename)
             path = library.find(filename)
@@ -71,6 +73,7 @@ def merge_includes(code):
 
 def preprocess(code):
     """ Preprocess a code by removing comments, version and merging includes """
+
     if code:
         code = remove_comments(code)
         code = remove_version(code)

@@ -5,6 +5,8 @@
 // From Fluid demo by Philip Rideout
 // Originals sources and explanation on http://prideout.net/blog/?p=58
 // -----------------------------------------------------------------------------
+#include "misc/spatial-filters.frag"
+
 uniform sampler2D u_data;
 uniform vec2 u_shape;
 uniform sampler2D Sampler;

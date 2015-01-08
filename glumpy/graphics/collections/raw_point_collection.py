@@ -71,7 +71,7 @@ class RawPointCollection(Collection):
 
         # Set hooks if necessary
         program = self._programs[0]
-        if "transform" in program._hooks.keys():
+        if "transform" in program.hooks:
             if transform is not None:
                 program["transform"] = transform
             else:

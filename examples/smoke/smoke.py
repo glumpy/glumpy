@@ -8,7 +8,7 @@
 # Originals sources and explanation on http://prideout.net/blog/?p=58
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gloo, gl, shaders, data
+from glumpy import app, gloo, gl, data
 
 # Constants
 # -------------------------------------
@@ -83,10 +83,8 @@ prog_divergence = Program("divergence.frag")
 prog_fill = Program("fill.frag")
 prog_splat = Program("splat.frag")
 prog_buoyancy = Program("buoyancy.frag")
+prog_visualize = Program("visualize.frag")
 
-fragment = (shaders.get_file('spatial-filters.frag'), "./visualize.frag")
-#prog_visualize = Program("visualize.frag")
-prog_visualize = Program(fragment)
 
 
 prog_advect["InverseSize"] = 1.0 / GridWidth, 1.0 / GridHeight

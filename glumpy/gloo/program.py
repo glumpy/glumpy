@@ -117,6 +117,13 @@ class Program(GLObject):
         return self._fragment
 
 
+    @property
+    def hooks(self):
+        """ Known hooks """
+
+        return self._vert_hooks.keys()  + self._frag_hooks.keys()
+
+
     def _setup(self):
         """ Setup the program by resolving all pending hooks. """
         pass
@@ -315,7 +322,6 @@ class Program(GLObject):
             return self._vert_hooks[name]
         elif name in self._frag_hooks.keys():
             return self._frag_hooks[name]
-
 #        if name in self._hooks.keys():
 #            return self._hooks[name][1]
         elif name in self._uniforms.keys():

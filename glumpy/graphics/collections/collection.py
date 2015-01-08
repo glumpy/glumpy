@@ -132,7 +132,7 @@ class Collection(BaseCollection):
         """ Return a view on the collection using provided transform """
 
         program = gloo.Program(self._vertex, self._fragment)
-        if "transform" in program._hooks.keys():
+        if "transform" in program.hooks:
             program["transform"] = transform
         self._programs.append(program)
         program.bind(self._vertices_buffer)
@@ -148,9 +148,8 @@ class Collection(BaseCollection):
     def __getitem__(self, key):
 
         program = self._programs[0]
-
-        if key in program._hooks.keys():
-            return program._hooks[key][1]
+        if key in program.hooks:
+            return program[key]
 
         for (name,gtype) in program.all_uniforms:
             if name == key:
