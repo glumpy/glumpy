@@ -18,10 +18,13 @@ attribute float index;
 attribute vec3 position;
 attribute vec2 texcoord;
 
+varying float v_index;
 varying vec2 v_texcoord;
 void main()
 {
     v_texcoord = texcoord;
+    v_index = index;
+
     vec4 pos = projection * view * model * vec4(position,1.0);
     gl_Position = <grid>;
 }
@@ -30,6 +33,7 @@ void main()
 fragment = """
 uniform sampler2D texture;
 varying vec2 v_texcoord;
+varying float v_index;
 void main()
 {
     <clip>;
@@ -40,11 +44,8 @@ void main()
 
 Grid = gloo.Snippet("""
 uniform float rows, cols;
-varying float v_index;
 vec4 cell(vec4 position, float index)
 {
-    v_index = index;
-
     float col = mod(index,cols) + 0.5;
     float row = floor(index/cols) + 0.5;
     float x = -1.0 + col * (2.0/cols);
@@ -60,7 +61,6 @@ vec4 cell(vec4 position, float index)
 Clip = gloo.Snippet("""
 uniform vec2 iResolution;
 uniform float rows, cols;
-varying float v_index;
 void clip(float index)
 {
     vec2 P = gl_FragCoord.xy;
