@@ -58,7 +58,12 @@ class Snippet(object):
             self._name = "%s_%d" % (classname, self._id)
 
         # Symbol table
+        # self._symbols = { 'var_names' : {},
+        #                   'var_alias' : {},
+        #                   'fun_names' : {},
+        #                   'fun_alias' : {} }
         self._symbols = {}
+
         for (name,dtype) in self._objects["attributes"]:
             self._symbols[name] = "%s_%d" % (name,self._id)
         for (name,dtype) in self._objects["uniforms"]:
@@ -67,6 +72,7 @@ class Snippet(object):
             self._symbols[name] = "%s_%d" % (name,self._id)
         for (name,dtype) in self._objects["consts"]:
             self._symbols[name] = "%s_%d" % (name,self._id)
+
         for (rtype,name,args,code) in self._objects["functions"]:
             self._symbols[name] = "%s_%d" % (name,self._id)
 
@@ -320,25 +326,28 @@ class Snippet(object):
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
 
-        self._args = args
+        snippet = self #.copy()
+        snippet._args = args
+
+        # Aliases
+        for symbol in kwargs.keys():
+            self._symbols[symbol] = kwargs[symbol]
+
         return self
 
 
-    def copy(self):
-        snippet = Snippet()
-        snippet._next = None
-        snippet._id = self._id
-        snippet._args = self._args
-        snippet._name = self._name
-        snippet._symbols = self._symbols
-        snippet._objects = self._objects
-        snippet._source_code = self._source_code
+    def copy(self, deep=False):
+        """ Shallow or deep copy of the snippet """
 
+        if deep:
+            snippet = copy.deepcopy(self)
+        else:
+            snippet = copy.copy(self)
         return snippet
 
 
     def __op__(self, operand, other):
-        snippet = self #.copy()
+        snippet = self.copy()
         snippet.last._next = operand,other
         return snippet
 
