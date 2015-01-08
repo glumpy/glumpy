@@ -30,7 +30,7 @@ void main(void)
 {
     // ---
     float scale_t1 = <transform_1.scale>;
-    float scale_t2 = <transform_2.scale>;
+    float scale_t2 = <transform_6.scale>;
 
     // ---
     // Argument must be given through snippet
@@ -67,7 +67,7 @@ program["transform_2"] = "forward"
 program["transform_3"] = transform_1()
 program["transform_4"] = transform_1("D")
 program["transform_5"] = transform_1(transform_2("E"))
-program["transform_6"] = transform_2("F")
+program["transform_6"] = transform_2("F", scale="aliased_scale")
 program["transform_7"] = transform_3(transform_1("G.x"), transform_2("G.y"))
 # program["transform_8"] = transform_3( ('x',transform_1()), ('y',transform_2()) )
 print program.vertex.code
