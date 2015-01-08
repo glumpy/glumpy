@@ -46,14 +46,14 @@ class QuantitativeScale(Transform):
            Clamping test for xyz
         """
 
+        domain = Transform._get_kwarg("domain", kwargs) or (-1,+1)
+        range  = Transform._get_kwarg("range", kwargs) or (-1,+1)
+        clamp  = Transform._get_kwarg("clamp", kwargs) or False
         Transform.__init__(self, code, *args, **kwargs)
 
-        self._clamp = False
-        self._domain = -1,+1
-        self._range = -1,+1
-        self.domain = Transform._get_kwarg("domain", kwargs) or (-1,+1)
-        self.range  = Transform._get_kwarg("range", kwargs) or (-1,+1)
-        self.clamp  = Transform._get_kwarg("clamp", kwargs) or False
+        self._clamp = clamp
+        self._domain = domain
+        self._range = range
 
 
     @property

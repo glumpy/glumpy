@@ -6,6 +6,7 @@
 # from rotate import Rotate
 from panzoom import PanZoom
 from viewport import Viewport
+from clipping import Clipping
 from trackball import Trackball
 from transform import Transform
 from translate import Translate

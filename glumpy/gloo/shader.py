@@ -97,7 +97,6 @@ class Shader(GLObject):
             hook = match.group('hook')
             subhook = match.group('subhook')
             args = match.group('args')
-
             # If subhook is a variable (uniform/attribute/varying)
             if subhook in snippet.globals:
                 return snippet.globals[subhook]
@@ -115,7 +114,7 @@ class Shader(GLObject):
 
     @property
     def code(self):
-        """ Shader source code (built from original and snuippet codes) """
+        """ Shader source code (built from original and snippet codes) """
 
         snippet_code = "// --- Snippets code : start --- //\n"
         deps = []
@@ -268,6 +267,13 @@ class VertexShader(Shader):
     def __init__(self, code=None):
         Shader.__init__(self, gl.GL_VERTEX_SHADER, code)
 
+    @property
+    def code(self):
+        code = super(VertexShader, self).code
+        code = "#define __VERTEX_SHADER__\n" + code
+        return code
+
+
     def __repr__(self):
         return "Vertex shader %d (%s)" % (self._id, self._source)
 
@@ -280,6 +286,12 @@ class FragmentShader(Shader):
 
     def __init__(self, code=None):
         Shader.__init__(self, gl.GL_FRAGMENT_SHADER, code)
+
+    @property
+    def code(self):
+        code = super(FragmentShader, self).code
+        code = "#define __FRAGMENT_SHADER__\n" + code
+        return code
 
 
     def __repr__(self):

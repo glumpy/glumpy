@@ -206,14 +206,21 @@ class Program(GLObject):
     def _build_hooks(self):
         """ Build hooks """
 
-        shaders = [self._vertex, self._fragment]
-        if self._geometry is not None:
-            shaders.append(self._geometry)
-        self._hooks = {}
-        for shader in shaders:
-            for (hook,subhook) in shader.hooks:
-                # self._hooks[hook] = [shader, subhook, None]
-                self._hooks[hook] = shader, None
+        self._vert_hooks = {}
+        self._frag_hooks = {}
+
+        for (hook,subhook) in self._vertex.hooks:
+            self._vert_hooks[hook] = None
+        for (hook,subhook) in self._fragment.hooks:
+            self._frag_hooks[hook] = None
+
+        #shaders = [self._vertex, self._fragment]
+        #if self._geometry is not None:
+        #    shaders.append(self._geometry)
+        #self._hooks = {}
+        #for shader in shaders:
+        #    for (hook,subhook) in shader.hooks:
+        #        self._hooks[hook] = shader, None
 
 
 
@@ -265,16 +272,36 @@ class Program(GLObject):
 
     def __setitem__(self, name, data):
 
-        if name in self._hooks.keys():
-            shader, snippet = self._hooks[name]
+        vhooks = self._vert_hooks.keys()
+        fhooks = self._frag_hooks.keys()
+
+        if name in vhooks + fhooks:
             snippet = data
-            shader[name] = snippet
-            self._hooks[name] = shader, snippet
+
+            if name in vhooks:
+                self._vertex[name] = snippet
+                self._vert_hooks[name] = snippet
+            if name in fhooks:
+                self._fragment[name] = snippet
+                self._frag_hooks[name] = snippet
+
             if isinstance(data, Snippet):
                 snippet.attach(self)
             self._build_uniforms()
             self._build_attributes()
             self._need_update = True
+
+        # if name in self._hooks.keys():
+        #     shader, snippet = self._hooks[name]
+        #     snippet = data
+        #     shader[name] = snippet
+        #     self._hooks[name] = shader, snippet
+        #     if isinstance(data, Snippet):
+        #         snippet.attach(self)
+        #     self._build_uniforms()
+        #     self._build_attributes()
+        #     self._need_update = True
+
         elif name in self._uniforms.keys():
             self._uniforms[name].set_data(data)
         elif name in self._attributes.keys():
@@ -284,8 +311,13 @@ class Program(GLObject):
 
 
     def __getitem__(self, name):
-        if name in self._hooks.keys():
-            return self._hooks[name][1]
+        if name in self._vert_hooks.keys():
+            return self._vert_hooks[name]
+        elif name in self._frag_hooks.keys():
+            return self._frag_hooks[name]
+
+#        if name in self._hooks.keys():
+#            return self._hooks[name][1]
         elif name in self._uniforms.keys():
             return self._uniforms[name].data
         elif name in self._attributes.keys():

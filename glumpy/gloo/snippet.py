@@ -113,14 +113,28 @@ class Snippet(object):
 
 
     @property
+    def symbols(self):
+        """ Local symbols """
+
+        return self._symbols
+
+    @property
+    def aliases(self):
+        """ Local aliases """
+
+        return self._aliases
+
+
+    @property
     def locals(self):
         """ Local symbols """
 
         symbols = {}
         objects = self._objects
         for name,dtype in objects["uniforms"]+ objects["attributes"] + objects["varyings"]:
-            symbols[name] = self._symbols[name]
-        return self._symbols
+            symbols[name] = self.symbols[name]
+        # return self._symbols
+        return symbols
 
 
     @property
@@ -191,7 +205,7 @@ class Snippet(object):
                     return symbols[name]
             return None
 
-        return self._symbols.get(name,None)
+        return self.symbols.get(name,None)
 
 
     def attach(self, program):
@@ -255,10 +269,10 @@ class Snippet(object):
         functions = objects["functions"]
         names = objects["uniforms"] + objects["attributes"] + objects["varyings"]
         for _,name,_,_ in functions:
-            symbol = self._symbols[name]
+            symbol = self.symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=\()" % name, symbol, code)
         for name, _ in names:
-            symbol = self._symbols[name]
+            symbol = self.symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=[^\w])" % name, symbol, code)
         return code
 
@@ -312,7 +326,7 @@ class Snippet(object):
                 operand, other = self._next
                 call = other.mangled_call(function,arguments).strip()
                 if len(call):
-                    s += operand + call
+                    s += ' ' + operand + ' ' + call
 
         # No function defined in this snippet, we look for next one
         else:
@@ -326,7 +340,7 @@ class Snippet(object):
     def __call__(self, *args, **kwargs):
         """ __call__(self, *args) <==> self(*args) """
 
-        snippet = self.copy()
+        snippet = self #.copy(deep=False)
         snippet._args = args
 
         # Aliases
@@ -469,19 +483,19 @@ if __name__ == '__main__':
 
     A = Snippet("uniform float a;\nvoid function_A(void) {};\n\n", name = "Snippet_A")
     B = Snippet("uniform float b;\nvoid function_B(void) {};\n\n", name = "Snippet_B")
-    C = Snippet("uniform float c;\n\n", name = "Snippet_C")
+    C = Snippet("uniform float c;\nvoid function_C(void) {};\n\n", name = "Snippet_C")
     D = A(B("A")) + C()
 
-    # print D["Snippet_A"]
-    # print D["Snippet_B"]
-    # print D["Snippet_C"]
+    print D["Snippet_A"]
+    print D["Snippet_B"]
+    print D["Snippet_C"]
 
-    #print D.locals
-    #print D.globals
+    print D.locals
+    print D.globals
 
-    #print D["Snippet_A"].locals
-    #print D["Snippet_B"].locals
-    #print D["Snippet_C"].locals
+    print D["Snippet_A"].locals
+    print D["Snippet_B"].locals
+    print D["Snippet_C"].locals
 
     # print D.objects
     # print D.symbols
@@ -495,5 +509,5 @@ if __name__ == '__main__':
     print D.call
     print
     print "Code:"
-    print D.globals
+    print D.code
     print

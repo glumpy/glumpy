@@ -24,7 +24,7 @@ class RawPointCollection(Collection):
     must be used at small size only (2/3 pixels). You've been warned.
     """
 
-    def __init__(self, user_dtype=None, transform=None,
+    def __init__(self, user_dtype=None, transform=None, clipping=False,
                  vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
@@ -35,6 +35,9 @@ class RawPointCollection(Collection):
         user_dtype: list
             The base dtype can be completed (appended) by the used_dtype. It
             only make sense if user also provide vertex and/or fragment shaders
+
+        clipping: bool
+            Whether to insert clipping code into the collection shaders.
 
         transform: glumpy.Tranforms
             The default vertex shader apply the supplied transform to the
@@ -73,6 +76,9 @@ class RawPointCollection(Collection):
                 program["transform"] = transform
             else:
                 program["transform"] = Position3D()
+
+        if clipping:
+            pass
 
 
     def append(self, P, itemsize=None, **kwargs):
