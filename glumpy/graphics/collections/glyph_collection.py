@@ -14,6 +14,6 @@ def GlyphCollection(mode="sdf", *args, **kwargs):
       - "agg"   (speed: fasteest,  size: big    output: perfect)
     """
 
-    #if mode == "sdf":
+    if mode == "agg":
+        return AggGlyphCollection(*args, **kwargs)
     return SDFGlyphCollection(*args, **kwargs)
-    # return AggGlyphCollection(*args, **kwargs)

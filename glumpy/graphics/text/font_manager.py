@@ -25,10 +25,12 @@ class FontManager(object):
     """
 
     # Default atlas
-    _atlas = None
+    _atlas_sdf = None
+    _atlas_agg = None
 
     # Font cache
-    _cache = {}
+    _cache_sdf = {}
+    _cache_agg = {}
 
     # The singleton instance
     _instance = None
@@ -40,7 +42,7 @@ class FontManager(object):
         return cls._instance
 
     @classmethod
-    def get(cls, filename):
+    def get(cls, filename, size=12, mode='sdf'):
         """
         Get a font from the cache, the local data directory or the distant server
         (in that order).
@@ -49,23 +51,38 @@ class FontManager(object):
         filename = data.get(filename)
         dirname  = os.path.dirname(filename)
         basename = os.path.basename(filename)
-        if basename in FontManager._cache.keys():
-            return FontManager._cache[basename]
-        FontManager._cache[basename] = SDFFont(filename, FontManager._atlas)
-        return FontManager._cache[basename]
+
+        if mode == 'sdf':
+            key = '%s' % (basename)
+            if FontManager._atlas_sdf is None:
+                FontManager._atlas_sdf = np.zeros((1024,1024),np.float32).view(Atlas)
+            atlas = FontManager._atlas_sdf
+            cache = FontManager._cache_sdf
+
+            if key not in cache.keys():
+                cache[key] = SDFFont(filename, atlas)
+            return cache[key]
+
+        else: # mode == 'agg':
+            key = '%s-%d' % (basename,size)
+            if FontManager._atlas_agg is None:
+                FontManager._atlas_agg = np.zeros((1024,1024,3),np.ubyte).view(Atlas)
+
+            atlas = FontManager._atlas_agg
+            cache = FontManager._cache_agg
+            if key not in cache.keys():
+                cache[key] = AggFont(filename, size, atlas)
+            return cache[key]
+
+    @property
+    def atlas_sdf(self):
+        if FontManager._atlas_sdf is None:
+            FontManager._atlas_sdf = np.zeros((1024,1024),np.float32).view(Atlas)
+        return FontManager._atlas_sdf
 
 
     @property
-    def atlas(self):
-        """ Texture atlas """
-
-        if FontManager._atlas is None:
-            FontManager._atlas = np.zeros((1024,1024),np.float32).view(Atlas)
-        return FontManager._atlas
-
-
-    @property
-    def cache(self):
-        """ Font cache """
-
-        return FontManager._cache
+    def atlas_agg(self):
+        if FontManager._atlas_agg is None:
+            FontManager._atlas_agg = np.zeros((1024,1024,3),np.ubyte).view(Atlas)
+        return FontManager._atlas_agg

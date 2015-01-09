@@ -3,8 +3,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+import freetype
 import numpy as np
-from freetype import *
 from . font import Glyph
 
 
@@ -16,8 +16,8 @@ class AggFont(object):
         self.atlas = atlas
         self.size = size
         self.glyphs = {}
-        face = Face(self.filename)
-        face.set_char_size(size*64)
+        face = freetype.Face(self.filename)
+        face.set_char_size( int(size*64) )
         metrics = face.size
         self.ascender  = metrics.ascender/64.0
         self.descender = metrics.descender/64.0
@@ -48,6 +48,7 @@ class AggFont(object):
         hres = 100*72
         hscale = 1.0/100
 
+
         for charcode in charcodes:
             face.set_char_size( int(self.size * 64), 0, hres, 72 )
             matrix = freetype.Matrix( int((hscale) * 0x10000L), int((0.0) * 0x10000L),
@@ -77,6 +78,7 @@ class AggFont(object):
 
             x,y,_,_ = region
             # sould be y+h+1,x+w+1 but we skip the black border
+
             texture = self.atlas[y:y+h,x:x+w]
             data = []
             for i in range(rows):
@@ -94,7 +96,7 @@ class AggFont(object):
             u1     = (x + w - 0.0)/float(self.atlas.width)
             v1     = (y + h - 0.0)/float(self.atlas.height)
             texcoords = (u0,v0,u1,v1)
-            glyph = TextureGlyph(charcode, size, offset, advance, texcoords)
+            glyph = Glyph(charcode, size, offset, advance, texcoords)
             self.glyphs[charcode] = glyph
 
             # Generate kerning

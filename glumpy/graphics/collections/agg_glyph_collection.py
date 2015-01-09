@@ -39,7 +39,7 @@ class AggGlyphCollection(Collection):
                 program["viewport"] = Viewport()
 
         manager = FontManager()
-        atlas = manager.atlas
+        atlas = manager.atlas_agg
         self['atlas_data'] = atlas
         self['atlas_data'].interpolation = gl.GL_LINEAR
         self['atlas_shape'] = atlas.shape[1], atlas.shape[0]
@@ -120,16 +120,16 @@ class AggGlyphCollection(Collection):
                 offset = x0-int(x0)
                 x0 = int(x0)
                 y0 = pen[1] + glyph.offset[1]
-                x1 = x0 + glyph.shape[1]
-                y1 = y0 - glyph.shape[0]
+                x1 = x0 + glyph.shape[0]
+                y1 = y0 - glyph.shape[1]
                 u0, v0, u1, v1 = glyph.texcoords
                 vertices[index]['position'] = (x0,y0),(x0,y1),(x1,y1),(x1,y0)
                 vertices[index]['texcoord'] = (u0,v0),(u0,v1),(u1,v1),(u1,v0)
                 vertices[index]['offset'] = offset
                 indices[index] = index*4
                 indices[index] += 0,1,2, 0,2,3
-                pen[0] = pen[0]+glyph.advance[0] + kerning
-                pen[1] = pen[1]+glyph.advance[1]
+                pen[0] = pen[0]+glyph.advance[0]/64. + kerning
+                pen[1] = pen[1]+glyph.advance[1]/64.
                 prev = charcode
                 index += 1
 

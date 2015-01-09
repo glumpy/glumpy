@@ -39,7 +39,7 @@ class SDFGlyphCollection(Collection):
 
 
         manager = FontManager()
-        atlas = manager.atlas
+        atlas = manager.atlas_sdf
         self['u_kernel'] = data.get("spatial-filters.npy")
         self['atlas_data'] = atlas
         self['atlas_data'].interpolation = gl.GL_LINEAR
