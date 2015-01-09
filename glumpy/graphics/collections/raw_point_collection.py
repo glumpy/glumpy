@@ -12,8 +12,8 @@ used at small size only (2/3 pixels). You've been warned.
 
 import numpy as np
 from glumpy import gl, library
-from glumpy.transforms import Position3D
 from . collection import Collection
+from glumpy.transforms import Position3D, Viewport
 
 
 class RawPointCollection(Collection):
@@ -24,7 +24,7 @@ class RawPointCollection(Collection):
     must be used at small size only (2/3 pixels). You've been warned.
     """
 
-    def __init__(self, user_dtype=None, transform=None, clipping=False,
+    def __init__(self, user_dtype=None, transform=None, viewport=None,
                  vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
@@ -36,8 +36,8 @@ class RawPointCollection(Collection):
             The base dtype can be completed (appended) by the used_dtype. It
             only make sense if user also provide vertex and/or fragment shaders
 
-        clipping: bool
-            Whether to insert clipping code into the collection shaders.
+        viewport: glumpy.Transforms
+            The viewport to use to render the collection
 
         transform: glumpy.Tranforms
             The default vertex shader apply the supplied transform to the
@@ -71,14 +71,19 @@ class RawPointCollection(Collection):
 
         # Set hooks if necessary
         program = self._programs[0]
+
         if "transform" in program.hooks:
             if transform is not None:
                 program["transform"] = transform
             else:
                 program["transform"] = Position3D()
 
-        if clipping:
-            pass
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
+
 
 
     def append(self, P, itemsize=None, **kwargs):

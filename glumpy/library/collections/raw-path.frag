@@ -11,5 +11,7 @@ varying vec4  v_color;
 // ------------------------------------
 void main()
 {
+    <viewport.clipping>;
+
     gl_FragColor = v_color;
 }

@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, glm
 from glumpy.graphics.text import FontManager
-from glumpy.transforms import Position3D, Viewport, Trackball
+from glumpy.transforms import Position3D, Trackball, Viewport
 from glumpy.graphics.collections import GlyphCollection
 from glumpy.graphics.collections import PathCollection
 from glumpy.graphics.collections import SegmentCollection
@@ -33,16 +33,11 @@ def reset():
     transform.zoom = 16.5
 
 
-# Viewport is a transform that update a uniform (viewport) describing the
-# current viewport. It is required for computing the line width.
-# transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
-transform = Trackball((Position3D())) + Viewport()
-window.attach(transform)
-
-
-labels = GlyphCollection(transform=transform)
-paths = PathCollection(mode="agg+", transform=transform)
-ticks = SegmentCollection(mode="agg", transform=transform,
+transform = Trackball(Position3D())
+viewport = Viewport()
+labels = GlyphCollection(transform=transform, viewport=viewport)
+paths = PathCollection(mode="agg+", transform=transform, viewport=viewport)
+ticks = SegmentCollection(mode="agg", transform=transform, viewport=viewport,
                           linewidth='local', color='local')
 
 
@@ -204,4 +199,7 @@ paths.append(lorenz(), color=(0,0,1,1), closed=False)
 paths["color"] = 0,0,1,1
 reset()
 
+
+window.attach(paths["transform"])
+window.attach(paths["viewport"])
 app.run()

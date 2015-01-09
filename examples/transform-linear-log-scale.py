@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app
 from glumpy.graphics.collections import PointCollection
-from glumpy.transforms import LinearScale, LogScale, Position3D, Viewport
+from glumpy.transforms import LinearScale, LogScale, Position3D
 
 window = app.Window(1024,1024, color=(1,1,1,1))
 
@@ -33,7 +33,7 @@ y_transform = LinearScale("position.y", domain=(0,10))
 # y_transform = LogScale("position.y",    domain=(-1,3))
 
 z_transform = "position.z"
-transform = Position3D(x_transform, y_transform, z_transform) + Viewport()
+transform = Position3D(x_transform, y_transform, z_transform)
 points = PointCollection("agg", transform = transform, color='local')
 
 X = np.linspace(0.1,100.0,10000).reshape(10000,1)
@@ -42,4 +42,6 @@ points.append(np.hstack((X,         X, Z)), color=(1,0,0,1))
 points.append(np.hstack((X, np.log(X), Z)), color=(0,1,0,1))
 points.append(np.hstack((X,     10**X, Z)), color=(0,0,1,1))
 
+window.attach(points["transform"])
+window.attach(points["viewport"])
 app.run()

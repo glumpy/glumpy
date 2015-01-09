@@ -14,7 +14,7 @@ window = app.Window(width=1200, height=600, color=(1,1,1,1))
 @window.event
 def on_draw(dt):
     window.clear()
-    collection.draw()
+    segments.draw()
 
 @window.event
 def on_key_press(key, modifiers):
@@ -25,16 +25,15 @@ n = 100
 P0 = np.dstack((np.linspace(100,1100,n),np.ones(n)* 50,np.zeros(n))).reshape(n,3)
 P1 = np.dstack((np.linspace(110,1110,n),np.ones(n)*550,np.zeros(n))).reshape(n,3)
 
-# Viewport is a transform that update a uniform (viewport) describing the
-# current viewport. It is required for computing the line width.
-transform = PanZoom(OrthographicProjection(Position3D())) + Viewport()
-window.attach(transform)
 
-collection = SegmentCollection(mode="agg", linewidth='local', transform=transform)
-collection.append(P0, P1, linewidth = np.linspace(1, 8, n))
-collection['antialias'] = 1
+transform = PanZoom(OrthographicProjection(Position3D()))
+segments = SegmentCollection(mode="agg", linewidth='local', transform=transform)
+segments.append(P0, P1, linewidth = np.linspace(1, 8, n))
+segments['antialias'] = 1
 
 #collection = SegmentCollection(mode="raw", transform=transform)
 #collection.append(P0, P1)
 
+window.attach(segments["transform"])
+window.attach(segments["viewport"])
 app.run()

@@ -20,7 +20,7 @@ class AggPointCollection(RawPointCollection):
     """
 
     def __init__(self, user_dtype=None, transform=None,
-                 vertex=None, fragment=None, **kwargs):
+                 viewport=None, vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
 
@@ -50,5 +50,6 @@ class AggPointCollection(RawPointCollection):
         if fragment is None:
             fragment= library.get("collections/agg-point.frag")
 
-        RawPointCollection.__init__(self, user_dtype=user_dtype, transform=transform,
+        RawPointCollection.__init__(self, user_dtype=user_dtype,
+                                    transform=transform, viewport=viewport,
                                     vertex=vertex, fragment=fragment, **kwargs)

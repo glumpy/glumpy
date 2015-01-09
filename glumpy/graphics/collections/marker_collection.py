@@ -10,8 +10,8 @@ This collection provides antialiased and accurate markers with a unique type.
 """
 import numpy as np
 from glumpy import gl, library
-from glumpy.transforms import Position3D
 from . collection import Collection
+from glumpy.transforms import Position3D, Viewport
 
 
 class MarkerCollection(Collection):
@@ -23,7 +23,7 @@ class MarkerCollection(Collection):
     """
 
     def __init__(self, marker='heart', user_dtype=None, transform=None,
-                 vertex=None, fragment=None, **kwargs):
+                 viewport=None, vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
 
@@ -92,6 +92,12 @@ class MarkerCollection(Collection):
                 program["transform"] = transform
             else:
                 program["transform"] = Position3D()
+
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
 
         program["marker"] = marker
         program["paint"] = "outline"

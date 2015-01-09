@@ -52,8 +52,8 @@ class QuantitativeScale(Transform):
         Transform.__init__(self, code, *args, **kwargs)
 
         self._clamp = clamp
-        self._domain = domain
-        self._range = range
+        self._domain = np.asarray(domain,dtype=np.float32)
+        self._range = np.asarray(range,dtype=np.float32)
 
 
     @property

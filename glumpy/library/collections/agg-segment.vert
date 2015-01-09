@@ -41,8 +41,8 @@ void main (void)
     vec4 P1_ = <transform(P1)>;
 
     // p0/p1 in viewport coordinates
-    vec2 p0 = NDC_to_viewport(P0_, <transform.viewport>.zw);
-    vec2 p1 = NDC_to_viewport(P1_, <transform.viewport>.zw);
+    vec2 p0 = NDC_to_viewport(P0_, <viewport.viewport_global>.zw);
+    vec2 p1 = NDC_to_viewport(P1_, <viewport.viewport_global>.zw);
 
     //
     vec2 position;
@@ -69,5 +69,7 @@ void main (void)
        z = P1.z;
     }
 
-    gl_Position = viewport_to_NDC(position, <transform.viewport>.zw, z);
+    gl_Position = viewport_to_NDC(position, <viewport.viewport_global>.zw, z);
+
+    <viewport.transform>;
 }

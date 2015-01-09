@@ -18,7 +18,7 @@ def on_draw(dt):
     points.draw()
 
 x_transform = LogScale("position.x", domain=(-1,3), range=(0,1))
-transform = Position2D(PolarProjection(x_transform, "position.y")) + Viewport()
+transform = Position2D(PolarProjection(x_transform, "position.y"))
 points = PointCollection("agg", transform = transform)
 
 n = 10000
@@ -27,4 +27,7 @@ T = np.random.uniform(0,2*np.pi,n)
 Z = np.zeros(n)
 
 points.append (np.dstack((R,T,Z)).reshape(n,3) )
+
+window.attach(points["transform"])
+window.attach(points["viewport"])
 app.run()

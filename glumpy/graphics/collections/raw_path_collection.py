@@ -13,8 +13,37 @@ class RawPathCollection(Collection):
     """
     """
 
-    def __init__(self, user_dtype=None, transform=None,
+    def __init__(self, user_dtype=None, transform=None, viewport=None,
                  vertex = None, fragment = None, **kwargs):
+
+        """
+        Initialize the collection.
+
+        Parameters
+        ----------
+
+        user_dtype: list
+            The base dtype can be completed (appended) by the used_dtype. It
+            only make sense if user also provide vertex and/or fragment shaders
+
+        viewport: glumpy.Transforms
+            The viewport to use to render the collection
+
+        transform: glumpy.Tranforms
+            The default vertex shader apply the supplied transform to the
+            vertices positions before computing the actual vertices positions
+            for path thickness. Note that it is necessary to add the
+            glumpy.transforms.Viewport transform at the end of the supplied transform.
+
+        vertex: string
+            Vertex shader code
+
+        fragment: string
+            Fragment  shader code
+
+        color : string
+            'local', 'shared' or 'global'
+        """
 
         base_dtype = [('position', (np.float32, 3), '!local', (0,0,0)),
                       ('id',       (np.float32, 1), '!local', 0),
@@ -39,6 +68,12 @@ class RawPathCollection(Collection):
                 program["transform"] = transform
             else:
                 program["transform"] = Position3D()
+
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
 
 
 

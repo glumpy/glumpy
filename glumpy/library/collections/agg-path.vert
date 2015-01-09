@@ -58,10 +58,10 @@ void main (void)
     vec4 p3_ = <transform(p3)>;
 
     // prev/curr/next in viewport coordinates
-    vec2 _p0 = NDC_to_viewport(p0_, <transform.viewport>.zw);
-    vec2 _p1 = NDC_to_viewport(p1_, <transform.viewport>.zw);
-    vec2 _p2 = NDC_to_viewport(p2_, <transform.viewport>.zw);
-    vec2 _p3 = NDC_to_viewport(p3_, <transform.viewport>.zw);
+    vec2 _p0 = NDC_to_viewport(p0_, <viewport.viewport_global>.zw);
+    vec2 _p1 = NDC_to_viewport(p1_, <viewport.viewport_global>.zw);
+    vec2 _p2 = NDC_to_viewport(p2_, <viewport.viewport_global>.zw);
+    vec2 _p3 = NDC_to_viewport(p3_, <viewport.viewport_global>.zw);
 
     v_antialias = antialias;
     v_linewidth = linewidth;
@@ -160,5 +160,6 @@ void main (void)
         v_bevel_distance.y = uv.y*d1*point_to_line_distance(_p2+d1*n1*w, _p2+d1*n2*w, p);
     }
 
-    gl_Position = viewport_to_NDC(p,  <transform.viewport>.zw, z);
+    gl_Position = viewport_to_NDC(p,  <viewport.viewport_global>.zw, z);
+    <viewport.transform>;
 }

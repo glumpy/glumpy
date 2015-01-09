@@ -27,6 +27,8 @@ varying vec2  v_orientation;
 // ------------------------------------
 void main()
 {
+    <viewport.clipping>;
+
     vec2 P = gl_PointCoord.xy - vec2(0.5,0.5);
     P = vec2(v_orientation.x*P.x - v_orientation.y*P.y,
              v_orientation.y*P.x + v_orientation.x*P.y);

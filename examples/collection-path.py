@@ -30,10 +30,7 @@ def on_key_press(key, modifiers):
     if key == app.window.key.SPACE:
         transform.reset()
 
-# Viewport is a transform that update a uniform (viewport) describing the
-# current viewport. It is required for computing the line width.
-transform = PanZoom(OrthographicProjection(Position3D()), aspect=None) + Viewport()
-window.attach(transform)
+transform = PanZoom(OrthographicProjection(Position3D()), aspect=None)
 
 n = 2500
 S = star(n=5)
@@ -46,4 +43,6 @@ paths = PathCollection(mode="agg", transform=transform)
 paths.append(P, closed=True, itemsize=len(S))
 paths["linewidth"] = 1.0
 
+window.attach(paths["transform"])
+window.attach(paths["viewport"])
 app.run()

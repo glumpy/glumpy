@@ -43,4 +43,6 @@ void main (void)
 
     gl_Position = <transform(position)>;
     gl_PointSize = M_SQRT2 * size + 2.0 * (linewidth + 1.5*antialias);
+
+    <viewport.transform>;
 }

@@ -34,6 +34,8 @@ float sample(sampler2D texture, vec2 uv, float w)
 // ------------------------------------
 void main(void)
 {
+    <viewport.clipping>;
+
     vec4 color = v_color;
 
     // Retrieve distance from texture

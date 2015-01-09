@@ -23,14 +23,16 @@ def on_mouse_scroll(x,y,dx,dy):
     else:
         transform["exponent"] = np.maximum(0.1, transform["exponent"]/1.1)
 
-transform = Position3D(PowerScale()) + Viewport()
+transform = Position3D(PowerScale())
 transform["exponent"] = 2
 transform["domain"] = -10,+10
 
 points = PointCollection("agg", transform = transform)
-
 P = np.random.uniform(-100,100,(10000,3))
 P = np.copysign(np.sqrt(abs(P)),P)
 points.append(P)
 
+
+window.attach(points["transform"])
+window.attach(points["viewport"])
 app.run()

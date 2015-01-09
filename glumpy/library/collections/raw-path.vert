@@ -24,4 +24,6 @@ void main (void)
     fetch_uniforms();
     v_color = vec4(color.rgb, color.a*id);
     gl_Position = <transform(position)>;
+
+    <viewport.transform>;
 }

@@ -26,7 +26,7 @@ class AggSegmentCollection(Collection):
     """
 
     def __init__(self, user_dtype=None, transform=None,
-                 vertex=None, fragment=None, **kwargs):
+                 viewport=None, vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
 
@@ -37,7 +37,7 @@ class AggSegmentCollection(Collection):
             The base dtype can be completed (appended) by the used_dtype. It
             only make sense if user also provide vertex and/or fragment shaders
 
-        transform: glumpy.Tranforms
+        transform: glumpy.Transforms
             The default vertex shader apply the supplied transform to the
             vertices positions before computing the actual vertices positions
             for path thickness. Note that it is necessary to add the
@@ -88,6 +88,12 @@ class AggSegmentCollection(Collection):
                 program["transform"] = transform
             else:
                 program["transform"] = Position3D() + Viewport()
+
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
 
 
     def append(self, P0, P1, itemsize=None, **kwargs):

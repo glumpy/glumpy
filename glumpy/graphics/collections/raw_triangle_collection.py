@@ -13,7 +13,7 @@ class RawTriangleCollection(Collection):
     """
     """
 
-    def __init__(self, user_dtype=None, transform=None,
+    def __init__(self, user_dtype=None, transform=None, viewport=None,
                  vertex = None, fragment = None, **kwargs):
 
         base_dtype = [('position', (np.float32, 3), '!local', (0,0,0)),
@@ -39,6 +39,11 @@ class RawTriangleCollection(Collection):
             else:
                 program["transform"] = Position3D()
 
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
 
 
     def append(self, points, indices, **kwargs):

@@ -42,9 +42,9 @@ void main (void)
     vec4 next_ = <transform(next)>;
 
     // prev/curr/next in viewport coordinates
-    vec2 _prev = NDC_to_viewport(prev_, <transform.viewport>.zw);
-    vec2 _curr = NDC_to_viewport(curr_, <transform.viewport>.zw);
-    vec2 _next = NDC_to_viewport(next_, <transform.viewport>.zw);
+    vec2 _prev = NDC_to_viewport(prev_, <viewport.viewport_global>.zw);
+    vec2 _curr = NDC_to_viewport(curr_, <viewport.viewport_global>.zw);
+    vec2 _next = NDC_to_viewport(next_, <viewport.viewport_global>.zw);
 
     // Compute vertex final position (in viewport coordinates)
     float w = linewidth/2.0 + 1.5*antialias;
@@ -71,5 +71,7 @@ void main (void)
     if( abs(id) > 1.5 ) v_color.a = 0.0;
 
     v_distance = w*id;
-    gl_Position = viewport_to_NDC(P, <transform.viewport>.zw, curr_.z / curr_.w);
+    gl_Position = viewport_to_NDC(P, <viewport.viewport_global>.zw, curr_.z / curr_.w);
+
+    <viewport.transform>;
 }

@@ -17,11 +17,8 @@ def on_draw(dt):
     labels.draw()
 
 
-transform = OrthographicProjection(Position3D()) + Viewport()
-window.attach(transform)
-labels = GlyphCollection(transform=transform)
-
-regular = FontManager().get_file("../glumpy/data/fonts/OpenSans-Regular.ttf")
+labels = GlyphCollection(transform=OrthographicProjection(Position3D()))
+regular = FontManager.get("OpenSans-Regular.ttf")
 text = "The quick brown fox jumps over the lazy dog"
 x,y,z = 2,window.height,0
 
@@ -30,4 +27,7 @@ for i in range(6,54,2):
     y -= i*1.1
     labels.append(text, regular, origin = (x,y,z), scale=scale, anchor_x="left")
 
+
+window.attach(labels["transform"])
+window.attach(labels["viewport"])
 app.run()

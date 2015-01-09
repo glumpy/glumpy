@@ -18,10 +18,6 @@ tiger = Document(data.get("tiger.svg"))
 window = app.Window(int(tiger.viewport.width),
                     int(tiger.viewport.height),
                     color=(1,1,1,1))
-transform = PanZoom(OrthographicProjection(Position3D(), yinvert=True), aspect=None)
-transform += Viewport()
-window.attach(transform)
-
 
 @window.event
 def on_draw(dt):
@@ -39,6 +35,7 @@ def on_key_press(key, modifiers):
         transform.reset()
 
 
+transform = PanZoom(OrthographicProjection(Position3D(), yinvert=True), aspect=None)
 paths = PathCollection("agg+", transform=transform, linewidth='shared', color="shared")
 polygons = PolygonCollection("agg", transform=transform)
 
@@ -65,4 +62,6 @@ for path in tiger.paths:
 
     z += 1
 
+window.attach(paths["transform"])
+window.attach(paths["viewport"])
 app.run()

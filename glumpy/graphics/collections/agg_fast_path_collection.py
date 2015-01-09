@@ -28,7 +28,7 @@ class AggFastPathCollection(Collection):
     be made on miter joins which may result in some glitches on screen.
     """
 
-    def __init__(self, user_dtype=None, transform=None,
+    def __init__(self, user_dtype=None, transform=None, viewport=None,
                  vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
@@ -39,6 +39,9 @@ class AggFastPathCollection(Collection):
         user_dtype: list
             The base dtype can be completed (appended) by the used_dtype. It
             only make sense if user also provide vertex and/or fragment shaders
+
+        viewport: glumpy.Transforms
+            The viewport to use to rende the collection
 
         transform: glumpy.Tranforms
             The default vertex shader apply the supplied transform to the
@@ -92,6 +95,11 @@ class AggFastPathCollection(Collection):
             else:
                 program["transform"] = Position3D() + Viewport()
 
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
 
 
     def append(self, P, closed=False, itemsize=None, **kwargs):

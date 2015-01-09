@@ -26,7 +26,7 @@ class AggPathCollection(Collection):
     sparingly, mainly for thick paths where quality is critical.
     """
 
-    def __init__(self, user_dtype=None, transform=None,
+    def __init__(self, user_dtype=None, transform=None, viewport=None,
                  vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
@@ -37,6 +37,9 @@ class AggPathCollection(Collection):
         user_dtype: list
             The base dtype can be completed (appended) by the used_dtype. It
             only make sense if user also provide vertex and/or fragment shaders
+
+        viewport: glumpy.Transforms
+            The viewport to use to rende the collection
 
         transform: glumpy.Tranforms
             The default vertex shader apply the supplied transform to the
@@ -101,6 +104,12 @@ class AggPathCollection(Collection):
                 program["transform"] = transform
             else:
                 program["transform"] = Position3D() + Viewport()
+
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
 
 
     def append(self, P, closed=False, itemsize=None, **kwargs):

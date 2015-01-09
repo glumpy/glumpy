@@ -11,7 +11,6 @@ from scipy.spatial.distance import cdist
 from glumpy import app, collections
 from glumpy.transforms import Position3D, OrthographicProjection, Viewport
 
-
 window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 @window.event
@@ -127,12 +126,18 @@ selected = -1
 # Get edges
 src,tgt = np.nonzero(A)
 
-transform = OrthographicProjection(Position3D(), aspect=None) + Viewport()
-window.attach(transform)
-markers = collections.MarkerCollection(marker='disc', transform=transform)
+transform = OrthographicProjection(Position3D(), aspect=None)
+viewport = Viewport()
+
+
+markers = collections.MarkerCollection(marker='disc', transform=transform, viewport=viewport)
 markers.append(N, size=15, linewidth=2, itemsize=1,
                fg_color=(1,1,1,1), bg_color=(1,.5,.5,1))
-segments = collections.SegmentCollection('agg', transform=transform)
+segments = collections.SegmentCollection('agg', transform=transform, viewport=viewport)
 segments.append(N[src], N[tgt], linewidth=1.0, itemsize=1,
                 color=(0.75,0.75,0.75,1.00))
+
+window.attach(transform)
+window.attach(viewport)
+
 app.run()

@@ -27,4 +27,6 @@ void main (void)
     v_color     = color;
 
     gl_Position = <transform(P)>;
+
+    <viewport.transform>;
 }

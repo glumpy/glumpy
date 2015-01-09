@@ -22,7 +22,7 @@ class RawSegmentCollection(Collection):
     """
 
     def __init__(self, user_dtype=None, transform=None,
-                 vertex=None, fragment=None, **kwargs):
+                 viewport=None, vertex=None, fragment=None, **kwargs):
         """
         Initialize the collection.
 
@@ -71,6 +71,12 @@ class RawSegmentCollection(Collection):
                 program["transform"] = transform
             else:
                 program["transform"] = Position3D()
+
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
 
 
     def append(self, P0, P1, itemsize=None, **kwargs):

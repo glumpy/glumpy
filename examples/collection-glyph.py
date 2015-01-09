@@ -47,12 +47,12 @@ window = app.Window(width=700, height=700, color=(1,1,1,1))
 @window.event
 def on_draw(dt):
     window.clear()
-    C.draw()
+    glyphs.draw()
 
-transform = Trackball(Position3D()) + Viewport()
-window.attach(transform)
+glyphs = GlyphCollection(transform=Trackball(Position3D()))
+glyphs.append(jabberwocky, FontManager.get("Roboto-Regular.ttf"))
 
-C = GlyphCollection(transform=transform)
-C.append(jabberwocky, FontManager.get("Roboto-Regular.ttf"))
+window.attach(glyphs["transform"])
+window.attach(glyphs["viewport"])
 
 app.run()

@@ -324,15 +324,17 @@ class Snippet(object):
                     s += "()"
             if self.next:
                 operand, other = self._next
-                call = other.mangled_call(function,arguments).strip()
-                if len(call):
-                    s += ' ' + operand + ' ' + call
+                if operand in "+-/*":
+                    call = other.mangled_call(function,arguments).strip()
+                    if len(call):
+                        s += ' ' + operand + ' ' + call
 
         # No function defined in this snippet, we look for next one
         else:
             if self._next:
                 operand, other = self.next
-                s = other.mangled_call(function,arguments)
+                if operand in "+-/*":
+                    s = other.mangled_call(function,arguments)
         return s
 
 
@@ -368,6 +370,9 @@ class Snippet(object):
     def __add__(self, other):
         return self.__op__("+", other)
 
+    def __and__(self, other):
+        return self.__op__("&", other)
+
     def __sub__(self, other):
         return self.__op__("-", other)
 
@@ -379,6 +384,9 @@ class Snippet(object):
 
     def __radd__(self, other):
         return self.__op__("+", other)
+
+    def __rand__(self, other):
+        return self.__op__("&", other)
 
     def __rsub__(self, other):
         return self.__op__("-", other)

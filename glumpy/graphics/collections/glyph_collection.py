@@ -13,7 +13,7 @@ from . collection import Collection
 
 class GlyphCollection(Collection):
 
-    def __init__(self, transform=None, **kwargs):
+    def __init__(self, transform=None, viewport=None, **kwargs):
         dtype = [('position',  (np.float32, 2), '!local', (0,0)),
                  ('texcoord',  (np.float32, 2), '!local', (0,0)),
                  ('origin',    (np.float32, 3), 'shared', (0,0,0)),
@@ -29,7 +29,14 @@ class GlyphCollection(Collection):
         if transform is not None:
             program["transform"] = transform
         else:
-            program["transform"] = Position3D() + Viewport()
+            program["transform"] = Position3D()
+
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
+
 
         manager = FontManager()
         atlas = manager.atlas
