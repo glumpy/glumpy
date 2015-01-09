@@ -9,7 +9,9 @@ import numpy as np
 from glumpy import data
 from glumpy.log import log
 from glumpy.gloo.atlas import Atlas
-from glumpy.graphics.text import Font
+from . sdf_font import SDFFont
+from . agg_font import AggFont
+
 
 
 class FontManager(object):
@@ -49,7 +51,7 @@ class FontManager(object):
         basename = os.path.basename(filename)
         if basename in FontManager._cache.keys():
             return FontManager._cache[basename]
-        FontManager._cache[basename] = Font(filename, FontManager._atlas)
+        FontManager._cache[basename] = SDFFont(filename, FontManager._atlas)
         return FontManager._cache[basename]
 
 
