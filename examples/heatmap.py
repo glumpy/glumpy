@@ -19,7 +19,7 @@ vertex = """
     {
         gl_Position = <transform>;
         v_texcoord = texcoord;
-        v_quadsize = viewport.zw * panzoom_scale;
+        v_quadsize = viewport.zw * <transform.panzoom_scale>;
         v_pixcoord = texcoord * v_quadsize;
     }
 """
@@ -71,7 +71,7 @@ program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['data'] = np.random.uniform(0,1,(n,n))
 program['data_shape'] = program['data'].shape[:2]
 transform = PanZoom(Position2D("position"),aspect=1)
+
 program['transform'] = transform
 window.attach(transform)
-
 app.run()
