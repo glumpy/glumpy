@@ -22,10 +22,12 @@ void main()
 {
     fetch_uniforms();
 
-    gl_Position = <transform(origin+vec3(position,0))>;
+    gl_Position = <transform(origin)>;
     v_color = color;
     v_texcoord = texcoord;
-    v_offset = 3.0*(offset + origin.x - int(origin.x));
-
     <viewport.transform>;
+
+    // We set actual position after transform
+    v_offset = 3.0*(offset + origin.x - int(origin.x));
+    gl_Position = gl_Position + vec4(2.0*position/<viewport.viewport_global>.zw,0,0);
 }
