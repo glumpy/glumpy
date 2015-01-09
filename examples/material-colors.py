@@ -66,12 +66,11 @@ def add(names, values, xmin, xmax, ymin, ymax, header=None):
 
 
 transform = PanZoom(OrthographicProjection(Position3D(),normalize=True),aspect=1)
-transform += Viewport()
-window.attach(transform)
 transform.zoom = 0.165
+viewport = Viewport()
 
-quads  = collections.TriangleCollection(transform = transform)
-labels = collections.GlyphCollection(transform = transform)
+quads  = collections.TriangleCollection(transform = transform, viewport=viewport)
+labels = collections.GlyphCollection(transform = transform, viewport=viewport)
 regular = FontManager.get("OpenSans-Regular.ttf")
 
 
@@ -99,5 +98,8 @@ for i,name in enumerate(["Red", "Pink", "Purple",  "Deep Purple", "Indigo", "Blu
     values = [color.get(family+":500")]
     add(names, values, x-1.25, x+1.25, y+1.050, y+1.850, header=name)
     x += 2.6
+
+window.attach(transform)
+window.attach(viewport)
 
 app.run()
