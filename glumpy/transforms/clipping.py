@@ -4,9 +4,9 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 """
-Clipping transform
+Viewport transform
 
-The clipping transform allows to restrict the display of a scene to a local
+The viewport transform allows to restrict the display of a scene to a local
 viewport.
 
 The transform is connected to the following events:
@@ -36,41 +36,48 @@ class Clipping(Transform):
         Kwargs parameters
         -----------------
 
-        viewport : tuple of 4 flotas (default is 0,0,1,1)
+        viewport : tuple of 4 floats (default is None)
            Clipped viewport in normalized coordinates
         """
 
         code = library.get("transforms/clipping.glsl")
-        self._viewport = Transform._get_kwarg("viewport", kwargs) or (0,0,256,256)
+        self._local_viewport = Transform._get_kwarg("viewport", kwargs) or None
         Transform.__init__(self, code, *args, **kwargs)
 
 
     @property
     def viewport(self):
         """ Clipping viewport """
-        return self._viewport
+        return self._local_viewport
 
 
     @viewport.setter
     def viewport(self, value):
         """ Clipping viewport """
 
-        self._viewport = value
+        self._local_viewport = value
         if self.is_attached:
-            self["local_viewport"] = self._viewport
+            if self._local_viewport is None:
+                self["local_viewport"] = self._global_viewport
+            else:
+                self["local_viewport"] = self._local_viewport
 
 
     def on_attach(self, program):
         """ Initialization """
 
-        self["local_viewport"] = self._viewport
-        self["global_viewport"] = 0, 0, 1, 1
+        self["local_viewport"] = self._local_viewport
+        self["global_viewport"] = self._global_viewport
 
 
     def on_resize(self, width, height):
         """ Update """
 
-        self["global_viewport"] = 0, 0, width, height
+        self._global_viewport = 0, 0, width, height
+        self["global_viewport"] = self._global_viewport
+        if self._local_viewport is None:
+            self["local_viewport"] = self._global_viewport
+
 
         # Transmit signal to other transforms
         Transform.on_resize(self, width, height)

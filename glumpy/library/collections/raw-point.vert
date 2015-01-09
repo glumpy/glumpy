@@ -31,5 +31,5 @@ void main()
     gl_Position = <transform(position)>;
     gl_PointSize = size;
 
-    <clipping.transform>;
+    <viewport.transform>;
 }
