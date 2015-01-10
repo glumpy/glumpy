@@ -34,7 +34,6 @@ fragment = """
 
 uniform mat4 model;
 uniform mat4 view;
-uniform mat4 projection;
 uniform mat4 normal;
 uniform sampler2D texture;
 uniform float height;
@@ -68,6 +67,8 @@ float lighting(vec3 v_normal, vec3 light_position)
 
 void main()
 {
+    mat4 model = <transform.trackball_model>;
+
     // Extract data value
     float value = Bicubic(data, data_shape, v_texcoord).r;
 
@@ -99,7 +100,6 @@ window = app.Window(1200, 800, color = (1,1,1,1))
 def on_draw(dt):
     global phi, theta, time
 
-
     time += dt
     window.clear()
 
@@ -118,8 +118,10 @@ def on_draw(dt):
     surface.draw(gl.GL_LINE_LOOP, b_indices)
     gl.glDepthMask(gl.GL_TRUE)
 
-    model = surface['model'].reshape(4,4)
-    view = surface['view'].reshape(4,4)
+    model = surface['transform']['model'].reshape(4,4)
+    view  = surface['transform']['view'].reshape(4,4)
+    surface['view']  = view
+    surface['model'] = model
     surface['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
     # surface["height"] = 0.75*np.cos(time/5.0)
 
@@ -174,4 +176,5 @@ surface["light_color[1]"]    = 0, 1, 0
 surface["light_color[2]"]    = 0, 0, 1
 phi, theta = -45, 0
 time = 0
+
 app.run()

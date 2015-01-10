@@ -115,7 +115,7 @@ def objload(filename) :
     return vertices, indices
 
 
-def _checkerboard(grid_num=8, grid_size=32):
+def checkerboard(grid_num=8, grid_size=32):
     row_even = grid_num / 2 * [0, 1]
     row_odd = grid_num / 2 * [1, 0]
     Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
@@ -126,7 +126,7 @@ def get(name, depth=0):
     """ Retrieve data content from a name """
 
     if name == "checkerboard":
-        return _checkerboard(8,16)
+        return checkerboard(8,16)
 
     extension = os.path.basename(name).split('.')[-1]
     filename = _fetch_file(name)
