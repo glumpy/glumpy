@@ -121,12 +121,19 @@ class Filter(object):
 
     def __getitem__(self, name):
         for program in self._programs:
+            snippet = program["filter"]
+            if isinstance(snippet, gloo.Snippet) and name in snippet.globals.keys():
+                return snippet[name]
             if name in program.keys():
                 return program[name]
         raise IndexError("Unknown uniform or attribute")
 
     def __setitem__(self, name, value):
         for program in self._programs:
+            snippet = program["filter"]
+            if isinstance(snippet, gloo.Snippet) and name in snippet.globals.keys():
+                snippet[name] = value
+                return
             if name in program.keys():
                 program[name] = value
                 return
