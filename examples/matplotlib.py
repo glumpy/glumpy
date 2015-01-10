@@ -15,12 +15,11 @@ figure = matplotlib.Figure((16,8))
 left  = figure.add_axes([0.010, 0.01, 0.485, 0.98], facecolor=(1,0,0,0.25), aspect=1)
 right = figure.add_axes([0.505, 0.01, 0.485, 0.98], facecolor=(0,0,1,0.25), aspect=1)
 
-trackball = Trackball(Position())
-left.attach(trackball)
+
+trackball = Trackball(Position(), aspect=1.0)
 collection = PointCollection("agg", transform=trackball)
 
 panzoom = PanZoom(OrthographicProjection(Position(), normalize=True))
-right.attach(panzoom)
 view = collection.view(transform=panzoom)
 
 collection.append(np.random.normal(0,.5,(5000,3)))
@@ -32,5 +31,10 @@ def on_draw(dt):
 @right.event
 def on_draw(dt):
     view.draw(gl.GL_POINTS)
+
+left.attach(collection["transform"])
+left.attach(collection["viewport"])
+right.attach(view["transform"])
+right.attach(view["viewport"])
 
 figure.show()

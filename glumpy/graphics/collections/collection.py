@@ -15,6 +15,7 @@ import os
 import numpy as np
 from glumpy import gloo, gl
 from glumpy.gloo.program import Program
+from glumpy.transforms import Position, Viewport
 from . util import fetchcode
 from . base_collection import BaseCollection
 
@@ -128,12 +129,17 @@ class Collection(BaseCollection):
 
 
 
-    def view(self, transform):
+    def view(self, transform, viewport=None):
         """ Return a view on the collection using provided transform """
 
         program = gloo.Program(self._vertex, self._fragment)
         if "transform" in program.hooks:
             program["transform"] = transform
+        if "viewport" in program.hooks:
+            if viewport is not None:
+                program["viewport"] = viewport
+            else:
+                program["viewport"] = Viewport()
         self._programs.append(program)
         program.bind(self._vertices_buffer)
         for name in self._uniforms.keys():

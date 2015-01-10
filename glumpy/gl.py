@@ -42,3 +42,23 @@ def glGetActiveAttrib(program, index):
                        ctypes.byref(type), name)
     # Return Python objects
     return name.value, size.value, type.value
+
+
+# # --- Wrapper ---
+# import sys
+# def wrap(name):
+#     if callable(globals()[name]):
+#         def wrapper(*args, **kwargs):
+#             # print "Calling %s%s" % (name, args)
+#             return globals()[name](*args, **kwargs)
+#         return wrapper
+#     else:
+#         return globals()[name]
+#
+# class Wrapper(object):
+#     def __init__(self, wrapped):
+#         self.wrapped = wrapped
+#     def __getattr__(self, name):
+#         return wrap(name)
+#
+# sys.modules[__name__] = Wrapper(sys.modules[__name__])

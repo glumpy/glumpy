@@ -149,7 +149,9 @@ class Shader(GLObject):
         log.debug("GPU: Compiling shader")
 
         if len(self.hooks):
-            raise RuntimeError("Shader has pending hooks, cannot compile")
+            hooks = [name for name,snippet in self.hooks]
+            error = "Shader has pending hooks (%s), cannot compile" % hooks
+            raise RuntimeError(error)
 
         # Set shader version
         code = "#version 120\n" + self.code
