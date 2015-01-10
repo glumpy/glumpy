@@ -8,7 +8,7 @@ from glumpy import app
 from glumpy.log import log
 from glumpy.graphics.text import FontManager
 from glumpy.graphics.collections import GlyphCollection
-from glumpy.transforms import Position3D, OrthographicProjection, Viewport
+from glumpy.transforms import Position, OrthographicProjection, Viewport
 
 window = app.Window(width=1200, height=800, color=(1,1,1,1))
 
@@ -18,7 +18,7 @@ def on_draw(dt):
     labels.draw()
 
 
-labels = GlyphCollection('agg', transform=OrthographicProjection(Position3D()))
+labels = GlyphCollection('agg', transform=OrthographicProjection(Position()))
 text = "The quick brown fox jumps over the lazy dog"
 x,y,z = 2,window.height,0
 

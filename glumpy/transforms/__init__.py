@@ -11,8 +11,6 @@ from trackball import Trackball
 from transform import Transform
 from translate import Translate
 from position import Position
-from position import Position as Position2D
-from position import Position as Position3D
 from polar import PolarProjection
 from pvm_projection import PVMProjection
 # from perpective_projection import PerspectiveProjection

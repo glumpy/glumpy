@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, gloo
-from glumpy.transforms import Position2D, OrthographicProjection, PanZoom
+from glumpy.transforms import Position, OrthographicProjection, PanZoom
 
 # Create window
 window = app.Window(width=2*512, height=512, color=(1,1,1,1))
@@ -55,7 +55,7 @@ program.bind(data)
 program['antialias'] = 1.00
 program['marker']    = "square"
 program['paint']     = "stroke"
-transform = OrthographicProjection(Position2D("position"))
+transform = OrthographicProjection(Position("position"))
 program['transform'] = transform
 window.attach(transform)
 

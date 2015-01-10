@@ -8,7 +8,7 @@
 
 import numpy as np
 from glumpy import app, gl, glm, gloo, __version__
-from glumpy.transforms import PanZoom, Position2D
+from glumpy.transforms import PanZoom, Position
 
 
 vertex = """
@@ -76,7 +76,7 @@ def on_key_press(key, modifiers):
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1, 1), ( 1,-1), ( 1, 1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
-transform = PanZoom(Position2D("position"),aspect=1)
+transform = PanZoom(Position("position"),aspect=1)
 program['transform'] = transform
 window.attach(transform)
 app.run()

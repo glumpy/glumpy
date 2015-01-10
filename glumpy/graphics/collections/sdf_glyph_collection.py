@@ -7,7 +7,7 @@ import numpy as np
 from . collection import Collection
 from glumpy import gl, data, library
 from glumpy.graphics.text import FontManager
-from glumpy.transforms import Position3D, Viewport
+from glumpy.transforms import Position, Viewport
 
 
 
@@ -29,7 +29,7 @@ class SDFGlyphCollection(Collection):
         if transform is not None:
             program["transform"] = transform
         else:
-            program["transform"] = Position3D()
+            program["transform"] = Position()
 
         if "viewport" in program.hooks:
             if viewport is not None:

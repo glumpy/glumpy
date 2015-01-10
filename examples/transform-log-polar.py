@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app
 from glumpy.graphics.collections import PointCollection
-from glumpy.transforms import LogScale, PolarProjection, Position2D, Viewport
+from glumpy.transforms import LogScale, PolarProjection, Position, Viewport
 
 
 window = app.Window(1024,1024, color=(1,1,1,1))
@@ -18,7 +18,7 @@ def on_draw(dt):
     points.draw()
 
 x_transform = LogScale("position.x", domain=(-1,3), range=(0,1))
-transform = Position2D(PolarProjection(x_transform, "position.y"))
+transform = Position(PolarProjection(x_transform, "position.y"))
 points = PointCollection("agg", transform = transform)
 
 n = 10000

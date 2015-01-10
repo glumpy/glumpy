@@ -9,7 +9,7 @@
 import numpy as np
 from PIL import Image
 from glumpy import app, gl, glm, gloo, data
-from glumpy.transforms import PanZoom, Position2D
+from glumpy.transforms import PanZoom, Position
 
 
 vertex = """
@@ -50,7 +50,7 @@ program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['texture'] = data.get("lena.png")
 
-transform = PanZoom(Position2D("position"), aspect=1)
+transform = PanZoom(Position("position"), aspect=1)
 program['transform'] = transform
 window.attach(transform)
 

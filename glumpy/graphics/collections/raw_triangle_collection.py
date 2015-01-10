@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import gl, library
-from glumpy.transforms import Position3D
+from glumpy.transforms import Position
 from . collection import Collection
 
 
@@ -37,7 +37,7 @@ class RawTriangleCollection(Collection):
             if transform is not None:
                 program["transform"] = transform
             else:
-                program["transform"] = Position3D()
+                program["transform"] = Position()
 
         if "viewport" in program.hooks:
             if viewport is not None:

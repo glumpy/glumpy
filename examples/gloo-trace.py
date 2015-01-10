@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, gloo
-from glumpy.transforms import Position2D, OrthographicProjection, PanZoom
+from glumpy.transforms import Position, OrthographicProjection, PanZoom
 
 # Create window
 window = app.Window(width=1024, height=512)

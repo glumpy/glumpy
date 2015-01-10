@@ -11,7 +11,7 @@ This collection provides antialiased and accurate markers with a unique type.
 import numpy as np
 from glumpy import gl, library
 from . collection import Collection
-from glumpy.transforms import Position3D, Viewport
+from glumpy.transforms import Position, Viewport
 
 
 class MarkerCollection(Collection):
@@ -91,7 +91,7 @@ class MarkerCollection(Collection):
             if transform is not None:
                 program["transform"] = transform
             else:
-                program["transform"] = Position3D()
+                program["transform"] = Position()
 
         if "viewport" in program.hooks:
             if viewport is not None:

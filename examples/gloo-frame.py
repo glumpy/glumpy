@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from  glumpy import app, gl, gloo, data, library
-from glumpy.transforms import Trackball, Position3D, Position2D
+from glumpy.transforms import Trackball, Position, Position
 
 vertex = """
 uniform vec2 iResolution;
@@ -68,7 +68,7 @@ program['u_limits2'] = -5.0, +5.0, -5.0, +5.0
 # program['transform'] = shaders.get("transforms/hammer.glsl")
 program['transform_forward'] = gloo.Snippet(library.get("transforms/identity_forward.glsl"))
 program['transform_inverse'] = gloo.Snippet(library.get("transforms/identity_inverse.glsl"))
-program['trackball'] = Trackball(Position2D("texcoord"))
+program['trackball'] = Trackball(Position("texcoord"))
 program['trackball'].theta = 0
 program['trackball'].phi = 0
 program['trackball'].zoom = 7.5

@@ -8,18 +8,18 @@ import numpy as np
 from glumpy.api import matplotlib
 from glumpy import gl, library
 from glumpy.graphics.collections import PointCollection, Collection
-from glumpy.transforms import Position3D, Trackball, OrthographicProjection, PanZoom
+from glumpy.transforms import Position, Trackball, OrthographicProjection, PanZoom
 
 
 figure = matplotlib.Figure((16,8))
 left  = figure.add_axes([0.010, 0.01, 0.485, 0.98], facecolor=(1,0,0,0.25), aspect=1)
 right = figure.add_axes([0.505, 0.01, 0.485, 0.98], facecolor=(0,0,1,0.25), aspect=1)
 
-trackball = Trackball(Position3D())
+trackball = Trackball(Position())
 left.attach(trackball)
 collection = PointCollection("agg", transform=trackball)
 
-panzoom = PanZoom(OrthographicProjection(Position3D(), normalize=True))
+panzoom = PanZoom(OrthographicProjection(Position(), normalize=True))
 right.attach(panzoom)
 view = collection.view(transform=panzoom)
 

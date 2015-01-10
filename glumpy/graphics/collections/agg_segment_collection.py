@@ -12,7 +12,7 @@ of the output is worth the cost.
 """
 import numpy as np
 from glumpy import gl, library
-from glumpy.transforms import Position3D, Viewport
+from glumpy.transforms import Position, Viewport
 from . collection import Collection
 
 
@@ -87,7 +87,7 @@ class AggSegmentCollection(Collection):
             if transform is not None:
                 program["transform"] = transform
             else:
-                program["transform"] = Position3D() + Viewport()
+                program["transform"] = Position() + Viewport()
 
         if "viewport" in program.hooks:
             if viewport is not None:

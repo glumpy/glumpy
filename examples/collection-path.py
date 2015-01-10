@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, glm, gl
 from glumpy.graphics.collections import PathCollection
-from glumpy.transforms import Position3D, Viewport, OrthographicProjection, PanZoom
+from glumpy.transforms import Position, Viewport, OrthographicProjection, PanZoom
 
 
 window = app.Window(width=800, height=800, color=(1,1,1,1))
@@ -30,7 +30,7 @@ def on_key_press(key, modifiers):
     if key == app.window.key.SPACE:
         transform.reset()
 
-transform = PanZoom(OrthographicProjection(Position3D()), aspect=None)
+transform = PanZoom(OrthographicProjection(Position()), aspect=None)
 
 n = 2500
 S = star(n=5)

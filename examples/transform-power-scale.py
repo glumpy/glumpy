@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app
 from glumpy.graphics.collections import PointCollection
-from glumpy.transforms import PowerScale, Position3D, Viewport
+from glumpy.transforms import PowerScale, Position, Viewport
 
 window = app.Window(1024,1024, color=(1,1,1,1))
 
@@ -23,7 +23,7 @@ def on_mouse_scroll(x,y,dx,dy):
     else:
         transform["exponent"] = np.maximum(0.1, transform["exponent"]/1.1)
 
-transform = Position3D(PowerScale())
+transform = Position(PowerScale())
 transform["exponent"] = 2
 transform["domain"] = -10,+10
 

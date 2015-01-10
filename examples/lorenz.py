@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, glm
 from glumpy.graphics.text import FontManager
-from glumpy.transforms import Position3D, Trackball, Viewport
+from glumpy.transforms import Position, Trackball, Viewport
 from glumpy.graphics.collections import GlyphCollection
 from glumpy.graphics.collections import PathCollection
 from glumpy.graphics.collections import SegmentCollection
@@ -33,7 +33,7 @@ def reset():
     transform.zoom = 16.5
 
 
-transform = Trackball(Position3D())
+transform = Trackball(Position())
 viewport = Viewport()
 labels = GlyphCollection(transform=transform, viewport=viewport)
 paths = PathCollection(mode="agg+", transform=transform, viewport=viewport)

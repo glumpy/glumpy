@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, gloo
-from glumpy.transforms import Position2D, OrthographicProjection, PanZoom
+from glumpy.transforms import Position, OrthographicProjection, PanZoom
 
 vertex = """
 #include "math/constants.glsl"
@@ -91,7 +91,7 @@ program = gloo.Program(vertex, "markers/marker.frag")
 program.bind(data)
 program['marker'] = "clover"
 program['paint']  = "outline"
-transform = OrthographicProjection(Position2D("position"))
+transform = OrthographicProjection(Position("position"))
 program['transform'] = transform
 window.attach(transform)
 

@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app
 from glumpy.graphics.collections import PointCollection
-from glumpy.transforms import LinearScale, Position3D, Viewport
+from glumpy.transforms import LinearScale, Position, Viewport
 
 window = app.Window(1024,1024, color=(1,1,1,1))
 
@@ -24,7 +24,7 @@ def on_mouse_scroll(x,y,dx,dy):
         transform["domain"] = transform["domain"]/1.1
 
 
-transform = Position3D(LinearScale())
+transform = Position(LinearScale())
 points = PointCollection("agg", transform = transform)
 points.append( P = np.random.normal(0,.5,(10000,3)) )
 

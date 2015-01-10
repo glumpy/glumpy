@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, color, collections
 from glumpy.graphics.text import FontManager
-from glumpy.transforms import OrthographicProjection, Position3D, PanZoom, Viewport
+from glumpy.transforms import OrthographicProjection, Position, PanZoom, Viewport
 
 
 window = app.Window(1400,1050, color=(1,1,1,1))
@@ -65,7 +65,7 @@ def add(names, values, xmin, xmax, ymin, ymax, header=None):
 
 
 
-transform = PanZoom(OrthographicProjection(Position3D(),normalize=True),aspect=1)
+transform = PanZoom(OrthographicProjection(Position(),normalize=True),aspect=1)
 transform.zoom = 0.165
 viewport = Viewport()
 

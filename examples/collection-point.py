@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app
-from glumpy.transforms import Position3D, Viewport
+from glumpy.transforms import Position, Viewport
 from glumpy.graphics.collections import PointCollection
 
 

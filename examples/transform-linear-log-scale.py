@@ -29,7 +29,7 @@ transform = Position(LinearScale('.x', domain=(0,10)),
                      LogScale('.y', domain=(-1,1)))
 
 # log-log
-# transform = Position3D(LogScale('.xy', domain=(-1,1)))
+# transform = Position(LogScale('.xy', domain=(-1,1)))
 
 
 points = PointCollection("agg", transform = transform, color='local')

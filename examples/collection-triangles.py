@@ -8,7 +8,7 @@ import triangle
 import numpy as np
 from glumpy import app, gl
 from glumpy.graphics.collections import TriangleCollection, PathCollection
-from glumpy.transforms import Position3D, OrthographicProjection, PanZoom
+from glumpy.transforms import Position, OrthographicProjection, PanZoom
 
 
 def star(inner=0.5, outer=1.0, n=5):
@@ -44,7 +44,7 @@ def on_key_press(key, modifiers):
         transform.reset()
 
 
-transform = PanZoom(OrthographicProjection(Position3D()))
+transform = PanZoom(OrthographicProjection(Position()))
 triangles = TriangleCollection("agg", transform=transform, color='shared')
 paths = PathCollection("agg", transform=transform, color='shared')
 paths["linewidth"] = 10

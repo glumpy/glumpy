@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, gloo, library
-from glumpy.transforms import PanZoom, Position2D
+from glumpy.transforms import PanZoom, Position
 
 vertex = """
     uniform vec4 viewport;
@@ -70,7 +70,7 @@ program['position'] = [(-1,-1), (-1,1), (1,-1), (1,1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 program['data'] = np.random.uniform(0,1,(n,n))
 program['data_shape'] = program['data'].shape[:2]
-transform = PanZoom(Position2D("position"),aspect=1)
+transform = PanZoom(Position("position"),aspect=1)
 
 program['transform'] = transform
 window.attach(transform)

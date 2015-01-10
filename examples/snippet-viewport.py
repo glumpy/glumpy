@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, glm, gloo
-from glumpy.transforms import Position2D
+from glumpy.transforms import Position
 
 
 vertex = """
@@ -58,7 +58,7 @@ viewport = app.Viewport()
 window.attach(viewport)
 viewport.add(child)
 
-program["transform"] = child.transform(Position2D("position"))
+program["transform"] = child.transform(Position("position"))
 program["clipping"] = child.clipping(copy=False)
 
 app.run()

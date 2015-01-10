@@ -13,7 +13,7 @@ used at small size only (2/3 pixels). You've been warned.
 import numpy as np
 from glumpy import gl, library
 from . collection import Collection
-from glumpy.transforms import Position3D, Viewport
+from glumpy.transforms import Position, Viewport
 
 
 class RawPointCollection(Collection):
@@ -76,7 +76,7 @@ class RawPointCollection(Collection):
             if transform is not None:
                 program["transform"] = transform
             else:
-                program["transform"] = Position3D()
+                program["transform"] = Position()
 
         if "viewport" in program.hooks:
             if viewport is not None:

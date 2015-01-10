@@ -9,7 +9,7 @@
 import numpy as np
 from glumpy import app, gl, glm, gloo
 from glumpy.geometry import colorcube
-from glumpy.transforms import Trackball, Position3D
+from glumpy.transforms import Trackball, Position
 
 
 vertex = """
@@ -63,7 +63,7 @@ outline  = O.view(gloo.IndexBuffer)
 
 cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
-transform = Trackball(Position3D("position"))
+transform = Trackball(Position("position"))
 cube['transform'] = transform
 window.attach(transform)
 

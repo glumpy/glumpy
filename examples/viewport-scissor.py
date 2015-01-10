@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, gl, gloo
 from glumpy.graphics.collections import PointCollection
-from glumpy.transforms import Position3D, Trackball, OrthographicProjection, PanZoom
+from glumpy.transforms import Position, Trackball, OrthographicProjection, PanZoom
 
 vertex = """ attribute vec2 position;
              void main() { gl_Position = vec4(position,0,1); } """
@@ -19,7 +19,7 @@ window = app.Window(width=800, height=800, color=(1,1,1,1))
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 
-trackball = Trackball(Position3D(), aspect=1.0)
+trackball = Trackball(Position(), aspect=1.0)
 window.attach(trackball)
 collection = PointCollection("agg", transform=trackball)
 collection.append(np.random.normal(0,.5,(1000,3)), size=2)

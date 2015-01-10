@@ -8,7 +8,7 @@
 
 import numpy as np
 from  glumpy import app, gl, glm, gloo
-from glumpy.transforms import OrthographicProjection, Position2D
+from glumpy.transforms import OrthographicProjection, Position
 
 
 vertex = """
@@ -37,7 +37,7 @@ def on_draw(dt):
 def on_resize(w, h):
     program['position'] = [(w-100,h-100), (w-100,h), (w,h-100), (w,h)]
 
-transform = OrthographicProjection(Position2D("position"))
+transform = OrthographicProjection(Position("position"))
 program = gloo.Program(vertex, fragment, count=4)
 program["transform"] = transform
 window.attach(transform)

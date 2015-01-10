@@ -9,7 +9,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 
 from glumpy import app, collections
-from glumpy.transforms import Position3D, OrthographicProjection, Viewport
+from glumpy.transforms import Position, OrthographicProjection, Viewport
 
 window = app.Window(width=800, height=800, color=(1,1,1,1))
 
@@ -126,7 +126,7 @@ selected = -1
 # Get edges
 src,tgt = np.nonzero(A)
 
-transform = OrthographicProjection(Position3D(), aspect=None)
+transform = OrthographicProjection(Position(), aspect=None)
 viewport = Viewport()
 
 

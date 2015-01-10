@@ -8,7 +8,7 @@ import numpy as np
 from glumpy import app, gloo, gl, glm
 
 
-Position2D = gloo.Snippet("""
+Position = gloo.Snippet("""
 vec4 position2D(vec2 position)
 {
     return vec4(position, 0.0, 1.0);
@@ -96,7 +96,7 @@ program["index"] = np.repeat(np.arange(rows*cols),n)
 program["color"] = np.repeat(np.random.uniform(0.5,0.9,(rows*cols,3)),n,axis=0)
 program["posx"] = np.tile(np.linspace(-1,1,n),rows*cols)
 program["posy"] = 0.5*np.random.uniform(-1,1,rows*cols*n)
-program["grid"] = Position2D(Grid(XScale("vec2(posx,posy)"), "index"))
+program["grid"] = Position(Grid(XScale("vec2(posx,posy)"), "index"))
 program["grid"]["rows"] = rows
 program["grid"]["cols"] = cols
 program["grid"]["xscale"] = 1.0

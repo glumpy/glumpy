@@ -9,7 +9,7 @@
 import numpy as np
 from glumpy import app, gl, glm, gloo
 from glumpy.geometry import colorcube
-from glumpy.transforms import PVMProjection, Position3D
+from glumpy.transforms import PVMProjection, Position
 
 vertex = """
 uniform vec4 u_color;
@@ -72,7 +72,7 @@ outline  = O.view(gloo.IndexBuffer)
 
 cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
-transform = PVMProjection(Position3D("position"))
+transform = PVMProjection(Position("position"))
 cube['transform'] = transform
 window.attach(transform)
 

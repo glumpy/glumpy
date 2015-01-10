@@ -7,7 +7,7 @@
 from glumpy import app
 from glumpy.graphics.text import FontManager
 from glumpy.graphics.collections import GlyphCollection
-from glumpy.transforms import Position3D, Viewport, Trackball
+from glumpy.transforms import Position, Viewport, Trackball
 
 
 jabberwocky = (
@@ -49,7 +49,7 @@ def on_draw(dt):
     window.clear()
     glyphs.draw()
 
-glyphs = GlyphCollection(transform=Trackball(Position3D()))
+glyphs = GlyphCollection(transform=Trackball(Position()))
 glyphs.append(jabberwocky, FontManager.get("Roboto-Regular.ttf"))
 
 window.attach(glyphs["transform"])

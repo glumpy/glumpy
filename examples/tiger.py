@@ -11,7 +11,7 @@ import numpy as np
 from glumpy import app, gl, data
 from glumpy.graphics.svg import Document
 from glumpy.graphics.collections import PathCollection, PolygonCollection
-from glumpy.transforms import Position3D, OrthographicProjection, PanZoom, Viewport
+from glumpy.transforms import Position, OrthographicProjection, PanZoom, Viewport
 
 
 tiger = Document(data.get("tiger.svg"))
@@ -35,7 +35,7 @@ def on_key_press(key, modifiers):
         transform.reset()
 
 
-transform = PanZoom(OrthographicProjection(Position3D(), yinvert=True), aspect=None)
+transform = PanZoom(OrthographicProjection(Position(), yinvert=True), aspect=None)
 paths = PathCollection("agg+", transform=transform, linewidth='shared', color="shared")
 polygons = PolygonCollection("agg", transform=transform)
 
