@@ -310,7 +310,11 @@ class Snippet(object):
                     if isinstance(arg,Snippet):
                         s += arg.mangled_call(function,arguments)
                     else:
+                        #  This handle call of the form: transform('.x')
+                        if arguments is not None and arg.startswith('.'):
+                            s += arguments
                         s += str(arg)
+
                     if i < (len(self._args)-1):
                         s += ", "
                 s += ")"
@@ -319,7 +323,6 @@ class Snippet(object):
                 # This handles hooks of the form <transform(args)>
                 if arguments is not None:
                     s += "(%s)" % arguments
-
                 else:
                     s += "()"
             if self.next:

@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app
 from glumpy.graphics.collections import PointCollection
-from glumpy.transforms import LinearScale, LogScale, Position3D
+from glumpy.transforms import LinearScale, LogScale, Position
 
 window = app.Window(1024,1024, color=(1,1,1,1))
 
@@ -16,27 +16,24 @@ def on_draw(dt):
     window.clear()
     points.draw()
 
+
 # lin-lin
-# x_transform = LinearScale("position.x", domain=(0,10))
-# y_transform = LinearScale("position.y", domain=(0,10))
+transform = Position(LinearScale('.xy', domain=(0,10)))
 
 # log-lin
-x_transform = LogScale("position.x",    domain=(-1,3))
-y_transform = LinearScale("position.y", domain=(0,10))
+transform = Position(LogScale('.x', domain=(-1,1)),
+                     LinearScale('.y', domain=(0,10)))
 
 # lin-log
-# x_transform = LinearScale("position.x", domain=(0,10))
-# y_transform = LogScale("position.y",    domain=(-1,3))
+transform = Position(LinearScale('.x', domain=(0,10)),
+                     LogScale('.y', domain=(-1,1)))
 
 # log-log
-# x_transform = LogScale("position.x",    domain=(-1,3))
-# y_transform = LogScale("position.y",    domain=(-1,3))
+# transform = Position3D(LogScale('.xy', domain=(-1,1)))
 
-z_transform = "position.z"
-transform = Position3D(x_transform, y_transform, z_transform)
+
 points = PointCollection("agg", transform = transform, color='local')
-
-X = np.linspace(0.1,100.0,10000).reshape(10000,1)
+X = np.linspace(0.01,10.0,10000).reshape(10000,1)
 Z = np.zeros((len(X),1))
 points.append(np.hstack((X,         X, Z)), color=(1,0,0,1))
 points.append(np.hstack((X, np.log(X), Z)), color=(0,1,0,1))

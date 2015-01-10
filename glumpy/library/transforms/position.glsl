@@ -3,37 +3,37 @@
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
 
-vec4 position3D(float x)
+vec4 position(float x)
 {
     return vec4(x, 0.0, 0.0, 1.0);
 }
 
-vec4 position3D(float x, float y)
+vec4 position(float x, float y)
 {
     return vec4(x, y, 0.0, 1.0);
 }
 
-vec4 position3D(vec2 xy)
+vec4 position(vec2 xy)
 {
     return vec4(xy, 0.0, 1.0);
 }
 
-vec4 position3D(float x, float y, float z)
+vec4 position(float x, float y, float z)
 {
     return vec4(x, y, z, 1.0);
 }
 
-vec4 position3D(vec3 xyz)
+vec4 position(vec3 xyz)
 {
     return vec4(xyz, 1.0);
 }
 
-vec4 position3D(vec2 xy, float z)
+vec4 position(vec2 xy, float z)
 {
     return vec4(xy, z, 1.0);
 }
 
-vec4 position3D(float x, vec2 yz)
+vec4 position(float x, vec2 yz)
 {
     return vec4(x, yz, 1.0);
 }
