@@ -122,6 +122,7 @@ class GPUData(np.ndarray):
             offset = self._extents[0]+(key * self.strides).sum()
             size = Z.itemsize
             self._add_pending_data(offset, offset+size)
+            key = tuple(key)
         else:
             Z._extents = self._compute_extents(Z)
             self._add_pending_data(Z._extents[0], Z._extents[1])
