@@ -4,9 +4,9 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-import numpy as np
-from glumpy import app, gl, gloo, glm, text, data
 from glumpy.log import log
+from glumpy import app, gl, gloo
+from glumpy.graphics.text import FontManager
 
 
 vertex = """
@@ -29,7 +29,7 @@ fragment = """
     }
 """
 
-window = app.Window(width=512, height=512)
+window = app.Window(width=1024, height=1024)
 
 @window.event
 def on_draw(dt):
@@ -41,11 +41,13 @@ program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 log.info("Caching texture fonts")
 
+manager = FontManager()
+
 for size in range(8,25):
-    font = text.TextureFont(data.get("OpenSans-Regular.ttf"), size)
+    font = manager.get("OpenSans-Regular.ttf", size=size, mode='agg')
     font.load(""" !\"#$%&'()*+,-./0123456789:;<=>?"""
               """@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"""
               """`abcdefghijklmnopqrstuvwxyz{|}~""")
-program['texture'] = font.atlas
 
+program['texture'] = manager.atlas_agg
 app.run()
