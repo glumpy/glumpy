@@ -66,7 +66,7 @@ void main()
     vec3 normal = normalize(vec3(x,y,z));
 
     float diffuse = clamp(dot(normal, v_light_direction), 0.0, 1.0);
-    vec3 color = (0.5 + 0.5*diffuse) * (0.5 + 0.5*v_color);
+    vec3 color = (0.25 + 0.75*diffuse) * (0.5 + 0.5*v_color);
 
     gl_FragDepth = depth;
     // gl_FragColor = vec4(normal,depth);
@@ -168,15 +168,15 @@ window = app.Window(width=800, height=800, color=(1,1,1,1))
 
 protein = gloo.Program(vertex, fragment)
 protein['light_position'] = 0., 0., 2.
-protein["transform"] = Trackball(Position(), znear=2.0, zfar=1000.0)
+protein["transform"] = Trackball(Position(), znear=2.0, zfar=100.0)
 protein.bind(data.get("protein.npy").view(gloo.VertexBuffer))
 
 ssao= gloo.Program(ssao_vertex, ssao_fragment, count=4)
 ssao['position']= [(0,0), (0,1), (1,0), (1,1)]
 ssao['base']    = 1.00
-ssao['strength']= 0.25;
+ssao['strength']= 0.20;
 ssao['falloff'] = 0.000002;
-ssao['radius']  = 0.015;
+ssao['radius']  = 0.01;
 ssao['normals'] = np.zeros((800,800,4),np.float32).view(gloo.Texture2D)
 ssao['normals'].interpolation = gl.GL_LINEAR
 ssao['colors'] = np.zeros((800,800,4),np.float32).view(gloo.Texture2D)
