@@ -368,6 +368,7 @@ class FrameBuffer(GLObject):
 
         log.debug("GPU: Activate render framebuffer")
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._handle)
+        gl.glDrawBuffers( [gl.GL_COLOR_ATTACHMENT0] )
         if self._need_attach:
             self._attach()
             self._need_attach = False
