@@ -66,7 +66,7 @@ void main()
     vec3 normal = normalize(vec3(x,y,z));
 
     float diffuse = clamp(dot(normal, v_light_direction), 0.0, 1.0);
-    vec3 color = (0.25 + 0.75*diffuse) * (0.5 + 0.5*v_color);
+    vec3 color = (0.25 + 0.75*diffuse) * (0.75 + 0.25*v_color);
 
     gl_FragDepth = depth;
     // gl_FragColor = vec4(normal,depth);
@@ -114,7 +114,7 @@ void main(void)
 
 
    // grab a normal for reflecting the sample rays later on
-   vec3 fres = normalize((texture2D(noise,v_texcoord).xyz*2.0) - vec3(1.0));
+   vec3 fres = normalize(texture2D(noise,v_texcoord).xyz*2.0 - 1.0);
 
    vec4 sample = texture2D(normals, v_texcoord);
    vec3 color  = texture2D(colors, v_texcoord).xyz;
@@ -177,6 +177,7 @@ ssao['base']    = 1.00
 ssao['strength']= 0.20;
 ssao['falloff'] = 0.000002;
 ssao['radius']  = 0.01;
+
 ssao['normals'] = np.zeros((800,800,4),np.float32).view(gloo.Texture2D)
 ssao['normals'].interpolation = gl.GL_LINEAR
 ssao['colors'] = np.zeros((800,800,4),np.float32).view(gloo.Texture2D)
