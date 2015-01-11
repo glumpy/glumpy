@@ -40,7 +40,7 @@ window = app.Window(1024,1024)
 
 # See http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
 VBlur = gloo.Snippet("""
-vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+vec4 filter(sampler2D depth, sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
 {
     return 0.2270270270 *  texture2D( filtered, texcoord)
          + 0.3162162162 * (texture2D( filtered, texcoord + vec2(0.0, 1.3846153846)/texsize) +
@@ -50,7 +50,7 @@ vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
 }""")
 
 HBlur = gloo.Snippet("""
-vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+vec4 filter(sampler2D depth, sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
 {
     return 0.2270270270 *  texture2D( filtered, texcoord)
          + 0.3162162162 * (texture2D( filtered, texcoord + vec2(1.3846153846, 0.0)/texsize) +

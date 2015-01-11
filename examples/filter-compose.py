@@ -36,7 +36,7 @@ void main()
 pixelate = gloo.Snippet(
 """
 uniform float level;
-vec4 filter(sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
+vec4 filter(sampler2D depth, sampler2D original, sampler2D filtered, vec2 texcoord, vec2 texsize)
 {
     vec2 uv = (texcoord * level);
     uv = (uv - fract(uv)) / level;

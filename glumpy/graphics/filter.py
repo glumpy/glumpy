@@ -25,6 +25,7 @@ void main()
 fragment = """
 uniform sampler2D original;
 uniform sampler2D filtered;
+uniform sampler2D depth;
 uniform vec2 texsize;
 varying vec2 v_texcoord;
 void main()
@@ -47,7 +48,8 @@ class Filter(object):
         #  -> ...
         self._framebuffers = []
         for i in range(3):
-            depth = gloo.DepthBuffer(width, height)
+            # depth = gloo.DepthBuffer(width, height)
+            depth = np.zeros((height,width),np.float32).view(gloo.DepthTexture)
             color = np.zeros((height,width,3),np.float32).view(gloo.Texture2D)
             framebuffer = gloo.FrameBuffer(color=color, depth=depth)
             self._framebuffers.append(framebuffer)
@@ -76,6 +78,9 @@ class Filter(object):
             program = gloo.Program(vertex, fragment, count=4)
             program['position'] = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
             program['texcoord'] = [(0, 0), (0, 1), (1, 0), (1, 1)]
+
+            program['depth'] = self._framebuffers[0].depth
+
             program['original'] = self._framebuffers[0].color
             program['original'].interpolation = gl.GL_LINEAR
             program['filtered'] = self._framebuffers[index].color
@@ -91,7 +96,7 @@ class Filter(object):
                         raise ValueError("Filter snippet argument must be a Snippet")
                     else:
                         snippet = snippet.args[0]
-                snippet._args = "original", "filtered", "v_texcoord", "texsize"
+                snippet._args = "depth", "original", "filtered", "v_texcoord", "texsize"
                 program['filter'] = original_snippet
             else:
                 program['filter'] = code

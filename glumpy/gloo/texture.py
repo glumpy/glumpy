@@ -329,3 +329,12 @@ class TextureFloat2D(Texture2D):
     def __init__(self):
         Texture2D.__init__(self)
         self._gpu_format = Texture._gpu_float_formats[self.shape[-1]]
+
+
+class DepthTexture(Texture2D):
+    """ Depth texture """
+
+    def __init__(self):
+        Texture2D.__init__(self)
+        self._cpu_format = gl.GL_DEPTH_COMPONENT
+        self._gpu_format = gl.GL_DEPTH_COMPONENT
