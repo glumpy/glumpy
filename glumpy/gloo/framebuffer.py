@@ -151,7 +151,7 @@ class DepthBuffer(RenderBuffer):
         RenderBuffer.__init__(self, width, height, format)
 
 
-# ----------------------------------------------------- StencilBuffer class ---
+
 class StencilBuffer(RenderBuffer):
     """ Stencil buffer object
 
@@ -172,7 +172,8 @@ class StencilBuffer(RenderBuffer):
         RenderBuffer.__init__(self, width, height, format)
 
 
-# ------------------------------------------------------- FrameBuffer class ---
+
+
 class FrameBuffer(GLObject):
     """ Frame buffer object
 
@@ -195,9 +196,9 @@ class FrameBuffer(GLObject):
 
         self._width = 0
         self._height = 0
-        self._color = color
-        self._depth = depth
-        self._stencil = stencil
+        self._color = None
+        self._depth = None
+        self._stencil = None
         self._need_attach = True
         self._pending_attachments = []
 
@@ -216,24 +217,30 @@ class FrameBuffer(GLObject):
 
 
     @color.setter
-    def color(self, buffer):
+    def color(self, buffers):
         """Color buffer attachment"""
 
-        if self.width != 0 and self.width != buffer.width:
-            raise ValueError("Buffer width does not match")
-        elif self.height != 0 and self.height != buffer.height:
-            raise ValueError("Buffer height does not match")
-        self._width = buffer.width
-        self._height = buffer.height
+        if not isinstance(buffers,list):
+            buffers = [buffers]
 
+        self._color = []
 
-        target = gl.GL_COLOR_ATTACHMENT0
-        self._color = buffer
-        if isinstance(buffer, (ColorBuffer, Texture2D)) or buffer is None:
-            self._pending_attachments.append((target, buffer))
-        else:
-            raise ValueError(
-                "Buffer must be a ColorBuffer, Texture2D or None")
+        for i,buffer in enumerate(buffers):
+            if self.width != 0 and self.width != buffer.width:
+                raise ValueError("Buffer width does not match")
+            elif self.height != 0 and self.height != buffer.height:
+                raise ValueError("Buffer height does not match")
+            self._width = buffer.width
+            self._height = buffer.height
+
+            target = gl.GL_COLOR_ATTACHMENT0+i
+            self._color.append(buffer)
+
+            if isinstance(buffer, (ColorBuffer, Texture2D)) or buffer is None:
+                self._pending_attachments.append((target, buffer))
+            else:
+                raise ValueError(
+                    "Buffer must be a ColorBuffer, Texture2D or None")
         self._need_attach = True
 
 
@@ -322,14 +329,14 @@ class FrameBuffer(GLObject):
         self._width = width
         self._height = height
 
-        if isinstance(self.color, ColorBuffer):
-            self.color.resize(width, height)
-        elif isinstance(self.color, Texture2D):
-            color = np.resize(self.color, (height,width, self.color.shape[2]))
-            color = color.view(self.color.__class__)
-            self.color.delete()
-            self.color = color
-
+        for i, buffer in enumerate(self.color):
+            if isinstance(buffer, ColorBuffer):
+                buffer.resize(width, height)
+            elif isinstance(buffer, Texture2D):
+                newbuffer = np.resize(buffer, (height,width,buffer.shape[2]))
+                newbuffer = newbuffer.view(buffer.__class__)
+                buffer.delete()
+                self.color[i] = buffer
 
         if isinstance(self.depth, DepthBuffer):
             self.depth.resize(width, height)
@@ -368,10 +375,12 @@ class FrameBuffer(GLObject):
 
         log.debug("GPU: Activate render framebuffer")
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self._handle)
-        gl.glDrawBuffers( [gl.GL_COLOR_ATTACHMENT0] )
+
         if self._need_attach:
             self._attach()
             self._need_attach = False
+        attachments = [gl.GL_COLOR_ATTACHMENT0+i for i in range(len(self.color))]
+        gl.glDrawBuffers(attachments)
 
 
     def _deactivate(self):
@@ -379,6 +388,7 @@ class FrameBuffer(GLObject):
 
         log.debug("GPU: Deactivate render framebuffer")
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
+        # gl.glDrawBuffers([gl.GL_COLOR_ATTACHMENT0])
 
 
     def _attach(self):

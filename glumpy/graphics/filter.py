@@ -77,9 +77,9 @@ class Filter(object):
             program = gloo.Program(vertex, fragment, count=4)
             program['position'] = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
             program['texcoord'] = [(0, 0), (0, 1), (1, 0), (1, 1)]
-            program['original'] = self._framebuffers[0].color
+            program['original'] = self._framebuffers[0].color[0]
             program['original'].interpolation = gl.GL_LINEAR
-            program['filtered'] = self._framebuffers[index].color
+            program['filtered'] = self._framebuffers[index].color[0]
             program['filtered'].interpolation = gl.GL_LINEAR
             program['texsize'] = self.width, self.height
             if i < len(args)-1:
@@ -163,9 +163,9 @@ class Filter(object):
         for i in range(len(self._programs)-1):
             program = self._programs[i]
             if i == 0: # special case for first rendering
-                program['filtered'] = self._framebuffers[0].color
+                program['filtered'] = self._framebuffers[0].color[0]
             else:
-                program['filtered'] = self._framebuffers[1+index].color
+                program['filtered'] = self._framebuffers[1+index].color[0]
             index = (index + 1) % 2 # ping-pong
             self._framebuffers[index+1].activate()
             self._programs[i].draw(gl.GL_TRIANGLE_STRIP)
@@ -173,7 +173,7 @@ class Filter(object):
 
         # Final rendering (no transformation) at original viewport size
         program = self._programs[-1]
-        program['filtered'] = self._framebuffers[index+1].color
+        program['filtered'] = self._framebuffers[index+1].color[0]
         gl.glViewport( *self._viewport )
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
         gl.glDisable(gl.GL_DEPTH_TEST)
