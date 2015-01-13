@@ -30,15 +30,6 @@ void main()
 window = app.Window(1024,1024, color=(1,1,1,1))
 
 @window.event
-def on_mouse_scroll(x,y,dx,dy):
-    t0, t1 = program['scale']['y']['domain']
-    if dy > 0:
-        t1 = max(t0,t1-0.1)
-    else:
-        t1 = min(2*np.pi,t1+0.1)
-    program['scale']['y']['domain'] = t0,t1
-
-@window.event
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
@@ -46,9 +37,16 @@ def on_draw(dt):
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texture'] = data.get("lena.png")
-program['projection'] = PolarProjection()
+program['texture'].wrapping = gl.GL_REPEAT
+
+program['projection'] = PolarProjection(
+    # This translates texture coordinates to cartesian coordinates
+    LinearScale('.x', name = 'x', domain=(-1, 1), range=(-1,1), call="forward"),
+    LinearScale('.y', name = 'y', domain=(-1, 1), range=(-1,1), call="forward"))
+
 program['scale'] = Position(
-    LinearScale('.x', name = 'x', domain=(0, 1),       range=(0,1)),
-    LinearScale('.y', name = 'y', domain=(0, 2*np.pi), range=(0,1)))
+    # This translates cartesian coordinates (polar domains) to texture coordinates
+    LinearScale('.x', name = 'x', domain=(0.2, 1.0),     range=(0,1)),
+    LinearScale('.y', name = 'y', domain=(0.0, 2*np.pi), range=(0,1)))
 
 app.run()
