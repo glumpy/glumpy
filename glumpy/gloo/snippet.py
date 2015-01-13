@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 import re
 import copy
-from parser import parse
+from . import parser
 
 
 class Snippet(object):
@@ -35,10 +35,10 @@ class Snippet(object):
     def __init__(self, code=None, default=None, *args, **kwargs):
 
         # Original source code
-        self._source_code = code
+        self._source_code = parser.merge_includes(code)
 
         # Variables and functions name parsed from source code
-        self._objects = parse(code)
+        self._objects = parser.parse(code)
 
         # Arguments (other snippets or strings)
         self._args = list(args)
@@ -56,6 +56,10 @@ class Snippet(object):
         if self._name is None:
             classname = self.__class__.__name__
             self._name = "%s_%d" % (classname, self._id)
+
+        # Snippet name
+        self._call = kwargs.get("call", None)
+        if "call" in kwargs.keys(): del kwargs["call"]
 
         # Symbol table
         # self._symbols = { 'var_names' : {},
@@ -295,9 +299,12 @@ class Snippet(object):
         # WARN: what about Viewport(Transform) ?
         if len(self._objects["functions"]):
 
-            # Is there a function specified in the shade source ?
+            # Has a function be specified when building the snippet ?
+            if self._call is not None:
+                name = self._call
+            # Is there a function specified in the shader source ?
             # Such as <transform.forward>
-            if function:
+            elif function:
                 name = function
             else:
                 _,name,_,_ = self._objects["functions"][0]

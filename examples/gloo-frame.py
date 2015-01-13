@@ -20,7 +20,9 @@ void main (void)
     v_texcoord = texcoord;
     gl_Position = <trackball>;
 
-    v_PVM = projection*view*model;
+    v_PVM = <trackball.trackball_projection> *
+            <trackball.trackball_view> *
+            <trackball.trackball_model>;
 }
 """
 
@@ -37,7 +39,6 @@ def on_resize(width, height):
 
 program = gloo.Program(vertex, "./regular-grid.frag")
 program["texcoord"] = (-0.5,-0.5), (-0.5, +0.5), (+0.5,-0.5), (+0.5,+0.5)
-# program["u_texture"] = data.get("lena.png")
 program["u_texture"] = data.get("lena.png")
 program["u_texture"].interpolation = gl.GL_LINEAR
 program['u_major_grid_width'] = 1.5
@@ -72,8 +73,7 @@ program['trackball'] = Trackball(Position("texcoord"))
 program['trackball'].theta = 0
 program['trackball'].phi = 0
 program['trackball'].zoom = 7.5
-window.attach(program['trackball'])
 
-# print program._fragment._code
+window.attach(program['trackball'])
 
 app.run()

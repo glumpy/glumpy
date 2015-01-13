@@ -106,19 +106,16 @@ float get_tick(float t, float vmin, float vmax, float step)
 }
 
 
-uniform mat4 view;
-uniform mat4 model;
-uniform mat4 projection;
 uniform vec2 iResolution;
 varying mat4 v_PVM;
 
 float screen_distance(vec4 A, vec4 B)
 {
-    vec4 pA = projection*view*model*A;
+    vec4 pA = v_PVM * A; //projection*view*model*A;
     pA /= pA.w;
     pA.xy = pA.xy * iResolution/2.0;
 
-    vec4 pB = projection*view*model*B;
+    vec4 pB = v_PVM * B; //projection*view*model*B;
     pB /= pB.w;
     pB.xy = pB.xy * iResolution/2.0;
 

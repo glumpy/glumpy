@@ -8,7 +8,6 @@ from . transform import Transform
 
 
 class Position(Transform):
-
     def __init__(self, *args, **kwargs):
         code = library.get("transforms/position.glsl")
         Transform.__init__(self, code, *args, **kwargs)

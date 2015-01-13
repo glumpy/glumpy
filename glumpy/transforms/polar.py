@@ -10,5 +10,5 @@ class PolarProjection(Transform):
     """ Polar projection """
 
     def __init__(self, *args, **kwargs):
-        code = library.get("transforms/polar-forward.glsl")
+        code = library.get("transforms/polar.glsl")
         Transform.__init__(self, code, *args, **kwargs)

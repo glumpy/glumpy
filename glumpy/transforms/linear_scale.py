@@ -56,5 +56,5 @@ class LinearScale(QuantitativeScale):
         clamp : bool (default is True)
            Clamping test
         """
-        code = library.get("transforms/linear-scale-forward.glsl")
+        code = library.get("transforms/linear-scale.glsl")
         QuantitativeScale.__init__(self, code, *args, **kwargs)
