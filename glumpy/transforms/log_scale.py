@@ -61,7 +61,7 @@ class LogScale(QuantitativeScale):
         range : tuple of 2 floats (default is (-1,1))
             Output range
 
-        clamp : bool (default is True)
+        clamp : bool (default is False)
            Clamping test
         """
 

@@ -24,13 +24,12 @@ float forward(float value)
 
     float t = (value - domain.x) /(domain.y - domain.x);
 
-    if( t != clamp(t,0.0,1.0) )
-        discard;
-
     if (linear_scale_clamp > 0)
-    {
-        t = clamp(t,0.0,1.0);
-    }
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
 
     return range.x + t*(range.y - range.x);
 }
@@ -41,7 +40,13 @@ vec2 forward(vec2 value)
     vec2 range = linear_scale_range;
 
     vec2 t = (value - domain.x) /(domain.y - domain.x);
-    if (linear_scale_clamp > 0) t = clamp(t,0.0,1.0);
+    if (linear_scale_clamp > 0)
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
 
     return range.x + t*(range.y - range.x);
 }
@@ -52,7 +57,13 @@ vec3 forward(vec3 value)
     vec2 range = linear_scale_range;
 
     vec3 t = (value - domain.x) /(domain.y - domain.x);
-    if (linear_scale_clamp > 0) t = clamp(t,0.0,1.0);
+    if (linear_scale_clamp > 0)
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
 
     return range.x + t*(range.y - range.x);
 }
@@ -64,7 +75,12 @@ float inverse(float value)
 
     float t = (abs(value) - range.x) / (range.y - range.x);
     if (linear_scale_clamp > 0)
-        t = clamp(t,0.0,1.0);
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
     return domain.x + t*(domain.y - domain.x);
 }
 
@@ -75,7 +91,12 @@ vec2 inverse(vec2 value)
 
     vec2 t = (abs(value) - range.x) / (range.y - range.x);
     if (linear_scale_clamp > 0)
-        t = clamp(t,0.0,1.0);
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
     return domain.x + t*(domain.y - domain.x);
 }
 
@@ -86,6 +107,11 @@ vec3 inverse(vec3 value)
 
     vec3 t = (abs(value) - range.x) / (range.y - range.x);
     if (linear_scale_clamp > 0)
-        t = clamp(t,0.0,1.0);
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
     return domain.x + t*(domain.y - domain.x);
 }

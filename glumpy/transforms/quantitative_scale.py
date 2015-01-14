@@ -42,7 +42,7 @@ class QuantitativeScale(Transform):
         range : tuple of 2 floats (default is (-1,1))
             Output ranges for xyz
 
-        clamp : bool (default is True)
+        clamp : bool (default is False)
            Clamping test for xyz
         """
 

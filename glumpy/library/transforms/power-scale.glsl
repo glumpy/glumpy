@@ -25,7 +25,12 @@ float forward(float value)
 
     float v = pow(abs(value), exponent);
     float t = (v - domain.x) /(domain.y - domain.x);
-    if (power_scale_clamp > 0) t = clamp(t,0.0,1.0);
+    if (power_scale_clamp > 0)
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
 
     return sign(value) * (range.x + t*(range.y - range.x));
 }
@@ -38,7 +43,13 @@ vec2 forward(vec2 value)
 
     vec2 v = pow(abs(value), vec2(exponent));
     vec2 t = (v - domain.x) /(domain.y - domain.x);
-    if (power_scale_clamp > 0) t = clamp(t,0.0,1.0);
+    if (power_scale_clamp > 0)
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
 
     return sign(value) * (range.x + t*(range.y - range.x));
 }
@@ -51,7 +62,12 @@ vec3 forward(vec3 value)
 
     vec3 v = pow(abs(value), vec3(exponent));
     vec3 t = (v - domain.x) /(domain.y - domain.x);
-    if (power_scale_clamp > 0) t = clamp(t,0.0,1.0);
+    if (power_scale_clamp > 0)
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
 
     return sign(value) * (range.x + t*(range.y - range.x));
 }
@@ -64,7 +80,12 @@ float inverse(float value)
 
     float t = (abs(value) - range.x) / (range.y - range.x);
     if (power_scale_clamp > 0)
-        t = clamp(t,0.0,1.0);
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
     float v = domain.x + t*(domain.y - domain.x);
 
     return sign(value) * pow(abs(v), 1.0/exponent);
@@ -78,7 +99,12 @@ vec2 inverse(vec2 value)
 
     vec2 t = (abs(value) - range.x) / (range.y - range.x);
     if (power_scale_clamp > 0)
-        t = clamp(t,0.0,1.0);
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
     vec2 v = domain.x + t*(domain.y - domain.x);
 
     return sign(value) * pow(abs(v), vec2(1.0/exponent));
@@ -92,7 +118,12 @@ vec3 inverse(vec3 value)
 
     vec3 t = (abs(value) - range.x) / (range.y - range.x);
     if (power_scale_clamp > 0)
-        t = clamp(t,0.0,1.0);
+#ifdef __FRAGMENT_SHADER__
+        if (t != clamp(t, 0.0, 1.0)) discard;
+#else
+        t = clamp(t, 0.0, 1.0);
+#endif
+
     vec3 v = domain.x + t*(domain.y - domain.x);
 
     return sign(value) * pow(abs(v), vec3(1.0/exponent));
