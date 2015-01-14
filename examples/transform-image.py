@@ -22,7 +22,6 @@ void main()
 fragment = """
 uniform sampler2D texture;
 varying vec2 v_texcoord;
-
 void main()
 {
      vec2 uv = <projection.inverse(v_texcoord)>;
@@ -30,7 +29,7 @@ void main()
 } """
 
 
-window = app.Window(1024,1024, color=(1,1,1,1))
+window = app.Window(800,800, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -57,22 +56,24 @@ program['texture'] = data.get("earth.jpg")
 # program['projection'] = HammerProjection(
 #     # This translates texture coordinates to cartesian coordinates
 #     LinearScale('.x', name = 'x', domain=(-1, 1), range=(-3.0,3.0), call="forward"),
-#     LinearScale('.y', name = 'y', domain=(+1,-1), range=(-2.5,2.5), call="forward"))
+#     LinearScale('.y', name = 'y', domain=(+1,-1), range=(-2.0,2.0), call="forward"))
 
 # program['scale'] = Position(
 #     # This translates cartesian coordinates (polar domains) to texture coordinates
 #     LinearScale('.x', name = 'x', domain=(-np.pi,   np.pi),   range=(0,1), clamp=True),
 #     LinearScale('.y', name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1), clamp=True))
+# window.set_size(800,500)
 
 # Transverse Mercator projection
 program['projection'] = TransverseMercatorProjection(
     # This translates texture coordinates to cartesian coordinates
-    LinearScale('.x', name = 'x', domain=(-1,+1), range=(-2.5,2.5), call="forward"),
-    LinearScale('.y', name = 'y', domain=(+1,-1), range=(-2.,2.), call="forward"))
+    LinearScale('.x', name = 'x', domain=(-1,+1), range=(-1.5,1.5), call="forward"),
+    LinearScale('.y', name = 'y', domain=(+1,-1), range=(-2.4,2.4), call="forward"))
 
 program['scale'] = Position(
     # This translates cartesian coordinates (polar domains) to texture coordinates
     LinearScale('.x', name = 'x', domain=(-np.pi,   np.pi),   range=(0,1), clamp=True),
     LinearScale('.y', name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1), clamp=True))
+window.set_size(500,800)
 
 app.run()
