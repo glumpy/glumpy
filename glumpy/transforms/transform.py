@@ -27,6 +27,8 @@ from glumpy.app.window.event import EventDispatcher
 
 class Transform(Snippet,EventDispatcher):
 
+    aliases = { }
+
     @classmethod
     def _get_kwarg(cls, key, kwargs):
         """ Return a given parameter from the kwargs and remove it """
@@ -41,6 +43,22 @@ class Transform(Snippet,EventDispatcher):
         Snippet.__init__(self, code, None, *args, **kwargs)
         EventDispatcher.__init__(self)
         self._window = None
+
+
+    def __getitem__(self, key):
+        """ Override getitem to enforce aliases """
+
+        key = self.__class__.aliases.get(key, key)
+        return Snippet.__getitem__(self, key)
+
+
+    def __setitem__(self, key, value):
+        """ Override getitem to enforce aliases """
+
+        key = self.__class__.aliases.get(key, key)
+        Snippet.__setitem__(self, key, value)
+
+
 
 
     def attach(self, program):

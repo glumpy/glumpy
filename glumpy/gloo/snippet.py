@@ -122,12 +122,6 @@ class Snippet(object):
 
         return self._symbols
 
-    @property
-    def aliases(self):
-        """ Local aliases """
-
-        return self._aliases
-
 
     @property
     def locals(self):

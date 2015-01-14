@@ -147,22 +147,6 @@ class PanZoom(Transform):
         self._zoom_max = max(value, self._zoom_min)
 
 
-    def __getitem__(self, key):
-        """ Override getitem to enforce panzoom aliases """
-
-        if key in PanZoom.aliases.keys():
-            key = PanZoom.aliases[key]
-        return Transform.__getitem__(self, key)
-
-
-    def __setitem__(self, key, value):
-        """ Override getitem to enforce panzoom aliases """
-
-        if key in PanZoom.aliases.keys():
-            key = PanZoom.aliases[key]
-        Transform.__setitem__(self, key, value)
-
-
     def on_attach(self, program):
         """ Initialization event """
 

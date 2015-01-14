@@ -86,21 +86,6 @@ class Trackball(Transform):
         glm.translate(self._view, 0, 0, -abs(self._distance))
 
 
-    def __getitem__(self, key):
-        """ Override getitem to enforce panzoom aliases """
-
-        if key in Trackball.aliases.keys():
-            key = Trackball.aliases[key]
-        return Transform.__getitem__(self, key)
-
-
-    def __setitem__(self, key, value):
-        """ Override getitem to enforce panzoom aliases """
-
-        if key in Trackball.aliases.keys():
-            key = Trackball.aliases[key]
-        Transform.__setitem__(self, key, value)
-
 
     @property
     def distance(self):

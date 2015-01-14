@@ -102,20 +102,6 @@ class QuantitativeScale(Transform):
             self["clamp"] = self._clamp
 
 
-    def __getitem__(self, key):
-        """ Override getitem to enforce aliases """
-
-        key = self.__class__.aliases.get(key, key)
-        return Transform.__getitem__(self, key)
-
-
-    def __setitem__(self, key, value):
-        """ Override getitem to enforce aliases """
-
-        key = self.__class__.aliases.get(key, key)
-        Transform.__setitem__(self, key, value)
-
-
     def _process_range(self):
         # To be overridden
         return self._range
