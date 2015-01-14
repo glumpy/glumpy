@@ -15,6 +15,7 @@ from position import Position
 
 from polar import PolarProjection
 from hammer import HammerProjection
+from transverse_mercator import TransverseMercatorProjection
 
 
 from pvm_projection import PVMProjection

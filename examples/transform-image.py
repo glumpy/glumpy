@@ -6,8 +6,10 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gloo, gl, data
-from glumpy.transforms import Position, PolarProjection, LogScale, LinearScale
+from glumpy.transforms import Position, LogScale, LinearScale
+from glumpy.transforms import PolarProjection
 from glumpy.transforms import HammerProjection
+from glumpy.transforms import TransverseMercatorProjection
 
 vertex = """
 attribute vec2 position;
@@ -37,9 +39,10 @@ def on_draw(dt):
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
-program['texture'] = data.get("lena.png")
+program['texture'] = data.get("earth.jpg")
 
 
+# Polar projection
 # program['projection'] = PolarProjection(
 #     # This translates texture coordinates to cartesian coordinates
 #     LinearScale('.x', name = 'x', domain=(-1, 1), range=(-1,1), call="forward"),
@@ -50,10 +53,22 @@ program['texture'] = data.get("lena.png")
 #     LinearScale('.x', name = 'x', domain=(0.2, 1.0),     range=(0,1), clamp=True),
 #     LinearScale('.y', name = 'y', domain=(0.0, 2*np.pi), range=(0,1), clamp=True))
 
-program['projection'] = HammerProjection(
+# Hammer projection
+# program['projection'] = HammerProjection(
+#     # This translates texture coordinates to cartesian coordinates
+#     LinearScale('.x', name = 'x', domain=(-1, 1), range=(-3.0,3.0), call="forward"),
+#     LinearScale('.y', name = 'y', domain=(+1,-1), range=(-2.5,2.5), call="forward"))
+
+# program['scale'] = Position(
+#     # This translates cartesian coordinates (polar domains) to texture coordinates
+#     LinearScale('.x', name = 'x', domain=(-np.pi,   np.pi),   range=(0,1), clamp=True),
+#     LinearScale('.y', name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1), clamp=True))
+
+# Transverse Mercator projection
+program['projection'] = TransverseMercatorProjection(
     # This translates texture coordinates to cartesian coordinates
-    LinearScale('.x', name = 'x', domain=(-1, 1), range=(-3,3), call="forward"),
-    LinearScale('.y', name = 'y', domain=(-1, 1), range=(-1.5,1.5), call="forward"))
+    LinearScale('.x', name = 'x', domain=(-1,+1), range=(-2.5,2.5), call="forward"),
+    LinearScale('.y', name = 'y', domain=(+1,-1), range=(-2.,2.), call="forward"))
 
 program['scale'] = Position(
     # This translates cartesian coordinates (polar domains) to texture coordinates

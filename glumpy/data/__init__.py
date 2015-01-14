@@ -42,7 +42,6 @@ def _fetch_file(filename):
     filename = os.path.basename(filename)
     remote = os.path.join(server, filename)
 
-
     # Build url request
     log.info('Requesting "%s" from remote server' % filename)
     try:
@@ -147,10 +146,13 @@ def get(name, depth=0):
         return filename
     elif extension in ('png', 'jpg', 'jpeg', 'tif', 'tiff', 'tga'):
         if Image is not None:
-            return np.array(Image.open(filename))
+            if filename is not None:
+                return np.array(Image.open(filename))
+            log.warning("File not found")
+            return checkerboard(16,32)
         else:
             log.warning("PIL/Pillow not installed, cannot load image")
-            return _checkerboard(16,32)
+            return checkerboard(16,32)
 
     log.warning("Data not found (%s)" % name)
     raise RuntimeError
