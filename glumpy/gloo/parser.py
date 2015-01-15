@@ -166,6 +166,7 @@ def get_varyings(code):
 
 def get_functions(code):
     def brace_matcher (n):
+        # From stack overflow: python-how-to-match-nested-parentheses-with-regex
         # poor man's matched brace scanning, gives up
         # after n+1 levels.  Matches any string with balanced
         # braces inside; add the outer braces yourself if needed.
