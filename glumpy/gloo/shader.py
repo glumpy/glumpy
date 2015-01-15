@@ -73,7 +73,8 @@ class Shader(GLObject):
         Set a snippet on the given hook in the source code.
         """
 
-        re_hook = r"(?P<hook>%s)(\.(?P<subhook>\w+))?" % name
+        #re_hook = r"(?P<hook>%s)(\.(?P<subhook>\w+))?" % name
+        re_hook = r"(?P<hook>%s)(\.(?P<subhook>[\.\w]+))?" % name
         re_args = r"(\((?P<args>[^<>]+)\))?"
         re_hooks = re.compile("\<"+re_hook+re_args+"\>" , re.VERBOSE )
         pattern = "\<" + re_hook + re_args + "\>"
@@ -97,11 +98,25 @@ class Shader(GLObject):
             hook = match.group('hook')
             subhook = match.group('subhook')
             args = match.group('args')
+
+            if subhook and '.' in subhook:
+                s = snippet
+                for item in subhook.split('.')[:-1]:
+                    if isinstance(s[item], Snippet):
+                        print s, s[item]
+                        s = s[item]
+                subhook = subhook.split('.')[-1]
+                # If subhook is a variable (uniform/attribute/varying)
+                if subhook in s.globals:
+                    return s.globals[subhook]
+                return s.mangled_call(subhook, match.group("args"))
+
+            #args = match.group('args')
             # If subhook is a variable (uniform/attribute/varying)
             if subhook in snippet.globals:
                 return snippet.globals[subhook]
-
             return snippet.mangled_call(subhook, match.group("args"))
+
 
         self._hooked = re.sub(pattern, replace_with_args, self._hooked)
 

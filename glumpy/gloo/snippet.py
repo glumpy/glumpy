@@ -349,6 +349,13 @@ class Snippet(object):
         snippet = self #.copy(deep=False)
         snippet._args = args
 
+        if "name" in kwargs.keys():
+            snippet._name = kwargs["name"]
+            del kwargs["name"]
+        if "call" in kwargs.keys():
+            self._call = kwargs["call"]
+            del kwargs["call"]
+
         # Aliases
         for symbol in kwargs.keys():
             self._symbols[symbol] = kwargs[symbol]

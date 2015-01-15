@@ -131,8 +131,11 @@ def get_hooks(code):
         return []
 
     hooks = []
+    # re_hooks = re.compile("""\<(?P<hook>\w+)
+    #                           (\.(?P<subhook>\w+))?
+    #                           (\([^<>]+\))?\>""", re.VERBOSE )
     re_hooks = re.compile("""\<(?P<hook>\w+)
-                              (\.(?P<subhook>\w+))?
+                              (\.(?P<subhook>.+))?
                               (\([^<>]+\))?\>""", re.VERBOSE )
     # re_hooks = re.compile("\<(?P<hook>\w+)\>", re.VERBOSE)
     for match in re.finditer(re_hooks, code):
