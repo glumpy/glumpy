@@ -34,9 +34,10 @@ from . quantitative_scale import QuantitativeScale
 class LinearScale(QuantitativeScale):
     """ Linear scale transform """
 
-    aliases = { "domain" : "linear_scale_domain",
-                "range"  : "linear_scale_range",
-                "clamp"  : "linear_scale_clamp" }
+    aliases = { "domain"  : "linear_scale_domain",
+                "range"   : "linear_scale_range",
+                "clamp"   : "linear_scale_clamp",
+                "discard" : "linear_scale_discard" }
 
 
     def __init__(self, *args, **kwargs):
@@ -55,6 +56,9 @@ class LinearScale(QuantitativeScale):
 
         clamp : bool (default is False)
            Clamping test
+
+        discard : bool (default is False)
+           Discard test
         """
         code = library.get("transforms/linear-scale.glsl")
         QuantitativeScale.__init__(self, code, *args, **kwargs)

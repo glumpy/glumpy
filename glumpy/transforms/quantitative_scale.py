@@ -37,23 +37,28 @@ class QuantitativeScale(Transform):
         -----------------
 
         domain : tuple of 2 floats (default is (-1,1))
-            Input domains for xyz
+            Input domains
 
         range : tuple of 2 floats (default is (-1,1))
-            Output ranges for xyz
+            Output range
 
         clamp : bool (default is False)
-           Clamping test for xyz
+           Clamping test
+
+        discard : bool (default is True)
+           Discard test
         """
 
-        domain = Transform._get_kwarg("domain", kwargs) or (-1,+1)
-        range  = Transform._get_kwarg("range", kwargs) or (-1,+1)
-        clamp  = Transform._get_kwarg("clamp", kwargs) or False
+        domain  = Transform._get_kwarg("domain", kwargs) or (-1,+1)
+        range   = Transform._get_kwarg("range", kwargs) or (-1,+1)
+        clamp   = Transform._get_kwarg("clamp", kwargs) or False
+        discard = Transform._get_kwarg("discard", kwargs) or True
         Transform.__init__(self, code, *args, **kwargs)
 
-        self._clamp = clamp
-        self._domain = np.asarray(domain,dtype=np.float32)
-        self._range = np.asarray(range,dtype=np.float32)
+        self._clamp   = clamp
+        self._discard = discard
+        self._domain  = np.asarray(domain,dtype=np.float32)
+        self._range   = np.asarray(range,dtype=np.float32)
 
 
     @property
@@ -88,18 +93,34 @@ class QuantitativeScale(Transform):
 
     @property
     def clamp(self):
-        """ Whether to clamp xyz values """
+        """ Whether to clamp value """
 
         return self._clamp
 
 
     @clamp.setter
     def clamp(self, value):
-        """ Whether to clamp xyz values """
+        """ Whether to clamp value """
 
         self._clamp = value
         if self.is_attached:
             self["clamp"] = self._clamp
+
+
+    @property
+    def discard(self):
+        """ Whether to discard value (fragment shader only) """
+
+        return self._discard
+
+
+    @discard.setter
+    def discard(self, value):
+        """ Whether to discard value (fragment shader only) """
+
+        self._discard = value
+        if self.is_attached:
+            self["discard"] = self._discard
 
 
     def _process_range(self):
@@ -114,6 +135,7 @@ class QuantitativeScale(Transform):
     def on_attach(self, program):
         """ Initialization event """
 
-        self["clamp"] = self._clamp
-        self["range"] = self._process_range()
-        self["domain"] = self._process_domain()
+        self["discard"] = self._discard
+        self["clamp"]   = self._clamp
+        self["range"]   = self._process_range()
+        self["domain"]  = self._process_domain()

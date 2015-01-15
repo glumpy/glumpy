@@ -34,6 +34,7 @@ class PowerScale(QuantitativeScale):
     aliases = { "domain"   : "power_scale_domain",
                 "range"    : "power_scale_range",
                 "clamp"    : "power_scale_clamp",
+                "discard"  : "power_scale_discard",
                 "exponent" : "power_scale_exponent" }
 
 
@@ -56,6 +57,9 @@ class PowerScale(QuantitativeScale):
 
         clamp : bool (default is False)
            Clamping test
+
+        discard : bool (default is False)
+           Discard test
         """
 
         self._exponents = Transform._get_kwarg("exponent", kwargs) or 1.0

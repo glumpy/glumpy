@@ -32,6 +32,8 @@ class Snippet(object):
     # Internal id counter for automatic snippets name mangling
     _id_counter = 1
 
+    aliases = { }
+
     def __init__(self, code=None, default=None, *args, **kwargs):
 
         # Original source code
@@ -131,6 +133,7 @@ class Snippet(object):
         objects = self._objects
         for name,dtype in objects["uniforms"]+ objects["attributes"] + objects["varyings"]:
             symbols[name] = self.symbols[name]
+
         # return self._symbols
         return symbols
 
@@ -293,13 +296,15 @@ class Snippet(object):
         # WARN: what about Viewport(Transform) ?
         if len(self._objects["functions"]):
 
-            # Has a function be specified when building the snippet ?
-            if self._call is not None:
-                name = self._call
             # Is there a function specified in the shader source ?
             # Such as <transform.forward>
-            elif function:
+            if function:
                 name = function
+
+            # Has a function be specified when building the snippet ?
+            # Snippet(..., call="some_function")
+            elif self._call is not None:
+                name = self._call
             else:
                 _,name,_,_ = self._objects["functions"][0]
 
@@ -309,7 +314,9 @@ class Snippet(object):
                 s += "("
                 for i,arg in enumerate(self._args):
                     if isinstance(arg,Snippet):
-                        s += arg.mangled_call(function,arguments)
+                        # We do not propagate given function to to other snippets
+                        # s += arg.mangled_call(function,arguments)
+                        s += arg.mangled_call(None,arguments)
                     else:
                         #  This handle call of the form: transform('.x')
                         if arguments is not None and arg.startswith('.'):

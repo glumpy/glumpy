@@ -103,15 +103,17 @@ class Shader(GLObject):
                 s = snippet
                 for item in subhook.split('.')[:-1]:
                     if isinstance(s[item], Snippet):
-                        print s, s[item]
                         s = s[item]
                 subhook = subhook.split('.')[-1]
+                # Do we have a class alias ? We don't return it yet since we
+                # need its translation from the symbol table
+                if subhook in s.aliases.keys():
+                    subhook = s.aliases[subhook]
                 # If subhook is a variable (uniform/attribute/varying)
                 if subhook in s.globals:
                     return s.globals[subhook]
                 return s.mangled_call(subhook, match.group("args"))
 
-            #args = match.group('args')
             # If subhook is a variable (uniform/attribute/varying)
             if subhook in snippet.globals:
                 return snippet.globals[subhook]

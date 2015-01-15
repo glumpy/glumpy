@@ -13,6 +13,7 @@
   (measured in pixels) in a histogram.
 */
 uniform int  linear_scale_clamp;
+uniform int  linear_scale_discard;
 uniform vec2 linear_scale_range;
 uniform vec2 linear_scale_domain;
 
@@ -21,15 +22,17 @@ float forward(float value)
 {
     vec2 domain = linear_scale_domain;
     vec2 range = linear_scale_range;
-
     float t = (value - domain.x) /(domain.y - domain.x);
 
-    if (linear_scale_clamp > 0)
 #ifdef __FRAGMENT_SHADER__
-        if (t != clamp(t, 0.0, 1.0)) discard;
-#else
-        t = clamp(t, 0.0, 1.0);
+    if (linear_scale_discard > 0) {
+        if (t != clamp(t, 0.0, 1.0))
+            discard;
+    }
 #endif
+
+    if (linear_scale_clamp > 0)
+        t = clamp(t, 0.0, 1.0);
 
     return range.x + t*(range.y - range.x);
 }
@@ -38,15 +41,17 @@ vec2 forward(vec2 value)
 {
     vec2 domain = linear_scale_domain;
     vec2 range = linear_scale_range;
-
     vec2 t = (value - domain.x) /(domain.y - domain.x);
-    if (linear_scale_clamp > 0)
+
 #ifdef __FRAGMENT_SHADER__
-        if (t != clamp(t, 0.0, 1.0)) discard;
-#else
-        t = clamp(t, 0.0, 1.0);
+    if (linear_scale_discard > 0) {
+        if (t != clamp(t, 0.0, 1.0))
+            discard;
+    }
 #endif
 
+    if (linear_scale_clamp > 0)
+        t = clamp(t, 0.0, 1.0);
 
     return range.x + t*(range.y - range.x);
 }
@@ -55,15 +60,17 @@ vec3 forward(vec3 value)
 {
     vec2 domain = linear_scale_domain;
     vec2 range = linear_scale_range;
-
     vec3 t = (value - domain.x) /(domain.y - domain.x);
-    if (linear_scale_clamp > 0)
+
 #ifdef __FRAGMENT_SHADER__
-        if (t != clamp(t, 0.0, 1.0)) discard;
-#else
-        t = clamp(t, 0.0, 1.0);
+    if (linear_scale_discard > 0) {
+        if (t != clamp(t, 0.0, 1.0))
+            discard;
+    }
 #endif
 
+    if (linear_scale_clamp > 0)
+        t = clamp(t, 0.0, 1.0);
 
     return range.x + t*(range.y - range.x);
 }
@@ -72,14 +79,17 @@ float inverse(float value)
 {
     vec2 domain = linear_scale_domain;
     vec2 range = linear_scale_range;
-
     float t = (abs(value) - range.x) / (range.y - range.x);
-    if (linear_scale_clamp > 0)
+
 #ifdef __FRAGMENT_SHADER__
-        if (t != clamp(t, 0.0, 1.0)) discard;
-#else
-        t = clamp(t, 0.0, 1.0);
+    if (linear_scale_discard > 0) {
+        if (t != clamp(t, 0.0, 1.0))
+            discard;
+    }
 #endif
+
+    if (linear_scale_clamp > 0)
+        t = clamp(t, 0.0, 1.0);
 
     return domain.x + t*(domain.y - domain.x);
 }
@@ -88,14 +98,17 @@ vec2 inverse(vec2 value)
 {
     vec2 domain = linear_scale_domain;
     vec2 range = linear_scale_range;
-
     vec2 t = (abs(value) - range.x) / (range.y - range.x);
-    if (linear_scale_clamp > 0)
+
 #ifdef __FRAGMENT_SHADER__
-        if (t != clamp(t, 0.0, 1.0)) discard;
-#else
-        t = clamp(t, 0.0, 1.0);
+    if (linear_scale_discard > 0) {
+        if (t != clamp(t, 0.0, 1.0))
+            discard;
+    }
 #endif
+
+    if (linear_scale_clamp > 0)
+        t = clamp(t, 0.0, 1.0);
 
     return domain.x + t*(domain.y - domain.x);
 }
@@ -104,14 +117,17 @@ vec3 inverse(vec3 value)
 {
     vec2 domain = linear_scale_domain;
     vec2 range = linear_scale_range;
-
     vec3 t = (abs(value) - range.x) / (range.y - range.x);
-    if (linear_scale_clamp > 0)
+
 #ifdef __FRAGMENT_SHADER__
-        if (t != clamp(t, 0.0, 1.0)) discard;
-#else
-        t = clamp(t, 0.0, 1.0);
+    if (linear_scale_discard > 0) {
+        if (t != clamp(t, 0.0, 1.0))
+            discard;
+    }
 #endif
+
+    if (linear_scale_clamp > 0)
+        t = clamp(t, 0.0, 1.0);
 
     return domain.x + t*(domain.y - domain.x);
 }

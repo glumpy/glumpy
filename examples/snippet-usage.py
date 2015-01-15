@@ -74,9 +74,6 @@ program["transform_6"] = transform_2("F", scale="aliased_scale")
 program["transform_7"] = transform_3(transform_1("G.x"), transform_2("G.y"))
 program["transform_8"] = transform_3(transform_1('.x', name='x'),
                                      transform_2('.y', name='y'))
-
-transform = transform_3(transform_1('.x', name='x'),
-                        transform_2('.y', name='y'))
 print program.vertex.code
 
 

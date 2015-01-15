@@ -38,10 +38,11 @@ from . quantitative_scale import QuantitativeScale
 class LogScale(QuantitativeScale):
     """ Log scale transform """
 
-    aliases = { "domain" : "log_scale_domain",
-                "range"  : "log_scale_range",
-                "clamp"  : "log_scale_clamp",
-                "base"   : "log_scale_base" }
+    aliases = { "domain"  : "log_scale_domain",
+                "range"   : "log_scale_range",
+                "clamp"   : "log_scale_clamp",
+                "base"    : "log_scale_base",
+                "discard" : "log_scale_discard" }
 
 
     def __init__(self, *args, **kwargs):
@@ -63,6 +64,9 @@ class LogScale(QuantitativeScale):
 
         clamp : bool (default is False)
            Clamping test
+
+        discard : bool (default is False)
+           Discard test
         """
 
         self._base = float(Transform._get_kwarg("base", kwargs) or 10.0)
