@@ -165,13 +165,20 @@ def get_varyings(code):
     return get_declarations(code, qualifier = "varying")
 
 def get_functions(code):
+    def brace_matcher (n):
+        # poor man's matched brace scanning, gives up
+        # after n+1 levels.  Matches any string with balanced
+        # braces inside; add the outer braces yourself if needed.
+        # Nongreedy.
+        return r"[^{}]*?(?:{"*n+r"[^{}]*?"+r"}[^{}]*?)*?"*n
+
     functions = []
     regex = re.compile("""
                        \s*(?P<type>\w+)    # Function return type
                        \s+(?P<name>[\w]+)   # Function name
                        \s*\((?P<args>.*?)\) # Function arguments
-                       \s*\{(?P<code>.*?)\} # Function content
-                       """, re.VERBOSE | re.DOTALL)
+                       \s*\{(?P<code>%s)\} # Function content
+                       """ % brace_matcher(5), re.VERBOSE | re.DOTALL)
 
     for match in re.finditer(regex, code):
         rtype = match.group('type')

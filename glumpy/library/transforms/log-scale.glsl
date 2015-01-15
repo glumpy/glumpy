@@ -19,10 +19,9 @@ float forward(float value)
     float t = (v - domain.x) /(domain.y - domain.x);
 
 #ifdef __FRAGMENT_SHADER__
-    if (log_scale_discard > 0) {
+    if (log_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
-    }
 #endif
 
     if (log_scale_clamp > 0)
@@ -39,10 +38,9 @@ vec2 forward(vec2 value)
     vec2 t = (v - domain.x) /(domain.y - domain.x);
 
 #ifdef __FRAGMENT_SHADER__
-    if (log_scale_discard > 0) {
+    if (log_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
-    }
 #endif
 
     if (log_scale_clamp > 0)
@@ -59,10 +57,9 @@ vec3 forward(vec3 value)
     vec3 t = (v - domain.x) /(domain.y - domain.x);
 
 #ifdef __FRAGMENT_SHADER__
-    if (log_scale_discard > 0) {
+    if (log_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
-    }
 #endif
 
     if (log_scale_clamp > 0)
@@ -79,10 +76,9 @@ float inverse(float value)
     float t = (abs(value) - range.x) / (range.y - range.x);
 
 #ifdef __FRAGMENT_SHADER__
-    if (log_scale_discard > 0) {
+    if (log_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
-    }
 #endif
 
     if (log_scale_clamp > 0)
@@ -99,10 +95,9 @@ vec2 inverse(vec2 value)
     vec2 t = (abs(value) - range.x) / (range.y - range.x);
 
 #ifdef __FRAGMENT_SHADER__
-    if (log_scale_discard > 0) {
+    if (log_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
-    }
 #endif
 
     if (log_scale_clamp > 0)
@@ -119,10 +114,9 @@ vec3 inverse(vec3 value)
     vec3 t = (abs(value) - range.x) / (range.y - range.x);
 
 #ifdef __FRAGMENT_SHADER__
-    if (log_scale_discard > 0) {
+    if (log_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
-    }
 #endif
 
     if (log_scale_clamp > 0)
