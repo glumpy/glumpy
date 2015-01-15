@@ -224,8 +224,10 @@ program['viewport'] = Viewport()
 
 # This scales texture coordinates into cartesian coordinates
 program['scale1'] = Position(
-    LinearScale(name = 'x', domain=(0,1), range=(-1.5,1.5), discard=False, clamp=False),
-    LinearScale(name = 'y', domain=(1,0), range=(-2.3,2.3), discard=False, clamp=False))
+    LinearScale(name = 'x', domain=(0,1), range=(-1.5,1.5),
+                discard=False, clamp=False),
+    LinearScale(name = 'y', domain=(1,0), range=(-2.3,2.3),
+                discard=False, clamp=False))
 
 # Actual projection
 program['projection'] = TransverseMercatorProjection()
@@ -234,8 +236,10 @@ program['minor_step'] = np.array([ 1.00, 0.50]) * np.pi/30.0
 
 # This scales projected coordinates into texture coordinates
 program['scale2'] = Position(
-    LinearScale(name = 'x', domain=(-np.pi, np.pi),     range=(0,1), discard=False, clamp=False),
-    LinearScale(name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1), discard=False, clamp=False))
+    LinearScale(name = 'x', domain=(-np.pi, np.pi), range=(0,1),
+                discard=False, clamp=False),
+    LinearScale(name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1),
+                discard=False, clamp=False))
 window.set_size(500,800)
 
 
@@ -243,11 +247,19 @@ window.set_size(500,800)
 def on_mouse_scroll(x, y, dx, dy):
     vmin, vmax = program['scale2']['y']['domain']
     if dy > 0:
-        vmax *= 0.95
+        if vmin > -np.pi/2:
+            vmin -= 0.05
+        else:
+            vmax -= 0.05
     elif dy < 0:
-        vmax *= 1.05
+        if vmax < np.pi/2:
+            vmax += 0.05
+        else:
+            vmin += 0.05
 
-    program['scale2']['y']['domain'] = vmin, max(min(vmax,np.pi/2), -np.pi/2)
+    vmin = min(max(vmin,-np.pi/2),0)
+    vmax = max(min(vmax,+np.pi/2),0)
+    program['scale2']['y']['domain'] = vmin, vmax
 
 window.attach(program["viewport"])
 app.run()
