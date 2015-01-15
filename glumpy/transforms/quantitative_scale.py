@@ -48,11 +48,14 @@ class QuantitativeScale(Transform):
         discard : bool (default is True)
            Discard test
         """
-
         domain  = Transform._get_kwarg("domain", kwargs) or (-1,+1)
         range   = Transform._get_kwarg("range", kwargs) or (-1,+1)
-        clamp   = Transform._get_kwarg("clamp", kwargs) or False
-        discard = Transform._get_kwarg("discard", kwargs) or True
+        clamp   = Transform._get_kwarg("clamp", kwargs)
+        if clamp is None:
+            clamp = False
+        discard = Transform._get_kwarg("discard", kwargs)
+        if discard is None:
+            discard = True
         Transform.__init__(self, code, *args, **kwargs)
 
         self._clamp   = clamp

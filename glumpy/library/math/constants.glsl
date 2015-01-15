@@ -3,6 +3,9 @@
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
 
+#ifndef __CONSTANTS__
+#define __CONSTANTS__
+
 // The base of natural logarithms (e)
 const float M_E = 2.71828182845904523536028747135266250;
 
@@ -41,3 +44,5 @@ const float M_SQRT2 = 1.41421356237309504880168872420969808;
 
 // The reciprocal of the square root of two (1/sqrt(2))
 const float M_SQRT1_2 = 0.707106781186547524400844362104849039;
+
+#endif
