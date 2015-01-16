@@ -219,9 +219,9 @@ program['viewport'] = Viewport()
 #    LinearScale(name = 'x', domain=(0.0, 5.0),     range=(0,1), discard=False, clamp=False),
 #    LinearScale(name = 'y', domain=(0.0, 2*np.pi), range=(0,1), discard=False, clamp=False))
 
-# Hammer projection
-# -----------------
 
+# Transverse Mercator projection
+# ------------------------------
 # This scales texture coordinates into cartesian coordinates
 program['scale1'] = Position(
     LinearScale(name = 'x', domain=(0,1), range=(-1.5,1.5),
@@ -241,6 +241,7 @@ program['scale2'] = Position(
     LinearScale(name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1),
                 discard=False, clamp=False))
 window.set_size(500,800)
+
 
 
 @window.event
