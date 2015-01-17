@@ -16,6 +16,8 @@ from position import Position
 from polar import PolarProjection
 from hammer import HammerProjection
 from transverse_mercator import TransverseMercatorProjection
+from azimuthal_equal_area import AzimuthalEqualAreaProjection
+from azimuthal_equidistant import AzimuthalEquidistantProjection
 
 
 from pvm_projection import PVMProjection

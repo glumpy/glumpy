@@ -53,8 +53,12 @@ class GPUData(np.ndarray):
             return self.base.pending_data
 
         if self._pending_data:
-            start, stop = self._pending_data
-            return start, stop-start
+            return self._pending_data
+            # start, stop = self._pending_data
+            # WARN: semantic is offset, nbytes
+            # extents semantic is start, stop
+            # return start, stop-start
+            return start, stop
         else:
             return None
 

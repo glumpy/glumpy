@@ -68,7 +68,9 @@ class Buffer(GPUData,GLObject):
         """ Upload all pending data to GPU. """
 
         if self.pending_data:
-            offset, nbytes = self.pending_data
+            start, stop = self.pending_data
+            offset, nbytes = start, stop-start
+            # offset, nbytes = self.pending_data
             data = self.ravel().view(np.ubyte)[offset:offset+nbytes]
             gl.glBufferSubData(self.target, offset, nbytes, data)
         self._pending_data = None

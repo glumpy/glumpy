@@ -7,6 +7,7 @@ from . atlas import Atlas
 from . snippet import Snippet
 from . program import Program
 from . uniforms import Uniforms
+from . texture import TextureCube
 from . texture import Texture1D, Texture2D
 from . texture import TextureFloat1D, TextureFloat2D
 from . texture import DepthTexture

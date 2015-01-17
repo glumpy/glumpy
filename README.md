@@ -38,7 +38,7 @@ within the repository. Here is a list:
 
 * [moviepy](https://github.com/Zulko/moviepy) by Zulko
 * [pypng](<https://github.com/drj11/pypng>) by David Jones
-* ìnputhook management from [IPython](https://github.com/ipython/ipython)
+* inputhook management from [IPython](https://github.com/ipython/ipython)
 * [six](https://pypi.python.org/pypi/six/) utilities for writing code that runs
   on Python 2 and 3 by Benjamin Peterson
 

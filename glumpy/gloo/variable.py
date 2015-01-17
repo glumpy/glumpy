@@ -10,7 +10,9 @@ from glumpy import gl
 from glumpy.log import log
 from glumpy.gloo.globject import GLObject
 from glumpy.gloo.buffer import VertexBuffer
+from glumpy.gloo.texture import TextureCube
 from glumpy.gloo.texture import Texture1D, Texture2D
+from glumpy.gloo.texture import TextureFloat1D, TextureFloat2D
 
 
 # ------------------------------------------------------------- gl_typeinfo ---
@@ -31,7 +33,8 @@ gl_typeinfo = {
     gl.GL_FLOAT_MAT3   : ( 9, gl.GL_FLOAT,        np.float32),
     gl.GL_FLOAT_MAT4   : (16, gl.GL_FLOAT,        np.float32),
     gl.GL_SAMPLER_1D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
-    gl.GL_SAMPLER_2D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32)
+    gl.GL_SAMPLER_2D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_SAMPLER_CUBE : ( 1, gl.GL_UNSIGNED_INT, np.uint32)
 }
 
 
@@ -49,7 +52,7 @@ class Variable(GLObject):
                          gl.GL_INT,        gl.GL_BOOL,
                          gl.GL_FLOAT_MAT2, gl.GL_FLOAT_MAT3,
                          gl.GL_FLOAT_MAT4, gl.GL_SAMPLER_1D,
-                         gl.GL_SAMPLER_2D]:
+                         gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE]:
             raise TypeError("Unknown variable type")
 
         GLObject.__init__(self)
@@ -137,6 +140,7 @@ class Uniform(Variable):
         gl.GL_FLOAT_MAT4:   gl.glUniformMatrix4fv,
         gl.GL_SAMPLER_1D:   gl.glUniform1i,
         gl.GL_SAMPLER_2D:   gl.glUniform1i,
+        gl.GL_SAMPLER_CUBE: gl.glUniform1i
     }
 
 
@@ -171,7 +175,6 @@ class Uniform(Variable):
                     self._data = data.astype(np.uint8).view(Texture1D)
 
         elif self._gtype == gl.GL_SAMPLER_2D:
-
             if isinstance(data, Texture2D):
                 self._data = data
             elif isinstance(self._data, Texture2D):
@@ -185,6 +188,21 @@ class Uniform(Variable):
                     self._data = data.astype(np.float32).view(Texture2D)
                 else:
                     self._data = data.astype(np.uint8).view(Texture2D)
+
+        elif self._gtype == gl.GL_SAMPLER_CUBE:
+            if isinstance(data, TextureCube):
+                self._data = data
+            elif isinstance(self._data, TextureCube):
+                self._data[...] = data.reshape(self._data.shape)
+
+            # Automatic texture creation if required
+            else:
+                data = np.array(data,copy=False)
+                if data.dtype in [np.float16, np.float32, np.float64]:
+                    self._data = data.astype(np.float32).view(TextureCube)
+                else:
+                    self._data = data.astype(np.uint8).view(Texture2Cube)
+
         else:
             self._data[...] = np.array(data,copy=False).ravel()
 
@@ -192,7 +210,7 @@ class Uniform(Variable):
 
 
     def _activate(self):
-        if self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D):
+        if self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE):
             if self.data is not None:
                 log.debug("GPU: Active texture is %d" % self._texture_unit)
                 gl.glActiveTexture(gl.GL_TEXTURE0 + self._texture_unit)
@@ -217,7 +235,7 @@ class Uniform(Variable):
             self._ufunction(self._handle, 1, transpose, self._data)
 
         # Textures (need to get texture count)
-        elif self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D):
+        elif self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE):
             # texture = self.data
             log.debug("GPU: Activactin texture %d" % self._texture_unit)
             # gl.glActiveTexture(gl.GL_TEXTURE0 + self._unit)
