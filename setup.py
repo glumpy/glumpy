@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------------------------
-# Copyright (C) 2009,2010,2011  Nicolas P. Rougier
+# Copyright (C) 2009-2015  Nicolas P. Rougier
 #
 # Distributed under the terms of the BSD License. The full license is in
 # the file COPYING, distributed as part of this software.
@@ -9,7 +9,6 @@
 import os
 import numpy
 from Cython.Distutils import build_ext
-# from distutils.core import setup, Extension
 from setuptools import setup, Extension
 
 if __name__ == "__main__":
@@ -18,8 +17,8 @@ if __name__ == "__main__":
         os.remove('MANIFEST')
 
     setup(name="glumpy",
-          version="2.0",
-          description="",
+          version="1.0",
+          description="Fast, scalable & beautiful scientific visualisation",
           long_description = "",
           maintainer= "Nicolas P. Rougier",
           maintainer_email="Nicolas.Rougier@inria.fr",
