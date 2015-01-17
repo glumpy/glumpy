@@ -440,31 +440,3 @@ class TextureCube(Texture):
         log.debug("GPU: Deactivate texture cube")
         gl.glBindTexture(self._target, 0)
         gl.glDisable(gl.GL_TEXTURE_CUBE_MAP)
-
-
-
-if __name__ == "__main__":
-
-    # T = np.zeros((32,32)).view(Texture2D)
-    # print T._extents
-    # print T[0,0]._extents
-
-    # T = np.zeros((6,32,32)).view(TextureCube)
-    # print T._extents
-    # print T[0]._extents
-    # print T[1]._extents
-
-    T = np.zeros((6,32,32)).view(TextureCube)
-    T._pending_data = None
-    #print T[0]._extents
-    #print T[1]._extents
-    T[0,0,0]=1
-    T._update()
-
-#    T[0,0,1] = 1
-#    for i in range(6):
-#        print T[i].need_update
-
-    # T._pending_data = None
-    # T[5,0,1] = 1
-    # print T[0].shape
