@@ -17,7 +17,7 @@ if __name__ == "__main__":
         os.remove('MANIFEST')
 
     setup(name="glumpy",
-          version="1.0",
+          version="1.0.1",
           description="Fast, scalable & beautiful scientific visualisation",
           long_description = "",
           maintainer= "Nicolas P. Rougier",
