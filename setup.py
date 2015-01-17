@@ -51,8 +51,11 @@ if __name__ == "__main__":
                     'glumpy.graphics.collections'],
 
           package_data={
-              'glumpy.data':                ['*.npy', '*.ttf', '*.txt',
-                                             '*.png', '*.jpg', '*.svg', '*.obj']
+              'glumpy.data':                ['6x13-italic.npy',
+                                             '6x13-regular.npy',
+                                             '6x13-bold.npy',
+                                             'spatial-filters.npy',
+                                             'SourceSansPro-Regular.otf' ],
               'glumpy.library':             ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.math':        ['*.vert','*.frag', "*.geom", "*.glsl"],
               'glumpy.library.misc':        ['*.vert','*.frag', "*.geom", "*.glsl"],
