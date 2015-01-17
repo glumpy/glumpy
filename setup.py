@@ -17,12 +17,15 @@ if __name__ == "__main__":
         os.remove('MANIFEST')
 
     setup(name="glumpy",
-          version="1.0.1",
+          version="1.0.2",
           description="Fast, scalable & beautiful scientific visualisation",
-          long_description = "",
+          long_description = """Glumpy is a python library for scientific
+                                visualization that is both fast, scalable
+                                and beautiful. Glumpy offers an intuitive
+                                interface between numpy and modern OpenGL.""",
           url = "http://glumpy.github.io",
           download_url = "https://github.com/glumpy/glumpy/releases",
-          keywords = "OpenGL, Visualisation, Science, Numpy",
+          keywords = "OpenGL, GLSL, 2D, 3D, Visualisation, Science, Numpy, Graphics, Shaders",
           platform = "Any",
           maintainer= "Nicolas P. Rougier",
           maintainer_email="Nicolas.Rougier@inria.fr",
