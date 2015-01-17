@@ -3,14 +3,13 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All rights reserved.
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
-# from rotate import Rotate
 from panzoom import PanZoom
 from viewport import Viewport
-from clipping import Clipping
 from trackball import Trackball
-from transform import Transform
-from translate import Translate
+from rotate import Rotate
 from position import Position
+from translate import Translate
+from transform import Transform
 
 
 from polar import PolarProjection

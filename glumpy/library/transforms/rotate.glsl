@@ -2,26 +2,44 @@
 // Copyright (c) 2014, Nicolas P. Rougier
 // Distributed under the (new) BSD License. See LICENSE.txt for more info.
 // -----------------------------------------------------------------------------
-uniform float theta;
+uniform vec3 rotate_axis;
+uniform vec3 rotate_origin;
+uniform float rotate_angle;
+uniform mat4 rotate_forward_matrix;
+uniform mat4 rotate_inverse_matrix;
 
-vec4 forward(vec4 position)
+vec2 forward(vec2 position)
 {
-  float sin_theta = sin(theta);
-  float cos_theta = cos(theta);
-
-  float x = position.x * cos_theta - position.y * sin_theta;
-  float y = position.x * sin_theta + position.y * cos_theta;
-
-  return vec4(x, y, position.z, 1.0);
+    vec4 P = vec4(position,0.0,1.0);
+    P.xy -= rotate_origin.xy;
+    P = rotate_forward_matrix*P;
+    P.xy += rotate_origin.xy;
+    return P.xy;
 }
 
-vec4 inverse(vec4 position)
+vec3 forward(vec3 position)
 {
-  float sin_theta = sin(-theta);
-  float cos_theta = cos(-theta);
+    vec4 P = vec4(position,1.0);
+    P.xyz -= rotate_origin;
+    P = rotate_forward_matrix*P;
+    P.xyz += rotate_origin;
+    return P.xyz;
+}
 
-  float x = position.x * cos_theta - position.y * sin_theta;
-  float y = position.x * sin_theta + position.y * cos_theta;
+vec2 inverse(vec2 position)
+{
+    vec4 P = vec4(position,0.0,1.0);
+    P.xy -= rotate_origin.xy;
+    P = rotate_inverse_matrix*P;
+    P.xy += rotate_origin.xy;
+    return P.xy;
+}
 
-  return vec4(x, y, position.z, 1.0);
+vec3 inverse(vec3 position)
+{
+    vec4 P = vec4(position,1.0);
+    P.xyz -= rotate_origin;
+    P = rotate_inverse_matrix*P;
+    P.xyz += rotate_origin;
+    return P.xyz;
 }

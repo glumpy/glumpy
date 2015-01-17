@@ -30,13 +30,13 @@ class Transform(Snippet,EventDispatcher):
     aliases = { }
 
     @classmethod
-    def _get_kwarg(cls, key, kwargs):
+    def _get_kwarg(cls, key, kwargs, default=None):
         """ Return a given parameter from the kwargs and remove it """
         if  key in kwargs.keys():
             value = kwargs[key]
             del kwargs[key]
             return value
-        return None
+        return default
 
 
     def __init__(self, code, *args, **kwargs):

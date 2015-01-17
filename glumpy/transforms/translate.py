@@ -15,9 +15,9 @@ class Translate(Transform):
 
 
     def __init__(self, *args, **kwargs):
-        code = library.get("transforms/translate-forward.glsl")
+        code = library.get("transforms/translate.glsl")
         Transform.__init__(self, code, *args, **kwargs)
-        self._translate = Transform._get_kwarg("translate", kwargs) or (0,0,0)
+        self.translate = Transform._get_kwarg("translate", kwargs) or (0,0,0)
 
 
     @property
@@ -25,6 +25,7 @@ class Translate(Transform):
         """ Translation """
 
         return self._translate
+
 
     @translate.setter
     def translate(self, value):

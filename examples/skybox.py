@@ -14,7 +14,7 @@ vertex = """
     varying vec3 v_texcoord;
     void main()
     {
-        gl_Position = <transform(position)>;
+        gl_Position = <transform(position)> * vec4(-1,-1,1,1);
         v_texcoord = texcoord;
     }
 """
@@ -50,7 +50,7 @@ indices = np.resize(np.array([0,1,2,0,2,3], dtype=np.uint32), 36)
 indices += np.repeat(4 * np.arange(6, dtype=np.uint32), 6)
 indices = indices.view(gloo.IndexBuffer)
 texture = np.zeros((6,1024,1024,3),dtype=np.float32).view(gloo.TextureCube)
-
+texture.interpolation = gl.GL_LINEAR
 program = gloo.Program(vertex, fragment, count=24)
 program['position'] = faces*10
 program['texcoord'] = faces
