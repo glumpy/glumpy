@@ -49,13 +49,13 @@ def _fetch_file(filename):
     except:
         log.warning('Data not available on remote server')
         return None
-
     # Fetch symlink data (font location)
     symlink = response.read()
+
     remote = os.path.join(server, symlink)
     response = urllib2.urlopen(remote)
 
-    # Fetch font data
+    # Fetch data
     size = response.headers['Content-Length'].strip()
     log.info('Fetching data (%s bytes) to "%s"' % (size, local_file))
     with open(local_file, 'wb') as fp:

@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gloo, gl, glm
+from glumpy import app, gloo, gl, data
 from glumpy.transforms import Trackball, Position
 
 vertex = """
@@ -29,7 +29,7 @@ fragment = """
 """
 
 
-window = app.Window(width=512, height=512)
+window = app.Window(width=1024, height=1024)
 
 @window.event
 def on_draw(dt):
@@ -40,28 +40,28 @@ def on_draw(dt):
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
 
-vertices = np.array([[1, 1, 1], [-1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                     [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, -1]])
-faces = [vertices[i] for i in [0,1,2,3, 0,3,4,5, 0,5,6,1,
-                               1,6,7,2, 7,4,3,2, 4,7,6,5] ]
+vertices = np.array([[+1,+1,+1], [-1,+1,+1], [-1,-1,+1], [+1,-1,+1],
+                     [+1,-1,-1], [+1,+1,-1], [-1,+1,-1], [-1,-1,-1]])
+texcoords = np.array([[+1,+1,+1], [-1,+1,+1], [-1,-1,+1], [+1,-1,+1],
+                     [+1,-1,-1], [+1,+1,-1], [-1,+1,-1], [-1,-1,-1]])
+faces = np.array([vertices[i] for i in [0,1,2,3, 0,3,4,5, 0,5,6,1,
+                                        6,7,2,1, 7,4,3,2, 4,7,6,5]])
 indices = np.resize(np.array([0,1,2,0,2,3], dtype=np.uint32), 36)
 indices += np.repeat(4 * np.arange(6, dtype=np.uint32), 6)
 indices = indices.view(gloo.IndexBuffer)
-texture = np.zeros((6,32,32,4),dtype=np.float32).view(gloo.TextureCube)
-
+texture = np.zeros((6,1024,1024,3),dtype=np.float32).view(gloo.TextureCube)
 
 program = gloo.Program(vertex, fragment, count=24)
-program['position'] = faces
+program['position'] = faces*10
 program['texcoord'] = faces
 program['texture'] = texture
-program['transform'] = Trackball(Position())
+program['transform'] = Trackball(Position(), distance=0)
 
-texture[0] = 1,0,0,1
-texture[1] = 0,1,0,1
-texture[2] = 0,0,1,1
-texture[3] = 1,1,0,1
-texture[4] = 0,1,1,1
-texture[5] = 1,1,1,1
-
+texture[2] = data.get("sky-left.png")/255.
+texture[3] = data.get("sky-right.png")/255.
+texture[0] = data.get("sky-front.png")/255.
+texture[1] = data.get("sky-back.png")/255.
+texture[4] = data.get("sky-up.png")/255.
+texture[5] = data.get("sky-down.png")/255.
 window.attach(program["transform"])
 app.run()

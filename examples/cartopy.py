@@ -227,42 +227,17 @@ program['viewport'] = Viewport()
 # Transverse Mercator projection
 # ------------------------------
 # This scales texture coordinates into cartesian coordinates
-# program['scale1'] = Position(
-#     LinearScale(name = 'x', domain=(0,1), range=(-1.5,1.5),
-#                 discard=False, clamp=False),
-#     LinearScale(name = 'y', domain=(1,0), range=(-2.3,2.3),
-#                 discard=False, clamp=False))
-
-# # Actual projection
-# program['projection'] = TransverseMercatorProjection()
-
-# program['major_step'] = np.array([ 1.00, 0.50]) * np.pi/ 6.0
-# program['minor_step'] = np.array([ 1.00, 0.50]) * np.pi/30.0
-
-# # This scales projected coordinates into texture coordinates
-# program['scale2'] = Position(
-#     LinearScale(name = 'x', domain=(-np.pi, np.pi), range=(0,1),
-#                 discard=False, clamp=False),
-#     LinearScale(name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1),
-#                 discard=False, clamp=False))
-# window.set_size(500,800)
-
-
-
-# Azimuthal equidistant
-# ---------------------
-# This scales texture coordinates into cartesian coordinates
 program['scale1'] = Position(
-    LinearScale(name = 'x', domain=(0,1), range=(-3.,3.),
+    LinearScale(name = 'x', domain=(0,1), range=(-1.5,1.5),
                 discard=False, clamp=False),
-    LinearScale(name = 'y', domain=(1,0), range=(-3.,3.),
+    LinearScale(name = 'y', domain=(1,0), range=(-2.3,2.3),
                 discard=False, clamp=False))
 
 # Actual projection
-# program['projection'] = AzimuthalEqualAreaProjection()
-program['projection'] = AzimuthalEquidistantProjection()
-program['major_step'] = np.array([ 1.0, 1.0]) * np.pi/6.0
-program['minor_step'] = np.array([ 1.0, 1.0]) * np.pi/18.0
+program['projection'] = TransverseMercatorProjection()
+
+program['major_step'] = np.array([ 1.00, 0.50]) * np.pi/ 6.0
+program['minor_step'] = np.array([ 1.00, 0.50]) * np.pi/30.0
 
 # This scales projected coordinates into texture coordinates
 program['scale2'] = Position(
@@ -270,7 +245,32 @@ program['scale2'] = Position(
                 discard=False, clamp=False),
     LinearScale(name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1),
                 discard=False, clamp=False))
-window.set_size(800,800)
+window.set_size(500,800)
+
+
+
+# Azimuthal equidistant
+# ---------------------
+# This scales texture coordinates into cartesian coordinates
+# program['scale1'] = Position(
+#     LinearScale(name = 'x', domain=(0,1), range=(-3.,3.),
+#                 discard=False, clamp=False),
+#     LinearScale(name = 'y', domain=(1,0), range=(-3.,3.),
+#                 discard=False, clamp=False))
+
+# # Actual projection
+# # program['projection'] = AzimuthalEqualAreaProjection()
+# program['projection'] = AzimuthalEquidistantProjection()
+# program['major_step'] = np.array([ 1.0, 1.0]) * np.pi/6.0
+# program['minor_step'] = np.array([ 1.0, 1.0]) * np.pi/18.0
+
+# # This scales projected coordinates into texture coordinates
+# program['scale2'] = Position(
+#     LinearScale(name = 'x', domain=(-np.pi, np.pi), range=(0,1),
+#                 discard=False, clamp=False),
+#     LinearScale(name = 'y', domain=(-np.pi/2, np.pi/2), range=(0,1),
+#                 discard=False, clamp=False))
+# window.set_size(800,800)
 
 
 
