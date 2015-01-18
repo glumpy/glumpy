@@ -45,9 +45,6 @@ class Rotate(Transform):
         self._angle = Transform._get_kwarg("angle", kwargs, 0.0)
         self._origin = Transform._get_kwarg("origin", kwargs, (0.,0.,0.))
 
-        print self._origin
-
-
         code = library.get("transforms/rotate.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 

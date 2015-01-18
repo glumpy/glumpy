@@ -319,6 +319,8 @@ def run(clock=None, framerate=None, interactive=None,
     if interactive:
         # Set interactive python session
         os.environ['PYTHONINSPECT'] = '1'
+        import readline
+        readline.parse_and_bind("tab: complete")
 
         def run():
             while not stdin_ready():
