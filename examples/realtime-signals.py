@@ -50,7 +50,7 @@ def on_draw(dt):
     y[index] = yscale * np.random.uniform(-1,+1,count)
     program["index"] = (index + 1) % size
 
-count, size = 2, 1000
+count, size = 64, 1000
 program = gloo.Program(vertex, fragment, count=size*count)
 program["size"] = size
 program["count"] = count
