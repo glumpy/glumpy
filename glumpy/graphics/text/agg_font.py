@@ -3,9 +3,10 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-import freetype
 import numpy as np
 from . font import Glyph
+from glumpy.ext import freetype
+
 
 
 class AggFont(object):

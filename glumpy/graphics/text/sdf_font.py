@@ -4,9 +4,10 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from freetype import *
 from . font import Glyph
+from glumpy.ext import freetype
 from glumpy.ext.sdf import compute_sdf
+
 
 
 def bilinear_interpolate(im, x, y):
@@ -61,7 +62,7 @@ class SDFFont(object):
         self.atlas = atlas
 
         self.glyphs = {}
-        face = Face(self.filename)
+        face = freetype.Face(self.filename)
         face.set_char_size(self._lowres_size*64)
         metrics = face.size
         self.ascender  = metrics.ascender/64.0
@@ -79,7 +80,9 @@ class SDFFont(object):
     def load_glyph(self, face, charcode):
 
         face.set_char_size( self._hires_size*64 )
-        face.load_char(charcode, FT_LOAD_RENDER | FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT)
+        face.load_char(charcode, freetype.FT_LOAD_RENDER |
+                                 freetype.FT_LOAD_NO_HINTING |
+                                 freetype.FT_LOAD_NO_AUTOHINT)
 
         bitmap = face.glyph.bitmap
         width  = face.glyph.bitmap.width
@@ -116,7 +119,7 @@ class SDFFont(object):
 
 
     def load(self, charcodes = ''):
-        face = Face( self.filename )
+        face = freetype.Face( self.filename )
 
         for charcode in charcodes:
             if charcode in self.glyphs.keys():
@@ -144,9 +147,11 @@ class SDFFont(object):
             # Generate kerning (for reference size)
             face.set_char_size( self._lowres_size*64 )
             for g in self.glyphs.values():
-                kerning = face.get_kerning(g.charcode, charcode, mode=FT_KERNING_UNFITTED)
+                kerning = face.get_kerning(g.charcode, charcode,
+                                           mode=freetype.FT_KERNING_UNFITTED)
                 if kerning.x != 0:
                     glyph.kerning[g.charcode] = kerning.x/64.0
-                kerning = face.get_kerning(charcode, g.charcode, mode=FT_KERNING_UNFITTED)
+                kerning = face.get_kerning(charcode, g.charcode,
+                                           mode=freetype.FT_KERNING_UNFITTED)
                 if kerning.x != 0:
                     g.kerning[charcode] = kerning.x/64.0
