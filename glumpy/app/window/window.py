@@ -178,8 +178,14 @@ class Window(event.EventDispatcher):
     def clear(self):
         """ Clear the whole window """
 
-        gl.glClearColor(*self.color)
         gl.glClear(self._clearflags)
+
+
+    def on_init(self):
+        """ Window initialization """
+
+        gl.glClearColor(*self.color)
+
 
     def on_resize(self, width, height):
         """" Default resize handler that set viewport """
