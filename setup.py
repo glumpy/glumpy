@@ -54,6 +54,7 @@ if __name__ == "__main__":
                     'glumpy.app.window.backends',
                     'glumpy.gloo',
                     'glumpy.api',
+                    'glumpy.api.matplotlib',
 
                     'glumpy.library',
                     'glumpy.library.math',
