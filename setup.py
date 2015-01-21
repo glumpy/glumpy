@@ -17,7 +17,7 @@ if __name__ == "__main__":
         os.remove('MANIFEST')
 
     setup(name="glumpy",
-          version="1.0.2",
+          version="1.0.3",
           description="Fast, scalable & beautiful scientific visualisation",
           long_description = """Glumpy is a python library for scientific
                                 visualization that is both fast, scalable
@@ -53,6 +53,7 @@ if __name__ == "__main__":
                     'glumpy.app.window',
                     'glumpy.app.window.backends',
                     'glumpy.gloo',
+                    'glumpy.api',
 
                     'glumpy.library',
                     'glumpy.library.math',
@@ -66,6 +67,8 @@ if __name__ == "__main__":
 
                     'glumpy.geometry',
                     'glumpy.graphics',
+                    'glumpy.graphics.svg',
+                    'glumpy.graphics.color',
                     'glumpy.transforms',
                     'glumpy.graphics.text',
                     'glumpy.graphics.collections'],
