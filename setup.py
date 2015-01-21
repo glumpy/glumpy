@@ -71,6 +71,7 @@ if __name__ == "__main__":
                     'glumpy.graphics.collections'],
 
           package_data={
+              'glumpy.ext.sdf':             ['_sdf.pyx', 'sdf.h'],
               'glumpy.data':                ['6x13-italic.npy',
                                              '6x13-regular.npy',
                                              '6x13-bold.npy',
