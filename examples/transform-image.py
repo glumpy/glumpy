@@ -88,10 +88,10 @@ window.set_size(500,800)
 def on_mouse_scroll(x, y, dx, dy):
     xdomain = program['projection']['x']['domain']
     ydomain = program['projection']['y']['domain']
-    if dy > 0:
+    if dy < 0:
         xdomain *= .9
         ydomain *= .9
-    elif dy < 0:
+    elif dy > 0:
         xdomain *= 1.1
         ydomain *= 1.1
     program['projection']['x']['domain'] = xdomain
