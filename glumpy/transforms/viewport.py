@@ -32,7 +32,7 @@ class Viewport(Transform):
     aliases = { "clipping"  : "viewport_clipping",
                 "transform" : "viewport_transform",
                 "local"     : "viewport_local",
-                "viewport"  : "viewport_local",
+                "extents"   : "viewport_local",
                 "global"    : "viewport_global" }
 
 
@@ -56,6 +56,7 @@ class Viewport(Transform):
 
         if code is None:
             code = library.get("transforms/viewport.glsl")
+
         self._global = 0,0,512,512
         self._local = Transform._get_kwarg("viewport", kwargs) or None
         self._clipping = Transform._get_kwarg("clipping", kwargs) or True
@@ -66,15 +67,15 @@ class Viewport(Transform):
 
 
     @property
-    def viewport(self):
-        """ Clipping viewport """
+    def extents(self):
+        """ Viewport extents as (x,y,w,h) (abosute coordinates) """
 
         return self._local
 
 
-    @viewport.setter
-    def viewport(self, value):
-        """ Clipping viewport """
+    @extents.setter
+    def extents(self, value):
+        """ Viewport extents as (x,y,w,h) (abosute coordinates) """
 
         self._local = value
         if self.is_attached:

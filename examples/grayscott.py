@@ -155,6 +155,9 @@ species = {
     'Zebrafish': [0.16, 0.08, 0.035, 0.060] }
 P = np.zeros((h, w, 4), dtype=np.float32)
 P[:, :] = species['Unstable']
+
+P[:, :] = species['Coral']
+
 UV = np.zeros((h, w, 4), dtype=np.float32)
 UV[:, :, 0] = 1.0
 r = 32

@@ -35,6 +35,7 @@ attribute vec2 position;
 void main()
 {
     gl_Position = vec4(position,0,1);
+    <viewport.transform>;
 }
 """
 
@@ -43,6 +44,7 @@ uniform vec4 color;
 void main()
 {
     gl_FragColor = color;
+    <viewport.clipping>;
 }
 """
 
@@ -57,6 +59,7 @@ class Axes(app.Viewport):
         self.program = gloo.Program(vertex, fragment, count=4)
         self.program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
         self.program['color'] = facecolor
+        self.program['viewport'] = self.viewport
 
 
     def add_axes(self, rect, facecolor=(1,1,1,1), aspect=None):
