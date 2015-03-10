@@ -3,8 +3,8 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All rights reserved.
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
-from glumpy import app, gloo, gl
-
+from glumpy import app, gloo, gl, transforms
+from . axes import Axes
 
 class Figure(object):
     """ """
@@ -28,45 +28,3 @@ class Figure(object):
         axes = Axes(rect, facecolor, aspect)
         self.viewport.add(axes)
         return axes
-
-
-vertex = """
-attribute vec2 position;
-void main()
-{
-    gl_Position = vec4(position,0,1);
-    <viewport.transform>;
-}
-"""
-
-fragment = """
-uniform vec4 color;
-void main()
-{
-    gl_FragColor = color;
-    <viewport.clipping>;
-}
-"""
-
-class Axes(app.Viewport):
-    """ """
-
-    def __init__(self, rect, facecolor=(1,1,1,1), aspect=None):
-        size = rect[2], rect[3]
-        position = rect[0]+size[0]/2, rect[1]+size[1]/2
-        anchor = 0.5, 0.5
-        app.Viewport.__init__(self, size, position, anchor, aspect)
-        self.program = gloo.Program(vertex, fragment, count=4)
-        self.program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
-        self.program['color'] = facecolor
-        self.program['viewport'] = self.viewport
-
-
-    def add_axes(self, rect, facecolor=(1,1,1,1), aspect=None):
-        axes = Axes(rect, facecolor, aspect)
-        self.add(axes)
-        return axes
-
-    def on_draw(self, dt):
-        self.program.draw(gl.GL_TRIANGLE_STRIP)
-        app.Viewport.on_draw(self,dt)

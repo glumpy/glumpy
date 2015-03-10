@@ -7,12 +7,14 @@
 import numpy as np
 from glumpy import gl, library
 from glumpy.api import matplotlib
-from glumpy.graphics.collections import PointCollection, Collection
-from glumpy.transforms import Position, Trackball, OrthographicProjection, PanZoom
+from glumpy.transforms import *
+from glumpy.graphics.collections import *
 
-figure = matplotlib.Figure((16,8))
-left  = figure.add_axes([0.010, 0.01, 0.485, 0.98], facecolor=(1,0,0,0.25), aspect=1)
-right = figure.add_axes([0.505, 0.01, 0.485, 0.98], facecolor=(0,0,1,0.25), aspect=1)
+figure = matplotlib.Figure((24,12))
+left  = figure.add_axes([0.010, 0.01, 0.485, 0.98],
+                        facecolor=(1,0,0,0.25), aspect=1)
+right = figure.add_axes([0.505, 0.01, 0.485, 0.98],
+                        facecolor=(0,0,1,0.25), aspect=1)
 
 trackball = Trackball(Position(), aspect=1.0)
 collection = PointCollection("agg", transform=trackball, viewport=left.viewport)

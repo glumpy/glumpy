@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 from . window import event
 from glumpy.log import log
-from glumpy import gloo, gl, library, transforms
+from glumpy import gloo, gl, library
 
 class ViewportDispatcher(event.EventDispatcher):
     def __init__(self):
@@ -104,7 +104,6 @@ class Viewport(event.EventDispatcher):
         self._children = []
         self._active_viewports = []
         self._dispatcher = ViewportDispatcher()
-        self._transform = transforms.Viewport()
 
         # Aspect ratio (width/height)
         self._aspect = aspect
@@ -174,19 +173,6 @@ class Viewport(event.EventDispatcher):
         """ Whether viewport is active """
 
         return self._active
-
-
-    @property
-    def viewport(self):
-        """ Viewport transform (to be used in shaders) """
-
-        return self._transform
-
-    @property
-    def transform(self):
-        """ Viewport transform (to be used in shaders) """
-
-        return self._transform
 
 
     @active.setter
@@ -450,14 +436,9 @@ class Viewport(event.EventDispatcher):
         self._compute_viewport()
         self.dispatcher.dispatch_event("on_resize", self.size[0], self.size[1])
 
-        if self._transform.is_attached:
-            self._transform.dispatch_event("on_resize", width, height)
-            self._transform["global"]  = self.root.extents
-            self._transform["extents"] = self.extents
-
         for child in self._children:
             child.dispatch_event("on_resize", width, height)
-            #child.dispatcher.dispatch_event("on_resize", child.size[0], child.size[1])
+
 
 
     def on_key_press(self, key, modifiers):
