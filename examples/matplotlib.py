@@ -5,30 +5,29 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import gl, library
 from glumpy.api import matplotlib
-from glumpy.transforms import *
-from glumpy.graphics.collections import *
+from glumpy.transforms import Trackball, PanZoom
+from glumpy.graphics.collections import PointCollection
 
 # Create a new figure
 figure = matplotlib.Figure((24,12))
 
 # Create a subplot on left, using trackball interface (3d)
-left  = figure.add_axes( [0.010, 0.01, 0.485, 0.98], interface = Trackball(),
-                         facecolor=(1,0,0,0.25), aspect=1 )
+left = figure.add_axes( [0.010, 0.01, 0.485, 0.98], interface = Trackball(),
+                        facecolor=(1,0,0,0.25), aspect=1 )
 
 # Create a subplot on right, using panzoom interface (2d)
 right = figure.add_axes( [0.505, 0.01, 0.485, 0.98], interface = PanZoom(),
                          facecolor=(0,0,1,0.25), aspect=1 )
 
-# Create a new point collection
+# Create a new collection of points
 collection = PointCollection("agg")
 
 # Add a view of the collection on the left subplot
-left.add(collection)
+left.add_drawable(collection)
 
 # Add a view of the collection on the right subplot
-right.add(collection)
+right.add_drawable(collection)
 
 # Change xscale range on left subplot
 left.transform['xscale']['range'] = -0.5,0.5
