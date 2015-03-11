@@ -294,6 +294,7 @@ class Program(GLObject):
 
             if isinstance(data, Snippet):
                 snippet.attach(self)
+
             self._build_uniforms()
             self._build_attributes()
             self._need_update = True

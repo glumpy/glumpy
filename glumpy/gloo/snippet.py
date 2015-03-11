@@ -421,7 +421,8 @@ class Snippet(object):
     def __repr__(self):
         # return self.generate_call()
 
-        s = self._name
+        # s = self._name
+        s = self.__class__.__name__
         s += "("
         if len(self._args):
             s += " "

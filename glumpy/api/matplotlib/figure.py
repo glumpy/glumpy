@@ -24,7 +24,7 @@ class Figure(object):
         self.window.push_handlers(self)
         app.run()
 
-    def add_axes(self, rect, facecolor=(1,1,1,1), aspect=None):
-        axes = Axes(rect, facecolor, aspect)
+    def add_axes(self, rect, facecolor=(1,1,1,1), aspect=None, interface=None):
+        axes = Axes(rect=rect, facecolor=facecolor, aspect=aspect, interface=interface)
         self.viewport.add(axes)
         return axes

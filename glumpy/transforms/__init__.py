@@ -6,6 +6,7 @@
 from panzoom import PanZoom
 from viewport import Viewport
 from trackball import Trackball
+from xyz import X,Y,Z
 from rotate import Rotate
 from position import Position
 from translate import Translate

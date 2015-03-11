@@ -424,6 +424,15 @@ class BaseCollection(object):
     def __setitem__(self, key, data):
         """ x.__setitem__(i, y) <==> x[i]=y """
 
+        if len(self._programs):
+            found = False
+            for program in self._programs:
+                if key in program.hooks:
+                    program[key] = data
+                    found = True
+            if found: return
+
+
         # WARNING
         # Here we want to make sure to use buffers and texture (instead of
         # lists) since only them are aware of any external modification.

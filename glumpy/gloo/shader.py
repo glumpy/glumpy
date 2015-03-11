@@ -54,7 +54,7 @@ class Shader(GLObject):
 
         GLObject.__init__(self)
         self._target = target
-        self._snippets = []
+        self._snippets = {}
 
         if os.path.isfile(code):
             with open(code, 'rt') as file:
@@ -74,6 +74,11 @@ class Shader(GLObject):
         Set a snippet on the given hook in the source code.
         """
 
+        self._snippets[name] = snippet
+
+
+    def _replace_hooks(self, name, snippet):
+
         #re_hook = r"(?P<hook>%s)(\.(?P<subhook>\w+))?" % name
         re_hook = r"(?P<hook>%s)(\.(?P<subhook>[\.\w]+))?" % name
         re_args = r"(\((?P<args>[^<>]+)\))?"
@@ -92,7 +97,7 @@ class Shader(GLObject):
             return
 
         # Store snippet code for later inclusion
-        self._snippets.append(snippet)
+        # self._snippets.append(snippet)
 
         # Replace expression of type <hook.subhook(args)>
         def replace_with_args(match):
@@ -127,17 +132,23 @@ class Shader(GLObject):
     def reset(self):
         """ Reset shader snippets """
 
-        self._snippets = []
+        self._snippets = {}
 
 
     @property
     def code(self):
         """ Shader source code (built from original and snippet codes) """
 
+        # Last minute hook settings
+        self._hooked = self._code
+        for name,snippet in self._snippets.items():
+            self._replace_hooks(name,snippet)
+
         snippet_code = "// --- Snippets code : start --- //\n"
         deps = []
-        for snippet in self._snippets:
-            deps.extend(snippet.dependencies)
+        for snippet in self._snippets.values():
+            if isinstance(snippet, Snippet):
+                deps.extend(snippet.dependencies)
         for snippet in list(set(deps)):
             snippet_code += snippet.mangled_code()
         snippet_code += "// --- Snippets code : end --- //\n"

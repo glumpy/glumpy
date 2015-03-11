@@ -10,28 +10,31 @@ from glumpy.api import matplotlib
 from glumpy.transforms import *
 from glumpy.graphics.collections import *
 
+# Create a new figure
 figure = matplotlib.Figure((24,12))
-left  = figure.add_axes([0.010, 0.01, 0.485, 0.98],
-                        facecolor=(1,0,0,0.25), aspect=1)
-right = figure.add_axes([0.505, 0.01, 0.485, 0.98],
-                        facecolor=(0,0,1,0.25), aspect=1)
 
-trackball = Trackball(Position(), aspect=1.0)
-collection = PointCollection("agg", transform=trackball, viewport=left.viewport)
-left.attach(trackball)
+# Create a subplot on left, using trackball interface (3d)
+left  = figure.add_axes( [0.010, 0.01, 0.485, 0.98], interface = Trackball(),
+                         facecolor=(1,0,0,0.25), aspect=1 )
 
-panzoom = PanZoom(OrthographicProjection(Position(), normalize=True))
-view = collection.view(transform=panzoom, viewport=right.viewport)
-right.attach(panzoom)
+# Create a subplot on right, using panzoom interface (2d)
+right = figure.add_axes( [0.505, 0.01, 0.485, 0.98], interface = PanZoom(),
+                         facecolor=(0,0,1,0.25), aspect=1 )
 
-collection.append(np.random.normal(0,.5,(15000,3)))
+# Create a new point collection
+collection = PointCollection("agg")
 
-@left.event
-def on_draw(dt):
-    collection.draw()
+# Add a view of the collection on the left subplot
+left.add(collection)
 
-@right.event
-def on_draw(dt):
-    view.draw(gl.GL_POINTS)
+# Add a view of the collection on the right subplot
+right.add(collection)
 
+# Change xscale range on left subplot
+left.transform['xscale']['range'] = -0.5,0.5
+
+# Add some points
+collection.append(np.random.normal(0,.5,(10000,3)))
+
+# Show figure
 figure.show()

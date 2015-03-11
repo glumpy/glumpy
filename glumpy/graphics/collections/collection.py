@@ -20,6 +20,7 @@ from . util import fetchcode
 from . base_collection import BaseCollection
 
 
+
 class Collection(BaseCollection):
     """
     A collection is a container for several items having the same data
@@ -147,6 +148,18 @@ class Collection(BaseCollection):
         if self._uniforms_list is not None:
             program["uniforms"] = self._uniforms_texture
             program["uniforms_shape"] = self._ushape
+
+        # Piggy backing
+        def draw():
+            if self._need_update:
+                self._update()
+                program.bind(self._vertices_buffer)
+            if self._indices_list is not None:
+                Program.draw(porgram, self._mode, self._indices_buffer)
+            else:
+                Program.draw(program, self._mode)
+
+        program.draw = draw
         return program
 
 
