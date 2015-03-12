@@ -4,3 +4,5 @@
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
 from . figure import Figure
+from glumpy.transforms import *
+from glumpy.graphics.collections import *

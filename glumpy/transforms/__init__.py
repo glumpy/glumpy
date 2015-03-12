@@ -15,6 +15,7 @@ from transform import Transform
 
 from polar import PolarProjection
 from hammer import HammerProjection
+from identity import IdentityProjection
 from transverse_mercator import TransverseMercatorProjection
 from azimuthal_equal_area import AzimuthalEqualAreaProjection
 from azimuthal_equidistant import AzimuthalEquidistantProjection

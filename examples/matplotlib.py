@@ -5,12 +5,10 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy.api import matplotlib
-from glumpy.transforms import Trackball, PanZoom
-from glumpy.graphics.collections import PointCollection
+from glumpy.api.matplotlib import *
 
 # Create a new figure
-figure = matplotlib.Figure((24,12))
+figure = Figure((24,12))
 
 # Create a subplot on left, using trackball interface (3d)
 left = figure.add_axes( [0.010, 0.01, 0.485, 0.98],
@@ -39,7 +37,7 @@ left.transform['trackball']["phi"] = 0
 left.transform['trackball']["theta"] = 0
 
 # Add some points
-collection.append(np.random.normal(0,.5,(10000,3)))
+collection.append(np.random.normal(0.0,0.5,(10000,3)))
 
 # Show figure
 figure.show()

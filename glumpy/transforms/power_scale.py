@@ -62,7 +62,7 @@ class PowerScale(QuantitativeScale):
            Discard test
         """
 
-        self._exponents = Transform._get_kwarg("exponent", kwargs) or 1.0
+        self._exponents = Transform._get_kwarg("exponent", kwargs, 1.0)
         code = library.get("transforms/power-scale.glsl")
         QuantitativeScale.__init__(self, code, *args, **kwargs)
 

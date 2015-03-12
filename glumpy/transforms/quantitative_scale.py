@@ -48,20 +48,25 @@ class QuantitativeScale(Transform):
         discard : bool (default is True)
            Discard test
         """
-        domain  = Transform._get_kwarg("domain", kwargs) or (-1,+1)
-        range   = Transform._get_kwarg("range", kwargs) or (-1,+1)
-        clamp   = Transform._get_kwarg("clamp", kwargs)
-        if clamp is None:
-            clamp = False
-        discard = Transform._get_kwarg("discard", kwargs)
-        if discard is None:
-            discard = True
+
+        self._clamp   = False
+        self._discard = True
+        self._domain  = np.array([-1,+1], dtype=np.float32)
+        self._range   = np.array([-1,+1], dtype=np.float32)
+        self.process_kwargs(**kwargs)
+
         Transform.__init__(self, code, *args, **kwargs)
 
-        self._clamp   = clamp
-        self._discard = discard
-        self._domain  = np.asarray(domain,dtype=np.float32)
-        self._range   = np.asarray(range,dtype=np.float32)
+
+    def process_kwargs(self, **kwargs):
+
+        self._domain  = Transform._get_kwarg("domain", kwargs, self._domain)
+        self._range   = Transform._get_kwarg("range",  kwargs, self._range)
+        self._clamp   = Transform._get_kwarg("clamp",  kwargs, self._clamp)
+        self._discard = Transform._get_kwarg("discard", kwargs, self._discard)
+        self._domain  = np.asarray(self._domain, dtype=np.float32)
+        self._range   = np.asarray(self._range, dtype=np.float32)
+        Transform.process_kwargs(self, **kwargs)
 
 
     @property

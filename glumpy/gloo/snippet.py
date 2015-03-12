@@ -20,18 +20,24 @@ class Snippet(object):
     snippet variable must be accessed through the snippet (snippet["variable"])
     to be able to change its value within the main program.
 
-    To override this behavior, the keyword "extern" can be used to indicate
-    this variable is already defined elsewhere. This declaration will be then
-    removed from the final code but the variable will still be accessible
-    through the snippet interface.
+    Snippet can be composed together through call::
 
-    Finally, it is also possible to indicate what name is to be used when
-    calling a snippet, using keyword arguments (snippet(var="b"))
+      A = Snippet(code="...")
+      B = Snippet(code="...")
+      C = A(B("P"))
+
+    and arithmetic composition::
+
+      A = Snippet(code="...")
+      B = Snippet(code="...")
+      C = A("P") + B("P")
+
     """
 
     # Internal id counter for automatic snippets name mangling
     _id_counter = 1
 
+    # Class aliases
     aliases = { }
 
     def __init__(self, code=None, default=None, *args, **kwargs):
@@ -48,28 +54,26 @@ class Snippet(object):
         # No chained snippet yet
         self._next = None
 
+        # No name
+        self._name = None
+
+        # No default call
+        self._call = None
+
         # Snippet identification
         self._id = Snippet._id_counter
         Snippet._id_counter += 1
 
-        # Snippet name
-        self._name = kwargs.get("name", None)
-        if "name" in kwargs.keys(): del kwargs["name"]
+        # Process kwargs (name and call)
+        self.process_kwargs(**kwargs)
+
+        # If no name has been given, set a default one
         if self._name is None:
             classname = self.__class__.__name__
             self._name = "%s_%d" % (classname, self._id)
 
-        # Snippet name
-        self._call = kwargs.get("call", None)
-        if "call" in kwargs.keys(): del kwargs["call"]
-
         # Symbol table
-        # self._symbols = { 'var_names' : {},
-        #                   'var_alias' : {},
-        #                   'fun_names' : {},
-        #                   'fun_alias' : {} }
         self._symbols = {}
-
         for (name,dtype) in self._objects["attributes"]:
             self._symbols[name] = "%s_%d" % (name,self._id)
         for (name,dtype) in self._objects["uniforms"]:
@@ -78,16 +82,27 @@ class Snippet(object):
             self._symbols[name] = "%s_%d" % (name,self._id)
         for (name,dtype) in self._objects["consts"]:
             self._symbols[name] = "%s_%d" % (name,self._id)
-
         for (rtype,name,args,code) in self._objects["functions"]:
             self._symbols[name] = "%s_%d" % (name,self._id)
 
         # Aliases (through kwargs)
-        for symbol in kwargs.keys():
-            self._symbols[symbol] = kwargs[symbol]
+        for name,alias in kwargs.items():
+            self._symbols[name] = alias
 
         # Attached programs
         self._programs = []
+
+
+    def process_kwargs(self, **kwargs):
+        """ Process kwargs as given in __init__() or __call__() """
+
+        if "name" in kwargs.keys():
+            self._name = kwargs["name"]
+            del kwargs["name"]
+
+        if "call" in kwargs.keys():
+            self._call = kwargs["call"]
+            del kwargs["call"]
 
 
     @property
@@ -97,49 +112,59 @@ class Snippet(object):
         return self._name
 
 
-    @name.setter
-    def name(self, name):
-        """ Name of the snippet """
-
-        self._name = name
-
-
     @property
     def programs(self):
-        """ Attached programs """
+        """ Currently attached programs """
 
         return self._programs
 
 
     @property
     def objects(self):
-        """ Symbols """
+        """
+        Objects composing this snippet only.
+
+        Object are uniforms, attributes, consts, varying and functions.
+        """
 
         return self._objects
 
 
     @property
     def symbols(self):
-        """ Local symbols """
+        """
+        Symbol table.
+        """
 
         return self._symbols
 
 
     @property
     def locals(self):
-        """ Local symbols """
+        """
+        Local symbols.
+
+        Local symbols are defined from the code of this snippet only, not
+        taking into account symbols from arguments (call) or next (operators).
+        """
 
         symbols = {}
         objects = self._objects
         for name,dtype in objects["uniforms"]+ objects["attributes"] + objects["varyings"]:
             symbols[name] = self.symbols[name]
-
         # return self._symbols
         return symbols
 
 
     @property
     def globals(self):
+        """
+        Global symbols.
+
+        Global symbols are defined from all the codes composing this snippet,
+        taking into account symbols from arguments (call) and next (operators).
+        """
+
         """ Global symbols """
 
         symbols = {}
@@ -157,7 +182,7 @@ class Snippet(object):
 
     @property
     def next(self):
-        """ Get next snippet in the chain """
+        """ Next snippet in the arihmetic chain. """
 
         if self._next:
             return self._next[1]
@@ -166,7 +191,7 @@ class Snippet(object):
 
     @property
     def last(self):
-        """ Get last snippet in the chain """
+        """ Get last snippet in the arithmetic chain. """
 
         if self.next:
             snippet = self.next
@@ -192,7 +217,7 @@ class Snippet(object):
 
     @property
     def is_attached(self):
-        """ Wheter snippet is attached to a program """
+        """ Whether snippet is attached to a program """
         return len(self._programs) > 0
 
 
@@ -349,25 +374,24 @@ class Snippet(object):
         return s
 
 
-
     def __call__(self, *args, **kwargs):
-        """ __call__(self, *args) <==> self(*args) """
+        """
+        Call with new arguments and keyword arguments.
 
-        snippet = self #.copy(deep=False)
-        snippet._args = args
+        IMPORTANT: The returned snippet is `self`, not a copy.
+        """
 
-        if "name" in kwargs.keys():
-            snippet._name = kwargs["name"]
-            del kwargs["name"]
-        if "call" in kwargs.keys():
-            self._call = kwargs["call"]
-            del kwargs["call"]
+        # Override call arguments
+        self._args = args
 
-        # Aliases
-        for symbol in kwargs.keys():
-            self._symbols[symbol] = kwargs[symbol]
+        # Here we process kwargs as if they were given in __init__()
+        self.process_kwargs(**kwargs)
 
-        return snippet
+        # Remaining kwargs are aliases
+        for name, alias in kwargs.items():
+           self._symbols[name] = alias
+
+        return self
 
 
     def copy(self, deep=False):
@@ -525,7 +549,7 @@ if __name__ == '__main__':
     print D["Snippet_C"].locals
 
     # print D.objects
-    # print D.symbols
+    print D.symbols
     # print D
 
     print D

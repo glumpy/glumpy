@@ -16,15 +16,22 @@ class Figure(object):
                                  title = "Figure (matplotlib API)")
         self.viewport = app.Viewport()
 
+
     def on_draw(self, dt):
         self.window.clear()
+
 
     def show(self):
         self.window.push_handlers(self.viewport)
         self.window.push_handlers(self)
         app.run()
 
-    def add_axes(self, rect, facecolor=(1,1,1,1), aspect=None, interface=None):
-        axes = Axes(rect=rect, facecolor=facecolor, aspect=aspect, interface=interface)
+
+    def add_axes(self, rect=[0,0,1,1], facecolor=(1,1,1,1),
+                 xscale = None, yscale = None, zscale = None,
+                 projection = None, interface = None, aspect=None):
+        axes = Axes(rect=rect, facecolor=facecolor, aspect=aspect,
+                    xscale=xscale, yscale=yscale, zscale=zscale,
+                    projection=projection, interface=interface)
         self.viewport.add(axes)
         return axes

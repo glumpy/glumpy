@@ -39,7 +39,6 @@ class LinearScale(QuantitativeScale):
                 "clamp"   : "linear_scale_clamp",
                 "discard" : "linear_scale_discard" }
 
-
     def __init__(self, *args, **kwargs):
         """
         Initialize the transform.

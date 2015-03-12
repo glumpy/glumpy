@@ -75,6 +75,7 @@ class LogScale(QuantitativeScale):
         QuantitativeScale.__init__(self, code, *args, **kwargs)
 
 
+
     @property
     def base(self):
         """ Input base for xyz """

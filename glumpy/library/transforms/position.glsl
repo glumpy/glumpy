@@ -28,6 +28,11 @@ vec4 position(vec3 xyz)
     return vec4(xyz, 1.0);
 }
 
+vec4 position(vec4 xyzw)
+{
+    return xyzw;
+}
+
 vec4 position(vec2 xy, float z)
 {
     return vec4(xy, z, 1.0);

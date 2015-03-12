@@ -11,25 +11,31 @@
 
 uniform float polar_origin;
 
-vec2 forward(float rho, float theta)
+vec4 forward(float rho, float theta, float z, float w)
 {
-    return vec2(rho * cos(theta + polar_origin),
-                rho * sin(theta + polar_origin));
+    return vec4(rho * cos(theta + polar_origin),
+                rho * sin(theta + polar_origin),
+                z, w);
 }
+vec4 forward(float x, float y) {return forward(x, y, 0.0, 1.0);}
+vec4 forward(float x, float y, float z) {return forward(x, y, 0.0, 1.0);}
+vec4 forward(vec2 P) { return forward(P.x, P.y); }
+vec4 forward(vec3 P) { return forward(P.x, P.y, P.z, 1.0); }
+vec4 forward(vec4 P) { return forward(P.x, P.y, P.z, P.w); }
+// vec4 forward(float x, float y, float z) { return vec3(forward(x,y),z); }
 
-vec2 forward(vec2 P) { return forward(P.x, P.y); }
-vec3 forward(vec3 P) { return vec3(forward(P.x,P.y), P.z); }
-vec4 forward(vec4 P) { return vec4(forward(P.x,P.y), P.z, P.w); }
-
-vec2 inverse(float x, float y)
+vec4 inverse(float x, float y, float z, float w)
 {
     float rho = length(vec2(x,y));
     float theta = atan(y,x);
     if( theta < 0.0 )
         theta = 2.0*M_PI+theta;
-    return vec2(rho, theta-polar_origin);
+    return vec4(rho, theta-polar_origin, z, w);
 }
+vec4 inverse(float x, float y) {return inverse(x,y,0.0,1.0); }
+vec4 inverse(float x, float y, float z) {return inverse(x,y,z,1.0); }
+vec4 inverse(vec2 P) { return inverse(P.x, P.y, 0.0, 1.0); }
+vec4 inverse(vec3 P) { return inverse(P.x, P.y, P.z, 1.0); }
+vec4 inverse(vec4 P) { return inverse(P.x, P.y, P.z, P.w); }
 
-vec2 inverse(vec2 P) { return inverse(P.x, P.y); }
-vec3 inverse(vec3 P) { return vec3(inverse(P.x,P.y), P.z); }
-vec4 inverse(vec4 P) { return vec4(inverse(P.x,P.y), P.z, P.w); }
+//vec3 inverse(float x, float y, float z) { return vec3(inverse(x,y),z); }
