@@ -93,7 +93,7 @@ if __name__ == "__main__":
           },
 
           cmdclass={'build_ext': build_ext},
-          ext_modules=[Extension("glumpy.ext.sdf",
+          ext_modules=[Extension("glumpy.ext.sdf.sdf",
                                  sources=["glumpy/ext/sdf/_sdf.pyx",
                                           "glumpy/ext/sdf/sdf.c"],
                                  include_dirs=[numpy.get_include()])],
