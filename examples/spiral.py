@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2015, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
@@ -32,7 +32,7 @@ def on_draw(dt):
 xscale = LinearScale(".x", name="xscale", domain=[0,1], range=[0.25,1])
 yscale = LinearScale(".y", name="yscale", domain=[0,1], range=[0,2*np.pi])
 zscale = LinearScale(".z", name="zscale")
-transform = Trackball(PolarProjection(Position(xscale,yscale,zscale)), aspect=1)
+transform = Trackball(PolarProjection(Position(xscale,yscale,zscale)), aspect=None)
 viewport = Viewport()
 
 xmin,xmax = 0,1
@@ -105,7 +105,7 @@ labels = GlyphCollection(transform=transform, viewport=viewport,
 
 regular = FontManager.get("OpenSans-Regular.ttf")
 n = 10+1
-scale = 0.0075
+scale = 0.0065
 for i,y in enumerate(np.linspace(xmin,xmax,n)[:-1]):
     text = "%.2f" % (i/10.0)
     labels.append(text, regular,
@@ -120,18 +120,18 @@ for i,y in enumerate(np.linspace(xmin,xmax,n)[:-1]):
 n = 1000
 P = np.zeros((n,3))
 P[:,0] = np.linspace(+1,0,n)
-P[:,1] = np.linspace(0,5,n)
+P[:,1] = np.linspace(0,4,n)
 P[:,2] = np.linspace(-1,1,n)
 paths.append(P, linewidth=3, color=(1,0,0,1))
 
 window.attach(paths["transform"])
 window.attach(paths["viewport"])
 
-# time = 0
-# @window.timer(1/60.0)
-# def timer(elapsed):
-#     global time
-#     time += elapsed
-#     paths["transform"]["yscale"]["range"] = 0, np.pi * (1.5 + 0.5*np.cos(time))
+time = 0
+@window.timer(1/60.0)
+def timer(elapsed):
+    global time
+    time += elapsed
+    paths["transform"]["yscale"]["range"] = 0, np.pi * (1.5 + 0.5*np.cos(time))
 
 app.run()

@@ -28,12 +28,23 @@ void transform(void)
 #ifdef __FRAGMENT_SHADER__
 void clipping(void)
 {
-    if (viewport_clipping == 0) return;
+//    if (viewport_clipping == 0) return;
 
     vec2 position = gl_FragCoord.xy;
          if( position.x < (viewport_local.x))                  discard;
     else if( position.x > (viewport_local.x+viewport_local.z)) discard;
     else if( position.y < (viewport_local.y))                  discard;
     else if( position.y > (viewport_local.y+viewport_local.w)) discard;
+
+    /*
+    if( length(position.x - viewport_local.x) < 1.0 )
+        gl_FragColor = vec4(0,0,0,1);
+    else if( length(position.x - viewport_local.x - viewport_local.z) < 1.0 )
+        gl_FragColor = vec4(0,0,0,1);
+    else if( length(position.y - viewport_local.y) < 1.0 )
+        gl_FragColor = vec4(0,0,0,1);
+    else if( length(position.y - viewport_local.y - viewport_local.w) < 1.0 )
+        gl_FragColor = vec4(0,0,0,1);
+    */
 }
 #endif

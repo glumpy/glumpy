@@ -33,9 +33,18 @@ void main()
     vec3 tangent = normalize(direction.xyz);
     vec3 ortho   = normalize(cross(tangent, up));
 
+    vec4 T = <transform((origin + scale*tangent))> - <transform(origin)>;
+    vec4 O = <transform((origin + scale*ortho))>   - <transform(origin)>;
+    T = scale*normalize(T);
+    O = scale*normalize(O);
+
+    vec4 P1_ = <transform(origin)> + ( position.x*T + position.y*O);
+    vec2 p1 = NDC_to_viewport(P1_, <viewport.viewport_global>.zw);
+/*
     vec3 P1 = origin + scale*(tangent*position.x + ortho*position.y);
     vec4 P1_ = <transform(P1)>;
     vec2 p1 = NDC_to_viewport(P1_, <viewport.viewport_global>.zw);
+*/
 
     // This compute an estimation of the actual size of the glyph
     vec3 P2 = origin + scale*(tangent*(position.x+64.0) + ortho*(position.y));

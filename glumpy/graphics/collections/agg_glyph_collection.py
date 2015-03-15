@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from . collection import Collection
-from glumpy import gl, data, library
+from glumpy import gloo, gl, data, library
 from glumpy.graphics.text import FontManager
 from glumpy.transforms import Position, Viewport
 
@@ -19,8 +19,19 @@ class AggGlyphCollection(Collection):
                  ('offset',    (np.float32, 1), '!local', 0),
                  ('origin',    (np.float32, 3), 'shared', (0,0,0)),
                  ('color',     (np.float32, 4), 'shared', (0,0,0,1))]
-        vertex   = library.get('collections/agg-glyph.vert')
-        fragment = library.get('collections/agg-glyph.frag')
+
+        if "vertex" in kwargs.keys():
+            vertex = kwargs["vertex"]
+            del kwargs["vertex"]
+        else:
+            vertex = library.get('collections/agg-glyph.vert')
+
+        if "fragment" in kwargs.keys():
+            fragment = kwargs["vertex"]
+            del kwargs["vertex"]
+        else:
+            fragment = library.get('collections/agg-glyph.frag')
+
         Collection.__init__(self, dtype=dtype, itype=np.uint32,
                             mode = gl.GL_TRIANGLES,
                             vertex=vertex, fragment=fragment)
@@ -163,3 +174,67 @@ class AggGlyphCollection(Collection):
 
         return vertices, indices
         # return vertices.view(VertexBuffer), indices.view(IndexBuffer)
+
+
+    def view(self, transform, viewport=None):
+        """ Return a view on the collection using provided transform """
+
+        return GlyphCollectionView(self, transform, viewport)
+
+
+
+
+class GlyphCollectionView(object):
+
+    def __init__(self, collection, transform=None, viewport=None):
+
+        vertex = collection._vertex
+        fragment = collection._fragment
+        program = gloo.Program(vertex, fragment)
+
+        if "transform" in program.hooks and transform is not None:
+            program["transform"] = transform
+
+        if "viewport" in program.hooks and viewport is not None:
+            program["viewport"] = viewport
+
+        program.bind(collection._vertices_buffer)
+        for name in collection._uniforms.keys():
+            program[name] = collection._uniforms[name]
+
+        collection._programs.append(program)
+        self._program = program
+        self._collection = collection
+
+
+    def __getitem__(self, key):
+        return self._program[key]
+
+
+    def __setitem__(self, key, value):
+        self._program[key] = value
+
+
+    def draw(self):
+
+        program = self._program
+        collection = self._collection
+        mode = collection._mode
+
+        if collection._need_update:
+            collection._update()
+            # self._program.bind(self._vertices_buffer)
+
+            if collection._uniforms_list is not None:
+                program["uniforms"] = collection._uniforms_texture
+                program["uniforms_shape"] = collection._ushape
+
+        atlas = collection["atlas_data"]
+        program['atlas_data'] = atlas
+        program['atlas_data'].interpolation = gl.GL_LINEAR
+        program['atlas_shape'] = atlas.shape[1], atlas.shape[0]
+
+        if collection._indices_list is not None:
+            program.draw(mode, collection._indices_buffer)
+        else:
+            draw(program, mode)

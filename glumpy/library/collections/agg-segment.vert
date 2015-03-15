@@ -40,9 +40,18 @@ void main (void)
     vec4 P0_ = <transform(P0)>;
     vec4 P1_ = <transform(P1)>;
 
+/*
+    float size = 0.25;
+    if(size > 0) {
+        P1_ = P0_ + size*normalize(P1_-P0_);
+    }
+*/
+
     // p0/p1 in viewport coordinates
     vec2 p0 = NDC_to_viewport(P0_, <viewport.viewport_global>.zw);
     vec2 p1 = NDC_to_viewport(P1_, <viewport.viewport_global>.zw);
+
+
 
     //
     vec2 position;

@@ -20,8 +20,19 @@ class SDFGlyphCollection(Collection):
                  ('direction', (np.float32, 3), 'shared', (1,0,0)),
                  ('scale',     (np.float32, 1), 'shared', 0.005),
                  ('color',     (np.float32, 4), 'shared', (0,0,0,1))]
-        vertex   = library.get('collections/sdf-glyph.vert')
-        fragment = library.get('collections/sdf-glyph.frag')
+
+        if "vertex" in kwargs.keys():
+            vertex = library.get(kwargs["vertex"])
+            del kwargs["vertex"]
+        else:
+            vertex = library.get('collections/sdf-glyph.vert')
+
+        if "fragment" in kwargs.keys():
+            fragment = library.get(kwargs["fragment"])
+            del kwargs["fragment"]
+        else:
+            fragment = library.get('collections/sdf-glyph.frag')
+
         Collection.__init__(self, dtype=dtype, itype=np.uint32,
                             mode = gl.GL_TRIANGLES,
                             vertex=vertex, fragment=fragment)

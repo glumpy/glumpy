@@ -11,8 +11,7 @@
 
 const float B = 2.0;
 
-
-vec2 forward(float longitude, float latitude)
+vec4 forward(float longitude, float latitude, float z, float w)
 {
     float cos_lat = cos(latitude);
     float sin_lat = sin(latitude);
@@ -21,11 +20,13 @@ vec2 forward(float longitude, float latitude)
     float d = sqrt(1.0 + cos_lat * cos_lon);
     float x = (B * M_SQRT2 * cos_lat * sin_lon) / d;
     float y =     (M_SQRT2 * sin_lat) / d;
-    return vec2(x,y);
+    return vec4(x,y,z,w);
 }
-vec2 forward(vec2 P) { return forward(P.x,P.y); }
-vec3 forward(vec3 P) { return vec3(forward(P.x,P.y), P.z); }
-vec4 forward(vec4 P) { return vec4(forward(P.x,P.y), P.z, P.w); }
+vec4 forward(float x, float y) {return forward(x, y, 0.0, 1.0);}
+vec4 forward(float x, float y, float z) {return forward(x, y, 0.0, 1.0);}
+vec4 forward(vec2 P) { return forward(P.x, P.y); }
+vec4 forward(vec3 P) { return forward(P.x, P.y, P.z, 1.0); }
+vec4 forward(vec4 P) { return forward(P.x, P.y, P.z, P.w); }
 
 
 vec2 inverse(float x, float y)

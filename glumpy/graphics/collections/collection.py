@@ -133,34 +133,40 @@ class Collection(BaseCollection):
     def view(self, transform, viewport=None):
         """ Return a view on the collection using provided transform """
 
-        program = gloo.Program(self._vertex, self._fragment)
-        if "transform" in program.hooks:
-            program["transform"] = transform
-        if "viewport" in program.hooks:
-            if viewport is not None:
-                program["viewport"] = viewport
-            else:
-                program["viewport"] = Viewport()
-        self._programs.append(program)
-        program.bind(self._vertices_buffer)
-        for name in self._uniforms.keys():
-            program[name] = self._uniforms[name]
-        if self._uniforms_list is not None:
-            program["uniforms"] = self._uniforms_texture
-            program["uniforms_shape"] = self._ushape
+        return CollectionView(self, transform, viewport)
 
-        # Piggy backing
-        def draw():
-            if self._need_update:
-                self._update()
-                program.bind(self._vertices_buffer)
-            if self._indices_list is not None:
-                Program.draw(porgram, self._mode, self._indices_buffer)
-            else:
-                Program.draw(program, self._mode)
+        # program = gloo.Program(self._vertex, self._fragment)
+        # if "transform" in program.hooks:
+        #     program["transform"] = transform
+        # if "viewport" in program.hooks:
+        #     if viewport is not None:
+        #         program["viewport"] = viewport
+        #     else:
+        #         program["viewport"] = Viewport()
+        # self._programs.append(program)
+        # program.bind(self._vertices_buffer)
+        # for name in self._uniforms.keys():
+        #     program[name] = self._uniforms[name]
+        # #if self._uniforms_list is not None:
+        # #    program["uniforms"] = self._uniforms_texture
+        # #    program["uniforms_shape"] = self._ushape
 
-        program.draw = draw
-        return program
+        # # Piggy backing
+        # def draw():
+        #     if self._need_update:
+        #         self._update()
+        #         program.bind(self._vertices_buffer)
+        #         if self._uniforms_list is not None:
+        #             program["uniforms"] = self._uniforms_texture
+        #             program["uniforms_shape"] = self._ushape
+
+        #     if self._indices_list is not None:
+        #         Program.draw(program, self._mode, self._indices_buffer)
+        #     else:
+        #         Program.draw(program, self._mode)
+
+        # program.draw = draw
+        # return program
 
 
 
@@ -202,3 +208,54 @@ class Collection(BaseCollection):
             program.draw(mode, self._indices_buffer)
         else:
             program.draw(mode)
+
+
+
+class CollectionView(object):
+
+    def __init__(self, collection, transform=None, viewport=None):
+
+        vertex = collection._vertex
+        fragment = collection._fragment
+        program = gloo.Program(vertex, fragment)
+
+        if "transform" in program.hooks and transform is not None:
+            program["transform"] = transform
+
+        if "viewport" in program.hooks and viewport is not None:
+            program["viewport"] = viewport
+
+        program.bind(collection._vertices_buffer)
+        for name in collection._uniforms.keys():
+            program[name] = collection._uniforms[name]
+
+        collection._programs.append(program)
+        self._program = program
+        self._collection = collection
+
+
+    def __getitem__(self, key):
+        return self._program[key]
+
+
+    def __setitem__(self, key, value):
+        self._program[key] = value
+
+
+    def draw(self):
+
+        program = self._program
+        collection = self._collection
+        mode = collection._mode
+
+        if collection._need_update:
+            collection._update()
+            # self._program.bind(self._vertices_buffer)
+            if collection._uniforms_list is not None:
+                program["uniforms"] = collection._uniforms_texture
+                program["uniforms_shape"] = collection._ushape
+
+        if collection._indices_list is not None:
+            program.draw(mode, collection._indices_buffer)
+        else:
+            draw(program, mode)
