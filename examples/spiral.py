@@ -29,10 +29,13 @@ def on_draw(dt):
     ticks.draw()
     paths.draw()
 
-xscale = LinearScale(".x", name="xscale", domain=[0,1], range=[0.25,1])
+xscale = LinearScale(".x", name="xscale", domain=[0,1], range=[0,1])
 yscale = LinearScale(".y", name="yscale", domain=[0,1], range=[0,2*np.pi])
 zscale = LinearScale(".z", name="zscale")
-transform = Trackball(PolarProjection(Position(xscale,yscale,zscale)), aspect=None)
+projection = PolarProjection(name="data_projection")
+trackball = Trackball(name="view_projection", aspect=1)
+vec4 = Position()
+transform = trackball(projection(vec4(xscale,yscale,zscale)))
 viewport = Viewport()
 
 xmin,xmax = 0,1
@@ -100,21 +103,20 @@ for z in np.linspace(zmin,zmax,n_minor)[0:-1]:
 # Tick labels
 # -------------------------------------
 labels = GlyphCollection(transform=transform, viewport=viewport,
-                         vertex = 'collections/sdf-glyph-ticks.vert')
+                         vertex = 'collections/tick-labels.vert')
 
 
 regular = FontManager.get("OpenSans-Regular.ttf")
 n = 10+1
-scale = 0.0065
+scale = 0.002
 for i,y in enumerate(np.linspace(xmin,xmax,n)[:-1]):
     text = "%.2f" % (i/10.0)
     labels.append(text, regular,
                   origin = (xmax+0.15,y,zmin), scale = scale, direction = (1,0,0),
                   anchor_x = "left", anchor_y = "center")
     labels.append(text, regular, origin = (y, -.001, zmin),
-                  scale= scale, direction = (0,1,0),
+                  scale = 0.5*scale, direction = (0,1,0),
                   anchor_x = "right", anchor_y = "center")
-
 
 # Add some points
 n = 1000
@@ -126,12 +128,4 @@ paths.append(P, linewidth=3, color=(1,0,0,1))
 
 window.attach(paths["transform"])
 window.attach(paths["viewport"])
-
-time = 0
-@window.timer(1/60.0)
-def timer(elapsed):
-    global time
-    time += elapsed
-    paths["transform"]["yscale"]["range"] = 0, np.pi * (1.5 + 0.5*np.cos(time))
-
 app.run()

@@ -39,8 +39,8 @@ class SDFGlyphCollection(Collection):
         program = self._programs[0]
         if transform is not None:
             program["transform"] = transform
-        else:
-            program["transform"] = Position()
+#        else:
+#            program["transform"] = Position()
 
         if "viewport" in program.hooks:
             if viewport is not None:

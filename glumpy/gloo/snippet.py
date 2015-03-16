@@ -311,7 +311,7 @@ class Snippet(object):
         return self.mangled_call()
 
 
-    def mangled_call(self, function=None, arguments=None):
+    def mangled_call(self, function=None, arguments=None, isolated=False):
         """ Generate mangled call """
 
         s = ""
@@ -335,7 +335,7 @@ class Snippet(object):
 
             s = self.lookup(name, deepsearch=False) or name
 
-            if len(self._args):
+            if len(self._args) and isolated is False:
                 s += "("
                 for i,arg in enumerate(self._args):
                     if isinstance(arg,Snippet):

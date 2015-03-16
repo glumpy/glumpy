@@ -18,7 +18,7 @@ vec4 forward(float rho, float theta, float z, float w)
                 z, w);
 }
 vec4 forward(float x, float y) {return forward(x, y, 0.0, 1.0);}
-vec4 forward(float x, float y, float z) {return forward(x, y, 0.0, 1.0);}
+vec4 forward(float x, float y, float z) {return forward(x, y, z, 1.0);}
 vec4 forward(vec2 P) { return forward(P.x, P.y); }
 vec4 forward(vec3 P) { return forward(P.x, P.y, P.z, 1.0); }
 vec4 forward(vec4 P) { return forward(P.x, P.y, P.z, P.w); }

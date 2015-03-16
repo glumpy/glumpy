@@ -80,7 +80,7 @@ class Shader(GLObject):
     def _replace_hooks(self, name, snippet):
 
         #re_hook = r"(?P<hook>%s)(\.(?P<subhook>\w+))?" % name
-        re_hook = r"(?P<hook>%s)(\.(?P<subhook>[\.\w]+))?" % name
+        re_hook = r"(?P<hook>%s)(\.(?P<subhook>[\.\w\!]+))?" % name
         re_args = r"(\((?P<args>[^<>]+)\))?"
         re_hooks = re.compile("\<"+re_hook+re_args+"\>" , re.VERBOSE )
         pattern = "\<" + re_hook + re_args + "\>"
@@ -111,6 +111,17 @@ class Shader(GLObject):
                     if isinstance(s[item], Snippet):
                         s = s[item]
                 subhook = subhook.split('.')[-1]
+
+                # If the last snippet name endswith "!" this means to call
+                # the snippet with given arguments and not the ones stored.
+                # If S = A(B(C)):
+                #   S("t") -> A(B(C("t")))
+                #   S!("t") -> A("t")
+                isolated = False
+                if subhook[-1] == "!":
+                    isolated = True
+                    subhook = subhook[:-1]
+
                 # Do we have a class alias ? We don't return it yet since we
                 # need its translation from the symbol table
                 if subhook in s.aliases.keys():
@@ -118,7 +129,7 @@ class Shader(GLObject):
                 # If subhook is a variable (uniform/attribute/varying)
                 if subhook in s.globals:
                     return s.globals[subhook]
-                return s.mangled_call(subhook, match.group("args"))
+                return s.mangled_call(subhook, match.group("args"), isolated=isolated)
 
             # If subhook is a variable (uniform/attribute/varying)
             if subhook in snippet.globals:
