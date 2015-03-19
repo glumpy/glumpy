@@ -5,23 +5,21 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy import app, gl, glm, gloo
-from glumpy.transforms import Position
-
+from glumpy import app, gl, glm, gloo, transforms
 
 vertex = """
 attribute vec2 position;
 void main()
 {
-    gl_Position = <transform>;
-    //gl_Position = vec4(position,0,1);
+    gl_Position = vec4(position,0,1);
+    <viewport.transform>;
 }
 """
 
 fragment = """
 void main()
 {
-    <clipping>;
+    <viewport.clipping>;
     gl_FragColor = vec4(1,0,0,1);
 }
 """
@@ -37,7 +35,7 @@ program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 
 # -- Child has size of root -10 pixels
-child = app.Viewport(size=(-10,-10), position=(0.5,0.5), anchor=(0.5,0.5))
+# child = app.Viewport(size=(-10,-10), position=(0.5,0.5), anchor=(0.5,0.5))
 
 # -- Child has 95% of size of root
 # child = app.Viewport(size=(.95,.95), position=(0.5,0.5), anchor=(0.5,0.5), aspect=1)
@@ -54,11 +52,15 @@ child = app.Viewport(size=(-10,-10), position=(0.5,0.5), anchor=(0.5,0.5))
 # -- Child is at top-right corner
 # child = app.Viewport(size=(0.5,0.5), position=(-1,-1), anchor=(-1,-1), aspect=1)
 
-viewport = app.Viewport()
-window.attach(viewport)
-viewport.add(child)
 
-program["transform"] = child.transform(Position("position"))
-program["clipping"] = child.clipping(copy=False)
+@window.event
+def on_resize(width,height):
+    root._requested_size = width, height
+    root._compute_viewport()
+    program["viewport"]["global"] = root.extents
+    program["viewport"]["local"] = child.extents
 
+root = app.Viewport()
+root.add(child)
+program["viewport"] = transforms.Viewport()
 app.run()
