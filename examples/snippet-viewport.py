@@ -35,7 +35,7 @@ program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 
 # -- Child has size of root -10 pixels
-# child = app.Viewport(size=(-10,-10), position=(0.5,0.5), anchor=(0.5,0.5))
+child = app.Viewport(size=(-10,-10), position=(0.5,0.5), anchor=(0.5,0.5))
 
 # -- Child has 95% of size of root
 # child = app.Viewport(size=(.95,.95), position=(0.5,0.5), anchor=(0.5,0.5), aspect=1)
