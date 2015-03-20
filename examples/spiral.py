@@ -20,7 +20,7 @@ def linepath(P0, P1, n=100):
     P[:,2] = np.linspace(zmin, zmax, n, endpoint=True)
     return P
 
-window = app.Window(width=1200, height=1200, color=(1,1,1,1))
+window = app.Window(width=1200, height=1000, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -34,8 +34,7 @@ yscale = LinearScale(".y", name="yscale", domain=[0,1], range=[0,2*np.pi])
 zscale = LinearScale(".z", name="zscale")
 projection = PolarProjection(name="data_projection")
 trackball = Trackball(name="view_projection", aspect=1)
-vec4 = Position()
-transform = trackball(projection(vec4(xscale,yscale,zscale)))
+transform = trackball(projection(Position(xscale,yscale,zscale)))
 viewport = Viewport()
 
 xmin,xmax = 0,1
@@ -111,11 +110,11 @@ n = 10+1
 scale = 0.002
 for i,y in enumerate(np.linspace(xmin,xmax,n)[:-1]):
     text = "%.2f" % (i/10.0)
-    labels.append(text, regular,
-                  origin = (xmax+0.15,y,zmin), scale = scale, direction = (1,0,0),
+    labels.append(text, regular, origin = (xmax+0.1,y,zmin),
+                  scale = 0.65*scale, direction = (1,0,0),
                   anchor_x = "left", anchor_y = "center")
     labels.append(text, regular, origin = (y, -.001, zmin),
-                  scale = 0.5*scale, direction = (0,1,0),
+                  scale = 0.65*scale, direction = (0,1,0),
                   anchor_x = "right", anchor_y = "center")
 
 # Add some points
@@ -126,6 +125,9 @@ P[:,1] = np.linspace(0,4,n)
 P[:,2] = np.linspace(-1,1,n)
 paths.append(P, linewidth=3, color=(1,0,0,1))
 
+trackball["phi"] = 0
+trackball["zoom"] = 15
+trackball["theta"] = 40
 window.attach(paths["transform"])
 window.attach(paths["viewport"])
 app.run()

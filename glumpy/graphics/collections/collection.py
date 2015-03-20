@@ -258,4 +258,4 @@ class CollectionView(object):
         if collection._indices_list is not None:
             program.draw(mode, collection._indices_buffer)
         else:
-            draw(program, mode)
+            program.draw(mode)

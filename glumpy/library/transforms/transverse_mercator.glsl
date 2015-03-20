@@ -17,7 +17,6 @@ const float a  = 1.00;
 float cosh(float x) { return 0.5 * (exp(x)+exp(-x)); }
 float sinh(float x) { return 0.5 * (exp(x)-exp(-x)); }
 
-
 vec2 forward(float lambda, float phi)
 {
     float x = 0.5*k0*log((1.0+sin(lambda)*cos(phi)) / (1.0 - sin(lambda)*cos(phi)));
