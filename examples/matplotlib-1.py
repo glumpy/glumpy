@@ -17,7 +17,7 @@ left = figure.add_axes( [0.010, 0.01, 0.485, 0.98],
 
 # Create a subplot on right, using panzoom interface (2d)
 right = figure.add_axes( [0.505, 0.01, 0.485, 0.98],
-                         interface = PanZoom(name="panzoom"),
+                         interface = PanZoom(name="panzoom", aspect=1),
                          facecolor=(0,0,1,0.25), aspect=1 )
 
 # Create a new collection of points
