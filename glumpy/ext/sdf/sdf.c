@@ -587,8 +587,7 @@ _compute_sdf( double *data, unsigned int width, unsigned int height)
     double * outside = (double *) calloc( width * height, sizeof(double) );
     double * inside  = (double *) calloc( width * height, sizeof(double) );
     unsigned int i;
-    double vmin;
-    double vmax;
+    double vmin, vmax, v;
     
     // Compute outside = edtaa3(bitmap); % Transform background (0's)
     computegradient( data, height, width, gx, gy);
@@ -633,7 +632,7 @@ _compute_sdf( double *data, unsigned int width, unsigned int height)
 
     for( i=0; i<width*height; ++i)
     {
-        double v = outside[i];
+        v = outside[i];
         if     ( v < vmin) outside[i] = vmin;
         else if( v > vmax) outside[i] = vmax;
         //data[i] = (outside[i]+vmin)/(2*vmin);
