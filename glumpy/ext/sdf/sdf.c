@@ -586,8 +586,9 @@ _compute_sdf( double *data, unsigned int width, unsigned int height)
     double * gy      = (double *) calloc( width * height, sizeof(double) );
     double * outside = (double *) calloc( width * height, sizeof(double) );
     double * inside  = (double *) calloc( width * height, sizeof(double) );
-    int i;
-
+    unsigned int i;
+    double vmin, vmax, v;
+    
     // Compute outside = edtaa3(bitmap); % Transform background (0's)
     computegradient( data, height, width, gx, gy);
     edtaa3(data, gx, gy, width, height, xdist, ydist, outside);
@@ -616,8 +617,8 @@ _compute_sdf( double *data, unsigned int width, unsigned int height)
 
     // distmap = outside - inside; % Bipolar distance field
 
-    float vmin = outside[0];
-    float vmax = outside[0];
+    vmin = outside[0];
+    vmax = outside[0];
     for( i=0; i<width*height; ++i)
     {
         outside[i] -= inside[i];
@@ -631,7 +632,7 @@ _compute_sdf( double *data, unsigned int width, unsigned int height)
 
     for( i=0; i<width*height; ++i)
     {
-        float v = outside[i];
+        v = outside[i];
         if     ( v < vmin) outside[i] = vmin;
         else if( v > vmax) outside[i] = vmax;
         //data[i] = (outside[i]+vmin)/(2*vmin);

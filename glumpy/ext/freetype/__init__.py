@@ -30,6 +30,16 @@ __dll__    = None
 __handle__ = None
 FT_Library_filename = ctypes.util.find_library('freetype')
 if not FT_Library_filename:
+    import platform
+    ft_versions = (str(v) for v in (255, 254, 253, 252, 251, 250,
+                                    2412, 2411, 2410, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240,
+                                    2312, 2311, 2310, 239, 238, 237, 236, 235, 234, 233, 232, 231, 230,
+                                    221))  # versions of freetype2 to check
+    for v in ft_versions:
+        FT_Library_filename = ctypes.util.find_library('freetype' + ft_version)
+        if FT_Library_filename is not None:
+            break
+if not FT_Library_filename:
     try:
         __dll__ = ctypes.CDLL('libfreetype.so.6')
     except OSError:
