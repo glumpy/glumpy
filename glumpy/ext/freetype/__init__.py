@@ -36,8 +36,8 @@ if not FT_Library_filename:
                                     2312, 2311, 2310, 239, 238, 237, 236, 235, 234, 233, 232, 231, 230,
                                     221))  # versions of freetype2 to check
     for v in ft_versions:
-        FT_Library_filename = ctypes.util.find_library('freetype' + ft_version)
-        if FT_Library_filename is not None:
+        FT_Library_filename = ctypes.util.find_library('freetype' + v)
+        if FT_Library_filename:
             break
 if not FT_Library_filename:
     try:
