@@ -80,7 +80,7 @@ class Program(GLObject):
         if isinstance(shaders, shader_class):
             return shaders
         elif isinstance(shaders, str):
-            return shader_class(library.get(shaders))
+            return shader_class(shaders if '{' in shaders else library.get(shaders))
         elif shaders is None:
             return None
         elif isinstance(shaders, (tuple, list)):
