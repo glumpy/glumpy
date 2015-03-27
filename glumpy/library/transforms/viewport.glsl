@@ -28,7 +28,7 @@ void transform(void)
 #ifdef __FRAGMENT_SHADER__
 void clipping(void)
 {
-//    if (viewport_clipping == 0) return;
+    if (viewport_clipping == 0) return;
 
     vec2 position = gl_FragCoord.xy;
          if( position.x < (viewport_local.x))                  discard;

@@ -144,6 +144,8 @@ def get(name, depth=0):
         return objload(filename)
     elif extension == 'svg':
         return filename
+    elif extension == 'json':
+        return filename
     elif extension in ('png', 'jpg', 'jpeg', 'tif', 'tiff', 'tga'):
         if Image is not None:
             if filename is not None:

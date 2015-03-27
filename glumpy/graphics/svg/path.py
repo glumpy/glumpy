@@ -144,7 +144,7 @@ class Quadratic(Command):
         x1,y1,x2,y2 = self._args
         x0,y0 = current
         x1,y1 = x1+ox, y1+oy
-        x2,y2 = x+ox, y+oy
+        x2,y2 = x2+ox, y2+oy
         self.previous = x1,y1
         vertices = geometry.quadratic((x0,y0), (x1,y1), (x2,y2))
 

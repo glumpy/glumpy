@@ -35,11 +35,12 @@ void main()
         // return;
     }
 
-    // Round join (instead of miter)
-    // if (v_texcoord.x < 0.0)          { distance = length(v_texcoord); }
-    // else if(v_texcoord.x > v_length) { distance = length(v_texcoord - vec2(v_length, 0.0)); }
-
-    else {
+     // Round join (instead of miter)
+     if (v_texcoord.x < 0.0) {
+         distance = length(v_texcoord);
+     } else if(v_texcoord.x > v_length) {
+         distance = length(v_texcoord - vec2(v_length, 0.0));
+     } else {
         // Miter limit
         float t = (v_miter_limit-1.0)*(v_linewidth/2.0) + v_antialias;
         if( (v_texcoord.x < 0.0) && (v_bevel_distance.x > (abs(distance) + t)) )

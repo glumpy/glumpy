@@ -10,8 +10,8 @@ from glumpy import app, gl, gloo, transforms
 
 
 def sphere(radius=1.0, slices=256, stacks=256):
-    vtype = [('theta',    np.float32, 1),
-             ('phi',      np.float32, 1)]
+    vtype = [('theta', np.float32, 1),
+             ('phi', np.float32, 1)]
     slices += 1
     stacks += 1
     n = slices*stacks
@@ -46,6 +46,7 @@ attribute float phi;
 attribute float theta;
 varying float v_theta;
 varying float v_phi;
+varying vec3 v_position;
 
 void main()
 {
@@ -54,13 +55,13 @@ void main()
     v_phi = phi;
     v_theta = theta;
 
-    radius = 1.0 + (harmonic(theta,phi,m1))/2.0;
+    radius = .5 + (harmonic(theta,phi,m1))/4.0;
     x = sin(theta) * sin(phi) * radius;
     y = sin(theta) * cos(phi) * radius;
     z = cos(theta) * radius;
     vec3 position1 = vec3(x,y,z);
 
-    radius = 1.0 + (harmonic(theta,phi,m2))/2.0;
+    radius = .5 + (harmonic(theta,phi,m2))/4.0;
     x = sin(theta) * sin(phi) * radius;
     y = sin(theta) * cos(phi) * radius;
     z = cos(theta) * radius;
@@ -68,6 +69,7 @@ void main()
 
     float t = (1.0+cos(time))/2.0;
     vec4 position = vec4(mix(position1, position2,t), 1.0);
+    v_position = position.xyz;
 
     gl_Position = <transform(position)>;
 }
@@ -126,6 +128,9 @@ def on_draw(dt):
     program["time"] = time
     program.draw(gl.GL_TRIANGLES, faces)
 
+    # trackball.phi = trackball.phi + 0.13
+    # trackball.theta = trackball.theta + 0.11
+
     if (abs(time - np.pi)) < dt:
         values = np.random.randint(0,7,8)
         keys   = ["m2[0]","m2[1]","m2[2]","m2[3]","m2[4]","m2[5]","m2[6]","m2[7]"]
@@ -139,8 +144,6 @@ def on_draw(dt):
             program[key] = value
         time = 0
 
-
-
 @window.event
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
@@ -148,7 +151,8 @@ def on_init():
 time = 0
 vertices, faces = sphere()
 program = gloo.Program(vertex, fragment)
-program["transform"] = transforms.Trackball()
+trackball = transforms.Trackball()
+program["transform"] = trackball()
 program.bind(vertices)
 
 values = np.random.randint(0,7,8)
@@ -161,6 +165,6 @@ keys   = ["m2[0]","m2[1]","m2[2]","m2[3]","m2[4]","m2[5]","m2[6]","m2[7]"]
 for key,value in zip(keys, values):
     program[key] = value
 
-
+trackball.zoom = 40
 window.attach(program["transform"])
 app.run()

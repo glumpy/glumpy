@@ -13,8 +13,8 @@ from glumpy.graphics.collections import PointCollection
 window = app.Window(1024,1024, color=(1,1,1,1))
 
 points = PointCollection("agg", color="shared")
-points.append(np.random.normal(0.0,0.5,(100000,3)), itemsize=50000)
-points["color"] = (1,0,0,1), (0,0,1,1)
+#points.append(np.random.normal(0.0,0.5,(10000,3)), itemsize=5000)
+#points["color"] = (1,0,0,1), (0,0,1,1)
 
 #points["viewport"].transform = True
 #points["viewport"].clipping = True
@@ -25,6 +25,8 @@ points["color"] = (1,0,0,1), (0,0,1,1)
 def on_draw(dt):
     window.clear()
     points.draw()
+    points.append(np.random.normal(0.0,0.5,(1,3)))
+
 
 window.attach(points["transform"])
 window.attach(points["viewport"])
