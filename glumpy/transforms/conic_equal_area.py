@@ -9,16 +9,19 @@ Conic Equal Area projection
 See: https://github.com/mbostock/d3/blob/master/src/geo/conic-equal-area.js
      http://mathworld.wolfram.com/AlbersEqual-AreaConicProjection.html
      http://en.wikipedia.org/wiki/Albers_projection
-
 """
 from glumpy import library
 from . transform import Transform
 
 
-class ConicEqualAreaProjection(Transform):
+class ConicEqualArea(Transform):
     """ Conic Equal Area projection """
 
-    aliases = {  }
+    aliases = { "scale"     : "conic_scale",
+                "center"    : "conic_center",
+                "rotate"    : "conic_rotate",
+                "translate" : "conic_translate",
+                "parallels" : "conic_parallels" }
 
     def __init__(self, *args, **kwargs):
         """
@@ -27,12 +30,93 @@ class ConicEqualAreaProjection(Transform):
 
         Kwargs parameters
         -----------------
+
+        scale : float
+            Scale factor applied to normalized Cartesian coordinates
+
+        center : float, float
+            Center of the projection as (longitude,latitude)
+
+        rotate : float, float, [float]
+            Rotation as yaw, pitch and roll.
+
+        translate : float, float
+            Translation (in scaled coordinates)
+
+        parallels : float, float
+            Parallels as define in conic equal area projection.
         """
 
+        self._scale = Transform._get_kwarg("scale", kwargs, 1.0)
+        self._center = Transform._get_kwarg("center", kwargs, (0,0))
+        self._rotate = Transform._get_kwarg("rotate", kwargs, (0,0))
+        self._translate = Transform._get_kwarg("translate", kwargs, (0,0))
+        self._parallels = Transform._get_kwarg("parallels", kwargs, (0,90))
         code = library.get("transforms/conic-equal-area.glsl")
+
+        # Make sure to call the foward function
+        kwargs["call"] = "forward"
+
         Transform.__init__(self, code, *args, **kwargs)
+
+
+    @property
+    def scale(self):
+        return self._scale
+
+    @scale.setter
+    def scale(self, value):
+        self._scale = float(value)
+        if self.is_attached:
+            self["scale"] = self._scale
+
+
+    @property
+    def translate(self):
+        return self._translate
+
+    @translate.setter
+    def translate(self, value):
+        self._translate = float(value)
+        if self.is_attached:
+            self["translate"] = self._translate
+
+    @property
+    def center(self):
+        return self._center
+
+    @center.setter
+    def center(self, value):
+        self._center = value
+        if self.is_attached:
+            self["center"] = self._center
+
+    @property
+    def rotate(self):
+        return self._rotate
+
+    @rotate.setter
+    def rotate(self, value):
+        self._rotate = value
+        if self.is_attached:
+            self["rotate"] = self._rotate
+
+    @property
+    def parallels(self):
+        return self._parallels
+
+    @parallels.setter
+    def parallels(self, value):
+        self._parallels = value
+        if self.is_attached:
+            self["parallels"] = self._parallels
 
 
     def on_attach(self, program):
         """ Initialization event """
-        pass
+
+        self["scale"] = self._scale
+        self["center"] = self._center
+        self["rotate"] = self._rotate
+        self["translate"] = self._translate
+        self["parallels"] = self._parallels

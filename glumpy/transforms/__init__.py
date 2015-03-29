@@ -13,11 +13,11 @@ from translate import Translate
 from transform import Transform
 
 
+from albers import Albers
 from polar import PolarProjection
 from hammer import HammerProjection
-from albers import AlbersProjection
 from identity import IdentityProjection
-from conic_equal_area import ConicEqualAreaProjection
+from conic_equal_area import ConicEqualArea
 from transverse_mercator import TransverseMercatorProjection
 from azimuthal_equal_area import AzimuthalEqualAreaProjection
 from azimuthal_equidistant import AzimuthalEquidistantProjection

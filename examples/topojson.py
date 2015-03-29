@@ -10,7 +10,7 @@ from itertools import chain
 from glumpy import app, gl, data
 from glumpy.graphics.collections import PathCollection, PolygonCollection
 from glumpy.transforms import Position, OrthographicProjection, PanZoom, Viewport
-from glumpy.transforms import AlbersProjection
+from glumpy.transforms import ConicEqualArea, Albers
 
 
 def relative_to_absolute(arc, scale=None, translate=None):
@@ -48,8 +48,7 @@ def geometry(obj, topology_arcs, scale=None, translate=None):
             obj['arcs'], topology_arcs, scale, translate )}
 
 
-
-window = app.Window(960, 600, color=(1,1,1,1))
+window = app.Window(2*960, 2*600, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
@@ -58,7 +57,12 @@ def on_draw(dt):
     paths.draw()
 
 
-transform = PanZoom(OrthographicProjection(AlbersProjection(Position()), aspect=1))
+Albers = ConicEqualArea(scale=2*1285,
+                        parallels = (29.5, 45.5),
+                        rotate = (96,0),
+                        translate = (0,0),
+                        center = (0.38, -0.41))
+transform = PanZoom(OrthographicProjection(Albers(Position()), aspect=1))
 
 paths = PathCollection("agg+", transform=transform, linewidth='shared', color="shared")
 polys = PolygonCollection("raw", transform=transform, color="shared")
@@ -102,7 +106,7 @@ for county in topology["objects"]["counties"]["geometries"]:
         V[:,:2] = P
         paths.append(V, closed=True, color=color, linewidth=linewidth)
         if len(V) > 3:
-            rgba = np.random.uniform(0,1,4)
+            rgba = 1,1,1,1
             polys.append(V[:-1], color=rgba)
 
     elif county["type"] == "MultiPolygon":
@@ -110,9 +114,8 @@ for county in topology["objects"]["counties"]["geometries"]:
             V = np.zeros((len(P[0]),3))
             V[:,:2] = P[0]
             paths.append(V, closed=True, color=color, linewidth=linewidth)
-            rgba = np.random.uniform(0,1,4)
             if len(V) > 3:
-                rgba = np.random.uniform(0,1,4)
+                rgba = 1,1,1,1
                 polys.append(V[:-1], color=rgba)
 
 window.attach(paths["transform"])
