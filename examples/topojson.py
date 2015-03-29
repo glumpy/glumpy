@@ -4,14 +4,13 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import re
 import json
-import triangle
 import numpy as np
 from itertools import chain
 from glumpy import app, gl, data
 from glumpy.graphics.collections import PathCollection, PolygonCollection
 from glumpy.transforms import Position, OrthographicProjection, PanZoom, Viewport
+from glumpy.transforms import AlbersProjection
 
 
 def relative_to_absolute(arc, scale=None, translate=None):
@@ -50,17 +49,19 @@ def geometry(obj, topology_arcs, scale=None, translate=None):
 
 
 
-window = app.Window(1000, 1000, color=(1,1,1,1))
+window = app.Window(960, 600, color=(1,1,1,1))
 
 @window.event
 def on_draw(dt):
     window.clear()
-    #polygons.draw()
+    polys.draw()
     paths.draw()
 
 
-transform = PanZoom(OrthographicProjection(Position()), aspect=None)
+transform = PanZoom(OrthographicProjection(AlbersProjection(Position()), aspect=1))
+
 paths = PathCollection("agg+", transform=transform, linewidth='shared', color="shared")
+polys = PolygonCollection("raw", transform=transform, color="shared")
 
 with open(data.get("us.json"), 'r') as file:
     topology = json.load(file)
@@ -99,12 +100,20 @@ for county in topology["objects"]["counties"]["geometries"]:
         P = geometry(county, arcs, scale, translate)["coordinates"][0]
         V = np.zeros((len(P),3))
         V[:,:2] = P
-        paths.append(V, closed=True, color=color, linewidth=0.5)
+        paths.append(V, closed=True, color=color, linewidth=linewidth)
+        if len(V) > 3:
+            rgba = np.random.uniform(0,1,4)
+            polys.append(V[:-1], color=rgba)
+
     elif county["type"] == "MultiPolygon":
         for P in geometry(county, arcs, scale, translate)["coordinates"]:
             V = np.zeros((len(P[0]),3))
             V[:,:2] = P[0]
             paths.append(V, closed=True, color=color, linewidth=linewidth)
+            rgba = np.random.uniform(0,1,4)
+            if len(V) > 3:
+                rgba = np.random.uniform(0,1,4)
+                polys.append(V[:-1], color=rgba)
 
 window.attach(paths["transform"])
 window.attach(paths["viewport"])

@@ -15,10 +15,13 @@ from transform import Transform
 
 from polar import PolarProjection
 from hammer import HammerProjection
+from albers import AlbersProjection
 from identity import IdentityProjection
+from conic_equal_area import ConicEqualAreaProjection
 from transverse_mercator import TransverseMercatorProjection
 from azimuthal_equal_area import AzimuthalEqualAreaProjection
 from azimuthal_equidistant import AzimuthalEquidistantProjection
+
 
 
 from pvm_projection import PVMProjection
