@@ -57,13 +57,12 @@ def on_draw(dt):
     paths.draw()
 
 
-Albers = ConicEqualArea(scale=2*1285,
+Albers = ConicEqualArea(scale = 2*1285,
                         parallels = (29.5, 45.5),
                         rotate = (96,0),
                         translate = (0,0),
                         center = (0.38, -0.41))
 transform = PanZoom(OrthographicProjection(Albers(Position()), aspect=1))
-
 paths = PathCollection("agg+", transform=transform, linewidth='shared', color="shared")
 polys = PolygonCollection("raw", transform=transform, color="shared")
 

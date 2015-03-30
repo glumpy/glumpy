@@ -17,7 +17,8 @@ from . transform import Transform
 class ConicEqualArea(Transform):
     """ Conic Equal Area projection """
 
-    aliases = { "scale"     : "conic_scale",
+    aliases = { "clip"      : "conic_clip",
+                "scale"     : "conic_scale",
                 "center"    : "conic_center",
                 "rotate"    : "conic_rotate",
                 "translate" : "conic_translate",
@@ -30,6 +31,10 @@ class ConicEqualArea(Transform):
 
         Kwargs parameters
         -----------------
+
+
+        clip : tuple of 4 floats
+
 
         scale : float
             Scale factor applied to normalized Cartesian coordinates
@@ -47,6 +52,7 @@ class ConicEqualArea(Transform):
             Parallels as define in conic equal area projection.
         """
 
+        self._clip = Transform._get_kwarg("clip", kwargs, (-180,180,-90,90))
         self._scale = Transform._get_kwarg("scale", kwargs, 1.0)
         self._center = Transform._get_kwarg("center", kwargs, (0,0))
         self._rotate = Transform._get_kwarg("rotate", kwargs, (0,0))
@@ -69,6 +75,16 @@ class ConicEqualArea(Transform):
         self._scale = float(value)
         if self.is_attached:
             self["scale"] = self._scale
+
+    @property
+    def clip(self):
+        return self._clip
+
+    @clip.setter
+    def clip(self, value):
+        self._clip = float(value)
+        if self.is_attached:
+            self["clip"] = self._clip
 
 
     @property
@@ -115,6 +131,7 @@ class ConicEqualArea(Transform):
     def on_attach(self, program):
         """ Initialization event """
 
+        self["clip"] = self._clip
         self["scale"] = self._scale
         self["center"] = self._center
         self["rotate"] = self._rotate

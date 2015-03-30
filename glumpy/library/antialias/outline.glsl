@@ -34,7 +34,12 @@ vec4 outline(float distance, float linewidth, float antialias, vec4 fg_color, ve
         frag_color = fg_color;
     else if( signed_distance < 0.0 )
         frag_color = mix(bg_color, fg_color, sqrt(alpha));
-    else
-        frag_color = vec4(fg_color.rgb, fg_color.a * alpha);
+    else {
+        if( abs(signed_distance) < (linewidth/2.0 + antialias) ) {
+            frag_color = vec4(fg_color.rgb, fg_color.a * alpha);
+        } else {
+            discard;
+        }
+    }
     return frag_color;
 }

@@ -4,17 +4,29 @@
 // ----------------------------------------------------------------------------
 #include "math/constants.glsl"
 
-const float degree = 180.0/M_PI;
-const float radian = M_PI/180.0;
-
 uniform float conic_scale;
 uniform vec2  conic_center;
 uniform vec2  conic_rotate;
 uniform vec2  conic_translate;
 uniform vec2  conic_parallels;
+uniform vec4  conic_clip;
 
 vec2 forward(float longitude, float latitude)
 {
+/*
+    if( (conic_clip.x >= -180) && (longitude < conic_clip.x) )
+        return vec2 (longitude, latitude);
+
+    if( (conic_clip.y <= +180) && (longitude > conic_clip.y) )
+        return vec2 (longitude, latitude);
+
+    if( (conic_clip.z >= -90) && (latitude < conic_clip.z) )
+        return vec2 (longitude, latitude);
+
+    if( (conic_clip.w <= +90) && (latitude > conic_clip.w) )
+        return vec2 (longitude, latitude);
+*/
+
     float phi0 = conic_parallels.x * radian;
     float phi1 = conic_parallels.y * radian;
 

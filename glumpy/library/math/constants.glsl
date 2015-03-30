@@ -45,4 +45,10 @@ const float M_SQRT2 = 1.41421356237309504880168872420969808;
 // The reciprocal of the square root of two (1/sqrt(2))
 const float M_SQRT1_2 = 0.707106781186547524400844362104849039;
 
+// 1 degree in radians
+const float degree = 180.0/M_PI;
+
+// 1 radian in degrees
+const float radian = M_PI/180.0;
+
 #endif
