@@ -98,9 +98,9 @@ program["id"] = np.arange(n,dtype=np.float32)
 quad = gloo.Program(quad_vertex, quad_fragment, count=4)
 quad['position']= [(-1,-1), (-1,1), (1,-1), (1,1)]
 
-color = np.zeros((1000,1000,4),np.ubyte).view(gloo.Texture2D)
+color = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
 color.interpolation = gl.GL_LINEAR
-pick = np.zeros((1000,1000,4),np.ubyte).view(gloo.Texture2D)
+pick = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
 pick.interpolation = gl.GL_LINEAR
 framebuffer = gloo.FrameBuffer(color=[color,pick])
 quad["color"] = color
@@ -111,20 +111,30 @@ mouse = 0,0
 @window.event
 def on_draw(dt):
     gl.glEnable(gl.GL_DEPTH_TEST)
+
     framebuffer.activate()
     window.clear()
     program.draw(gl.GL_POINTS)
-
     if mouse is not None:
         gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT1, gl.GL_FRONT)
         r,g,b,a = gl.glReadPixels(mouse[0],mouse[1],1,1, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
         index = ord(b) + 256*ord(g) + 256*256*ord(r)
         if index < len(program):
             program["bg_color"][index] = 0,0,0,1
-
     framebuffer.deactivate()
+
     gl.glDisable(gl.GL_DEPTH_TEST)
     quad.draw(gl.GL_TRIANGLE_STRIP)
+
+@window.event
+def on_resize(width, height):
+    global framebuffer, color, pick, quad
+    color = np.zeros((height,width,4),np.ubyte).view(gloo.Texture2D)
+    color.interpolation = gl.GL_LINEAR
+    pick = np.zeros((height,width,4),np.ubyte).view(gloo.Texture2D)
+    pick.interpolation = gl.GL_LINEAR
+    framebuffer = gloo.FrameBuffer(color=[color,pick])
+    quad["color"] = color
 
 @window.event
 def on_mouse_motion(x,y, dx, dy):
