@@ -64,7 +64,6 @@ class RenderBuffer(GLObject):
             self._width = width
             self._height = height
 
-
     def _create(self):
         """ Create buffer on GPU """
 
@@ -335,8 +334,12 @@ class FrameBuffer(GLObject):
             elif isinstance(buffer, Texture2D):
                 newbuffer = np.resize(buffer, (height,width,buffer.shape[2]))
                 newbuffer = newbuffer.view(buffer.__class__)
+                self.color[i] = newbuffer
                 buffer.delete()
-                self.color[i] = buffer
+
+                target = gl.GL_COLOR_ATTACHMENT0+i
+                self._pending_attachments.append((target, self.color[i]))
+                self._need_attach = True
 
         if isinstance(self.depth, DepthBuffer):
             self.depth.resize(width, height)
@@ -346,6 +349,10 @@ class FrameBuffer(GLObject):
             self.depth.delete()
             self.depth = depth
 
+            target = gl.GL_DEPTH_ATTACHMENT
+            self._pending_attachments.append((target, self.depth))
+            self._need_attach = True
+
         if isinstance(self.stencil, StencilBuffer):
             self.stencil.resize(width, height)
         elif isinstance(self.stencil, Texture2D):
@@ -354,6 +361,9 @@ class FrameBuffer(GLObject):
             self.stencil.delete()
             self.stencil = stencil
 
+            target = gl.GL_STENCIL_ATTACHMENT
+            self._pending_attachments.append((target, self.stencil))
+            self._need_attach = True
 
 
     def _create(self):

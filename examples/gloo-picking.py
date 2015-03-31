@@ -122,19 +122,13 @@ def on_draw(dt):
         if index < len(program):
             program["bg_color"][index] = 0,0,0,1
     framebuffer.deactivate()
-
     gl.glDisable(gl.GL_DEPTH_TEST)
     quad.draw(gl.GL_TRIANGLE_STRIP)
 
 @window.event
 def on_resize(width, height):
-    global framebuffer, color, pick, quad
-    color = np.zeros((height,width,4),np.ubyte).view(gloo.Texture2D)
-    color.interpolation = gl.GL_LINEAR
-    pick = np.zeros((height,width,4),np.ubyte).view(gloo.Texture2D)
-    pick.interpolation = gl.GL_LINEAR
-    framebuffer = gloo.FrameBuffer(color=[color,pick])
-    quad["color"] = color
+    framebuffer.resize(width,height)
+    quad["color"] = framebuffer.color[0]
 
 @window.event
 def on_mouse_motion(x,y, dx, dy):
