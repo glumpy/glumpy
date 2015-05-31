@@ -113,7 +113,31 @@ void main()
     float t = (1.0+cos(time))/2.0;
     t = mix(t1,t2,t);
 
-    gl_FragColor = vec4(ice_and_fire(clamp(t,0,1)),1.0);
+    vec4 bg_color = vec4(ice_and_fire(clamp(t,0,1)),1.0);
+    vec4 fg_color = vec4(0,0,0,1);
+
+    // Trace contour
+    float value = length(v_position);
+    float levels = 16.0;
+    float antialias = 1.0;
+    float linewidth = 1.0 + antialias;
+    if(length(value-0.5) < 0.5/levels)
+        linewidth = 3.0 + antialias;
+    float v  = levels*value - 0.5;
+    float dv = linewidth/2.0 * fwidth(v);
+    float f = abs(fract(v) - 0.5);
+    float d = smoothstep(-dv,+dv,f);
+    t = linewidth/2.0 - antialias;
+
+    d = abs(d)*linewidth/2.0 - t;
+    if( d < 0.0 ) {
+         gl_FragColor = bg_color;
+    } else  {
+        d /= antialias;
+        gl_FragColor = mix(fg_color,bg_color,d);
+    }
+
+
 }
 """
 
