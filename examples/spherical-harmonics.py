@@ -121,7 +121,7 @@ void main()
     float levels = 16.0;
     float antialias = 1.0;
     float linewidth = 1.0 + antialias;
-    if(length(value-0.5) < 0.5/levels)
+    if(length(value-1.) < 1./levels)
         linewidth = 3.0 + antialias;
     float v  = levels*value - 0.5;
     float dv = linewidth/2.0 * fwidth(v);
