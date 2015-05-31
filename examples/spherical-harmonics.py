@@ -55,13 +55,13 @@ void main()
     v_phi = phi;
     v_theta = theta;
 
-    radius = .5 + (harmonic(theta,phi,m1))/4.0;
+    radius = .5 + (harmonic(theta,phi,m1))/8.0;
     x = sin(theta) * sin(phi) * radius;
     y = sin(theta) * cos(phi) * radius;
     z = cos(theta) * radius;
     vec3 position1 = vec3(x,y,z);
 
-    radius = .5 + (harmonic(theta,phi,m2))/4.0;
+    radius = .5 + (harmonic(theta,phi,m2))/8.0;
     x = sin(theta) * sin(phi) * radius;
     y = sin(theta) * cos(phi) * radius;
     z = cos(theta) * radius;
