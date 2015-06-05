@@ -175,11 +175,15 @@ class Window(event.EventDispatcher):
     def config(self):
         return self._config
 
-    def clear(self):
+    def clear(self,color=None):
         """ Clear the whole window """
 
-        gl.glClear(self._clearflags)
-
+        if color is not None:
+            gl.glClearColor(*color)
+            gl.glClear(self._clearflags)
+            gl.glClearColor(*self.color)
+        else:
+            gl.glClear(self._clearflags)
 
     def on_init(self):
         """ Window initialization """
