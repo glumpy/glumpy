@@ -87,7 +87,6 @@ def on_draw(dt):
     framebuffer.deactivate()
 
     # Compositing
-    gl.glDisable(gl.GL_DEPTH_TEST)
     gl.glBlendFunc(gl.GL_ONE_MINUS_SRC_ALPHA, gl.GL_SRC_ALPHA)
     post.draw(gl.GL_TRIANGLE_STRIP)
     
