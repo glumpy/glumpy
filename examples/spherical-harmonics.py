@@ -55,13 +55,13 @@ void main()
     v_phi = phi;
     v_theta = theta;
 
-    radius = 0.9 + 0.2*(harmonic(theta,phi,m1));
+    radius = 1.0 + 0.15*(harmonic(theta,phi,m1));
     x = sin(theta) * sin(phi) * radius;
     y = sin(theta) * cos(phi) * radius;
     z = cos(theta) * radius;
     vec3 position1 = vec3(x,y,z);
 
-    radius = 0.9 + 0.2*(harmonic(theta,phi,m2));
+    radius = 1.0 + 0.15*(harmonic(theta,phi,m2));
     x = sin(theta) * sin(phi) * radius;
     y = sin(theta) * cos(phi) * radius;
     z = cos(theta) * radius;
@@ -121,8 +121,6 @@ void main()
     float levels = 16.0;
     float antialias = 1.0;
     float linewidth = 1.0 + antialias;
-    if(length(value-1.) < 1./levels)
-        linewidth = 3.0 + antialias;
     float v  = levels*value - 0.5;
     float dv = linewidth/2.0 * fwidth(v);
     float f = abs(fract(v) - 0.5);
@@ -174,6 +172,7 @@ def on_init():
 
 time = 0
 vertices, faces = sphere()
+print len(vertices)
 program = gloo.Program(vertex, fragment)
 trackball = transforms.Trackball()
 program["transform"] = trackball()
@@ -189,6 +188,6 @@ keys   = ["m2[0]","m2[1]","m2[2]","m2[3]","m2[4]","m2[5]","m2[6]","m2[7]"]
 for key,value in zip(keys, values):
     program[key] = value
 
-trackball.zoom = 40
+trackball.zoom = 30
 window.attach(program["transform"])
 app.run()
