@@ -9,14 +9,10 @@
 # See:
 #  - http://jcgt.org/published/0002/02/09/
 #  - http://casual-effects.blogspot.com/2014/03/weighted-blended-order-independent.html
-#
 # -----------------------------------------------------------------------------
-
 import numpy as np
 from glumpy import app, gl, gloo
 from glumpy.transforms import Trackball, Position
-
-from OpenGL.GL.ARB.color_buffer_float import *
 
 vert_quads = """
 attribute vec4 color;
@@ -27,9 +23,7 @@ void main()
 {
     gl_Position = <transform>;
     vec4 P = (<transform.trackball_view>*<transform.trackball_model>*vec4(position,1.0));
-
     v_depth = -P.z;
-
     v_color = color;
 }
 """
@@ -47,9 +41,8 @@ void main()
 //    float weight = pow(ai + 0.01, 4.0)
 //                   + max(1e-2, min(3.0 * 1e3, 100.0 / (1e-5 + pow(abs(z) / 10.0, 3.0)
 //                   + pow(abs(z) / 200.0, 6.0))));
-
+//    float weight = clamp(0.5 / 1e-5 + pow(abs(z) / 200.0, 3.0), 1e-3, 3e4);
     float weight = clamp(0.5 / 1e-5 + pow(abs(z) / 200.0, 3.0), 1e-3, 3e7);
-//    float weight = 1;
 
 
     float wzi = weight;
@@ -69,21 +62,15 @@ void main(void)
 }"""
 
 frag_post = """
-const float epsilon = 0.00001;
-
 uniform sampler2D tex_accumulation;
 uniform sampler2D tex_revealage;
-
 varying vec2 v_texcoord;
-
 void main(void)
 {
-   // See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/
-   //                                       Source/Shaders/CompositeOITFS.glsl
-    vec4 opaque=  vec4(0.75,0.75,0.75,0.00);
+    // See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/Source/Shaders/CompositeOITFS.glsl
+    vec4 opaque = vec4(0.75,0.75,0.75,0.00);
     vec4 accum = texture2D(tex_accumulation, v_texcoord);
     float r = texture2D(tex_revealage, v_texcoord).a;
-
     vec4 transparent = vec4(accum.rgb / clamp(r, 1e-4, 5e4), accum.a);
     gl_FragColor = (1.0 - transparent.a) * transparent + transparent.a * opaque;
 }
@@ -120,8 +107,6 @@ def on_draw(dt):
 @window.event
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
-    glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB, gl.GL_FALSE)
-    glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, gl.GL_FALSE)
 
 
 # Accumulation buffer
