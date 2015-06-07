@@ -80,7 +80,8 @@ window = app.Window(width=1024, height=1024, color = C0)
 
 @window.event
 def on_draw(dt):
-
+    window.clear(color=C0)
+    
     gl.glEnable(gl.GL_DEPTH_TEST)
     gl.glDepthMask(gl.GL_FALSE)
     gl.glEnable(gl.GL_BLEND)
@@ -92,7 +93,7 @@ def on_draw(dt):
     framebuffer.color = accumulation
     framebuffer.activate()
     gl.glBlendFunc(gl.GL_ONE,  gl.GL_ONE)
-    window.clear(color=(0,0,0,1))
+    window.clear(color=(0,0,0,0))
     quads.draw(gl.GL_TRIANGLES, indices)
     framebuffer.deactivate()
 
@@ -106,7 +107,6 @@ def on_draw(dt):
     framebuffer.deactivate()
     
     # Compositing
-    window.clear(color=C0)
     gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
     post.draw(gl.GL_TRIANGLE_STRIP)
     
