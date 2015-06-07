@@ -22,8 +22,7 @@ varying float v_depth;
 void main()
 {
     gl_Position = <transform>;
-    vec4 P = (<transform.trackball_view>*<transform.trackball_model>*vec4(position,1.0));
-    v_depth = -P.z;
+    v_depth = -(<transform.trackball_view>*<transform.trackball_model>*vec4(position,1.0)).z;
     v_color = color;
 }
 """
@@ -32,22 +31,12 @@ varying vec4 v_color;
 varying float v_depth;
 void main()
 {
-    float z  = v_depth;
-    float ai = v_color.a;
-    vec3  Ci = v_color.rgb * ai;
-
-    // This comes from: 
-    // https://github.com/AnalyticalGraphicsInc/cesium/blob/master/Source/Shaders/Builtin/Functions/alphaWeight.glsl
-//    float weight = pow(ai + 0.01, 4.0)
-//                   + max(1e-2, min(3.0 * 1e3, 100.0 / (1e-5 + pow(abs(z) / 10.0, 3.0)
-//                   + pow(abs(z) / 200.0, 6.0))));
-//    float weight = clamp(0.5 / 1e-5 + pow(abs(z) / 200.0, 3.0), 1e-3, 3e4);
-    float weight = clamp(0.5 / 1e-5 + pow(abs(z) / 200.0, 3.0), 1e-3, 3e7);
-
-
-    float wzi = weight;
-    gl_FragData[0] = vec4(Ci * wzi, ai);
-    gl_FragData[1] = vec4(ai * wzi);
+    float z = v_depth;
+    float alpha = v_color.a;
+    float weight = pow(alpha + 0.01f, 2.0f) +
+                   max(0.01f, min(3000.0f, 0.3f / (0.00001f + pow(abs(z) / 200.0f, 4.0f))));
+    gl_FragData[0]   = vec4(v_color.rgb * alpha * weight, alpha);
+    gl_FragData[1].a = alpha * weight;
 }
 """
 
@@ -67,12 +56,11 @@ uniform sampler2D tex_revealage;
 varying vec2 v_texcoord;
 void main(void)
 {
-    // See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/Source/Shaders/CompositeOITFS.glsl
-    vec4 opaque = vec4(0.75,0.75,0.75,0.00);
     vec4 accum = texture2D(tex_accumulation, v_texcoord);
-    float r = texture2D(tex_revealage, v_texcoord).a;
-    vec4 transparent = vec4(accum.rgb / clamp(r, 1e-4, 5e4), accum.a);
-    gl_FragColor = (1.0 - transparent.a) * transparent + transparent.a * opaque;
+    float r = accum.a;
+    accum.a = texture2D(tex_revealage, v_texcoord).a;
+    if (r >= 1.0) discard;
+    gl_FragColor = vec4(accum.rgb / clamp(accum.a, 1e-4, 5e4), r);
 }
 """
 
@@ -81,51 +69,38 @@ C1 = (1.00, 0.00, 0.00, 0.75)
 C2 = (1.00, 1.00, 0.00, 0.75)
 C3 = (0.00, 0.00, 1.00, 0.75)
 
-window = app.Window(width=1024, height=1024, color = (1,1,1,1))
+window = app.Window(width=1024, height=1024, color = C0)
 
 @window.event
 def on_draw(dt):
-    
-    # Opaque surfaces
-    window.clear()
+    gl.glDepthMask(gl.GL_FALSE)
+    gl.glEnable(gl.GL_BLEND)
 
     # Transparent surfaces
     framebuffer.activate()
     window.clear(color=(0,0,0,1))
-    gl.glDepthMask(gl.GL_FALSE)
-    gl.glEnable(gl.GL_BLEND)
     gl.glBlendFuncSeparate(gl.GL_ONE,  gl.GL_ONE,
                            gl.GL_ZERO, gl.GL_ONE_MINUS_SRC_ALPHA)
     quads.draw(gl.GL_TRIANGLES, indices)
     framebuffer.deactivate()
     
     # Compositing
+    window.clear()
     gl.glBlendFunc(gl.GL_ONE_MINUS_SRC_ALPHA, gl.GL_SRC_ALPHA)
     post.draw(gl.GL_TRIANGLE_STRIP)
-    
-
-@window.event
-def on_init():
-    gl.glEnable(gl.GL_DEPTH_TEST)
 
 
 # Accumulation buffer
 accumulation = np.zeros((window.height,window.width,4),np.float32).view(gloo.TextureFloat2D)
-accumulation.interpolation = gl.GL_NEAREST
-
-# Revealage buffer
 revealage = np.zeros((window.height,window.width,4),np.float32).view(gloo.TextureFloat2D)
-revealage.interpolation = gl.GL_NEAREST
-
-# Framebuffer
 framebuffer = gloo.FrameBuffer(color=[accumulation,revealage])
-#                               depth=gloo.DepthBuffer(window.width,window.height))
 
 # Three quads
 quads = gloo.Program(vert_quads, frag_quads, count=12)
 quads["position"] = [ (-1,-1,-1), (-1,+1,-1), (+1,-1,-1), (+1,+1,-1),
                       (-1,-1, 0), (-1,+1, 0), (+1,-1, 0), (+1,+1, 0),
                       (-1,-1,+1), (-1,+1,+1), (+1,-1,+1), (+1,+1,+1) ]
+quads["position"] *= 10
 
 quads["color"] = C1,C1,C1,C1, C2,C2,C2,C2, C3,C3,C3,C3
 indices = np.zeros((3,6),dtype=np.uint32)
@@ -140,11 +115,11 @@ post['tex_accumulation'] = accumulation
 post['tex_revealage']    = revealage
 post['position']  = [(-1,-1), (-1,1), (1,-1), (1,1)]
 
-trackball = Trackball(Position("position"), znear=0.1, zfar=500.0, distance=8)
+trackball = Trackball(Position("position"), znear=0.1, zfar=100.0, distance=50)
 quads['transform'] = trackball
 trackball.theta = 40
 trackball.phi = 45
-trackball.zoom = 25
+trackball.zoom = 40
 window.attach(quads['transform'])
 
 app.run()
