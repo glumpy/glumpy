@@ -9,6 +9,7 @@
 # See:
 #  - http://jcgt.org/published/0002/02/09/
 #  - http://casual-effects.blogspot.com/2014/03/weighted-blended-order-independent.html
+#  - http://casual-effects.blogspot.fr/2015/03/implemented-weighted-blended-order.html
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, gloo
@@ -33,7 +34,7 @@ void main()
 {
     float z = v_depth;
     float alpha = v_color.a;
-    float weight = pow(alpha + 0.01f, 2.0f) +
+    float weight = pow(alpha + 0.01f, 4.0f) +
                    max(0.01f, min(3000.0f, 0.3f / (0.00001f + pow(abs(z) / 200.0f, 4.0f))));
     gl_FragData[0] = vec4(v_color.rgb * alpha * weight, alpha);
     gl_FragData[1].r = alpha * weight;
@@ -56,19 +57,11 @@ uniform sampler2D tex_revealage;
 varying vec2 v_texcoord;
 void main(void)
 {
-    vec4 opaque = vec4(0.75,0.75,0.75,0.0);
-    vec4 accum = texture2D(tex_accumulation, v_texcoord);
-    float r = texture2D(tex_revealage, v_texcoord).r;
-    vec4 transparent = vec4(accum.rgb / clamp(r, 1e-4, 5e4), accum.a);
-    gl_FragColor = (1.0 - transparent.a) * transparent + transparent.a * opaque;
-
-/*
     vec4 accum = texture2D(tex_accumulation, v_texcoord);
     float r = accum.a;
-    accum.a = texture2D(tex_revealage, v_texcoord).a;
+    accum.a = texture2D(tex_revealage, v_texcoord).r;
     if (r >= 1.0) discard;
     gl_FragColor = vec4(accum.rgb / clamp(accum.a, 1e-4, 5e4), r);
-*/
 }
 """
 

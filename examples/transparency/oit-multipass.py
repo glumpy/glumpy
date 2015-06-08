@@ -7,7 +7,6 @@
 # Weighted Blended Order-Independent Transparency.
 #
 # See:
-#
 #  - http://jcgt.org/published/0002/02/09/
 #  - http://casual-effects.blogspot.com/2014/03/weighted-blended-order-independent.html
 #  - http://casual-effects.blogspot.fr/2015/03/implemented-weighted-blended-order.html
