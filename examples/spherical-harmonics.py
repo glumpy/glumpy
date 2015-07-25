@@ -172,7 +172,6 @@ def on_init():
 
 time = 0
 vertices, faces = sphere()
-print len(vertices)
 program = gloo.Program(vertex, fragment)
 trackball = transforms.Trackball()
 program["transform"] = trackball()

@@ -110,7 +110,7 @@ post_process['position']  = [(-1,-1), (-1,1), (1,-1), (1,1)]
 trackball = Trackball(Position("position"), znear=0.1, zfar=100.0, distance=50)
 teapot['transform'] = trackball
 trackball.theta = 40
-trackball.phi = 45
+trackball.phi = 135
 trackball.zoom = 40
 
 window.attach(teapot['transform'])
