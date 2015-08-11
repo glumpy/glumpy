@@ -71,7 +71,12 @@ program = gloo.Program(vertex, fragment, count=4)
 program["position"] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
 program['texcoord'] = ( 0, 0), ( 0,+1), (+1, 0), (+1,+1)
 
-program['u_data'] = np.random.uniform(0,1,(5,5,3)).astype(np.float32)
+program['u_data'] =np.array( [ [0.0,0.0,0.0,0.0,0.0],
+                               [0.0,0.5,0.5,0.5,0.0],
+                               [0.0,0.5,1.0,0.5,0.0],
+                               [0.0,0.5,0.5,0.5,0.0],
+                               [0.0,0.0,0.0,0.0,0.0] ]).astype(np.float32)
+
 program['u_data'].interpolation = gl.GL_NEAREST
 program['u_data'].wrapping = gl.GL_CLAMP
 program['u_shape'] = program['u_data'].shape[:2]
