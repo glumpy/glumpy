@@ -323,16 +323,14 @@ def bb_spectrum(wavelength, bbTemp=5000):
 """
 
 if __name__ == "__main__":
-    print "Temperature       x      y      z       R     G     B\n"
-    print "-----------    ------ ------ ------   ----- ----- -----\n"
+    print("Temperature       x      y      z       R     G     B")
+    print("-----------    ------ ------ ------   ----- ----- -----")
 
     for t in range(1000, 10000, 500):  # (t = 1000; t <= 10000; t+= 500) {
         x, y, z = spectrum_to_xyz(bb_spectrum, t)
 
         r, g, b = xyz_to_rgb(SMPTEsystem, x, y, z)
 
-        print "  %5.0f K      %.4f %.4f %.4f   " % (t, x, y, z),
-
         r, g, b = constrain_rgb(r, g, b) # I omit the approximation bit here.
         r, g, b = norm_rgb(r, g, b)
-        print "%.3f %.3f %.3f" % (r, g, b)
+        print("  %5.0f K      %.4f %.4f %.4f   %.3f %.3f %.3f" % (t, x, y, z, r, g, b))
