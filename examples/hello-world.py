@@ -14,6 +14,6 @@ def on_draw(dt):
     label.draw(x=256, y=256, color=(1,1,1,1))
 
 font = text.TextureFont(data.get("OpenSans-Regular.ttf"), 64)
-label = text.Label(u"Hello World !", font,
+label = text.Label("Hello World !", font,
                    anchor_x = 'center', anchor_y = 'center')
 app.run()

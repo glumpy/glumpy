@@ -11,9 +11,9 @@ config = app.configuration.Configuration()
 config.major_version = 3
 config.minor_version = 2
 config.profile = "core"
-print config
-print "-----"
+print(config)
+print("-----")
 window = app.Window(config=config)
-print "-----"
-print window.config
-print "-----"
+print("-----")
+print(window.config)
+print("-----")

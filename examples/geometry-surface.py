@@ -140,10 +140,10 @@ vertices, s_indices = primitives.plane(2.0, n=n)
 surface.bind(vertices)
 
 I = []
-for i in xrange(n): I.append(i)
-for i in xrange(1,n): I.append(n-1+i*n)
-for i in xrange(n-1): I.append(n*n-1-i)
-for i in xrange(n-1): I.append(n*(n-1) - i*n)
+for i in range(n): I.append(i)
+for i in range(1,n): I.append(n-1+i*n)
+for i in range(n-1): I.append(n*n-1-i)
+for i in range(n-1): I.append(n*(n-1) - i*n)
 b_indices = np.array(I, dtype=np.uint32).view(gloo.IndexBuffer)
 
 

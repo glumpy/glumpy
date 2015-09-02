@@ -138,7 +138,7 @@ class Galaxy(object):
         stars['temperature']= np.random.uniform(3000, 9000, len(stars))
         stars['brightness'] = np.random.uniform(0.05, 0.25, len(stars))
         stars['velocity']   = 0.000005
-        for i in xrange(len(stars)):
+        for i in range(len(stars)):
             stars['m_b'][i] = R[i]* self.excentricity(R[i])
 
         # Initialize dust

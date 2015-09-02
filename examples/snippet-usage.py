@@ -74,7 +74,7 @@ program["transform_6"] = transform_2("F", scale="aliased_scale")
 program["transform_7"] = transform_3(transform_1("G.x"), transform_2("G.y"))
 program["transform_8"] = transform_3(transform_1('.x', name='x'),
                                      transform_2('.y', name='y'))
-print program.vertex.code
+print(program.vertex.code)
 
 
 # Make sure that if snippet code has been already included in another program

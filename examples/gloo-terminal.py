@@ -181,7 +181,8 @@ class TextBuffer(object):
     def draw(self):
         self._program.draw(gl.GL_POINTS)
 
-    def __contains__(self, (x,y)):
+    def __contains__(self, xy):
+        (x,y) = xy
         width = self._cols*self._scale*6
         height = self._rows*self._scale*13
         if 0 <= x < width and 0 <= y < height:
@@ -242,8 +243,8 @@ class TextBuffer(object):
         index = row*self.cols + col
 
         # Decode text
-        if isinstance(text, (str,unicode)):
-            text = unicode(text)
+        if isinstance(text, str):
+            text = str(text)
             codes = np.array([ord(c) for c in text]).astype(np.uint32)
         else:
             codes = text.astype(np.uint32).ravel()
@@ -290,7 +291,7 @@ class Console(TextBuffer):
 
 
 
-    def write(self, text=u"", style=None):
+    def write(self, text="", style=None):
         """ Write at current position into the buffer and rotate buffer """
 
         if style is None:
@@ -430,15 +431,15 @@ if __name__ == '__main__':
     # @window.timer(1/30.0)
     def timer(fps):
         console.clear()
-        console.write(u"─────────────────────────────────────────────────────")
-        console.write(u"GLUMPY 2.0 - Copyright (c) 2014 Nicolas P. Rougier")
-        console.write(u"")
-        console.write(u" → Window size: %dx%d" % (window.width, window.height))
-        console.write(u" → Backend: %s (%s)" % (window._backend.__name__,
+        console.write("─────────────────────────────────────────────────────")
+        console.write("GLUMPY 2.0 - Copyright (c) 2014 Nicolas P. Rougier")
+        console.write("")
+        console.write(" → Window size: %dx%d" % (window.width, window.height))
+        console.write(" → Backend: %s (%s)" % (window._backend.__name__,
                                               window._backend.__version__))
-        console.write(u" → Console size: %dx%d" % (console.rows, console.cols))
-        console.write(u" → Actual FPS: %.2f frames/second  " % (app.fps()))
-        console.write(u"───────────────────────────────────────────────────────")
+        console.write(" → Console size: %dx%d" % (console.rows, console.cols))
+        console.write(" → Actual FPS: %.2f frames/second  " % (app.fps()))
+        console.write("───────────────────────────────────────────────────────")
         #for line in repr(window.config).split("\n"):
         #    console.write(u" "+line)
         #console.write(u"───────────────────────────────────────────────────────")

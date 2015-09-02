@@ -65,7 +65,7 @@ def on_key_press(key, modifiers):
         program['u_interpolation'] = (program['u_interpolation'] + 1) % 17
     elif key == app.window.key.LEFT:
         program['u_interpolation'] = (program['u_interpolation'] - 1) % 17
-    print "Interpolation :", names[int(program['u_interpolation'])]
+    print("Interpolation :", names[int(program['u_interpolation'])])
     
 program = gloo.Program(vertex, fragment, count=4)
 program["position"] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
