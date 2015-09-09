@@ -50,7 +50,7 @@ def _fetch_file(filename):
         log.warning('Data not available on remote server')
         return None
     # Fetch symlink data (font location)
-    symlink = response.read()
+    symlink = response.read().decode()
 
     remote = os.path.join(server, symlink)
     response = request.urlopen(remote)
