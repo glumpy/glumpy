@@ -34,4 +34,4 @@ def replace(match):
 
 while re.search(re_include, code):
     code = re.sub(re_include, replace, code)
-print code
+print(code)

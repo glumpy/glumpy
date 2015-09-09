@@ -2753,4 +2753,4 @@ if __name__ == '__main__':
     try:
         _main(sys.argv)
     except Error, e:
-        print >>sys.stderr, e
+        print(e, file=sys.stderr)
