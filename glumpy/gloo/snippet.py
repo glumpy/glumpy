@@ -537,28 +537,28 @@ if __name__ == '__main__':
     C = Snippet("uniform float c;\nvoid function_C(void) {};\n\n", name = "Snippet_C")
     D = A(B("A")) + C()
 
-    print D["Snippet_A"]
-    print D["Snippet_B"]
-    print D["Snippet_C"]
+    print(D["Snippet_A"])
+    print(D["Snippet_B"])
+    print(D["Snippet_C"])
 
-    print D.locals
-    print D.globals
+    print(D.locals)
+    print(D.globals)
 
-    print D["Snippet_A"].locals
-    print D["Snippet_B"].locals
-    print D["Snippet_C"].locals
+    print(D["Snippet_A"].locals)
+    print(D["Snippet_B"].locals)
+    print(D["Snippet_C"].locals)
 
     # print D.objects
-    print D.symbols
+    print(D.symbols)
     # print D
 
-    print D
-    print [snippet._id for snippet in D.dependencies]
+    print(D)
+    print([snippet._id for snippet in D.dependencies])
 
-    print
-    print "Call:"
-    print D.call
-    print
-    print "Code:"
-    print D.code
-    print
+    print()
+    print("Call:")
+    print(D.call)
+    print()
+    print("Code:")
+    print(D.code)
+    print()

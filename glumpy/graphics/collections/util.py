@@ -164,4 +164,4 @@ if __name__ == '__main__':
                ('normal',  [('x', 'f4'), ('y', 'f4'), ('z', 'f4')]),
                ('color',   [('r', 'f4'), ('g', 'f4'), ('b', 'f4'), ('a', 'f4')])]
 
-    print fetchcode(utype)
+    print(fetchcode(utype))

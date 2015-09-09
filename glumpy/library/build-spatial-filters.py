@@ -676,28 +676,28 @@ scale = K.max()-K.min()
 K = (K-bias)/scale
 np.save("spatial-filters.npy", K.astype(np.float32))
 
-print "// ------------------------------------"
-print "// Automatically generated, do not edit"
-print "// ------------------------------------"
-print ""
-print "const float kernel_bias  = %f;" % bias
-print "const float kernel_scale = %f;" % scale
-print "uniform sampler2D u_kernel;"
-print ""
+print("// ------------------------------------")
+print("// Automatically generated, do not edit")
+print("// ------------------------------------")
+print("")
+print("const float kernel_bias  = %f;" % bias)
+print("const float kernel_scale = %f;" % scale)
+print("uniform sampler2D u_kernel;")
+print("")
 
 F = SpatialFilter(1.0)
-print F.filter_code()
+print(F.filter_code())
 F = SpatialFilter(2.0)
-print F.filter_code()
+print(F.filter_code())
 F = SpatialFilter(3.0)
-print F.filter_code()
+print(F.filter_code())
 F = SpatialFilter(4.0)
-print F.filter_code()
+print(F.filter_code())
 
 # Generate filter functions
 # Special case for nearest
-print """vec4 Nearest(sampler2D texture, vec2 shape, vec2 uv)"""
-print """{ return texture2D(texture,uv); }\n"""
+print("""vec4 Nearest(sampler2D texture, vec2 shape, vec2 uv)""")
+print("""{ return texture2D(texture,uv); }\n""")
 
 for i,f in enumerate(filters):
-    print f.call_code((i+0.5)/16.0)
+    print(f.call_code((i+0.5)/16.0))
