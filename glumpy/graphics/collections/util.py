@@ -9,6 +9,7 @@
 """
 import numpy as np
 from operator import mul
+from functools import reduce
 
 
 def dtype_reduce(dtype, level=0, depth=0):

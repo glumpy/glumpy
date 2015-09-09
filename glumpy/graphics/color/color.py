@@ -5,7 +5,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
-import colors as _colors
+from . import colors as _colors
 from glumpy.log import log
 
 
@@ -92,7 +92,7 @@ class Color(object):
                 color = ''.join([color[i] for i in [0,0,1,1,2,2,3,3]])
             if len(color) == 6:
                 color += 'ff'
-            r,g,b,a = [ord(c)/255.0 for c in color.decode('hex')]
+            r,g,b,a = [c/255.0 for c in bytearray.fromhex(color)]
             if alpha is not None:
                 a  = alpha
             return r,g,b,a

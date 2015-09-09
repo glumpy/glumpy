@@ -341,7 +341,7 @@ def gl_get_configuration():
     configuration._samples       = gl.glGetInteger(gl.GL_SAMPLES)
 
     # Dumb parsing of the GL_VERSION string
-    version = gl.glGetString(gl.GL_VERSION)
+    version = gl.glGetString(gl.GL_VERSION).decode()
     version = version.split(" ")[0]
     major,minor = version.split('.')[:2]
     configuration._version = version

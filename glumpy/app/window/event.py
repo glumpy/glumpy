@@ -401,7 +401,7 @@ class EventDispatcher(object):
         n_handler_args = len(handler_args)
 
         # Remove "self" arg from handler if it's a bound method
-        if inspect.ismethod(handler) and handler.im_self:
+        if inspect.ismethod(handler) and handler.__self__:
             n_handler_args -= 1
 
         # Allow *args varargs to overspecify arguments

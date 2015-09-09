@@ -136,7 +136,7 @@ class MarkerCollection(Collection):
         """
 
         itemsize  = itemsize or 1
-        itemcount = len(P)/itemsize
+        itemcount = len(P)//itemsize
 
         V = np.empty(itemcount*itemsize, dtype=self.vtype)
 

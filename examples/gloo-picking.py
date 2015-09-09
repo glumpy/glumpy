@@ -118,7 +118,10 @@ def on_draw(dt):
     if mouse is not None:
         gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT1, gl.GL_FRONT)
         r,g,b,a = gl.glReadPixels(mouse[0],mouse[1],1,1, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
-        index = ord(b) + 256*ord(g) + 256*256*ord(r)
+        if type(r) is not int: r = ord(r)
+        if type(g) is not int: g = ord(g)
+        if type(b) is not int: b = ord(b)
+        index = b + 256*g + 256*256*r
         if index < len(program):
             program["bg_color"][index] = 0,0,0,1
     framebuffer.deactivate()

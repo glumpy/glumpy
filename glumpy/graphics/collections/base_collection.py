@@ -280,7 +280,7 @@ class BaseCollection(object):
         # Uniform itemsize (int)
         # ----------------------
         elif isinstance(itemsize, int):
-            count = len(vertices)/itemsize
+            count = len(vertices)//itemsize
             index = np.repeat(np.arange(count), itemsize)
 
         # Individual itemsize (array)

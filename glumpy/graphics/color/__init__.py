@@ -19,5 +19,5 @@ color = Color("white")
 colors = Colors(["black", "gray", "white"])
 """
 
-from colors import get
-from color import Color, Colors
+from .colors import get
+from .color import Color, Colors

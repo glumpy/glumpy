@@ -4,7 +4,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import os
-import urllib2
+from glumpy.ext.six.moves.urllib import request
 import numpy as np
 try:
     from PIL import Image
@@ -45,7 +45,7 @@ def _fetch_file(filename):
     # Build url request
     log.info('Requesting "%s" from remote server' % filename)
     try:
-        response = urllib2.urlopen(remote)
+        response = request.urlopen(remote)
     except:
         log.warning('Data not available on remote server')
         return None
@@ -53,7 +53,7 @@ def _fetch_file(filename):
     symlink = response.read()
 
     remote = os.path.join(server, symlink)
-    response = urllib2.urlopen(remote)
+    response = request.urlopen(remote)
 
     # Fetch data
     size = response.headers['Content-Length'].strip()
@@ -74,11 +74,11 @@ def objload(filename) :
             continue
         line = line.strip().split(' ')
         if line[0] == 'v':     #vertex
-            V.append(map(float,line[1:]))
+            V.append([float(x) for x in line[1:]])
         elif line[0] == 'vt' : # tex-coord
-            T.append(map(float,line[1:]))
+            T.append([float(x) for x in line[1:]])
         elif line[0] == 'vn' : # normal vector
-            N.append(map(float,line[1:]))
+            N.append([float(x) for x in line[1:]])
         elif line[0] == 'f' :  # face
             face = line[1:]
             if len(face) != 3 :
@@ -115,9 +115,9 @@ def objload(filename) :
 
 
 def checkerboard(grid_num=8, grid_size=32):
-    row_even = grid_num / 2 * [0, 1]
-    row_odd = grid_num / 2 * [1, 0]
-    Z = np.row_stack(grid_num / 2 * (row_even, row_odd)).astype(np.uint8)
+    row_even = grid_num // 2 * [0, 1]
+    row_odd = grid_num // 2 * [1, 0]
+    Z = np.row_stack(grid_num // 2 * (row_even, row_odd)).astype(np.uint8)
     return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
 
 

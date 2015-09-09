@@ -121,7 +121,7 @@ class Program(GLObject):
     def hooks(self):
         """ Known hooks """
 
-        return self._vert_hooks.keys()  + self._frag_hooks.keys()
+        return tuple(self._vert_hooks.keys())  + tuple(self._frag_hooks.keys())
 
 
     def _setup(self):
@@ -282,7 +282,7 @@ class Program(GLObject):
         vhooks = self._vert_hooks.keys()
         fhooks = self._frag_hooks.keys()
 
-        if name in vhooks + fhooks:
+        if name in tuple(vhooks) + tuple(fhooks):
             snippet = data
 
             if name in vhooks:
@@ -391,6 +391,7 @@ class Program(GLObject):
         uniforms = []
         for i in range(count):
             name, size, gtype = gl.glGetActiveUniform(self.handle, i)
+            name = name.decode()
             # This checks if the uniform is an array
             # Name will be something like xxx[0] instead of xxx
             m = regex.match(name)
@@ -447,6 +448,7 @@ class Program(GLObject):
 
         for i in range(count):
             name, size, gtype = gl.glGetActiveAttrib(self.handle, i)
+            name = name.decode()
 
             # This checks if the attribute is an array
             # Name will be something like xxx[0] instead of xxx
@@ -515,7 +517,7 @@ class Program(GLObject):
         else:
             first = 0
             # count = (self._count or attributes[0].size) - first
-            count = len(attributes[0])
+            count = len(tuple(attributes)[0])
             gl.glDrawArrays(mode, first, count)
 
         gl.glBindBuffer( gl.GL_ARRAY_BUFFER, 0 )

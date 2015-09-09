@@ -135,7 +135,7 @@ class AggFastPathCollection(Collection):
         """
 
         itemsize  = itemsize or len(P)
-        itemcount = len(P)/itemsize
+        itemcount = len(P)//itemsize
 
         P = P.reshape(itemcount,itemsize,3)
         if closed:
@@ -206,7 +206,7 @@ class AggFastPathCollection(Collection):
         """
 
         itemsize  = itemsize or len(P)
-        itemcount = len(P)/itemsize
+        itemcount = len(P)//itemsize
         n = itemsize
 
         if closed:
