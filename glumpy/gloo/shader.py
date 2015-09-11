@@ -226,7 +226,8 @@ class Shader(GLObject):
 
         # Nvidia
         # 0(7): error C1008: undefined variable "MV"
-        m = re.match(r'(\d+)\((\d+)\):\s(.*)', error )
+        # 0(2) : error C0118: macros prefixed with '__' are reserved
+        m = re.match(r'(\d+)\((\d+)\)\s*:\s(.*)', error )
         if m: return int(m.group(2)), m.group(3)
 
         # ATI / Intel
@@ -239,7 +240,7 @@ class Shader(GLObject):
         m = re.match( r'(\d+):(\d+)\((\d+)\):\s(.*)', error )
         if m: return int(m.group(2)), m.group(4)
 
-        raise ValueError('Unknown GLSL error format')
+        raise ValueError('Unknown GLSL error format:\n{}\n'.format(error))
 
 
     def _print_error(self, error, lineno):
