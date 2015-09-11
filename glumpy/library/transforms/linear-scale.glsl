@@ -24,7 +24,7 @@ float forward(float value)
     vec2 range = linear_scale_range;
     float t = (value - domain.x) /(domain.y - domain.x);
 
-#ifdef __FRAGMENT_SHADER__
+#ifdef _GLUMPY__FRAGMENT_SHADER__
     if (linear_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
@@ -42,7 +42,7 @@ vec2 forward(vec2 value)
     vec2 range = linear_scale_range;
     vec2 t = (value - domain.x) /(domain.y - domain.x);
 
-#ifdef __FRAGMENT_SHADER__
+#ifdef _GLUMPY__FRAGMENT_SHADER__
     if (linear_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
@@ -60,7 +60,7 @@ vec3 forward(vec3 value)
     vec2 range = linear_scale_range;
     vec3 t = (value - domain.x) /(domain.y - domain.x);
 
-#ifdef __FRAGMENT_SHADER__
+#ifdef _GLUMPY__FRAGMENT_SHADER__
     if (linear_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
@@ -78,7 +78,7 @@ float inverse(float value)
     vec2 range = linear_scale_range;
     float t = (value - range.x) / (range.y - range.x);
 
-#ifdef __FRAGMENT_SHADER__
+#ifdef _GLUMPY__FRAGMENT_SHADER__
     if (linear_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
@@ -96,7 +96,7 @@ vec2 inverse(vec2 value)
     vec2 range = linear_scale_range;
     vec2 t = (value - range.x) / (range.y - range.x);
 
-#ifdef __FRAGMENT_SHADER__
+#ifdef _GLUMPY__FRAGMENT_SHADER__
     if (linear_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;
@@ -114,7 +114,7 @@ vec3 inverse(vec3 value)
     vec2 range = linear_scale_range;
     vec3 t = (value - range.x) / (range.y - range.x);
 
-#ifdef __FRAGMENT_SHADER__
+#ifdef _GLUMPY__FRAGMENT_SHADER__
     if (linear_scale_discard > 0)
         if (t != clamp(t, 0.0, 1.0))
             discard;

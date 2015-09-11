@@ -3,8 +3,8 @@
 // Distributed under the (new) BSD License.
 // ----------------------------------------------------------------------------
 
-#ifndef __CONSTANTS__
-#define __CONSTANTS__
+#ifndef _GLUMPY__CONSTANTS__
+#define _GLUMPY__CONSTANTS__
 
 // The base of natural logarithms (e)
 const float M_E = 2.71828182845904523536028747135266250;

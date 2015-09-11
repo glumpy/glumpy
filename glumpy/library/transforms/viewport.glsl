@@ -7,7 +7,7 @@ uniform vec4 viewport_global;
 uniform int viewport_transform;
 uniform int viewport_clipping;
 
-#ifdef __VERTEX_SHADER__
+#ifdef _GLUMPY__VERTEX_SHADER__
 void transform(void)
 {
     if (viewport_transform == 0) return;
@@ -25,7 +25,7 @@ void transform(void)
 }
 #endif
 
-#ifdef __FRAGMENT_SHADER__
+#ifdef _GLUMPY__FRAGMENT_SHADER__
 void clipping(void)
 {
     if (viewport_clipping == 0) return;
