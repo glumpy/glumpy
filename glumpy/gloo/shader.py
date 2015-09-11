@@ -201,7 +201,7 @@ class Shader(GLObject):
         gl.glCompileShader(self._handle)
         status = gl.glGetShaderiv(self._handle, gl.GL_COMPILE_STATUS)
         if not status:
-            error = gl.glGetShaderInfoLog(self._handle)
+            error = gl.glGetShaderInfoLog(self._handle).decode()
             lineno, mesg = self._parse_error(error)
             self._print_error(mesg, lineno-1)
             raise RuntimeError("Shader compilation error")
@@ -221,7 +221,7 @@ class Shader(GLObject):
         Parameters
         ----------
         error : str
-            An error string as returned byt the compilation process
+            An error string as returned by the compilation process
         """
 
         # Nvidia
