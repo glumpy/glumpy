@@ -253,7 +253,7 @@ if __name__ == '__main__':
 
 
     code = preprocess(code)
-    print get_hooks(code)
+    print(get_hooks(code))
 
 
     # for key in p.keys():

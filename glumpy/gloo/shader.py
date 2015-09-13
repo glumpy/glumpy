@@ -201,7 +201,7 @@ class Shader(GLObject):
         gl.glCompileShader(self._handle)
         status = gl.glGetShaderiv(self._handle, gl.GL_COMPILE_STATUS)
         if not status:
-            error = gl.glGetShaderInfoLog(self._handle)
+            error = gl.glGetShaderInfoLog(self._handle).decode()
             lineno, mesg = self._parse_error(error)
             self._print_error(mesg, lineno-1)
             raise RuntimeError("Shader compilation error")
@@ -221,12 +221,13 @@ class Shader(GLObject):
         Parameters
         ----------
         error : str
-            An error string as returned byt the compilation process
+            An error string as returned by the compilation process
         """
 
         # Nvidia
         # 0(7): error C1008: undefined variable "MV"
-        m = re.match(r'(\d+)\((\d+)\):\s(.*)', error )
+        # 0(2) : error C0118: macros prefixed with '__' are reserved
+        m = re.match(r'(\d+)\((\d+)\)\s*:\s(.*)', error )
         if m: return int(m.group(2)), m.group(3)
 
         # ATI / Intel
@@ -239,7 +240,7 @@ class Shader(GLObject):
         m = re.match( r'(\d+):(\d+)\((\d+)\):\s(.*)', error )
         if m: return int(m.group(2)), m.group(4)
 
-        raise ValueError('Unknown GLSL error format')
+        raise ValueError('Unknown GLSL error format:\n{}\n'.format(error))
 
 
     def _print_error(self, error, lineno):
@@ -312,7 +313,7 @@ class VertexShader(Shader):
     @property
     def code(self):
         code = super(VertexShader, self).code
-        code = "#define __VERTEX_SHADER__\n" + code
+        code = "#define _GLUMPY__VERTEX_SHADER__\n" + code
         return code
 
 
@@ -332,7 +333,7 @@ class FragmentShader(Shader):
     @property
     def code(self):
         code = super(FragmentShader, self).code
-        code = "#define __FRAGMENT_SHADER__\n" + code
+        code = "#define _GLUMPY__FRAGMENT_SHADER__\n" + code
         return code
 
 

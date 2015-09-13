@@ -279,7 +279,7 @@ def quit():
 
 # --------------------------------------------------------------------- run ---
 def run(clock=None, framerate=None, interactive=None,
-        duration = sys.maxint, framecount = sys.maxint):
+        duration = sys.maxsize, framecount = sys.maxsize):
     """ Run the main loop
 
     Parameters

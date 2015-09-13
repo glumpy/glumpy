@@ -7,10 +7,10 @@ import re
 import math
 import numpy as np
 
-import geometry
-from style import Style
-from geometry import epsilon
-from transformable import Transformable
+from . import geometry
+from .style import Style
+from .geometry import epsilon
+from .transformable import Transformable
 
 
 # -------------------------------------------------------------------- Command ---

@@ -209,8 +209,8 @@ class Texture1D(Texture):
             start, stop = self.pending_data
             offset, nbytes = start, stop-start
             itemsize = self.strides[0]
-            x = offset / itemsize
-            width = nbytes/itemsize
+            x = offset // itemsize
+            width = nbytes//itemsize
             gl.glTexSubImage1D(self.target, 0, x, width, self._cpu_format, self.gtype, self)
 
             # x,width = self.pending_data
