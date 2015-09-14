@@ -29,8 +29,8 @@ def get_default():
 def get_options():
     """ Parse and retrun command line options. """
 
-    return get_default().parse_args()
-
+    options, unknown = get_default().parse_known_args()
+    return options
 
 
 def set_default_options(parser):
