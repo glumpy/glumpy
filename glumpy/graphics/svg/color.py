@@ -166,7 +166,7 @@ class Color(object):
             if len(rgb) == 3:
                 r,g,b = tuple(ord((c+c).decode('hex')) for c in rgb)
             else:
-                r,g,b = tuple(ord(c) for c in rgb.decode('hex'))
+                r,g,b = tuple(bytearray.fromhex(rgb))
         elif color.startswith("rgb("):
             rgb = color[4:-1]
             r,g,b = [value.strip() for value in rgb.split(',')]

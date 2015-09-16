@@ -116,7 +116,8 @@ class Filter(object):
 
 
     @viewport.setter
-    def viewport(self, (x, y, width, height)):
+    def viewport(self, xywh):
+        (x, y, width, height) = xywh
         self._viewport = x, y, width, height
 
 

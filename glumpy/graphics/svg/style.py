@@ -3,9 +3,9 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-from color import Color
-from number import Number
-from length import Length
+from .color import Color
+from .number import Number
+from .length import Length
 
 _converters = {
     "fill":              Color,
@@ -32,7 +32,7 @@ class Style(object):
 
         self._unset = False
         items = content.strip().split(";")
-	attributes = dict([item.strip().split(":") for item in items if item])
+        attributes = dict([item.strip().split(":") for item in items if item])
         for key,value in attributes.items():
             if key in _converters:
                 key_ = key.replace("-","_")

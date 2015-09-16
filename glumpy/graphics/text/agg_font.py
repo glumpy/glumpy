@@ -52,8 +52,8 @@ class AggFont(object):
 
         for charcode in charcodes:
             face.set_char_size( int(self.size * 64), 0, hres, 72 )
-            matrix = freetype.Matrix( int((hscale) * 0x10000L), int((0.0) * 0x10000L),
-                                      int((0.0)    * 0x10000L), int((1.0) * 0x10000L) )
+            matrix = freetype.Matrix( int((hscale) * 0x10000), int((0.0) * 0x10000),
+                                      int((0.0)    * 0x10000), int((1.0) * 0x10000) )
             face.set_transform( matrix, pen )
             if charcode in self.glyphs.keys():
                 continue

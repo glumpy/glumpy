@@ -151,7 +151,7 @@ class AggPathCollection(Collection):
         """
 
         itemsize  = itemsize or len(P)
-        itemcount = len(P)/itemsize
+        itemcount = len(P)//itemsize
 
         # Computes the adjacency information
         n,p = len(P), P.shape[-1]
@@ -169,7 +169,7 @@ class AggPathCollection(Collection):
                 V[name] = kwargs.get(name, self._defaults[name])
 
         # Extract relevant segments only
-        V = (V.reshape(n/itemsize, itemsize)[:,:-1])
+        V = (V.reshape(n//itemsize, itemsize)[:,:-1])
         if closed:
             V['p0'][:, 0] = V['p2'][:,-1]
             V['p3'][:,-1] = V['p1'][:, 0]

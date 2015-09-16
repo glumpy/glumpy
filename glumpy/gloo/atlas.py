@@ -72,9 +72,9 @@ class Atlas(Texture2D):
         """
 
         height, width = shape
-        best_height = sys.maxint
+        best_height = sys.maxsize
         best_index = -1
-        best_width = sys.maxint
+        best_width = sys.maxsize
         region = 0, 0, width, height
 
         for i in range(len(self.nodes)):

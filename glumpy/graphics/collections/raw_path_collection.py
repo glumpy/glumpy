@@ -101,7 +101,7 @@ class RawPathCollection(Collection):
         """
 
         itemsize  = itemsize or len(P)
-        itemcount = len(P)/itemsize
+        itemcount = len(P)//itemsize
         P = P.reshape(itemcount,itemsize,3)
         if closed:
             V = np.empty((itemcount,itemsize+3), dtype=self.vtype)

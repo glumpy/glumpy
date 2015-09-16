@@ -19,11 +19,12 @@ Note:
   the specified one.
 '''
 from ctypes import *
-from ft_types import *
-from ft_enums import *
-from ft_errors import *
-from ft_structs import *
+from .ft_types import *
+from .ft_enums import *
+from .ft_errors import *
+from .ft_structs import *
 import ctypes.util
+from glumpy.ext.six import text_type
 
 
 __dll__    = None
@@ -1049,7 +1050,7 @@ class Face( object ):
         face = FT_Face( )
         self._FT_Face = None
         #error = FT_New_Face( library, filename, 0, byref(face) )
-        u_filename = c_char_p(filename)
+        u_filename = c_char_p(filename.encode())
         error = FT_New_Face( library, u_filename, index, byref(face) )
         if error: raise FT_Exception( error )
         self._filename = filename
@@ -1169,7 +1170,7 @@ class Face( object ):
           correspond to the internal indices used within the file. This is done
           to ensure that value 0 always corresponds to the 'missing glyph'.
         '''
-        if type( charcode ) in (str,unicode):
+        if type( charcode ) in (str,text_type):
             charcode = ord( charcode )
         return FT_Get_Char_Index( self._FT_Face, charcode )
 

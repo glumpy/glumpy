@@ -74,7 +74,7 @@ Note::
 '''
 
 import os
-import math
+from . import math
 import numpy as np
 import OpenGL.GL as gl
 import OpenGL.GLUT as glut

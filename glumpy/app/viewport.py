@@ -377,7 +377,8 @@ class Viewport(event.EventDispatcher):
             child._compute_viewport()
 
 
-    def __contains__(self, (x,y)):
+    def __contains__(self, xy):
+        x,y = xy
         # WARN: mouse pointer is usually upside down
         y = self.root.size[1] - y
         xmin = self._viewport_position[0]
