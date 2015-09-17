@@ -77,21 +77,18 @@ void main() {
 }
 """
 
-time = 0.0
 program = gloo.Program(vertex, fragment)
 program['a_position'] = [(-1., -1.), (-1., +1.),
                          (+1., -1.), (+1., +1.)]
-program['u_time'] = time
+program['u_time'] = 0.0
 
 window = app.Window(width=800, height=800)
 
 
 @window.event
 def on_draw(dt):
-    global time
     program.draw(gl.GL_TRIANGLE_STRIP)
-    time += dt
-    program['u_time'] = time
+    program['u_time'] += dt
 
 
 app.run()
