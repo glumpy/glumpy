@@ -148,11 +148,6 @@ def on_draw(dt):
 
 
 @window.event
-def on_resize(width, height):
-    gl.glViewport(0, 0, width, height)
-
-
-@window.event
 def on_mouse_press(x, y, button):
     _, _, w, h = gl.glGetIntegerv(gl.GL_VIEWPORT)
     program["iMouse"] = 2 * x / w - 1, 1 - 2 * y / h
