@@ -36,7 +36,7 @@ if os.name == 'nt':
     except:
         import _winreg as wr # py2k
 
-from .ffmpeg_conf_defaults import (FFMPEG_BINARY, IMAGEMAGICK_BINARY)
+from .ffmpeg_config_defaults import (FFMPEG_BINARY, IMAGEMAGICK_BINARY)
 
 def try_cmd(cmd):
         try:

@@ -37,7 +37,7 @@ try:
 except ImportError:
     DEVNULL = open(os.devnull, 'wb')
 
-from . ffmpeg_conf import get_setting
+from . ffmpeg_config import get_setting
 from . ffmpeg_tools import verbose_print
 
 class FFMPEG_VideoWriter:

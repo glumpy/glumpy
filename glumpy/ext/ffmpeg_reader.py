@@ -38,7 +38,7 @@ logging.captureWarnings(True)
 
 
 import numpy as np
-from . ffmpeg_conf import get_setting  # ffmpeg, ffmpeg.exe, etc...
+from . ffmpeg_config import get_setting  # ffmpeg, ffmpeg.exe, etc...
 from . ffmpeg_tools import cvsecs
 
 import os
