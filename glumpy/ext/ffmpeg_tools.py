@@ -32,6 +32,13 @@ import sys
 import warnings
 import re
 
+import os
+try:
+    from subprocess import DEVNULL  # py3k
+except ImportError:
+    DEVNULL = open(os.devnull, 'wb')
+
+
 def sys_write_flush(s):
     """ Writes and flushes without delay a text in the console """
     sys.stdout.write(s)
@@ -47,21 +54,35 @@ def verbose_print(verbose, s):
 def subprocess_call(cmd, verbose=True, errorprint=True):
     """ Executes the given subprocess command."""
 
-    verbose_print(verbose, "\nMoviePy Running:\n>>> "+ " ".join(cmd))
+    verbose_print(verbose, "\n[MoviePy] Running:\n>>> "+ " ".join(cmd))
 
-    proc = sp.Popen(cmd, stderr = sp.PIPE)
+    popen_params = {"stdout": DEVNULL,
+                    "stderr": sp.PIPE,
+                    "stdin": DEVNULL}
+
+    if os.name == "nt":
+        popen_params["creationflags"] = 0x08000000
+
+    proc = sp.Popen(cmd, **popen_params)
 
     out, err = proc.communicate() # proc.wait()
     proc.stderr.close()
 
     if proc.returncode:
-        verbose_print(errorprint, "\nMoviePy: This command returned an error !")
+        verbose_print(errorprint, "\n[MoviePy] This command returned an error !")
         raise IOError(err.decode('utf8'))
     else:
         verbose_print(verbose, "\n... command successful.\n")
 
     del proc
 
+def is_string(obj):
+    """ Returns true if s is string or string-like object,
+    compatible with Python 2 and Python 3."""
+    try:
+        return isinstance(obj, basestring)
+    except NameError:
+        return isinstance(obj, str)
 
 def cvsecs(time):
     """ Will convert any time into seconds.
@@ -75,12 +96,12 @@ def cvsecs(time):
     >>> cvsecs('01:01:33,5') #coma works too
     """
 
-    if isinstance(time, basestring):
+    if is_string(time):
         if (',' not in time) and ('.' not in time):
             time = time + '.0'
         expr = r"(\d+):(\d+):(\d+)[,|.](\d+)"
         finds = re.findall(expr, time)[0]
-        nums = map(float, finds)
+        nums = list( map(float, finds) )
         return ( 3600*int(finds[0])
                 + 60*int(finds[1])
                 + int(finds[2])
@@ -134,3 +155,30 @@ def deprecated_version_of(f, oldname, newname=None):
     fdepr.__doc__ = warning
 
     return fdepr
+
+
+# non-exhaustive dictionnary to store default informations.
+# any addition is most welcome.
+# Note that 'gif' is complicated to place. From a VideoFileClip point of view,
+# it is a video, but from a HTML5 point of view, it is an image.
+
+extensions_dict = { "mp4":  {'type':'video', 'codec':['libx264','libmpeg4']},
+                    'ogv':  {'type':'video', 'codec':['libtheora']},
+                    'webm': {'type':'video', 'codec':['libvpx']},
+                    'avi':  {'type':'video'},
+                    'mov':  {'type':'video'},
+
+                    'ogg':  {'type':'audio', 'codec':['libvorbis']},
+                    'mp3':  {'type':'audio', 'codec':['libmp3lame']},
+                    'wav':  {'type':'audio', 'codec':['pcm_s16le', 'pcm_s32le']},
+                    'm4a':  {'type':'audio', 'codec':['libfdk_aac']}
+                  }
+
+for ext in ["jpg", "jpeg", "png", "bmp", "tiff"]:
+    extensions_dict[ext] = {'type':'image'}
+
+def find_extension(codec):
+    for ext,infos in extensions_dict.items():
+        if ('codec' in infos) and codec in infos['codec']:
+            return ext
+    raise ValueError
