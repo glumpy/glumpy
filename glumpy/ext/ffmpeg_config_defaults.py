@@ -24,24 +24,41 @@
 # See https://github.com/Zulko/moviepy
 
 """
-Configuration MoviePy
+Configuration of MoviePy
 
 
 This file enables you to specify a configuration for MoviePy. In
 particular you can enter the path to the FFMPEG and ImageMagick
 binaries.
 
+These changes must be done BEFORE installing MoviePy: first make the changes,
+then install MoviePy with
+
+    [sudo] python setup.py install
+
+Note that you can also change the path to the binaries AFTER installation, but
+only for one script at a time, as follows:
+
+>>> import moviepy.config as cf
+>>> cf.change_settings({"FFMPEG_BINARY": "some/new/path/to/ffmpeg"})
+>>> print( cf.get_setting("FFMPEG_BINARY") )  # prints the current setting
+
+
 Instructions
 --------------
 
-
 FFMPEG_BINARY
-    Normally you can leave this one to its default (None) and MoviePy
-    will detect automatically the right name, which will be either
-    'ffmpeg' (on linux) or 'ffmpeg.exe' (on windows). If you want to
-    use a binary at a special location on you disk, enter it like that:
+    Normally you can leave this one to its default ('ffmpeg-imageio') at which
+    case image-io will download the right ffmpeg binary (at first use) and then
+    always use that binary.
+    The second option is 'auto-detect', in this case ffmpeg will be whatever
+    binary is found on the computer generally 'ffmpeg' (on linux) or 'ffmpeg.exe'
+    (on windows).
+    Third option: If you want to use a binary at a special location on you disk,
+    enter it like that:
 
-    FFMPEG_BINARY = r"path/to/ffmpeg(.exe)"
+    FFMPEG_BINARY = r"path/to/ffmpeg" # on linux
+    FFMPEG_BINARY = r"path\to\ffmpeg.exe" # on windows
 
     Warning: the 'r' before the path is important, especially on Windows.
 
@@ -53,42 +70,7 @@ IMAGEMAGICK_BINARY
 
     IMAGEMAGICK_BINARY = r"C:\Program Files\ImageMagick-6.8.8-Q16\convert.exe"
 
-You can run this file to check that FFMPEG has been detected.
 """
 
-FFMPEG_BINARY = None
-IMAGEMAGICK_BINARY = 'convert'
-
-
-
-# =====================================================================
-# CODE. Don't write anything below this line !
-
-import subprocess as sp
-
-def try_cmd(cmd):
-        try:
-            proc = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
-            proc.communicate()
-        except:
-            return False
-        else:
-            return True
-
-
-if FFMPEG_BINARY is None:
-
-    if try_cmd(['ffmpeg']):
-        FFMPEG_BINARY = 'ffmpeg'
-    elif try_cmd(['ffmpeg.exe']):
-        FFMPEG_BINARY = 'ffmpeg.exe'
-    else:
-        raise IOError("FFMPEG binary not found. Try installing MoviePy"
-                      " manually and specify the path to the binary in"
-                      " the file conf.py")
-
-if __name__ == "__main__":
-    if try_cmd([FFMPEG_BINARY]):
-        print( "MoviePy : ffmpeg successfully found." )
-    else:
-        print( "MoviePy : can't find ffmpeg." )
+FFMPEG_BINARY = 'ffmpeg'
+IMAGEMAGICK_BINARY = 'auto-detect'

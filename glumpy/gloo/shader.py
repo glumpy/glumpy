@@ -180,7 +180,7 @@ class Shader(GLObject):
         if self._handle <= 0:
             self._handle = gl.glCreateShader(self._target)
             if self._handle <= 0:
-                raise RuntimeErrolr("Cannot create shader object")
+                raise RuntimeError("Cannot create shader object")
 
 
     def _update(self):

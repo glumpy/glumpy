@@ -191,7 +191,7 @@ class Program(GLObject):
         for shader in shaders:
             if shader.need_update:
                 if shader.handle in attached:
-                    gl.glDetachShader(program, handle)
+                    gl.glDetachShader(program, shader.handle)
                 shader.activate()
                 if isinstance(shader, GeometryShader):
                     if shader.vertices_out is not None:
@@ -475,7 +475,7 @@ class Program(GLObject):
         inactive_attributes = self.all_attributes
         for attribute in active_attributes:
             if attribute in inactive_attributes:
-                inacative_attributes.remove(attribute)
+                inactive_attributes.remove(attribute)
         return inactive_attributes
     inactive_attributes = property(_get_inactive_attributes,
         doc = "Program inactive attributes obtained from GPU")

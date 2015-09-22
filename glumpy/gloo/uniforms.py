@@ -9,6 +9,7 @@ import sys
 import math
 import numpy as np
 from operator import mul
+from functools import reduce
 from glumpy.log import log
 from . texture import Texture2D
 
