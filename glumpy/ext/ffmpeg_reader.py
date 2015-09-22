@@ -32,19 +32,29 @@ from __future__ import division
 
 import subprocess as sp
 import re
+import warnings
+import logging
+logging.captureWarnings(True)
+
 
 import numpy as np
-from . ffmpeg_conf import FFMPEG_BINARY  # ffmpeg, ffmpeg.exe, etc...
+from . ffmpeg_config import get_setting  # ffmpeg, ffmpeg.exe, etc...
 from . ffmpeg_tools import cvsecs
+
+import os
+try:
+    from subprocess import DEVNULL  # py3k
+except ImportError:
+    DEVNULL = open(os.devnull, 'wb')
 
 
 class FFMPEG_VideoReader:
 
     def __init__(self, filename, print_infos=False, bufsize = None,
-                 pix_fmt="rgb24"):
+                 pix_fmt="rgb24", check_duration=True):
 
         self.filename = filename
-        infos = ffmpeg_parse_infos(filename, print_infos)
+        infos = ffmpeg_parse_infos(filename, print_infos, check_duration)
         self.fps = infos['video_fps']
         self.size = infos['video_size']
         self.duration = infos['video_duration']
@@ -76,25 +86,30 @@ class FFMPEG_VideoReader:
 
         self.close() # if any
 
-        if starttime !=0 :
-            offset = min(1,starttime)
-            i_arg = ['-ss', "%.03f" % (starttime - offset),
-                    '-i', self.filename,
-                    '-ss', "%.03f" % offset]
+        if starttime != 0 :
+            offset = min(1, starttime)
+            i_arg = ['-ss', "%.06f" % (starttime - offset),
+                     '-i', self.filename,
+                     '-ss', "%.06f" % offset]
         else:
             i_arg = [ '-i', self.filename]
 
 
-        cmd = ([FFMPEG_BINARY]+ i_arg +
+        cmd = ([get_setting("FFMPEG_BINARY")]+ i_arg +
                 ['-loglevel', 'error',
                 '-f', 'image2pipe',
                 "-pix_fmt", self.pix_fmt,
                 '-vcodec', 'rawvideo', '-'])
 
+        popen_params = {"bufsize": self.bufsize,
+                        "stdout": sp.PIPE,
+                        "stderr": sp.PIPE,
+                        "stdin": DEVNULL}
 
-        self.proc = sp.Popen(cmd, bufsize= self.bufsize,
-                                   stdout=sp.PIPE,
-                                   stderr=sp.PIPE)
+        if os.name == "nt":
+            popen_params["creationflags"] = 0x08000000
+
+        self.proc = sp.Popen(cmd, **popen_params)
 
 
 
@@ -105,7 +120,7 @@ class FFMPEG_VideoReader:
         w, h = self.size
         for i in range(n):
             self.proc.stdout.read(self.depth*w*h)
-            self.proc.stdout.flush()
+            #self.proc.stdout.flush()
         self.pos += n
 
 
@@ -116,13 +131,14 @@ class FFMPEG_VideoReader:
         s = self.proc.stdout.read(nbytes)
         if len(s) != nbytes:
 
-            print( "Warning: in file %s, "%(self.filename)+
+            warnings.warn("Warning: in file %s, "%(self.filename)+
                    "%d bytes wanted but %d bytes read,"%(nbytes, len(s))+
                    "at frame %d/%d, at time %.02f/%.02f sec. "%(
                     self.pos,self.nframes,
                     1.0*self.pos/self.fps,
                     self.duration)+
-                   "Using the last valid frame instead.")
+                   "Using the last valid frame instead.",
+                   UserWarning)
 
             if not hasattr(self, 'lastread'):
                 raise IOError(("MoviePy error: failed to read the first frame of "
@@ -137,8 +153,8 @@ class FFMPEG_VideoReader:
 
         else:
 
-            result = np.fromstring(s, dtype='uint8').\
-                         reshape((h, w, len(s)//(w*h)))
+            result = np.fromstring(s, dtype='uint8')
+            result.shape =(h, w, len(s)//(w*h)) # reshape((h, w, len(s)//(w*h)))
             self.lastread = result
 
         return result
@@ -153,14 +169,20 @@ class FFMPEG_VideoReader:
         """
 
         # these definitely need to be rechecked sometime. Seems to work.
-
-        pos = int(self.fps*t)+1
+        
+        # I use that horrible '+0.00001' hack because sometimes due to numerical
+        # imprecisions a 3.0 can become a 2.99999999... which makes the int()
+        # go to the previous integer. This makes the fetching more robust in the
+        # case where you get the nth frame by writing get_frame(n/fps).
+        
+        pos = int(self.fps*t + 0.00001)+1
 
         if pos == self.pos:
             return self.lastread
         else:
             if(pos < self.pos) or (pos > self.pos+100):
                 self.initialize(t)
+                self.pos = pos
             else:
                 self.skip_frames(pos-self.pos-1)
             result = self.read_frame()
@@ -205,12 +227,12 @@ def ffmpeg_read_image(filename, with_mask=True):
         pix_fmt = 'rgba'
     else:
         pix_fmt = "rgb24"
-    reader = FFMPEG_VideoReader(filename, pix_fmt=pix_fmt)
+    reader = FFMPEG_VideoReader(filename, pix_fmt=pix_fmt, check_duration=False)
     im = reader.lastread
     del reader
     return im
 
-def ffmpeg_parse_infos(filename, print_infos=False):
+def ffmpeg_parse_infos(filename, print_infos=False, check_duration=True):
     """Get file infos using ffmpeg.
 
     Returns a dictionnary with the fields:
@@ -225,13 +247,19 @@ def ffmpeg_parse_infos(filename, print_infos=False):
 
     # open the file in a pipe, provoke an error, read output
     is_GIF = filename.endswith('.gif')
-    cmd = [FFMPEG_BINARY, "-i", filename]
+    cmd = [get_setting("FFMPEG_BINARY"), "-i", filename]
     if is_GIF:
         cmd += ["-f", "null", "/dev/null"]
-    proc = sp.Popen(cmd,
-            bufsize=10**5,
-            stdout=sp.PIPE,
-            stderr=sp.PIPE)
+
+    popen_params = {"bufsize": 10**5,
+                    "stdout": sp.PIPE,
+                    "stderr": sp.PIPE,
+                    "stdin": DEVNULL}
+
+    if os.name == "nt":
+        popen_params["creationflags"] = 0x08000000
+
+    proc = sp.Popen(cmd, **popen_params)
 
     proc.stdout.readline()
     proc.terminate()
@@ -253,47 +281,49 @@ def ffmpeg_parse_infos(filename, print_infos=False):
 
 
     # get duration (in seconds)
-    try:
-        keyword = ('frame=' if is_GIF else 'Duration: ')
-        line = [l for l in lines if keyword in l][0]
-        match = re.findall("([0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9])", line)[0]
-        result['duration'] = cvsecs(match)
-    except:
-        raise IOError(("MoviePy error: failed to read the duration of file %s.\n"
-                       "Here are the file infos returned by ffmpeg:\n\n%s")%(
-                          filename, infos))
+    result['duration'] = None
+
+    if check_duration:
+        try:
+            keyword = ('frame=' if is_GIF else 'Duration: ')
+            line = [l for l in lines if keyword in l][0]
+            match = re.findall("([0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9])", line)[0]
+            result['duration'] = cvsecs(match)
+        except:
+            raise IOError(("MoviePy error: failed to read the duration of file %s.\n"
+                           "Here are the file infos returned by ffmpeg:\n\n%s")%(
+                              filename, infos))
 
     # get the output line that speaks about video
-    lines_video = [l for l in lines if ' Video: ' in l]
+    lines_video = [l for l in lines if ' Video: ' in l and re.search('\d+x\d+', l)]
 
     result['video_found'] = ( lines_video != [] )
 
     if result['video_found']:
 
-        line = lines_video[0]
 
-        # get the size, of the form 460x320 (w x h)
-        match = re.search(" [0-9]*x[0-9]*(,| )", line)
-        s = list(map(int, line[match.start():match.end()-1].split('x')))
-        result['video_size'] = s
+        try:
+            line = lines_video[0]
+
+            # get the size, of the form 460x320 (w x h)
+            match = re.search(" [0-9]*x[0-9]*(,| )", line)
+            s = list(map(int, line[match.start():match.end()-1].split('x')))
+            result['video_size'] = s
+        except:
+            raise IOError(("MoviePy error: failed to read video dimensions in file %s.\n"
+                           "Here are the file infos returned by ffmpeg:\n\n%s")%(
+                              filename, infos))
 
 
         # get the frame rate. Sometimes it's 'tbr', sometimes 'fps', sometimes
-        # tbc, and sometimes tbc/2... Trust tbc first, then tbr, then fps.
+        # tbc, and sometimes tbc/2...
+        # Current policy: Trust tbr first, then fps. If result is near from x*1000/1001
+        # where x is 23,24,25,50, replace by x*1000/1001 (very common case for the fps).
+
         try:
             match = re.search("( [0-9]*.| )[0-9]* tbr", line)
             tbr = float(line[match.start():match.end()].split(' ')[1])
-
-            try:
-                match = re.search("( [0-9]*.| )[0-9]* tbc", line)
-                tbc = float(line[match.start():match.end()].split(' ')[1])
-                if abs(tbr - tbc/2) < abs(tbr-tbc):
-                    result['video_fps'] = 1.0*tbc /2
-                else:
-                    result['video_fps'] = tbc
-            except:
-                result['video_fps'] = tbr
-
+            result['video_fps'] = tbr
 
         except:
             match = re.search("( [0-9]*.| )[0-9]* fps", line)
@@ -304,13 +334,16 @@ def ffmpeg_parse_infos(filename, print_infos=False):
         # but then ffmpeg nicely rounds it to 23.98, which we hate.
         coef = 1000.0/1001.0
         fps = result['video_fps']
-        for x in [23,24,25]:
+        for x in [23,24,25,30,50]:
             if (fps!=x) and abs(fps - x*coef) < .01:
                 result['video_fps'] = x*coef
 
-        result['video_nframes'] = int(result['duration']*result['video_fps'])+1
-
-        result['video_duration'] = result['duration']
+        if check_duration:
+            result['video_nframes'] = int(result['duration']*result['video_fps'])+1
+            result['video_duration'] = result['duration']
+        else:
+            result['video_nframes'] = 1
+            result['video_duration'] = None
         # We could have also recomputed the duration from the number
         # of frames, as follows:
         # >>> result['video_duration'] = result['video_nframes'] / result['video_fps']
