@@ -201,7 +201,7 @@ class Uniform(Variable):
                 if data.dtype in [np.float16, np.float32, np.float64]:
                     self._data = data.astype(np.float32).view(TextureCube)
                 else:
-                    self._data = data.astype(np.uint8).view(Texture2Cube)
+                    self._data = data.astype(np.uint8).view(TextureCube)
 
         else:
             self._data[...] = np.array(data,copy=False).ravel()
