@@ -72,5 +72,5 @@ IMAGEMAGICK_BINARY
 
 """
 
-FFMPEG_BINARY = 'ffmpeg-imageio'
+FFMPEG_BINARY = 'ffmpeg'
 IMAGEMAGICK_BINARY = 'auto-detect'
