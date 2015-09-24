@@ -304,18 +304,6 @@ def run(clock=None, framerate=None, interactive=None,
     if interactive is None:
         interactive = options.interactive
 
-    writer = None
-    if options.record:
-        from glumpy.ext.ffmpeg_writer import FFMPEG_VideoWriter
-        framerate = 60
-        window = __backend__.windows()[0]
-        width, height = window.width, window.height
-        filename = "movie.mp4"
-        writer = FFMPEG_VideoWriter(filename, (width, height), fps=framerate)
-        fbuffer = np.zeros((height, width, 3), dtype=np.uint8)
-        data = fbuffer.copy()
-        log.info("Recording movie in '%s'" % filename)
-
     if interactive:
         # Set interactive python session
         os.environ['PYTHONINSPECT'] = '1'
@@ -330,19 +318,22 @@ def run(clock=None, framerate=None, interactive=None,
 
     else:
         __running__ = True
-        count = len(__backend__.windows())
-        while count and duration > 0 and framecount > 0 and __running__:
-            dt = clock.tick()
-            duration -= dt
-            framecount -= 1
-            count = __backend__.process(dt)
 
-            # Record one frame (if there is writer available)
-            if writer is not None:
-                gl.glReadPixels(0, 0, window.width, window.height,
-                                gl.GL_RGB, gl.GL_UNSIGNED_BYTE, fbuffer)
-                data[...] = fbuffer[::-1,:,:]
-                writer.write_frame(data)
+        def run(duration, framecount):
+            count = len(__backend__.windows())
+            while count and duration > 0 and framecount > 0 and __running__:
+                dt = clock.tick()
+                duration -= dt
+                framecount -= 1
+                count = __backend__.process(dt)
 
-        if writer is not None:
-            writer.close()
+        if options.record:
+            from .movie import record
+            filename='movie.mp4'
+            log.info("Recording movie in '%s'" % filename)
+            with record(window=__backend__.windows()[0],
+                        filename=filename,
+                        fps=60):
+                run(duration, framecount)
+        else:
+            run(duration, framecount)
