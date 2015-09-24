@@ -7,7 +7,7 @@
 import numpy as np
 from glumpy import app, gl, glm, gloo, data
 from glumpy.geometry import primitives
-from glumpy.ext.ffmpeg_writer import FFMPEG_VideoWriter
+from glumpy.app.movie import record
 
 
 vertex = """
@@ -35,30 +35,14 @@ void main()
 
 width, height = 512,512
 window = app.Window(width, height, color=(0.30, 0.30, 0.35, 1.00))
-duration = 5.0
-framerate = 60
-writer = FFMPEG_VideoWriter("cube.mp4", (width, height), fps=framerate)
-fbuffer = np.zeros((window.height, window.height, 3), dtype=np.uint8)
-
 
 @window.event
 def on_draw(dt):
-    global phi, theta, writer, duration
+    global phi, theta
 
     window.clear()
     gl.glEnable(gl.GL_DEPTH_TEST)
     cube.draw(gl.GL_TRIANGLES, faces)
-
-    # Write one frame
-    if writer is not None:
-        if duration > 0:
-            gl.glReadPixels(0, 0, window.width, window.height,
-                            gl.GL_RGB, gl.GL_UNSIGNED_BYTE, fbuffer)
-            writer.write_frame(fbuffer)
-            duration -= dt
-        else:
-            writer.close()
-            writer = None
 
     # Make cube rotate
     theta += 0.5 # degrees
@@ -84,4 +68,7 @@ cube['model'] = np.eye(4, dtype=np.float32)
 cube['texture'] = data.checkerboard()
 phi, theta = 0, 0
 
-app.run(framerate=framerate)
+duration = 5.0
+framerate = 60
+with record(window, "cube.mp4", fps=framerate):
+    app.run(framerate=framerate, duration=duration)
