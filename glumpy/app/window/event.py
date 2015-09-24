@@ -329,6 +329,25 @@ class EventDispatcher(object):
             except KeyError:
                 pass
 
+    def get_handler(self, name):
+        '''Get a single event handler by name.
+
+        Returns the first handler function that matches name.
+
+	Raises KeyError if name is not found.
+
+        :param string name:
+             Name of the event type to get.
+
+        '''
+        for frame in self._event_stack:
+            try:
+                return frame[name]
+            except KeyError:
+                pass
+
+        raise KeyError('Event handler {} not found.'.format(name))
+
     def dispatch_event(self, event_type, *args):
         '''Dispatch a single event to the attached handlers.
 
