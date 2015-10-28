@@ -3,7 +3,7 @@
 # Copyright (c) 2015, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
-from . import glfw
+# from . import glfw
 from . import freetype
 
 try:
