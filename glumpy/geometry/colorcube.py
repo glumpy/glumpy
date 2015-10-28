@@ -18,7 +18,7 @@ def colorcube(size=2.0):
 
     # Vertices positions
     p = np.array([[1, 1, 1], [-1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                  [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, -1]])
+                  [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, -1]], dtype=float)
     p *= size/2.0
 
     # Face Normals

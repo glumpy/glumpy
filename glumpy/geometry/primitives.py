@@ -32,7 +32,7 @@ def plane(size=1.0, n=2):
 
     I = (np.arange((n-1)*(n),dtype=np.uint32).reshape(n-1,n))[:,:-1].T
     I = np.repeat(I.ravel(),6).reshape(n-1,n-1,6)
-    I[:,:] += 0,1,n+1, 0,n+1,n
+    I[:,:] += np.array([0,1,n+1, 0,n+1,n], dtype=np.uint32)
 
     vtype = [('position', np.float32, 3),
              ('texcoord', np.float32, 2),
