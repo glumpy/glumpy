@@ -1,0 +1,116 @@
+\documentclass[border={10pt}]{standalone}
+\usepackage{color}
+\usepackage{tikz}
+\usetikzlibrary{calc,arrows,shapes.multipart}
+
+\definecolor{blendedblue}{rgb}{0.2, 0.2, 0.6}
+\definecolor{blendedred}{rgb}{0.8, 0.2, 0.2}
+\definecolor{lightgray}{rgb}{0.7, 0.7, 0.7}
+
+\usepackage[bookmarks=true,
+            breaklinks=true,
+            pdfborder={0 0 0},
+            citecolor=blendedblue,
+            colorlinks=true,       % false: boxed links; true: colored links
+            linkcolor=blendedblue,
+            urlcolor=blendedblue,
+            citecolor=blendedblue,
+            linktocpage=false,
+            hyperindex=true,
+            linkbordercolor=white]{hyperref}
+
+\usepackage{sourcesanspro}
+\thispagestyle{empty}
+\begin{document}
+\sourcesansprolight
+
+
+\begin{tikzpicture}[scale=.45,font=\footnotesize,every text node part/.style={align=center}]
+  \tikzstyle{every node}=[font=\scriptsize]
+
+  \begin{scope}
+
+  \newlength\yearpos
+  \draw[->,thick] (1,0) -- (26,0);
+  \foreach \year in {1992,...,2015}
+  {
+      \pgfmathsetlength\yearpos{(\year-1990)*1cm};
+      \draw[very thin] (\yearpos,-.1) -- (\yearpos,+.1);
+  }@
+
+  \foreach \year / \version in {
+      2002/\href{http://www.khronos.org/registry/gles/specs/1.0/opengles_spec_1_0.pdf}{1.0},
+      2004/\href{http://www.khronos.org/registry/gles/specs/1.1/es_full_spec_1.1.12.pdf}{1.1},
+      2012/\href{http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf}{3.0}}
+  {
+    \pgfmathsetlength\yearpos{(\year-1990)*1cm};
+    \draw[dashed,black!25] (\yearpos,40pt) -- (\yearpos,80pt);
+    \draw (\yearpos,+0.25) node[above=30pt,rotate=0] {ES \version} -- (\yearpos,0);
+  }
+
+  \foreach \year / \version in {
+      2007/\href{http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf}{2.0}}
+  {
+    \pgfmathsetlength\yearpos{(\year-1990)*1cm};
+    \draw[dashed,black!25] (\yearpos,20pt) -- (\yearpos,75pt);
+    \draw (\yearpos,+0.25) node[above=30pt,rotate=0] {ES \version} -- (\yearpos,0);
+  }
+
+
+  \foreach \year / \version in {
+      1992/\href{http://www.opengl.org/registry/doc/glspec10.pdf}{1.0},
+      1997/\href{http://www.opengl.org/registry/doc/glspec11.ps}{1.1},
+      1998/\href{http://www.opengl.org/registry/doc/glspec121_bookmarked.pdf}{1.2},
+      2001/\href{http://www.opengl.org/registry/doc/glspec13.pdf}{1.3},
+      2002/\href{http://www.opengl.org/registry/doc/glspec14.pdf}{1.4},
+      2003/\href{http://www.opengl.org/registry/doc/glspec15.pdf}{1.5},
+      2004/\href{http://www.opengl.org/registry/doc/glspec20.20041022.pdf}{2.0},
+      2006/\href{http://www.opengl.org/sdk/docs/man/}{2.1},
+      2008/\href{http://www.opengl.org/registry/doc/glspec30.20080923.pdf}{3.0},
+      2009/\href{http://www.opengl.org/registry/doc/glspec32.core.20091207.pdf}{3.2},
+      2010/\href{http://www.opengl.org/registry/doc/glspec41.core.20100725.pdf}{4.1},
+      2011/\href{http://www.opengl.org/registry/doc/glspec42.core.20120427.pdf}{4.2},
+      2012/\href{http://www.opengl.org/registry/doc/glspec43.core.20120806.pdf}{4.3},
+      2013/\href{https://www.opengl.org/registry/doc/glspec44.core.pdf}{4.4},
+      2014/\href{https://www.opengl.org/registry/doc/glspec44.core.pdf}{4.5}}
+  {
+    \pgfmathsetlength\yearpos{(\year-1990)*1cm};
+    \draw (\yearpos,-1.00) node[below=3pt,rotate=90] {\year} -- (\yearpos,0);
+    \draw (\yearpos,+0.25) node[above=3pt,rotate=0] {\version} -- (\yearpos,0);
+  }
+
+
+  % Greyed out years
+  % ---------------------------------------------------------------------------
+  \foreach \year in {1993, 1994, 1995, 1996, 1999, 2000, 2005, 2007, 2015}
+  {
+    \pgfmathsetlength\yearpos{(\year-1990)*1cm};
+    \draw (\yearpos,-1.00) node[below=3pt,rotate=90,gray!50] {\year} -- (\yearpos,0);
+  }
+
+  
+  \pgfmathsetlength\yearpos{(2009-1990)*1cm};
+  \draw (\yearpos,+0.25) node[above=13pt,rotate=0]
+      {\href{http://www.opengl.org/registry/doc/glspec31.20090528.pdf}{3.1}} -- (\yearpos,0);
+  \pgfmathsetlength\yearpos{(2010-1990)*1cm};
+  \draw (\yearpos,+0.25) node[above=13pt,rotate=0]
+      {\href{http://www.opengl.org/registry/doc/glspec40.core.20100311.pdf}{4.0}} -- (\yearpos,0);
+  \pgfmathsetlength\yearpos{(2010-1990)*1cm};
+  \draw (\yearpos,+0.25) node[above=23pt,rotate=0]
+      {\href{http://www.opengl.org/sdk/docs/man3/}{3.3}} -- (\yearpos,0);
+
+  \draw  ( 2,  -2.25) -- ( 2,-2.75);
+  \draw  (14,  -2.25) -- (14,-2.75);
+  \draw[<->] ( 2.1,-2.5) -- (13.9,-2.5)  node[midway,below]
+       {\bfseries Fixed pipeline\\(no shaders)};
+  \draw[<->] (14.1,-2.5) -- (26,-2.5)  node[midway,below]
+       {\bfseries Programmable pipeline\\(vertex/fragment/geometry shaders)};
+  \draw  ( 2,  -4.25) -- ( 2,-4.75);
+  \draw  (16,  -4.25) -- (16,-4.75);
+  \draw[<->] ( 2.1,-4.5) -- (15.9,-4.5)  node[midway,below]
+       {{\bfseries Legacy OpenGL}};
+  \draw[<->] (16.1,-4.5) -- (26,-4.5)  node[midway,below]
+       {{\bfseries Core Profile}\\(deprecation model)};
+  \end{scope}
+\end{tikzpicture}
+\end{document}
