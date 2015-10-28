@@ -75,11 +75,11 @@ class OrthographicProjection(Transform):
         aspect = self.aspect
         if aspect is not None:
             if aspect > 1.0:
-                xmin *= (aspect*width)/height
-                xmax *= (aspect*width)/height
+                xmin *= (aspect*width)//height
+                xmax *= (aspect*width)//height
             else:
-                ymin /= (aspect*width)/height
-                ymax /= (aspect*width)/height
+                ymin /= (aspect*width)//height
+                ymax /= (aspect*width)//height
 
         znear, zfar = self.znear, self.zfar
         self["projection"] = glm.ortho(xmin, xmax, ymin, ymax, znear, zfar)

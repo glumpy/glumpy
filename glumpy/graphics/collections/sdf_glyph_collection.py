@@ -136,7 +136,7 @@ class SDFGlyphCollection(Collection):
                 vertices[index]['position'] = (x0,y0),(x0,y1),(x1,y1),(x1,y0)
                 vertices[index]['texcoord'] = (u0,v0),(u0,v1),(u1,v1),(u1,v0)
                 indices[index] = index*4
-                indices[index] += 0,1,2, 0,2,3
+                indices[index] += np.array([0,1,2,0,2,3], dtype=np.uint32)
                 pen[0] = pen[0]+glyph.advance[0] + kerning
                 pen[1] = pen[1]+glyph.advance[1]
                 prev = charcode
