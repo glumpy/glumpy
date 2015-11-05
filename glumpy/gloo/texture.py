@@ -167,7 +167,7 @@ class Texture(GPUData,GLObject):
 
         log.debug("GPU: Deleting texture")
         if self.handle > -1:
-            gl.glDeleteTextures([self.handle])
+            gl.glDeleteTextures(np.array([self.handle], dtype=np.uint32))
 
 
 

@@ -47,7 +47,7 @@ class Buffer(GPUData,GLObject):
         """ Delete buffer from GPU """
 
         if self._handle > -1:
-            gl.glDeleteBuffers(1, [self._handle])
+            gl.glDeleteBuffers(1, np.array([self._handle]))
 
 
     def _activate(self):
