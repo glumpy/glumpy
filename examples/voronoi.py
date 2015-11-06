@@ -80,7 +80,8 @@ def makecone(n=32, radius=1024):
     V[1:,0] = radius*np.cos(T)
     V[1:,1] = radius*np.sin(T)
     V[1:,2] = -height
-    I = np.repeat([[0,1,2]], n, axis=0) + np.arange(n).reshape(n,1)
+    I  = np.repeat([[0,1,2]], n, axis=0).astype(np.uint32)
+    I += np.arange(n,dtype=np.uint32).reshape(n,1)
     I[:,0] = 0
     I[-1] = 0,n,1
     return V, I.ravel()
@@ -94,7 +95,7 @@ C = np.zeros((n,1+p), [("translate", np.float32, 2),
                        ("position",  np.float32, 3),
                        ("color",     np.float32, 3)]).view(gloo.VertexBuffer)
 I = np.zeros((n,3*p), np.uint32).view(gloo.IndexBuffer)
-I += (1+p)*np.arange(n).reshape(n,1)
+I += (1+p)*np.arange(n, dtype=np.uint32).reshape(n,1)
 for i in range(n):
     #x,y = np.random.uniform(0,1024,2)
     x,y = np.random.normal(512,256,2)

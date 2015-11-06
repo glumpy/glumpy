@@ -79,7 +79,7 @@ def cube(size=1.0, n=2):
 
     I = (np.arange((n-1)*(n),dtype=np.uint32).reshape(n-1,n))[:,:-1].T
     I = np.repeat(I.ravel(),6).reshape(n-1,n-1,6)
-    I[:,:] += 0,1,n+1, 0,n+1,n
+    I[:,:] += np.array([0,1,n+1, 0,n+1,n], dtype=np.uint32)
 
     vtype = [('position', np.float32, 3),
              ('texcoord', np.float32, 2),
@@ -129,7 +129,7 @@ def cube(size=1.0, n=2):
     I = I.ravel()
     indices = np.zeros((6,len(I)), dtype=itype)
     indices[:] = I
-    indices += (np.arange(6)*n*n).reshape(6,1)
+    indices += (np.arange(6,dtype=np.uint32)*n*n).reshape(6,1)
 
     vertices = vertices.ravel()
     indices = indices.ravel()

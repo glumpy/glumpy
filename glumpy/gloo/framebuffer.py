@@ -390,7 +390,7 @@ class FrameBuffer(GLObject):
             self._attach()
             self._need_attach = False
         attachments = [gl.GL_COLOR_ATTACHMENT0+i for i in range(len(self.color))]
-        gl.glDrawBuffers(attachments)
+        gl.glDrawBuffers(np.array(attachments,dtype=np.uint32))
 
 
     def _deactivate(self):
