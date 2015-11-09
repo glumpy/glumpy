@@ -111,10 +111,10 @@ def update_grid(w, h):
         np.fmod(translate[1], t4), np.fmod(translate[1], t4) + h + t4, t4)
 
     # We are here in screen space and we want integer coordinates
-    np.floor(I1, out=I1)
-    np.floor(I2, out=I2)
-    np.floor(I3, out=I3)
-    np.floor(I4, out=I4)
+    # np.floor(I1, out=I1)
+    # np.floor(I2, out=I2)
+    # np.floor(I3, out=I3)
+    # np.floor(I4, out=I4)
 
     L = np.linspace(0, w, n)
     Z[..., 0] = I1[find_closest(I1, L)]

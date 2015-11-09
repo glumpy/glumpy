@@ -258,7 +258,7 @@ class TextBuffer(object):
             style = style[:n]
 
         # Tweak code to take style into account
-        codes += style*65536
+        codes += np.uint32(style*65536)
 
         # Replace unknown glyphs with glyph 0
         codes *= np.in1d(codes, self._codes)
