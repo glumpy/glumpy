@@ -62,7 +62,7 @@ program["y_value"] = 0
 I = np.repeat(np.arange(size+1,dtype=np.uint32)*count,2)[1:-1]
 I[-1] = I[0]
 I = np.tile(I,count).reshape(count,2*size)
-I += np.repeat(np.arange(count),2*size).reshape(count,2*size)
+I += np.repeat(np.arange(count,dtype=np.uint32),2*size).reshape(count,2*size)
 I = I.view(gloo.IndexBuffer)
 
 app.run()
