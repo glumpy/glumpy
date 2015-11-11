@@ -8,6 +8,19 @@ from glumpy.log import log
 
 import OpenGL
 OpenGL.ERROR_ON_COPY = True
+
+from OpenGL.plugins import FormatHandler
+FormatHandler( 'glumpy',
+               'OpenGL.arrays.numpymodule.NumpyHandler',[
+                   'glumpy.gloo.buffer.VertexBuffer',
+                   'glumpy.gloo.buffer.IndexBuffer',
+                   'glumpy.gloo.texture.Texture2D',
+                   'glumpy.gloo.texture.Texture1D',
+                   'glumpy.gloo.texture.FloatTexture2D',
+                   'glumpy.gloo.texture.FloatTexture1D',
+                   'glumpy.gloo.texture.TextureCube',
+               ])
+
 #    ERROR_ON_COPY -- if set to a True value before
 #        importing the numpy/lists support modules, will
 #        cause array operations to raise
