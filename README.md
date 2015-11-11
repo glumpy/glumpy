@@ -54,3 +54,7 @@ within the repository. Here is a list:
         window.clear()
 
     app.run()
+
+## More...
+
+<img src="https://raw.githubusercontent.com/rougier/glumpy/master/doc/_static/poster.png">
