@@ -66,7 +66,7 @@ Gloo
 
 **glumpy.gloo** is the heart of glumpy and is responsible for talking to the
 GPU throught buffers, textures and programs. This is done quite transparently
-thanls to the numpy interface (and the GPU data object which is a subclassed
+thanks to the numpy interface (and the GPU data object which is a subclassed
 numpy array).
 
 
