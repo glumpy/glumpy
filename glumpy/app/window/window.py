@@ -150,7 +150,7 @@ class Window(event.EventDispatcher):
         self._timer_stack = []
         self._timer_date = []
         self._backend = None
-        self.color = color
+        self._color = color
 
         self._clearflags = gl.GL_COLOR_BUFFER_BIT
         if config._depth_size:
@@ -175,20 +175,29 @@ class Window(event.EventDispatcher):
     def config(self):
         return self._config
 
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, color):
+        self._color = color
+        gl.glClearColor(*self._color)
+            
     def clear(self,color=None):
         """ Clear the whole window """
 
         if color is not None:
             gl.glClearColor(*color)
             gl.glClear(self._clearflags)
-            gl.glClearColor(*self.color)
+            gl.glClearColor(*self._color)
         else:
             gl.glClear(self._clearflags)
 
     def on_init(self):
         """ Window initialization """
 
-        gl.glClearColor(*self.color)
+        gl.glClearColor(*self._color)
 
 
     def on_resize(self, width, height):
