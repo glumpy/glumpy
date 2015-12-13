@@ -15,7 +15,7 @@ def on_init():
 @window.event
 def on_draw(dt):
     # print 'Draw after %.1f milliseconds' % (1000*dt)
-    pass
+    window.clear()
 
 @window.event
 def on_resize(width,height):
