@@ -161,29 +161,41 @@ class Window(event.EventDispatcher):
 
     @property
     def width(self):
+        """ Window width (pixels, read-only) """
+
         return self._width
 
+    
     @property
     def height(self):
+        """ Window height (pixels, read-only) """
+
         return self._height
 
     @property
     def fps(self):
+        """ Frame per second (read-only) """
+
         return self._clock.get_fps()
 
+    
     @property
     def config(self):
         return self._config
 
     @property
     def color(self):
+        """ Window clear color (read/write) """
+        
         return self._color
 
+    
     @color.setter
     def color(self, color):
         self._color = color
         gl.glClearColor(*self._color)
-            
+
+        
     def clear(self,color=None):
         """ Clear the whole window """
 

@@ -22,6 +22,7 @@ from . import configuration
 from . import clock as _clock
 from . console import Console
 from . viewport import Viewport
+from . window import EventDispatcher
 
 # Default clock
 __clock__ = None
