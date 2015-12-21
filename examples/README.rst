@@ -31,7 +31,7 @@ parse command line options and configure the GL context.
 * app-backend.py_
     This example shows how to change the backend programmatically.
 
-    **warning**:
+    **Warning**:
       Note that if the backend is set, the ``--backend`` command line option
       has not effect.
     
@@ -46,9 +46,9 @@ parse command line options and configure the GL context.
 * app-events.py_
     This example exhibits all available events and display them when triggered.
 
-    .. note::
-
-       Note that the idle event is commented out because it generates far too many messages.
+    **Note**:
+      Note that the idle event is commented out because it generates far too
+      many messages.
 
 * app-interactive.py_
     This example runs in interactive mode where python console is reactive.
@@ -56,8 +56,7 @@ parse command line options and configure the GL context.
 * app-screenshot.py_
     This examples takes a single screenshot and immeditaley exit.
 
-    .. note::
-
+    **Note**:
        You can also take a screenshot anytime using the ``F10`` key. The
        screenshot will be named after the example filename.
 
@@ -65,8 +64,7 @@ parse command line options and configure the GL context.
     This is the most simple glumpy example that display a black window and wait
     for the user to exit the application
 
-    .. note::
-
+    **Note**
        You can exit any glumpy program by closing the window or pressing the
        ``ESC`` key. If you want to disable the ``ESC`` behavior, you'll have to
        connect to the key press event and override behavior.
