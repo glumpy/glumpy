@@ -22,12 +22,11 @@ class GPUData(np.ndarray):
 
     Note that at creation, the whole array needs to be uploaded.
 
-    Example
-    -------
+    Example::
 
-    data = np.zeros((5,5)).view(GPUData)
-    print data.pending_data
-    (0, 200)
+      data = np.zeros((5,5)).view(GPUData)
+      print data.pending_data
+      (0, 200)
     """
 
     def __new__(cls, *args, **kwargs):
