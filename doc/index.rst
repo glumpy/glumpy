@@ -1,34 +1,70 @@
 .. _Glumpy: https://github.com/rougier/glumpy
 .. _OpenGL: http://www.opengl.org
 
-===================================================
+===========================================================
+Glumpy
+===========================================================
 Fast, scalable & beautiful scientific visualization
-===================================================
+-----------------------------------------------------------
 
-.. image:: _static/glumpy.png
+`Glumpy`_ is an `OpenGL`_-based interactive visualization library in
+Python. Its goal is to make it easy to create fast, scalable, beautiful,
+interactive and dynamic visualizations. The main documentation for the site is
+organized into a couple of sections:
 
-`Glumpy`_ is an `OpenGL`_-based interactive visualization library in Python. Its
-goal is to make it easy to create fast dynamic visualizations.
+* :ref:`user-docs`
+* :ref:`opengl-docs`
+* :ref:`dev-docs`
+* :ref:`api-docs`
 
 
-
-Documentation
-=============
+.. ----------------------------------------------------------------------------  
+.. _user-docs:
 
 .. toctree::
-    :maxdepth: 1
+   :maxdepth: 2
+   :caption: User Documentation
 
-    installation
-    quickstart
-    options
-    modern-gl
-    tutorial
-    architecture
+   installation
+   quickstart
+   examples
+..   versions
+..   builds
+..   features
+..   support
+..   faq
 
-..    user-howto
-..    user-faq
-..    user-args
-..    user-support
-..    user-notes
-..    dev-gloo
-..    dev-api
+
+.. ----------------------------------------------------------------------------  
+.. _opengl-docs:
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+   :caption: OpenGL tutorial
+
+   tutorial/introduction
+   tutorial/hardway
+   tutorial/easyway
+   tutorial/welcome
+
+
+.. ----------------------------------------------------------------------------  
+.. _dev-docs:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Documentation
+
+   snippet
+   
+.. ----------------------------------------------------------------------------  
+.. _api-docs:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Application Program Interface
+
+   api/architecture
+   api/app
+   api/gloo

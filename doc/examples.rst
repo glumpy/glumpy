@@ -2,69 +2,124 @@
 Examples
 ========
 
-App
-===
+Glumpy comes with a lot of examples that aim at illustrating the main
+features. You'll find below a list organized around several sections.
 
-**glumpy.app** is the layer responsible for opening a window, handling events
+.. contents::
+   :local:
+
+
+Application-wide functionnality (app)
+=====================================
+
+.. _app-backend.py:      https://github.com/glumpy/glumpy/blob/master/examples/app-backend.py
+.. _app-config.py:       https://github.com/glumpy/glumpy/blob/master/examples/app-config.py
+.. _app-event-loop.py:   https://github.com/glumpy/glumpy/blob/master/examples/app-event-loop.py
+.. _app-events.py:       https://github.com/glumpy/glumpy/blob/master/examples/app-events.py
+.. _app-interactive.py:  https://github.com/glumpy/glumpy/blob/master/examples/app-interactive.py
+.. _app-screenshot.py:   https://github.com/glumpy/glumpy/blob/master/examples/app-screenshot.py
+.. _app-simple.py:       https://github.com/glumpy/glumpy/blob/master/examples/app-simple.py
+.. _app-timed.py:        https://github.com/glumpy/glumpy/blob/master/examples/app-timed.py
+.. _app-two-windows.py:  https://github.com/glumpy/glumpy/blob/master/examples/app-two-windows.py
+.. _app-two-programs.py: https://github.com/glumpy/glumpy/blob/master/examples/app-two-programs.py
+
+
+The :doc:`api/app` is responsible for opening a window, handling events
 (mouse, keyboard and user event). It also provides convenient interfaces to
 parse command line options and configure the GL context.
 
-* `app-backend.py <https://github.com/glumpy/glumpy/blob/master/examples/app-backend.py>`_
 
-  Show how to change the backend programatically.
+* app-backend.py_
+    This example shows how to change the backend programmatically.
 
-* `app-config.py <https://github.com/glumpy/glumpy/blob/master/examples/app-config.py>`_
+    .. warning::
 
-  This shows how to setup a specific GL configuration (depth buffer size, stencil, ...)
+       Note that if the backend is set, the ``--backend`` command line option has not effect.
+    
+* app-config.py_
+    This example shows how to choose and use a specific GL configuration (GL
+    version & profile, depth buffer size, stencil, ...).
+  
+* app-event-loop.py_
+    This example shows how to run manually the event loop.
+    It might come handy if you want to integrate a glumpy program into another application.
+
+* app-events.py_
+    This example exhibits all available events and display them when triggered.
+
+    .. note::
+
+       Note that the idle event is commented out because it generates far too many messages.
+
+* app-interactive.py_
+    This example runs in interactive mode where python console is reactive.
+
+* app-screenshot.py_
+    This examples takes a single screenshot and immeditaley exit.
+
+    .. note::
+
+       You can also take a screenshot anytime using the ``F10`` key. The
+       screenshot will be named after the example filename.
+
+* app-simple.py_
+    This is the most simple glumpy example that display a black window and wait
+    for the user to exit the application
+
+    .. note::
+
+       You can exit any glumpy program by closing the window or pressing the
+       ``ESC`` key. If you want to disable the ``ESC`` behavior, you'll have to
+       connect to the key press event and override behavior.
+
+* app-timed.py_
+    This example creates a window and closes it after 5 seconds.
+
+* app-two-windows.py_
+    This example opens two windows, one should be black, the other white.
+
+* app-two-programs.py_
+    This example displays two points (square), one blue, one red, using two
+    shader programs. This example also serves as a test for checking glumpy is
+    running properly.
 
 
-* `app-event-loop.py <https://github.com/glumpy/glumpy/blob/master/examples/app-event-loop.py>`_
-
-  Show how to manually handle the event loop.
 
 
-* `app-events.py <https://github.com/glumpy/glumpy/blob/master/examples/app-events.py>`_
+OpenGL object oriented interface
+================================
 
-  This example connect to all available events and display them when triggered.
+.. _gloo-quad.py:            https://github.com/glumpy/glumpy/blob/master/examples/gloo-quad.py
+.. _gloo-cube.py:            https://github.com/glumpy/glumpy/blob/master/examples/gloo-cube.py
+.. _gloo-texture-1D.py:      https://github.com/glumpy/glumpy/blob/master/examples/gloo-texture-1D.py
+.. _gloo-texture-2D.py:      https://github.com/glumpy/glumpy/blob/master/examples/gloo-texture-2D.py
+.. _gloo-lena.py:            https://github.com/glumpy/glumpy/blob/master/examples/gloo-lena.py
+.. _gloo-console.py:         https://github.com/glumpy/glumpy/blob/master/examples/gloo-console.py
+.. _gloo-terminal.py:        https://github.com/glumpy/glumpy/blob/master/examples/gloo-terminal.py
+.. _gloo-cloud.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-cloud.py
+.. _gloo-atlas.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-atlas.py
+.. _gloo-framebuffer.py:     https://github.com/glumpy/glumpy/blob/master/examples/gloo-framebuffer.py
+.. _gloo-rain.py:            https://github.com/glumpy/glumpy/blob/master/examples/gloo-rain.py
+.. _gloo-trail.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-trail.py
+.. _gloo-arrows.py:          https://github.com/glumpy/glumpy/blob/master/examples/gloo-arrows.py
+.. _gloo-marker.py:          https://github.com/glumpy/glumpy/blob/master/examples/gloo-marker.py
+.. _gloo-antialias.py:       https://github.com/glumpy/glumpy/blob/master/examples/gloo-antialias.py
+.. _gloo-picking.py:         https://github.com/glumpy/glumpy/blob/master/examples/gloo-picking.py
 
+.. _gloo-cartesian-grid.py:  https://github.com/glumpy/glumpy/blob/master/examples/gloo-cartesian-grid.py
+.. _gloo-hexagonal-grid.py:  https://github.com/glumpy/glumpy/blob/master/examples/gloo-hexagonal-grid.py
+.. _gloo-irregular-grids.py: https://github.com/glumpy/glumpy/blob/master/examples/gloo-irregular-grids.py
+.. _gloo-triangular-grid.py: https://github.com/glumpy/glumpy/blob/master/examples/gloo-triangular-grid.py
+.. _gloo-regular-grids.py:   https://github.com/glumpy/glumpy/blob/master/examples/gloo-regular-grids.py
+.. _gloo-frame.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-frame.py
 
-* `app-interactive.py <https://github.com/glumpy/glumpy/blob/master/examples/app-interactive.py>`_
+.. _gloo-magnify.py:         https://github.com/glumpy/glumpy/blob/master/examples/gloo-magnify.py
+.. _gloo-pulsing-quad.py:    https://github.com/glumpy/glumpy/blob/master/examples/gloo-pulsing-quad.py
+.. _gloo-trace.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-trace.py
+.. _gloo-transparency.py:    https://github.com/glumpy/glumpy/blob/master/examples/gloo-transparency.py
 
-  Display a window in interactive mode (python console is reactive).
-
-
-* `app-screenshot.py <https://github.com/glumpy/glumpy/blob/master/examples/app-screenshot.py>`_
-
-  This takes a screenshot and exit.
-
-
-* `app-simple.py <https://github.com/glumpy/glumpy/blob/master/examples/app-simple.py>`_
-
-  The most simple glumpy example. This should display a black window.
-
-
-* `app-timed.py <https://github.com/glumpy/glumpy/blob/master/examples/app-timed.py>`_
-
-  Open a window, display it for 1 second and exit.
-
-
-* `app-two-windows.py <https://github.com/glumpy/glumpy/blob/master/examples/app-two-windows.py>`_
-
-  Open two windows, one black, one white.
-
-
-* `app-two-programs.py <https://github.com/glumpy/glumpy/blob/master/examples/app-two-programs.py>`_
-
-  Display two points (square), one blue, one red.
-
-
-
-
-Gloo
-====
-
-**glumpy.gloo** is the heart of glumpy and is responsible for talking to the
-GPU throught buffers, textures and programs. This is done quite transparently
+:doc:`api/gloo` is the heart of glumpy and is responsible for talking to the GPU
+throught buffers, textures and programs. This is done quite transparently
 thanks to the numpy interface (and the GPU data object which is a subclassed
 numpy array).
 
