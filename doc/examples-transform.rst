@@ -4,8 +4,10 @@
 .. _transform-ortho.py:         https://github.com/glumpy/glumpy/blob/master/examples/transform-ortho.py
 .. _transform-image.py:         https://github.com/glumpy/glumpy/blob/master/examples/transform-image.py
 .. _transform-rotate.py:        https://github.com/glumpy/glumpy/blob/master/examples/transform-rotate.py
+.. _transform-polar.py:         https://github.com/glumpy/glumpy/blob/master/examples/transform-polar.py
 .. _transform-linear-scale.py:  https://github.com/glumpy/glumpy/blob/master/examples/transform-linear-scale.py
 .. _transform-log-scale.py:     https://github.com/glumpy/glumpy/blob/master/examples/transform-log-scale.py
+.. _transform-power-scale.py:   https://github.com/glumpy/glumpy/blob/master/examples/transform-power-scale.py
 .. _transform-lin-log-scale.py: https://github.com/glumpy/glumpy/blob/master/examples/transform-linear-log-scale.py
 .. _transform-log-polar.py: https://github.com/glumpy/glumpy/blob/master/examples/transform-log-polar.py
 

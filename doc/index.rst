@@ -28,11 +28,7 @@ organized into a couple of sections:
    installation
    quickstart
    examples
-..   versions
-..   builds
-..   features
-..   support
-..   faq
+   faq
 
 
 .. ----------------------------------------------------------------------------  

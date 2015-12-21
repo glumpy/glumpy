@@ -27,7 +27,7 @@
 .. _gloo-trace.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-trace.py
 .. _gloo-transparency.py:    https://github.com/glumpy/glumpy/blob/master/examples/gloo-transparency.py
 
-=====================
+======================
 Object Oriented (gloo)
 ======================
 
