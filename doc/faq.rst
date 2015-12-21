@@ -26,7 +26,7 @@ Frequently Asked Questions
 
    It depends. If you feel comfortable with OpenGL and shaders, you might
    probably benefit from glumpy architecture. However, if you're a scientist
-   only interested in having fast and scale visualization, then you should aim
+   only interested in having fast and scalable visualization, then you should aim
    at vispy.
 
 **Is glumpy compatible with the Jupyter notebook?**

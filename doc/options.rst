@@ -1,31 +1,33 @@
-======================
-Command line arguments
-======================
+====================
+Command line options
+====================
 
-Any glumpy program can be fed with default command line arguments that can
-override pretty much any settings.
+Any glumpy program can be started with some options that can override pretty
+much any settings.
 
 
 Application
 ===========
 
-These settings relate to the initial window creation and interactivity.
+``--backend, -b``
+  Backend to use, one of `glfw`, `sdl2`, `pyside`, `pyglet`, `sdl`, `osxglut`.
+  Default is `glfw`.
 
---backend, -b         Backend to use, one of `glfw`, `sdl2`, `pyside`, `pyglet`, `sdl`, `osxglut`.
-                      Default is `glfw`.
+``--interactive, -i``:
+  Interactive mode
 
---interactive, -i     Interactive mode
-
---framerate, -f       Framerate (in frames per second), default is 60.
-
-                      If you want full acceleration (maximum framerate), you can use 0.
+``--framerate, -f``:
+  Framerate (in frames per second), default is 60.
+  If you want full acceleration (maximum framerate), you can use 0.
                       
---vsync               Vertical synchronization, disabled by default.
+``--vsync``:
+  Vertical synchronization, disabled by default.
 
---size SIZE, -s SIZE  Window initial size
+``--size SIZE, -s SIZE``:
+  Window initial size
 
---position POSITION, -p POSITION
-                      Window initial position
+``--position POSITION, -p POSITION``:
+  Window initial position
 
   
 Output
@@ -44,23 +46,23 @@ Output
 Open GL
 =======
 
-``--gl-api``:
+``--gl-api API``:
   OpenGL API to use, one of `GL` or `ES`, default is `GL`
 
-``--gl-version``:
+``--gl-version VERSION``:
   GL version, default is 2.1
 
-``--gl-profile``:
+``--gl-profile PROFILE``:
   GL context profile (only relevant for GL > 3.0), one of `none`, `core`,
   `compatibility`.
 
 ``--srgb``:
   sRGB mode (gamma correction), disabled by default.
 
-``--depth-size``:
+``--depth-size SIZE``:
   Depth buffer size in bits, default is 16.
 
-``--stentil-size``:
+``--stentil-size SIZE``:
   Stencilbuffer size in bits, default is 0 (no stencil).
 
 ``--single-buffer``:

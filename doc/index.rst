@@ -28,6 +28,7 @@ organized into a couple of sections:
    installation
    quickstart
    examples
+   options
    faq
 
 
