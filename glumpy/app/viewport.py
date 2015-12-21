@@ -443,7 +443,7 @@ class Viewport(event.EventDispatcher):
 
 
     def on_key_press(self, key, modifiers):
-        """" Default key handler that close window on escape """
+        """ Default key handler that close window on escape """
         pass
 
         # if key == window.key.ESCAPE:
