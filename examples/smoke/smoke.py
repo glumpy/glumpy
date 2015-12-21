@@ -1,8 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2011-2016, Nicolas P. Rougier. All Rights Reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 # Porting of the Fluid demo by Philip Prideout (c) 2010
 # Originals sources and explanation on http://prideout.net/blog/?p=58
