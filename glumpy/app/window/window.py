@@ -16,6 +16,34 @@ class Window(event.EventDispatcher):
     """
     Platform independent window.
 
+    :param int width:
+      Initial width (pixels)
+
+    :param int height:
+      Initial height (pixels)
+
+    :param strtitle:
+       Window title
+
+    :param bool visible:
+       Initial visibility status
+
+    :param bool decoration:
+       Whether window is decorated
+
+    :param bool fullscreen:
+       Initial fullscreen status
+
+    :param config:
+       GL Configuration
+
+    :param Window context:
+       Window to share GL context with
+
+    :param 4-tuple color:
+       Clear color
+
+
     The content area of a window is filled entirely with an OpenGL viewport.
     Applications have no access to operating system widgets or controls; all
     rendering must be done via OpenGL.
@@ -33,7 +61,7 @@ class Window(event.EventDispatcher):
     It is the responsability of the window backend to dispatch the following
     events when necessary:
 
-    Keyboard::
+    **Keyboard**::
 
       def on_key_press(symbol, modifiers):
           'A key on the keyboard was pressed.'
@@ -47,7 +75,7 @@ class Window(event.EventDispatcher):
           'A character has been typed'
           pass
 
-    Mouse::
+    **Mouse**::
 
       def on_mouse_press(self, x, y, button):
           'A mouse button was pressed.'
@@ -70,7 +98,7 @@ class Window(event.EventDispatcher):
           pass
 
 
-    Window::
+    **Window**::
 
       def on_init(self):
           'The window has just initialized iself.'
@@ -99,6 +127,7 @@ class Window(event.EventDispatcher):
       def on_idle(self, dt):
           'The window is inactive.'
           pass
+
     """
 
     def __init__(self, width=256, height=256, title=None, visible=True, aspect=None,
@@ -174,7 +203,7 @@ class Window(event.EventDispatcher):
 
     @property
     def fps(self):
-        """ Frame per second (read-only) """
+        """ Frame per second (read-only). """
 
         return self._clock.get_fps()
 
