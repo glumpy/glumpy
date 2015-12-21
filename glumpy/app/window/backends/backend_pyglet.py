@@ -128,64 +128,64 @@ class Window(window.Window):
             width=self._width, height=self._height, caption=title,
             resizable=True, vsync=False, config=__configuration__)
 
- 	def on_mouse_drag(x, y, dx, dy, button, modifiers):
+        def on_mouse_drag(x, y, dx, dy, button, modifiers):
             # BUGFIX
             self.dispatch_event("on_mouse_drag", x, y, dx, -dy, button)
         self._native_window.on_mouse_drag = on_mouse_drag
 
- 	def on_mouse_enter(x, y):
+        def on_mouse_enter(x, y):
             y = self.height-y
             self.dispatch_event("on_enter", x, y)
         self._native_window.on_mouse_enter = on_mouse_enter
 
- 	def on_mouse_leave(x, y):
+        def on_mouse_leave(x, y):
             y = self.height-y
             self.dispatch_event("on_leave", x, y)
         self._native_window.on_mouse_leave = on_mouse_leave
 
- 	def on_mouse_motion(x, y, dx, dy):
+        def on_mouse_motion(x, y, dx, dy):
             self.dispatch_event("on_mouse_motion", x, y, dx, -dy)
         self._native_window.on_mouse_motion = on_mouse_motion
 
- 	def on_mouse_press(x, y, button, modifiers):
+        def on_mouse_press(x, y, button, modifiers):
             self.dispatch_event("on_mouse_press", x, y, button)
         self._native_window.on_mouse_press = on_mouse_press
 
- 	def on_mouse_release(x, y, button, modifiers):
+        def on_mouse_release(x, y, button, modifiers):
             self.dispatch_event("on_mouse_release", x, y, button)
         self._native_window.on_mouse_release = on_mouse_release
 
- 	def on_mouse_scroll(x, y, scroll_x, scroll_y):
+        def on_mouse_scroll(x, y, scroll_x, scroll_y):
             # BUGFIX
             y = self.height-y
             self.dispatch_event("on_mouse_scroll", x, y, scroll_x, -scroll_y)
         self._native_window.on_mouse_scroll = on_mouse_scroll
 
- 	def on_resize(width, height):
+        def on_resize(width, height):
             self.dispatch_event("on_resize", width, height)
         self._native_window.on_resize = on_resize
 
- 	def on_show():
+        def on_show():
             self.dispatch_event("on_show")
         self._native_window.on_show = on_show
 
- 	def on_hide():
+        def on_hide():
             self.dispatch_event("on_hide")
         self._native_window.on_hide = on_hide
 
- 	def on_close():
+        def on_close():
             self.close()
         self._native_window.on_close = on_close
 
- 	def on_key_press(symbol, modifiers):
+        def on_key_press(symbol, modifiers):
             self.dispatch_event("on_key_press", symbol, modifiers)
         self._native_window.on_key_press = on_key_press
 
- 	def on_key_release(symbol, modifiers):
+        def on_key_release(symbol, modifiers):
             self.dispatch_event("on_key_release", symbol, modifiers)
         self._native_window.on_key_release = on_key_release
 
- 	def on_draw():
+        def on_draw():
             self.dispatch_event("on_draw")
         self._native_window.on_draw = on_draw
 
