@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# vispy documentation build configuration file, created by
+# glumpy documentation build configuration file, created by
 # sphinx-quickstart on Sat May  4 16:52:02 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
