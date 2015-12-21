@@ -20,6 +20,7 @@ from glumpy.app.window import backends
 from . import parser
 from . import configuration
 from . import clock as _clock
+from . clock import Clock
 from . console import Console
 from . viewport import Viewport
 from . window import EventDispatcher
