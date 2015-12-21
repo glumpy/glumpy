@@ -6,8 +6,8 @@
 import numpy as np
 from . font import Glyph
 from glumpy.ext import freetype
-from glumpy.ext.sdf import compute_sdf
-
+# Lazy import to avoid problem on readthedocs.org
+# from glumpy.ext.sdf import compute_sdf
 
 
 def bilinear_interpolate(im, x, y):
@@ -78,6 +78,9 @@ class SDFFont(object):
 
 
     def load_glyph(self, face, charcode):
+
+        # Lazy import to avoid problem on readthedocs.org
+        from glumpy.ext.sdf import compute_sdf
 
         face.set_char_size( self._hires_size*64 )
         face.load_char(charcode, freetype.FT_LOAD_RENDER |
