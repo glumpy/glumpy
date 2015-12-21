@@ -1,5 +1,5 @@
-numpy=1.10.1
-cython=0.23.4
-triangle=2015.3.28
-PyOpenGL=3.1.0
-glumpy=1.0.5
+numpy
+cython
+triangle
+PyOpenGL
+glumpy
