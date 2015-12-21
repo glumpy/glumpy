@@ -18,6 +18,7 @@ FormatHandler( 'glumpy',
                'OpenGL.arrays.numpymodule.NumpyHandler',[
                    'glumpy.gloo.buffer.VertexBuffer',
                    'glumpy.gloo.buffer.IndexBuffer',
+                   'glumpy.gloo.atlas.Atlas',
                    'glumpy.gloo.texture.Texture2D',
                    'glumpy.gloo.texture.Texture1D',
                    'glumpy.gloo.texture.FloatTexture2D',
