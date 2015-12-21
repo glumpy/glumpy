@@ -1,6 +1,6 @@
-=======================
-Post-processing filters
-=======================
+=======
+Filters
+=======
 
 Post-processing filters are easily implemented using the Filter object. You
 draw tour scene normally but the draw calls are surrounded by a ```with

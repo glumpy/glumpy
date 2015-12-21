@@ -15,6 +15,6 @@ features. You'll find below a list organized around several sections.
    examples-transform
    examples-collection
    examples-computation
-   example-misc
-   example-candy
+   examples-misc
+   examples-candy
 

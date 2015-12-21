@@ -1,6 +1,6 @@
-========================
-Eye-candy demonstrations
-========================
+=========
+Eye-candy
+=========
 
 * Spiral galaxy
 * Fireworks

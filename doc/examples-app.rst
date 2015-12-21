@@ -9,9 +9,9 @@
 .. _app-two-windows.py:  https://github.com/glumpy/glumpy/blob/master/examples/app-two-windows.py
 .. _app-two-programs.py: https://github.com/glumpy/glumpy/blob/master/examples/app-two-programs.py
 
-===========
-Application
-===========
+=================
+Application (app)
+=================
 
 The ``glumpy.app`` layer is responsible for opening a window and handling
 events (mouse, keyboard and user event). It also provides convenient interfaces
