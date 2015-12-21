@@ -1,5 +1,5 @@
-pip install numpy
-pip install cython
-pip install triangle
-pip install PyOpenGL
-pip install glumpy
+pip install numpy=1.10.1
+pip install cython=0.23.4
+pip install triangle=2015.3.28
+pip install PyOpenGL=3.1.0
+pip install glumpy=1.0.5
