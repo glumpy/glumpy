@@ -18,3 +18,4 @@ features. You'll find below a list organized around several sections.
    examples-misc
    examples-candy
 
+Some examples are also visible on the `glumpy gallery <http://glumpy.github.io/gallery.html>`_

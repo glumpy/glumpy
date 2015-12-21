@@ -1,4 +1,4 @@
-.. _Glumpy: https://github.com/rougier/glumpy
+.. _Glumpy: https://glumpy.github.io
 .. _OpenGL: http://www.opengl.org
 
 ===========================================================
