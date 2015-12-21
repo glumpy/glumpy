@@ -64,7 +64,7 @@ vertices[:,:]["col"]      = C.reshape(rows,cols,1)
 
 indices = np.zeros( (rows,cols, 6), dtype=np.uint32 )
 indices[:,:] = 0,1,2,0,2,3
-indices[:,:] += 4*np.arange(rows*cols).reshape(rows,cols,1)
+indices[:,:] += 4*np.arange(rows*cols,dtype=np.uint32).reshape(rows,cols,1)
 indices = indices.ravel()
 indices = indices.view(gloo.IndexBuffer)
 
