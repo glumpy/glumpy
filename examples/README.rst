@@ -31,9 +31,8 @@ parse command line options and configure the GL context.
 * app-backend.py_
     This example shows how to change the backend programmatically.
 
-    .. warning::
-
-       Note that if the backend is set, the ``--backend`` command line option has not effect.
+    **warning**: Note that if the backend is set, the ``--backend`` command
+                 line option has not effect.
     
 * app-config.py_
     This example shows how to choose and use a specific GL configuration (GL
