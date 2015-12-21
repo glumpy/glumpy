@@ -1,8 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
-# Distributed under the (new) BSD License.
+# Copyright (c) 2011-2016, Nicolas P. Rougier. All Rights Reserved.
+# Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, glm, gloo

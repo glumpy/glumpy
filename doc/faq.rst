@@ -21,3 +21,15 @@ Frequently Asked Questions
    Glumpy is tdoay more low-level than vispy. Vispy is for the general user
    while glumpy is for the hacker. You can think of glumpy_/vispy_ pretty much
    the same as for numpy_/scipy_ (but vispy does not depend on glumpy).
+
+**Should I use glumpy or vispy?**
+
+   It depends. If you feel comfortable with OpenGL and shaders, you might
+   probably benefit from glumpy architecture. However, if you're a scientist
+   only interested in having fast and scale visualization, then you should aim
+   at vispy.
+
+**Is glumpy compatible with the Jupyter notebook?**
+
+   Not yet. There are still a number of problems to be solved before something
+   happens in that direction.

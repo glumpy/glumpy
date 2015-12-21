@@ -1,14 +1,9 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2011-2016, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-import glumpy.gl as gl
-import glumpy.app as app
-import glumpy.glm as glm
-import glumpy.gloo as gloo
+from glumpy imort app, gloo, gl, glm
 
 vertex = """
     attribute vec2 a_texcoord;
