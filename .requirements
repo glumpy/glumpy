@@ -1,5 +1,5 @@
-numpy
-cython
-triangle
-PyOpenGL
-glumpy
+pip install numpy
+pip install cython
+pip install triangle
+pip install PyOpenGL
+pip install glumpy
