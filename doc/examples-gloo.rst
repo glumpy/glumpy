@@ -14,6 +14,8 @@
 .. _gloo-marker.py:          https://github.com/glumpy/glumpy/blob/master/examples/gloo-marker.py
 .. _gloo-antialias.py:       https://github.com/glumpy/glumpy/blob/master/examples/gloo-antialias.py
 .. _gloo-picking.py:         https://github.com/glumpy/glumpy/blob/master/examples/gloo-picking.py
+.. _gloo-trace.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-trace.py
+.. _gloo-magnify.py:         https://github.com/glumpy/glumpy/blob/master/examples/gloo-magnify.py
 
 .. _gloo-cartesian-grid.py:  https://github.com/glumpy/glumpy/blob/master/examples/gloo-cartesian-grid.py
 .. _gloo-hexagonal-grid.py:  https://github.com/glumpy/glumpy/blob/master/examples/gloo-hexagonal-grid.py
@@ -21,10 +23,6 @@
 .. _gloo-triangular-grid.py: https://github.com/glumpy/glumpy/blob/master/examples/gloo-triangular-grid.py
 .. _gloo-regular-grids.py:   https://github.com/glumpy/glumpy/blob/master/examples/gloo-regular-grids.py
 .. _gloo-frame.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-frame.py
-
-.. _gloo-magnify.py:         https://github.com/glumpy/glumpy/blob/master/examples/gloo-magnify.py
-.. _gloo-pulsing-quad.py:    https://github.com/glumpy/glumpy/blob/master/examples/gloo-pulsing-quad.py
-.. _gloo-trace.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-trace.py
 .. _gloo-transparency.py:    https://github.com/glumpy/glumpy/blob/master/examples/gloo-transparency.py
 
 ======================
@@ -120,12 +118,16 @@ subclassed numpy array).
     shows how to update a vertex buffer.
 
 * gloo-trail.py_
-    This example show mouse trails using growing and fadind discs. It
+    This example shows mouse trails using growing and fadind discs. It
     illustrate how to use mouse interactions to update a vertex buffer.
 
+* gloo-picking.py_
+    This example show how to perform object picking using colors. When pick
+    mode is active (mouse press), each object is rendered using a unique color
+    and the color under the mouse is used to compute the object id.
     
-.. * gloo-trace.py_
-    This example display a bunch of signals that slowly fades out. The tick is to
-    not clear the framebuffer but to draw a almost transparent quad over the
-    scene, making older signals to slowly vanish.
+* gloo-trace.py_
+    This example displays several signals that slowly fade out. The trick is to
+    not clear the framebuffer and to draw a quasi transparent quad over the
+    whole scene, making older signals to slowly vanish.
 
