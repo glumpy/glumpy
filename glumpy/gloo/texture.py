@@ -1,7 +1,5 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2011-2016, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
@@ -21,7 +19,7 @@ Read more on framebuffers on `OpenGL Wiki <https://www.opengl.org/wiki/Texture>`
         varying vec2 v_texcoord;
         void main()
         {
-           gl_FragColor = texture2D(texture, v_texcoord).r;
+           gl_FragColor = texture2D(texture, v_texcoord);
         } '''
 
     ...
