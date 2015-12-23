@@ -1,32 +1,32 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2011-2016, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+GPU data is the base class for any data that needs to co-exist on both CPU and
+GPU memory. It keeps track of the smallest contiguous area that needs to be
+uploaded to GPU to keep the CPU and GPU data synced. This allows to update the
+data in one operation. Even though this might be sub-optimal in a few cases, it
+provides a greater usage flexibility and most of the time, it will be faster.
+
+This is done transparently and user can use a GPU buffer as a regular numpy
+array. The `pending_data` property indicates the region (offset/nbytes) of
+the base array that needs to be uploaded.
+
+**Example**:
+
+  .. code::
+
+     data = np.zeros((5,5)).view(GPUData)
+     print data.pending_data
+     (0, 200)
+"""
 import numpy as np
 
 
 class GPUData(np.ndarray):
     """
-    GPU data is the base class for any data that needs to co-exist on both
-    CPU and GPU memory. It keeps track of the largest contiguous area that
-    needs to be uploaded to GPU to keep the CPU and GPU data synced. This
-    allows to update the data in one operation. Even though this might be
-    sub-optimal in a few cases, it provides a greater usage flexibility and
-    most of the time, it will be faster.
-
-    This is done transparently and user can use a GPU buffer as a regular numpy
-    array. The `pending_data` property indicates the region (offset/nbytes) of
-    the base array that needs to be uploaded.
-
-    Note that at creation, the whole array needs to be uploaded.
-
-    Example::
-
-      data = np.zeros((5,5)).view(GPUData)
-      print data.pending_data
-      (0, 200)
+    Memory tracked numpy array.
     """
 
     def __new__(cls, *args, **kwargs):
@@ -63,7 +63,7 @@ class GPUData(np.ndarray):
 
     @property
     def stride(self):
-        """ Get one item stride from the base array. """
+        """ Item stride in the base array. """
 
         if self.base is None:
             return self.ravel().strides[0]
@@ -72,7 +72,7 @@ class GPUData(np.ndarray):
 
     @property
     def offset(self):
-        """ Get byte offset in the base array. """
+        """ Byte offset in the base array. """
 
         return self._extents[0]
 
@@ -95,7 +95,7 @@ class GPUData(np.ndarray):
 
     def _compute_extents(self, Z):
         """
-        Compute extents (bytes start & stop) relatively to the base array.
+        Compute extents (start, stop) in the base array.
         """
 
         if self.base is not None:
@@ -111,6 +111,8 @@ class GPUData(np.ndarray):
 
 
     def __getitem__(self, key):
+        """ FIXME: Need to take care of case where key is a list or array """
+
         Z = np.ndarray.__getitem__(self, key)
         if not hasattr(Z,'shape') or Z.shape == ():
             return Z
@@ -118,6 +120,8 @@ class GPUData(np.ndarray):
         return Z
 
     def __setitem__(self, key, value):
+        """ FIXME: Need to take care of case where key is a list or array """
+        
         Z = np.ndarray.__getitem__(self, key)
         if Z.shape == ():
             # WARN: Be careful with negative indices !

@@ -1,8 +1,61 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All rights reserved.
+# Copyright (c) 2011-2016, Nicolas P. Rougier. All rights reserved.
 # Distributed under the terms of the new BSD License.
 # -----------------------------------------------------------------------------
+"""
+Variables are entry points in the shader that allow to upload CPU data to
+the GPU. For OpenGL ES 2.0, there are mainly two types: uniforms and
+attributes. The correspondance betwenn GPU and CPU data types is given in the
+table below.
+
+=========== ================== == ================== ==============
+GLSL Type   GLSL/GL Type       #  GL elementary type Numpy type
+=========== ================== == ================== ==============
+float       gl.GL_FLOAT        1  gl.GL_FLOAT        np.float32
+vec2        gl.GL_FLOAT_VEC2   2  gl.GL_FLOAT        np.float32
+vec3        gl.GL_FLOAT_VEC3   3  gl.GL_FLOAT        np.float32
+vec4        gl.GL_FLOAT_VEC4   4  gl.GL_FLOAT        np.float32
+int         gl.GL_INT          1  gl.GL_INT          np.int32
+ivec2       gl.GL_INT_VEC2     2  gl.GL_INT          np.int32
+ivec3       gl.GL_INT_VEC3     3  gl.GL_INT          np.int32
+ivec4       gl.GL_INT_VEC4     4  gl.GL_INT          np.int32
+bool        gl.GL_BOOL         1  gl.GL_BOOL         np.bool
+bvec2       gl.GL_BOOL_VEC2    2  gl.GL_BOOL         np.bool
+bvec3       gl.GL_BOOL_VEC3    3  gl.GL_BOOL         np.bool
+bvec4       gl.GL_BOOL_VEC4    4  gl.GL_BOOL         np.bool
+mat2        gl.GL_FLOAT_MAT2   4  gl.GL_FLOAT        np.float32
+mat3        gl.GL_FLOAT_MAT3   9  gl.GL_FLOAT        np.float32
+mat4        gl.GL_FLOAT_MAT4   16 gl.GL_FLOAT        np.float32
+sampler1D   gl.GL_SAMPLER_1D   1  gl.GL_UNSIGNED_INT np.uint32
+sampler2D   gl.GL_SAMPLER_2D   1  gl.GL_UNSIGNED_INT np.uint32
+samplerCube gl.GL_SAMPLER_CUBE 1  gl.GL_UNSIGNED_INT np.uint32
+=========== ================== == ================== ==============
+
+.. note:: 
+
+   Most of the time, you don't need to directly manipulate such variables
+   since they are created automatically when shader code is parsed.
+
+**Example usage**
+
+  .. code::
+
+     vertex = '''
+         attribute vec3 position;
+         void main (void)
+         {
+             gl_Position = vec4(position, 1.0);
+         } '''
+     fragment = '''
+         uniform vec4 color;
+         void main(void)
+         {
+             gl_FragColor = color;
+         } '''
+     program = gloo.Program(vertex, fragment, count=4)
+     # program["position"] type is Attribute
+     # program["color"] type is Uniform
+"""
 import ctypes
 import numpy as np
 
@@ -155,7 +208,7 @@ class Uniform(Variable):
 
 
     def set_data(self, data):
-        """ Set data (no upload) """
+        """ Assign new data to the variable (deferred operation) """
 
         # Textures need special handling
         if self._gtype == gl.GL_SAMPLER_1D:
@@ -280,7 +333,7 @@ class Attribute(Variable):
 
 
     def set_data(self, data):
-        """ Set data (deferred operation) """
+        """ Assign new data to the variable (deferred operation) """
 
         isnumeric = isinstance(data, (float, int))
 

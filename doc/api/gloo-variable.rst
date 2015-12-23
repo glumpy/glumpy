@@ -5,6 +5,10 @@
 Variables
 =========
 
+.. automodule:: glumpy.gloo.variable
+
+**Content**
+
 * :any:`section-variable`  — Generic variable methods
 * :any:`section-uniform`   — Uniform variable
 * :any:`section-attribute` — Attribute variable

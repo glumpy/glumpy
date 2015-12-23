@@ -1,6 +1,6 @@
-=========================
-GL object oriented (gloo)
-=========================
+===================
+OpenGL layer (gloo)
+===================
 
 The ``glumpy.gloo`` module offers an intuitive interface to modern OpenGL
 through buffers, textures and programs.

@@ -99,10 +99,10 @@ class Texture(GPUData,GLObject):
        
         Depending on integer or float textures, one of:
 
-        1. ``gl.GL_RED``  / ``gl.GLR32F``
-        2. ``gl.GL_RG``   / ``gl.GL_RG32F``
-        3. ``gl.GL_RGB``  / ``gl.GL_RGB32F``
-        4. ``gl.GL_RGBA`` / ``gl.GL_RGBA32F``
+        * gl.GL_RED  / gl.GLR32F
+        * gl.GL_RG   / gl.GL_RG32F
+        * gl.GL_RGB  / gl.GL_RGB32F
+        * gl.GL_RGBA / gl.GL_RGBA32F
         """
 
         return self._cpu_format
@@ -114,10 +114,10 @@ class Texture(GPUData,GLObject):
 
         Depending on integer or float textures, one of:
 
-        1. ``gl.GL_RED``  / ``gl.GLR32F``
-        2. ``gl.GL_RG``   / ``gl.GL_RG32F``
-        3. ``gl.GL_RGB``  / ``gl.GL_RGB32F``
-        4. ``gl.GL_RGBA`` / ``gl.GL_RGBA32F``
+        * gl.GL_RED  / gl.GLR32F
+        * gl.GL_RG   / gl.GL_RG32F
+        * gl.GL_RGB  / gl.GL_RGB32F
+        * gl.GL_RGBA / gl.GL_RGBA32F
         """
 
         return self._gpu_format

@@ -5,6 +5,8 @@
 GPUData
 =======
 
-.. autoclass:: glumpy.gloo.gpudata.GPUData
+.. automodule:: glumpy.gloo.gpudata
+
+.. autoclass:: glumpy.gloo.GPUData
    :show-inheritance:
    :members:
