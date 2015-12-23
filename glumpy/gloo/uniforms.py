@@ -79,8 +79,7 @@ def dtype_reduce(dtype, level=0, depth=0):
 class Uniforms(Texture2D):
     """ Uniforms texture holder
 
-    Parameters
-    ----------
+    Parameters:
 
     data : ndarray
         Texture data (optional)
@@ -93,11 +92,6 @@ class Uniforms(Texture2D):
         allowing the data to be updated regardless of striding. Note
         that modifying the data after passing it here might result in
         undesired behavior, unless a copy is given. Default True.
-
-
-    Usage
-    -----
-
     """
 
     def __init__(self, size, dtype):

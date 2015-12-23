@@ -17,7 +17,7 @@ from glumpy import gloo, gl
 from glumpy.gloo.program import Program
 from glumpy.transforms import Position, Viewport
 from . util import fetchcode
-from . base_collection import BaseCollection
+from . base_collection import BaseCollection, BaseItem
 
 
 

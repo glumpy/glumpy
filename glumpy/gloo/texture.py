@@ -4,6 +4,32 @@
 # Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+A texture is an OpenGL Object that contains one or more images that all
+have the same image format. A texture can be used in two ways. It can be the
+source of a texture access from a Shader, or it can be used as a render target.
+
+Read more on framebuffers on `OpenGL Wiki <https://www.opengl.org/wiki/Texture>`_
+
+**Example**:
+
+  .. code::
+
+     ...
+    fragment = '''
+        uniform sampler2D texture;
+        varying vec2 v_texcoord;
+        void main()
+        {
+           gl_FragColor = texture2D(texture, v_texcoord).r;
+        } '''
+
+    ...
+    quad = gloo.Program(vertex, fragment, count=4)
+    quad['texture'] = data.get('lena.png')
+    ...
+"""
+
 import numpy as np
 from glumpy import gl
 from glumpy.log import log
@@ -70,13 +96,31 @@ class Texture(GPUData,GLObject):
 
     @property
     def cpu_format(self):
-        """ Texture CPU format. """
+        """
+        Texture CPU format (read/write).
+       
+        Depending on integer or float textures, one of:
+
+        1. ``gl.GL_RED``  / ``gl.GLR32F``
+        2. ``gl.GL_RG``   / ``gl.GL_RG32F``
+        3. ``gl.GL_RGB``  / ``gl.GL_RGB32F``
+        4. ``gl.GL_RGBA`` / ``gl.GL_RGBA32F``
+        """
 
         return self._cpu_format
 
     @property
     def gpu_format(self):
-        """ Texture GPU format. """
+        """ 
+        Texture GPU format (read/write).
+
+        Depending on integer or float textures, one of:
+
+        1. ``gl.GL_RED``  / ``gl.GLR32F``
+        2. ``gl.GL_RG``   / ``gl.GL_RG32F``
+        3. ``gl.GL_RGB``  / ``gl.GL_RGB32F``
+        4. ``gl.GL_RGBA`` / ``gl.GL_RGBA32F``
+        """
 
         return self._gpu_format
 
@@ -173,7 +217,9 @@ class Texture(GPUData,GLObject):
 
 
 class Texture1D(Texture):
-    """ 1D Texture """
+    """
+    One dimensional texture.
+    """
 
     def __init__(self):
         Texture.__init__(self, gl.GL_TEXTURE_1D)
@@ -184,8 +230,13 @@ class Texture1D(Texture):
 
     @property
     def width(self):
+        """ 
+        Texture width
+        """
+
         return self.shape[0]
 
+    
 #    def _create(self):
 #        Texture._create(self)
 #        log.debug("GPU: Resizing texture(%s)"% (self.width))
@@ -223,7 +274,9 @@ class Texture1D(Texture):
 
 
 class TextureFloat1D(Texture1D):
-    """ 1D float texture """
+    """
+    One dimensional float texture.
+    """
 
     def __init__(self):
         Texture1D.__init__(self)

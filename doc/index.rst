@@ -22,12 +22,13 @@ organized into a couple of sections:
 .. _user-docs:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: User Documentation
 
    installation
    quickstart
    examples
+   gloo
    options
    faq
 
@@ -36,7 +37,7 @@ organized into a couple of sections:
 .. _opengl-docs:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :glob:
    :caption: OpenGL tutorial
 
@@ -50,7 +51,7 @@ organized into a couple of sections:
 .. _dev-docs:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Developer Documentation
 
    snippet
@@ -59,7 +60,7 @@ organized into a couple of sections:
 .. _api-docs:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Application Program Interface
 
    api/architecture

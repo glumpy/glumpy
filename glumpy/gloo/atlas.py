@@ -25,7 +25,6 @@ class Atlas(Texture2D):
     """ Texture Atlas (two dimensional)
 
     Parameters
-    ----------
 
     data : ndarray
         Texture data (optional)

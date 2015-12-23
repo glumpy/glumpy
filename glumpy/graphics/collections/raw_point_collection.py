@@ -76,7 +76,7 @@ class RawPointCollection(Collection):
             if transform is not None:
                 # FIXME: this line break things because snippet code will be included
                 #        and it messes with new snippet code
-                program["transform"] = Position()
+                # program["transform"] = Position()
                 program["transform"] = transform
             else:
                 program["transform"] = Position()
@@ -85,7 +85,7 @@ class RawPointCollection(Collection):
             if viewport is not None:
                 # FIXME: this line break things because snippet code will be included
                 #        and it messes with new snippet code
-                program["viewport"] = Viewport()
+                # program["viewport"] = Viewport()
                 program["viewport"] = viewport
             else:
                 program["viewport"] = Viewport()

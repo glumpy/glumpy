@@ -14,39 +14,36 @@ details.
 Creating a window
 =================
 
-We'll begin with the requisite "Hello, World" introduction.  This program will
-open a window and wait to be closed.  You can find the entire program in the
-`examples/app-simple.py` file.
+Creating a new window is straightforward:
 
-Begin by importing the :mod:`glumpy` package::
+.. code:: python
 
-    import glumpy
+   from glumpy import app
+   window = app.Window()
+   app.run()
+   
+You should see immediately a new window on your desktop with possibly some
+garbage on it. The reason for the garbage is that we do not clear the window.
+A better minimal version is thus:
 
-Create a :class:`glumpy.app.Window` by calling its default constructor.  The 
-window will be visible as soon as it's created, and will have reasonable default 
-values for all its parameters::
+.. code:: python
 
-    window = glumpy.app.Window()
+   from glumpy import app
 
-An :meth:`~glumpy.app.Window.on_draw` event is dispatched to the window to 
-give it a chance to redraw its contents. glumpy provides several ways to attach 
-event handlers to objects; a simple way is to use a decorator::
+   window = app.Window()
 
-    @window.event
-    def on_draw():
-        window.clear()
+   @window.event
+   def on_draw(dt):
+       window.clear()
+   
+   app.run()
 
-Within the :meth:`~glumpy.app.Window.on_draw` handler the window is cleared to 
-the default background color (black).
+In this version, we use the :meth:`on_draw` event that is dispatched every time
+a redraw is needed for the window.  Within our `on_draw` handler, the window is
+cleared to the default background color (black).
 
-Finally, call::
-
-    glumpy.app.run()
-
-To let glumpy respond to application events such as the mouse and keyboard.
-Your event handlers will now be called as required, and the 
-:func:`~glumpy.app.run` method will return only when all application windows have 
-been closed.
+The final call to the `app.run()` gives control to the glumpy application loop
+that will respond to application events such as the mouse and the keyboard.
 
 .. note::
 
@@ -54,9 +51,6 @@ been closed.
    closed unless the program has been launched in **interactive mode.** If you
    start the program using the ``--interactive`` switch, the `app.run()` is no
    longer blocking.
-
-.. image:: _static/screenshots/app-simple.png
-   :width: 256px
    
 
 Displaying a quad
@@ -77,7 +71,7 @@ to import the relevant modules and create the window.
 
    window = app.Window()
 
-We now need to create a GLSL program that will be in charge of displaying a
+We then need to create a GLSL program that will be in charge of displaying a
 quad. To do this, we first have to write a vertex and a fragment shader that
 will tell OpenGL exactly what and how to draw things. No need to understand
 them yet but the important point here is that those program are just text
@@ -98,11 +92,6 @@ strings.
               void main() {
                   gl_FragColor = color;
               } """
-
-We are now ready to create a new GLSL program and we'll specify that it'll use
-exactly 4 vertices.
-
-.. code:: python
 
    quad = gloo.Program(vertex, fragment, count=4)
 
