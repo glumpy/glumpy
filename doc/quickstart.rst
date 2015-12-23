@@ -7,6 +7,8 @@ when presented with a large amount of reference material to read.  This
 chapter gives a very quick introduction to glumpy without covering any of the
 details.
 
+**Content**
+
 .. contents::
     :local:
 

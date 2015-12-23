@@ -3,7 +3,9 @@ Command line options
 ====================
 
 Any glumpy program can be started with some options that can override pretty
-much any settings.
+much any settings. Among the most interesting options, the ``--record`` allows
+to record a movie in mp4 format and the ``--fps`` allows to set the framerate
+(default is 60 frames per second).
 
 
 Application

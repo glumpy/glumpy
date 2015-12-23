@@ -5,6 +5,8 @@ Examples
 Glumpy comes with a lot of examples that aim at illustrating the main
 features. You'll find below a list organized around several sections.
 
+**Content**
+
 .. toctree::
    :maxdepth: 2
 

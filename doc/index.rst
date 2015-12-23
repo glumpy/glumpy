@@ -12,10 +12,18 @@ Python. Its goal is to make it easy to create fast, scalable, beautiful,
 interactive and dynamic visualizations. The main documentation for the site is
 organized into a couple of sections:
 
-* :ref:`user-docs`
-* :ref:`opengl-docs`
-* :ref:`dev-docs`
-* :ref:`api-docs`
+Important links
+===============
+
+======================= ====================================================
+**Source repository**   https://github.com/glumpy/glumpy
+**Issue tracker**       https://github.com/glumpy/glumpy/issues
+**Website**             http://glumpy.github.io
+**Examples gallery**    http://glumpy.github.io/gallery.html
+**Documentation**       http://glumpy.readthedocs.org/en/latest/
+**Gitter chatroom**     https://gitter.im/glumpy/chatroom
+**Mailing list**        https://groups.google.com/forum/#!forum/glumpy-users
+======================= ====================================================
 
 
 .. ----------------------------------------------------------------------------  
@@ -28,7 +36,7 @@ organized into a couple of sections:
    installation
    quickstart
    examples
-   gloo
+   numpy
    options
    faq
 

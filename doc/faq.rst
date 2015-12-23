@@ -16,9 +16,9 @@ Frequently Asked Questions
    (visvis_), Cyrille Rossant (galry_) and myself (Nicolas P. Rougier). During
    this development, I was still using glumpy to experiment some ideas in order
    to later port them into vispy. However, at some point, it was easier for me
-   to concentrate only on glumpy and to backport some vispy ide into it.
+   to concentrate only on glumpy and to backport some vispy ideas.
 
-   Glumpy is tdoay more low-level than vispy. Vispy is for the general user
+   Glumpy is today more low-level than vispy. Vispy is for the general user
    while glumpy is for the hacker. You can think of glumpy_/vispy_ pretty much
    the same as for numpy_/scipy_ (but vispy does not depend on glumpy).
 
