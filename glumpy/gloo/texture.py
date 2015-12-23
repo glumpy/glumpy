@@ -9,7 +9,7 @@ source of a texture access from a Shader, or it can be used as a render target.
 
 Read more on framebuffers on `OpenGL Wiki <https://www.opengl.org/wiki/Texture>`_
 
-**Example**:
+**Example usage**:
 
   .. code::
 

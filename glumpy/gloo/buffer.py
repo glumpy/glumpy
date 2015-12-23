@@ -1,9 +1,25 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2011-2016, Nicolas P. Rougier. All Rights Reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+Buffer objects are OpenGL objects that store an array of unformatted memory
+allocated by the OpenGL context (aka: the GPU). These can be used to store
+vertex data, pixel data retrieved from images or the framebuffer, and a variety
+of other things.
+
+Read more on buffer objects on `OpenGL Wiki
+<https://www.opengl.org/wiki/Buffer_Object>`_
+
+**Example usage**:
+
+  .. code:: python
+
+     dtype = [("position", np.float32, 3),
+              ("color",    np.float32, 4)]
+     V = np.zeros(4,dtype).view(gloo.VertexBuffer)
+
+"""
 import numpy as np
 
 from glumpy import gl

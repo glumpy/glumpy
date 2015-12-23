@@ -5,6 +5,11 @@
 Buffers
 =======
 
+.. automodule:: glumpy.gloo.buffer
+
+
+**Content**
+
 * :any:`buffer-section`        — Generic buffer methods
 * :any:`vertex-buffer-section` — Vertex buffer
 * :any:`index-buffer-section`  — Index buffer

@@ -5,6 +5,10 @@
 Shaders
 =======
 
+.. automodule:: glumpy.gloo.shader
+
+**Content**
+
 * :any:`shader-section`          — Generic shader methods
 * :any:`vertex-shader-section`   — Vertex shader
 * :any:`fragment-shader-section` — Fragment shader
