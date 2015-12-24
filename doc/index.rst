@@ -41,9 +41,12 @@ pretty much useable (for the hacker). Furture development includes:
    * Collection update mechanism
    * Write the Wx2,Wx3 and GTK3 backends
    * Write some real-world user case examples (any idea ?)
-
+     
  * **Long term** (2/3 years):
 
+   * SVG viewer (see `seagull <https://bitbucket.org/rndblnch/seagull>`_)
+   * Minimal widget toolkit (see `nanovg <https://github.com/memononen/nanovg>`_)
+   * Python OpenGL terminal (see `glipy <http://www.labri.fr/perso/nrougier/coding/glipy/index.html>`_)
    * Foreign API (matplotlib_, cairo_ & bokeh_)
    * Jupyter_ integration
 
@@ -81,6 +84,7 @@ etc.
    tutorial/easyway
    tutorial/cube-ugly
    tutorial/cube-nice
+   tutorial/resources
 
 
 .. ----------------------------------------------------------------------------  

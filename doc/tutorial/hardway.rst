@@ -1,6 +1,6 @@
-===================
-OpenGL the hard way
-===================
+============
+The hard way
+============
 
 Before even using OpenGL, we need to open a window with a valid GL
 context. This can be done using toolkit such as Gtk, Qt or Wx or any native

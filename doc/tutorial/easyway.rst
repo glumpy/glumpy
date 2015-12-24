@@ -1,6 +1,6 @@
-===================
-OpenGL the easy way
-===================
+============
+The easy way
+============
 
 As we've seen in the previous section, displaying a simple quad using modern GL
 is quite tedious and requires a fair number of operations. The goal of glumpy
@@ -93,16 +93,16 @@ Exercices
 
 **Quad rotation** Instead of scaling the quad, try to make it rotate. Note that
 you have access to the sin and cos function from within the shader.
-(`solution 1 <../_static/quad-rotation.py>`_)
+(`solution 1 <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/quad-rotation.py>`_)
 
 **Viewport aspect**: Since the viewport is normalized, this means the aspect
 ratio of our quad is not always 1, it can become wider or taller, depending on
 how the actual shape of the window. How to change the reshape function
 (viewport call) to achieve a constant ratio of 1 (square) ?
-(`solution 2 <../_static/viewport-aspect.py>`_)
+(`solution 2 <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/viewport-aspect.py>`_)
 
 **Quad aspect**: In the previous exercice, we manipulated the viewport such a
 to have a constant ratio of 1 for the viewport. We could however only
 manipulate the vertex position from within the shader, provided we know the
 size of the viewport, how would you do this ?
-(`solution 3 <../_static/quad-aspect.py>`_)
+(`solution 3 <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/quad-aspect.py>`_)

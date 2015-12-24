@@ -95,8 +95,10 @@ faces, each of them being made of 2 triangles, we need 12 triangles.
 How many vertices? 12 triangles × 3 vertices per triangles = 36 vertices might
 be a reasonable answer. However, we can also notice that each vertex is part of
 3 different faces actually. Instead we'll use no more than 8 vertices and tell
-explicitly OpenGL what to draw with them::
+explicitly OpenGL what to draw with them:
 
+.. code:: python
+            
    V = np.zeros(8, [("position", np.float32, 3)])
    V["position"] = [[ 1, 1, 1], [-1, 1, 1], [-1,-1, 1], [ 1,-1, 1],
                     [ 1,-1,-1], [ 1, 1,-1], [-1, 1,-1], [-1,-1,-1]]
@@ -104,17 +106,26 @@ explicitly OpenGL what to draw with them::
 These describe vertices of a cube cented on (0,0,0) that goes from (-1,-1,-1)
 to (+1,+1,+1). Then we compute (mentally) what are the triangles for each face, i.e. we
 describe triangles in terms of vertices index (relatively to the ``V`` array we
-just defined)::
+just defined):
 
-  I = np.array([0,1,2, 0,2,3,  0,3,4, 0,4,5,  0,5,6, 0,6,1,
-                1,6,7, 1,7,2,  7,4,3, 7,3,2,  4,7,6, 4,6,5], dtype=np.uint32)
+.. code:: python
 
-We now need to upload these data to the GPU. Using gloo, the easiest way is to use a VertexBuffer for vertices data and an IndexBuffer for indices data::
+   I = np.array([0,1,2, 0,2,3,  0,3,4, 0,4,5,  0,5,6, 0,6,1,
+                 1,6,7, 1,7,2,  7,4,3, 7,3,2,  4,7,6, 4,6,5], dtype=np.uint32)
 
-  V = V.view(gloo.VertexBuffer)
-  I = I.view(gloo.IndexBuffer)
+We now need to upload these data to the GPU. Using gloo, the easiest way is to use a VertexBuffer for vertices data and an IndexBuffer for indices data:
 
+.. code:: python
 
+   V = V.view(gloo.VertexBuffer)
+   I = I.view(gloo.IndexBuffer)
+
+   cube = gloo.Program(vertex, fragment)
+   cube["position"] = V
+
+We'll use the indices buffer when rendering the cube.
+  
+  
 Building matrices
 =================
 
@@ -123,30 +134,33 @@ Building matrices
    Note that the view matrix is a translation along z. We actually move away
    from the center while looking into the (positive) z direction.
 
-
 All the common matrix operations can be found in the ``glumpy.glm`` module
 that defines ortho, frustum and perspective matrices as well as rotation,
 translation and scaling operations. We won't say much more about these and you
 might want to read a book about geometry to understand how this work,
 especially when compositing rotation, translation and scaling (order is
-important)::
+important):
 
-  view = np.eye(4,dtype=np.float32)
-  model = np.eye(4,dtype=np.float32)
-  projection = np.eye(4,dtype=np.float32)
-  glm.translate(view, 0,0,-5)
-  program['model'] = model
-  program['view'] = view
-  program['projection'] = projection
-  phi, theta = 0,0
+.. code:: python
+
+   view = np.eye(4,dtype=np.float32)
+   model = np.eye(4,dtype=np.float32)
+   projection = np.eye(4,dtype=np.float32)
+   glm.translate(view, 0,0,-5)
+   cube['model'] = model
+   cube['view'] = view
+   cube['projection'] = projection
+   phi, theta = 0,0
 
 It is now important to update the projection matrix whenever the window is
-resized (because aspect ratio may have changed)::
+resized (because aspect ratio may have changed):
 
-  def reshape(width,height):
-      gl.glViewport(0, 0, width, height)
-      projection = perspective( 45.0, width/float(height), 2.0, 10.0 )
-      program['projection'] = projection
+.. code:: python
+
+   @window.event
+   def on_resize(width, height):
+      ratio = width / float(height)
+      cube['projection'] = glm.perspective(45.0, ratio, 2.0, 100.0)
 
 
 Rendering
@@ -157,45 +171,40 @@ Rendering
    :width: 40%
 
 Rotating the cube means computing a model matrix such that the cube rotate
-around its center. We'll do that in the timer function and rotate the cube
-around the z axis (theta), then around the y axis (phi)::
+around its center. We'll do that in the draw function and rotate the cube
+around the z axis (theta), then around the y axis (phi):
 
-  def timer(fps):
-      global theta, phi
-      theta += .5
-      phi += .5
-      model = np.eye(4, dtype=np.float32)
-      rotate(model, theta, 0,0,1)
-      rotate(model, phi, 0,1,0)
-      program['model'] = model
-      glut.glutTimerFunc(1000/fps, timer, fps)
-      glut.glutPostRedisplay()
+.. code:: python
 
+   @window.event
+   def on_draw(dt):
+       global phi, theta
+       window.clear()
+       cube.draw(gl.GL_TRIANGLES, I)
+
+       # Make cube rotate
+       theta += 0.5 # degrees
+       phi += 0.5 # degrees
+       model = np.eye(4, dtype=np.float32)
+       glm.rotate(model, theta, 0, 0, 1)
+       glm.rotate(model, phi, 0, 1, 0)
+       cube['model'] = model
 
 We're now alsmost ready to render the whole scene but we need first to modify
-the GLUT initialization a little bit. Previously, we used::
+the initialization a little bit to enable depth testing:
 
-  glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA)
+.. code:: python
+            
+   @window.event
+   def on_init():
+       gl.glEnable(gl.GL_DEPTH_TEST)
 
-But now, we're explicity dealing with 3D, meaning some rendered triangles may
-be behind some others and we don't want to handle rendering order to deal with
-that. OpenGL will take care of that provided we declared we'll use a depth
-buffer. We thus need to modify glut initialization as and to tell OpenGL to use
-the depth buffer::
+This is needed because we're now dealing with 3D, meaning some rendered
+triangles may be behind some others. OpenGL will take care of that provided we
+declared our context with a depth buffer which is the default in glumpy.
 
-  glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA | glut.GLUT_DEPTH)
-  gl.glEnable(gl.GL_DEPTH_TEST)
+`Complete source code <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/solid-cube.py>`_ is available on github.
 
-
-and when clear the scene, we have to take care of clearing the depth buffer as well::
-
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-
-Finally, to render the cube using the specified triangles, we write::
-
-    program.draw(gl.GL_TRIANGLES, indices)
-
-    
 **But... But... But is't ugly !** Yes, of course ! We have no color (but red),
 no texture and no light. What did you expect ?
 
