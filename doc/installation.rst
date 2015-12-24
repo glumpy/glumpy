@@ -19,9 +19,15 @@ or upgrade any existing installation:
 Packages requirements
 =====================
 
-The only mandatory requirements for glumpy is the `numpy <http://numpy.org>`_
-and the `pyopengl <http://pyopengl.sourceforge.net>`_ packages:
+Mandatory requirements for glumpy are:
 
+ * numpy:    http://numpy.org
+ * pyopengl: http://pyopengl.sourceforge.net
+ * cython:   http://cython.org
+ * triangle: http://dzhelil.info/triangle/
+
+The most easy way to install these dependencies is:
+   
 .. code-block:: bash
 
    $ pip install numpy
@@ -30,7 +36,6 @@ and the `pyopengl <http://pyopengl.sourceforge.net>`_ packages:
    $ pip install triangle
 
 If you have alread installed them, make sure to upgrade to the lastest version:
-
 
 .. code-block:: bash
 

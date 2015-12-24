@@ -4,7 +4,7 @@ Snippets
 
 A snippet is a piece of GLSL code that can be injected into an another GLSL
 code. It provides the necessary machinery to take care of name collisions,
-external variables and snippet composition (call, +, -, /, *).
+external variables and snippet composition (call, +, -, /, \*).
 
 A snippet can declare uniforms, const, attributes and varying using random
 names. However, these names will be later mangled such as to avoid name

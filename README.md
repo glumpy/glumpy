@@ -16,20 +16,17 @@ cd examples
 
 ## Dependencies
 
-### Mandatory
+### Python
 
 * PyOpenGL: http://pyopengl.sourceforge.net/
 * Numpy: http://numpy.scipy.org/
-
-
-### Optional
-
 * Cython: http://cython.org
-* PIL or Pillow: https://pypi.python.org/pypi/Pillow
-* ffmpeg: https://www.ffmpeg.org
-* freetype: http://www.freetype.org
 * triangle: http://dzhelil.info/triangle/index.html
 
+### Other
+
+* ffmpeg: https://www.ffmpeg.org
+* freetype: http://www.freetype.org
 
 ### Embedded
 

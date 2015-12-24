@@ -21,3 +21,8 @@ Filter(shader)`` where the shader transform the output.
 
 * filter-compose.py_
     This example show how to compose filters together.
+
+.. note::
+
+   You will find several other very nice filters in the `GPUImage
+   <https://github.com/BradLarson/GPUImage>`_ repository.

@@ -1,6 +1,6 @@
-===================
-Building a 3D scene
-===================
+================
+Rendering a cube
+================
 
 We already have all the pieces needed to render a 3D scene but we need to do
 the mathematics.
@@ -155,10 +155,9 @@ resized (because aspect ratio may have changed)::
 Rendering
 =========
 
-.. image:: images/rotating-cube.png
-   :target: scripts/rotating-cube.py
+.. image:: ../_static/rotating-cube.png
    :align: right
-   :width: 20%
+   :width: 30%
 
 Rotating the cube means computing a model matrix such that the cube rotate
 around its center. We'll do that in the timer function and rotate the cube
@@ -200,11 +199,6 @@ Finally, to render the cube using the specified triangles, we write::
     program.draw(gl.GL_TRIANGLES, indices)
 
     
-|
-|
-|
-
-*But is't ugly !* Yes, of course !
-
-We have no color (but red), no texture and no light. What did you expect ?
+**But... But... But is't ugly !** Yes, of course ! We have no color (but red),
+no texture and no light. What did you expect ?
 

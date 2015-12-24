@@ -52,7 +52,8 @@ Important links
    tutorial/introduction
    tutorial/hardway
    tutorial/easyway
-   tutorial/welcome
+   tutorial/cube-ugly
+   tutorial/cube-nice
 
 
 .. ----------------------------------------------------------------------------  
