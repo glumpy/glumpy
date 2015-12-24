@@ -75,8 +75,8 @@ display this simple quad:
 
 
 The glumpy philosophy is thus to minimize GL calls and to try to merge any
-buffer update operations into a single call sequence, even if suboptimal in
-some cases.
+buffer update operations into a single call sequence, even if it is suboptimal
+in some cases.
 
 .. note::
 

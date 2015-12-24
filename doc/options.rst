@@ -18,9 +18,17 @@ Application
 ``--interactive, -i``:
   Interactive mode
 
+  .. warning::
+  
+     Option ``-i`` must come after program name, for example ``python
+     gloo-quad.py -i``
+
 ``--framerate, -f``:
   Framerate (in frames per second), default is 60.
-  If you want full acceleration (maximum framerate), you can use 0.
+
+  .. note::
+  
+     If you want full acceleration (maximum framerate), you can use ``-f 0``.
                       
 ``--vsync``:
   Vertical synchronization, disabled by default.

@@ -1,5 +1,9 @@
-.. _Glumpy: https://glumpy.github.io
-.. _OpenGL: http://www.opengl.org
+.. _Glumpy:     https://glumpy.github.io
+.. _matplotlib: http://matplotlib.org
+.. _bokeh:      http://bokeh.pydata.org
+.. _cairo:      http://cairographics.org
+.. _OpenGL:     http://www.opengl.org
+.. _Jupyter:    https://jupyter.org
 
 ===========================================================
 Glumpy
@@ -25,6 +29,29 @@ Important links
 **Mailing list**        https://groups.google.com/forum/#!forum/glumpy-users
 ======================= ====================================================
 
+Development status
+==================
+
+Glumpy is still under active development (as of January 2016) and is already
+pretty much useable (for the hacker). Furture development includes:
+
+ * **Short term** (6 months):
+
+   * Documentation (work in progress)
+   * Collection update mechanism
+   * Write the Wx2,Wx3 and GTK3 backends
+   * Write some real-world user case examples (any idea ?)
+
+ * **Long term** (2/3 years):
+
+   * Foreign API (matplotlib_, cairo_ & bokeh_)
+   * Jupyter_ integration
+
+You can help by reporting bugs & typos, writing (or asking for) some examples
+in your scientific domain, writing documentation, `hiring me
+<mailto:Nicolas.Rougier@inria.fr>`_ for one year to work fulltime on glumpy,
+etc.
+     
 
 .. ----------------------------------------------------------------------------  
 .. _user-docs:

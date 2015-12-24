@@ -2,8 +2,8 @@
 Rendering a cube
 ================
 
-We already have all the pieces needed to render a 3D scene but we need to do
-the mathematics.
+We already have all the pieces needed to render a 3D scene but we need first to
+do the maths.
 
 
 Projection matrix
@@ -106,14 +106,13 @@ to (+1,+1,+1). Then we compute (mentally) what are the triangles for each face, 
 describe triangles in terms of vertices index (relatively to the ``V`` array we
 just defined)::
 
-  I = [0,1,2, 0,2,3,  0,3,4, 0,4,5,  0,5,6, 0,6,1,
-       1,6,7, 1,7,2,  7,4,3, 7,3,2,  4,7,6, 4,6,5]
+  I = np.array([0,1,2, 0,2,3,  0,3,4, 0,4,5,  0,5,6, 0,6,1,
+                1,6,7, 1,7,2,  7,4,3, 7,3,2,  4,7,6, 4,6,5], dtype=np.uint32)
 
 We now need to upload these data to the GPU. Using gloo, the easiest way is to use a VertexBuffer for vertices data and an IndexBuffer for indices data::
 
-  vertices = gloo.VertexBuffer(V)
-  indices = gloo.IndexBuffer(I)
-
+  V = V.view(gloo.VertexBuffer)
+  I = I.view(gloo.IndexBuffer)
 
 
 Building matrices
@@ -125,23 +124,21 @@ Building matrices
    from the center while looking into the (positive) z direction.
 
 
-All the common matrix operations can be found in the `transforms.py
-<scripts/transforms.py>`_ script which define ortho, frustum and perspective
-matrices as well as rotation, translation and scaling operations. We won't say
-much more about these and you might want to read a book about geometry to
-understand how this work, especially when compositing rotation, translation and
-scaling (order is important)::
+All the common matrix operations can be found in the ``glumpy.glm`` module
+that defines ortho, frustum and perspective matrices as well as rotation,
+translation and scaling operations. We won't say much more about these and you
+might want to read a book about geometry to understand how this work,
+especially when compositing rotation, translation and scaling (order is
+important)::
 
   view = np.eye(4,dtype=np.float32)
   model = np.eye(4,dtype=np.float32)
   projection = np.eye(4,dtype=np.float32)
-  translate(view, 0,0,-5)
+  glm.translate(view, 0,0,-5)
   program['model'] = model
   program['view'] = view
   program['projection'] = projection
   phi, theta = 0,0
-
-
 
 It is now important to update the projection matrix whenever the window is
 resized (because aspect ratio may have changed)::
@@ -157,7 +154,7 @@ Rendering
 
 .. image:: ../_static/rotating-cube.png
    :align: right
-   :width: 30%
+   :width: 40%
 
 Rotating the cube means computing a model matrix such that the cube rotate
 around its center. We'll do that in the timer function and rotate the cube
