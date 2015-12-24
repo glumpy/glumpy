@@ -25,9 +25,12 @@
 .. _gloo-frame.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-frame.py
 .. _gloo-transparency.py:    https://github.com/glumpy/glumpy/blob/master/examples/gloo-transparency.py
 
-======================
-Object Oriented (gloo)
-======================
+.. ----------------------------------------------------------------------------
+.. _section-examples-gloo:
+
+============
+OpenGL layer
+============
 
 The ``glumpy.gloo`` layer is the heart of glumpy and is responsible for talking
 to the GPU throught buffers, textures and programs. This is done quite

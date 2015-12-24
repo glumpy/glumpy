@@ -8,3 +8,5 @@ Miscellaneous
 * Heighfields
 * High-frequency signal
 * Image spatial interpolations
+* Realtime signals
+* Quiver plot

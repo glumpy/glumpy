@@ -2,6 +2,9 @@
 .. _filter-blur.py:     https://github.com/glumpy/glumpy/blob/master/examples/filter-blur.py
 .. _filter-compose.py:  https://github.com/glumpy/glumpy/blob/master/examples/filter-compose.py
 
+.. ----------------------------------------------------------------------------
+.. _section-examples-filter:
+
 =======
 Filters
 =======

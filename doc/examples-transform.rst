@@ -11,6 +11,9 @@
 .. _transform-lin-log-scale.py: https://github.com/glumpy/glumpy/blob/master/examples/transform-linear-log-scale.py
 .. _transform-log-polar.py: https://github.com/glumpy/glumpy/blob/master/examples/transform-log-polar.py
 
+.. ----------------------------------------------------------------------------
+.. _section-examples-transform:
+
 ==========
 Transforms
 ==========

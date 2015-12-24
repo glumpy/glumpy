@@ -3,6 +3,9 @@
 .. _smoke.py:        https://github.com/glumpy/glumpy/blob/master/examples/smoke/smoke.py
 .. _GPGPU:           http://gpgpu.org
 
+.. ----------------------------------------------------------------------------
+.. _section-examples-computation:
+
 ===========
 Computation
 ===========

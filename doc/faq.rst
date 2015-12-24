@@ -33,3 +33,15 @@ Frequently Asked Questions
 
    Not yet. There are still a number of problems to be solved before something
    happens in that direction.
+
+**Why don't you use this or that feature of OpenGL x.y ?**
+
+   Glumpy tries to stick to OpenGL ES 2.0 in order to maximize the number of
+   compatible graphic cards. Some features of glumpy could be easily rewritten
+   using latest OpenGL features but this would require extra-effort to write
+   two versions of the same feature: one for old cards and one for new cards.
+
+   .. image:: _static/gl-history.png
+
+   Furthermore, giving the slow latency in OpenGL releases, it's hard to stay
+   in touch with latest features.
