@@ -28,8 +28,8 @@ void main()
 }
 """
 
-window = app.Window(width=1024, height=1024,
-                    color=(0.30, 0.30, 0.35, 1.00))
+# window = app.Window(width=1024, height=1024, color=(1,1,1,1))
+window = app.Window(width=1024, height=1024,  color=(0.30, 0.30, 0.35, 1.00))
 
 @window.event
 def on_draw(dt):
@@ -73,6 +73,6 @@ cube.bind(V)
 
 cube['u_model'] = np.eye(4, dtype=np.float32)
 cube['u_view'] = glm.translation(0, 0, -5)
-phi, theta = 0, 0
+phi, theta = 40, 30
 
 app.run()

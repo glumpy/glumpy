@@ -10,7 +10,6 @@ vertex = """
 uniform mat4   u_model;         // Model matrix
 uniform mat4   u_view;          // View matrix
 uniform mat4   u_projection;    // Projection matrix
-uniform vec4   u_color;         // Global color
 attribute vec3 a_position;      // Vertex position
 void main()
 {
