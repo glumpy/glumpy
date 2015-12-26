@@ -246,3 +246,4 @@ Ok, we're done, we can now rewrite the display function:
 The 0, 4 arguments in the `glDrawArrays` tells OpenGL we want to display 4
 vertices from our array and we start at vertex 0.
 
+`Full source code <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/quad-glut.py>`_ is available on github

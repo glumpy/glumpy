@@ -9,11 +9,23 @@ Shaders
 
 **Content**
 
+* :any:`program-section`         — Shader program
 * :any:`shader-section`          — Generic shader methods
 * :any:`vertex-shader-section`   — Vertex shader
 * :any:`fragment-shader-section` — Fragment shader
 * :any:`geometry-shader-section` — Geometry shader
 
+
+ 
+.. ----------------------------------------------------------------------------
+.. _program-section:
+
+Program
+=======
+
+.. autoclass:: glumpy.gloo.Program
+   :show-inheritance:
+   :members:
 
 .. ----------------------------------------------------------------------------
 .. _shader-section:

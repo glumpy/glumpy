@@ -9,6 +9,7 @@ through buffers, textures and programs.
 * :any:`gpudata-section`             — Memory tracked numpy array
 * :any:`shaders-section`
 
+  * :any:`program-section`         — Shader program
   * :any:`shader-section`          — Generic shader methods
   * :any:`vertex-shader-section`   — Vertex shader
   * :any:`fragment-shader-section` — Fragment shader

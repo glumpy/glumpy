@@ -84,6 +84,28 @@ useful for rotating an object around its center. To sum up, we need:
 * **Projection matrix** maps from camera to screen space
 
 
+Now, we can write out shaders:
+
+.. code:: python
+
+   vertex = """
+   uniform mat4   u_model;         // Model matrix
+   uniform mat4   u_view;          // View matrix
+   uniform mat4   u_projection;    // Projection matrix
+   attribute vec3 a_position;      // Vertex position
+   void main()
+   {
+       gl_Position = u_projection * u_view * u_model * vec4(a_position,1.0);
+   } """
+
+   fragment = """
+   void main()
+   {
+       gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+   } """
+
+  
+
 Building a cube
 ===============
 
@@ -99,9 +121,9 @@ explicitly OpenGL what to draw with them:
 
 .. code:: python
             
-   V = np.zeros(8, [("position", np.float32, 3)])
-   V["position"] = [[ 1, 1, 1], [-1, 1, 1], [-1,-1, 1], [ 1,-1, 1],
-                    [ 1,-1,-1], [ 1, 1,-1], [-1, 1,-1], [-1,-1,-1]]
+   V = np.zeros(8, [("a_position", np.float32, 3)])
+   V["a_position"] = [[ 1, 1, 1], [-1, 1, 1], [-1,-1, 1], [ 1,-1, 1],
+                      [ 1,-1,-1], [ 1, 1,-1], [-1, 1,-1], [-1,-1,-1]]
 
 These describe vertices of a cube cented on (0,0,0) that goes from (-1,-1,-1)
 to (+1,+1,+1). Then we compute (mentally) what are the triangles for each face, i.e. we
@@ -121,7 +143,7 @@ We now need to upload these data to the GPU. Using gloo, the easiest way is to u
    I = I.view(gloo.IndexBuffer)
 
    cube = gloo.Program(vertex, fragment)
-   cube["position"] = V
+   cube["a_position"] = V
 
 We'll use the indices buffer when rendering the cube.
   
@@ -147,9 +169,9 @@ important):
    model = np.eye(4,dtype=np.float32)
    projection = np.eye(4,dtype=np.float32)
    glm.translate(view, 0,0,-5)
-   cube['model'] = model
-   cube['view'] = view
-   cube['projection'] = projection
+   cube['u_model'] = model
+   cube['u_view'] = view
+   cube['u_projection'] = projection
    phi, theta = 0,0
 
 It is now important to update the projection matrix whenever the window is
@@ -160,7 +182,7 @@ resized (because aspect ratio may have changed):
    @window.event
    def on_resize(width, height):
       ratio = width / float(height)
-      cube['projection'] = glm.perspective(45.0, ratio, 2.0, 100.0)
+      cube['u_projection'] = glm.perspective(45.0, ratio, 2.0, 100.0)
 
 
 Rendering
@@ -188,7 +210,7 @@ around the z axis (theta), then around the y axis (phi):
        model = np.eye(4, dtype=np.float32)
        glm.rotate(model, theta, 0, 0, 1)
        glm.rotate(model, phi, 0, 1, 0)
-       cube['model'] = model
+       cube['u_model'] = model
 
 We're now alsmost ready to render the whole scene but we need first to modify
 the initialization a little bit to enable depth testing:

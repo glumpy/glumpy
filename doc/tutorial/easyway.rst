@@ -64,6 +64,8 @@ Glumpy takes care of building the buffer because we specified the vertex count
 value and will also bind the relevant attributes and uniforms to the program.
 You should obtain the same output as in previous section.
 
+`Full source code <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/quad-simple.py>`_ is available on github
+
 
 A step further
 ==============
