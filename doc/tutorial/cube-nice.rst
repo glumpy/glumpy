@@ -91,8 +91,8 @@ This variable is a varying meaning it is interpolated between the vertex and
 the fragment stage. We just need to tell OpenGL the color of each vertex and it
 will compute the inteprolated color for each fragment, giving us a nice colored
 cube.
-   
-For the lazy: `color-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/color-cube.py>`_
+
+Source: `color-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/color-cube.py>`_
 
 
 Outlined cube
@@ -119,10 +119,26 @@ also to add some OpenGL black magic to make things nice. It's not very
 important to understand it at this point but roughly the idea to make sure lines
 are drawn "above" the cube because we paint a line on a surface.
 
+Source: `outline-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/outline-cube.py>`_
+
 
 Textured cube
 =============
 
+Using a texture is rather straightforward. We need a texture (a.k.a. an image)
+and some coordinates to tell OpenGL how to display textures. Texture
+coordinates are normalized and should be inside the [0,1] range (actually,
+texture coordinates can be pretty much anything but for the sake of simplicity,
+we'll stick to the [0,1] range). Since we are displaying a cube, we'll use one
+texture per side and the texture coordinates are quite easy to define: [0,0],
+[0,1], [1,0] and [1,1]. Of curse, we have to take care of assigning the right
+texture coordinates to the right vertexor you texture will be messed up.
+
+Furthemore, we'll need some extra work because we cannot share anymore our
+vertices between faces since they won't share their texture coordinates. We
+thus need to have a set of 24 vertices (6 faces × 4 vertices). We'll use the
+dedicated function below that will take care of generating the right texture
+coordinates as well as face normals (to be used in next section).
 
 .. code:: 
 
@@ -178,5 +194,56 @@ Textured cube
        return vertices, filled, outline
 
 
+Now, inside the fragment shader, we have access to the texture and to the
+color. We can use one or the other or combined them into a single color:
+
+.. code::
+
+   vertex = """
+   uniform mat4   u_model;         // Model matrix
+   uniform mat4   u_view;          // View matrix
+   uniform mat4   u_projection;    // Projection matrix
+   attribute vec4 a_color;         // Vertex color
+   attribute vec3 a_position;      // Vertex position
+   attribute vec2 a_texcoord;      // Vertex texture coordinates
+   varying vec4   v_color;         // Interpolated fragment color (out)
+   varying vec2   v_texcoord;      // Interpolated fragment texture coordinates (out)
+
+   void main()
+   {
+       // Assign varying variables
+       v_color     = a_color;      
+       v_texcoord  = a_texcoord;
+
+       // Final position
+       gl_Position = u_projection * u_view * u_model * vec4(a_position,1.0);
+   } """
+
+   
+   fragment = """
+   uniform vec4      u_color;    // Global color
+   uniform sampler2D u_texture;  // Texture 
+   varying vec4      v_color;    // Interpolated fragment color (in)
+   varying vec2      v_texcoord; // Interpolated fragment texture coordinates (in)
+   void main()
+   {
+       // Get texture color
+       vec4 t_color = vec4(vec3(texture2D(u_texture, v_texcoord).r), 1.0);
+
+       // Final color
+       gl_FragColor = u_color * t_color * mix(v_color, t_color, 0.25);
+   } """
+
+
+       
+
+Source: `texture-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/texture-cube.py>`_
+
 Lighted cube
 ============
+
+For the final stage, we'll add light to our scene. We have once again to
+compute everything inside the shader using a light model. We'll stick to Phong
+shading but there are many other light models that coud be used.
+
+Source: `light-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/light-cube.py>`_

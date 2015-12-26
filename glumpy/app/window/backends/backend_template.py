@@ -1,8 +1,11 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
+# Copyright (c) 2011-2016, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+"""
+For those willing to write their own backend, this a template file where
+all methods need to be written.
+"""
 import os, sys
 from glumpy import gl
 from glumpy.log import log
@@ -74,7 +77,7 @@ capability = {
 
 # ------------------------------------------------------- set_configuration ---
 def set_configuration(configuration):
-    # Put GL initialization here (depth buffer size, etc.)
+    # Set GL initialization here (depth buffer size, etc.)
     pass
 
 
@@ -98,14 +101,16 @@ class Window(event.EventDispatcher):
                                      color=color)
 
         # Create the native window here
-        # Each on the events below must be called at some point
         pass
 
+        # Each on the events below must be called at some point This means you
+        # have to connect to key and mouse events using toolkit native methods
+        # and dispatch the event to glumpy event stack.
+        
         # self.dispatch_event('on_show')
         # self.dispatch_event('on_hide')
         # self.dispatch_event('on_close')
         # self.dispatch_event('on_resize', width, height)
-
         # self.dispatch_event('on_mouse_release', x, y, button)
         # self.dispatch_event('on_mouse_press', x, y, button)
         # self.dispatch_event('on_mouse_motion', x, y, dx, dy)

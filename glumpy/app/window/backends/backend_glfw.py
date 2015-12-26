@@ -3,6 +3,36 @@
 # Copyright (c) 2014, Nicolas P. Rougier
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
+"""
+`GLFW <http://www.glfw.org>`_ is an Open Source, multi-platform library for
+creating windows with OpenGL contexts and receiving input and events. It is
+easy to integrate into existing applications and does not lay claim to the main
+loop.
+
+**Usage**
+
+  .. code:: python
+
+     from glumpy import app
+
+     app.use("glfw")
+     window = app.Window()
+
+
+**Capability**
+
+========================== ======== ======================== ========
+Multiple windows              ✓     Set GL API                  ✓    
+-------------------------- -------- ------------------------ --------
+Non-decorated windows         ✓     Set GL Profile              ✓    
+-------------------------- -------- ------------------------ --------
+Resize windows                ✓     Share GL Context            ✓    
+-------------------------- -------- ------------------------ --------
+Move windows                  ✓     Unicode handling            ✓    
+-------------------------- -------- ------------------------ --------
+Fullscreen                    ✓     Scroll event                ✓    
+========================== ======== ======================== ========
+"""
 import os, sys
 from glumpy import gl
 from glumpy.log import log

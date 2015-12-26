@@ -188,7 +188,7 @@ resized (because aspect ratio may have changed):
 Rendering
 =========
 
-.. image:: ../_static/rotating-cube.png
+.. image:: ../_static/solid-cube.png
    :align: right
    :width: 40%
 

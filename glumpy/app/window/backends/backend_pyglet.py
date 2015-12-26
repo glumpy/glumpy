@@ -1,8 +1,37 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2011-2016, Nicolas P. Rougier
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+`Pyglet <www.pyglet.org>`_ is a pure python cross-platform application
+framework intended for game development. It supports windowing, user interface
+event handling, OpenGL graphics, loading images and videos and playing sounds
+and music. It works on Windows, OS X and Linux.
+
+**Usage**
+
+  .. code:: python
+
+     from glumpy import app
+
+     app.use("pyglet")
+     window = app.Window()
+
+
+**Capability**
+
+========================== ======== ======================== ========
+Multiple windows              ✓     Set GL API                  ✘    
+-------------------------- -------- ------------------------ --------
+Non-decorated windows         ✓     Set GL Profile              ✘    
+-------------------------- -------- ------------------------ --------
+Resize windows                ✓     Share GL Context            ✓    
+-------------------------- -------- ------------------------ --------
+Move windows                  ✓     Unicode handling            ✓    
+-------------------------- -------- ------------------------ --------
+Fullscreen                    ✓     Scroll event                ✓    
+========================== ======== ======================== ========
+"""
 import sys
 from glumpy import gl
 from glumpy.log import log
