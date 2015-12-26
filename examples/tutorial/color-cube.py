@@ -10,18 +10,21 @@ vertex = """
 uniform mat4   u_model;         // Model matrix
 uniform mat4   u_view;          // View matrix
 uniform mat4   u_projection;    // Projection matrix
-uniform vec4   u_color;         // Global color
+attribute vec4 a_color;         // Vertex color
 attribute vec3 a_position;      // Vertex position
+varying vec4   v_color;         // Interpolated fragment color (out)
 void main()
 {
+    v_color = a_color;
     gl_Position = u_projection * u_view * u_model * vec4(a_position,1.0);
 }
 """
 
 fragment = """
+varying vec4   v_color;         // Interpolated fragment color (in)
 void main()
 {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = v_color;
 }
 """
 
@@ -36,7 +39,7 @@ def on_draw(dt):
     # Filled cube
     cube.draw(gl.GL_TRIANGLES, I)
 
-    # Make cube rotate
+    # Rotate cube
     theta += 0.5 # degrees
     phi += 0.5 # degrees
     model = np.eye(4, dtype=np.float32)
@@ -54,9 +57,12 @@ def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
 
 
-V = np.zeros(8, [("a_position", np.float32, 3)])
+V = np.zeros(8, [("a_position", np.float32, 3),
+                 ("a_color",    np.float32, 4)])
 V["a_position"] = [[ 1, 1, 1], [-1, 1, 1], [-1,-1, 1], [ 1,-1, 1],
                    [ 1,-1,-1], [ 1, 1,-1], [-1, 1,-1], [-1,-1,-1]]
+V["a_color"]    = [[0, 1, 1, 1], [0, 0, 1, 1], [0, 0, 0, 1], [0, 1, 0, 1],
+                   [1, 1, 0, 1], [1, 1, 1, 1], [1, 0, 1, 1], [1, 0, 0, 1]]
 V = V.view(gloo.VertexBuffer)
 I = np.array([0,1,2, 0,2,3,  0,3,4, 0,4,5,  0,5,6, 0,6,1,
               1,6,7, 1,7,2,  7,4,3, 7,3,2,  4,7,6, 4,6,5], dtype=np.uint32)
@@ -64,6 +70,7 @@ I = I.view(gloo.IndexBuffer)
 
 cube = gloo.Program(vertex, fragment)
 cube.bind(V)
+
 cube['u_model'] = np.eye(4, dtype=np.float32)
 cube['u_view'] = glm.translation(0, 0, -5)
 phi, theta = 0, 0
