@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
-# Copyright (c) 2011-2016, Nicolas P. Rougier. All Rights Reserved.
-# Distributed under the (new) BSD License. 
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 from glumpy import app, gl, gloo
 

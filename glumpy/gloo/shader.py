@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
-# Copyright (c) 2011-2016, Nicolas P. Rougier. All rights reserved.
-# Distributed under the terms of the new BSD License.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 A Shader is a user-defined program designed to run on some stage of a
