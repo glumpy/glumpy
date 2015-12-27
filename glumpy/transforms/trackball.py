@@ -2,24 +2,6 @@
 # Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-"""
-Trackball transform
-
-The trackball transform simulates a virtual trackball (3D) that can rotate
-around the origin using intuitive mouse gestures.
-
-The transform is connected to the following events:
-
- * attach (initialization)
- * resize (update)
- * mouse_scroll (zoom)
- * mouse_grab (drag)
-
-Relevant shader code:
-
- * transforms/trackball.glsl
-
-"""
 import numpy as np
 from . import _trackball
 from . transform import Transform
@@ -27,7 +9,66 @@ from glumpy import gl, glm, library
 
 
 class Trackball(Transform):
-    """ 3D Trackball transform """
+    """
+    3D trackball transform
+
+    .. warning::
+
+       Note that parameters must be passed by name (param=value) because
+       positional arguments are reserved for the super class.
+
+    :param float aspect:
+       Indicate what is the aspect ratio of the object displayed. This is
+       necessary to convert pixel drag move in oject space coordinates.
+       Default is None.
+
+    :param float znear:
+       Near clip plane. Default is 2.
+
+    :param float zfar: 
+       Distance clip plane. Default is 1000.
+
+    :param float theta:
+       Angle (in degrees) around the z axis. Default is 45.
+
+    :param float phi: 
+       Angle (in degrees) around the x axis. Default is 45.
+
+    :param float distance:
+       Distance from the trackball to the object.  Default is 8.
+
+    :param float zoom:
+           Zoom level. Default is 35.
+
+    The trackball transform simulates a virtual trackball (3D) that can rotate
+    around the origin using intuitive mouse gestures.
+
+    The transform is connected to the following events:
+
+      * ``on_attach``: Transform initialization
+      * ``on_resize``: Tranform update to maintain aspect
+      * ``on_mouse_scroll``: Zoom in & out (user action)
+      * ``on_mouse_grab``: Drag (user action)
+
+    **Usage example**:
+
+      .. code:: python
+
+         vertex = '''
+         attribute vec2 position;
+         void main()
+         {
+             gl_Position = <transform>(vec4(position, 0.0, 1.0));
+         } '''
+
+         ...
+         window = app.Window(width=800, height=800)
+         program = gloo.Program(vertex, fragment, count=4)
+         ...
+         program['transform'] = Trackball(aspect=1)
+         window.attach(program['transform'])
+         ...
+    """
 
     aliases = { "view"       : "trackball_view",
                 "model"      : "trackball_model",
@@ -36,32 +77,6 @@ class Trackball(Transform):
     def __init__(self, *args, **kwargs):
         """
         Initialize the transform.
-        Note that parameters must be passed by name (param=value).
-
-        Kwargs parameters
-        -----------------
-
-        aspect : float (default is None)
-           Indicate what is the aspect ratio of the object displayed. This is
-           necessary to convert pixel drag move in oject space coordinates.
-
-        znear : float, float (default is 2)
-           Near clip plane
-
-        zfar : float, float (default is 1000)
-           Distance clip plane
-
-        theta : float (default is 45)
-           Angle (in degrees) around the z axis
-
-        phi:  float (default is 45)
-           Angle (in degrees) around the x axis
-
-        distance: float (default is 8)
-           Distance from the trackball to the object
-
-        zoom : float (default is 35)
-           Zoom level
         """
 
         code = library.get("transforms/trackball.glsl")
@@ -162,16 +177,12 @@ class Trackball(Transform):
 
 
     def on_attach(self, program):
-        """ Initialization event """
-
         self["view"] = self._view
         self["model"] = self._trackball.model
         self["projection"] = self._projection
 
 
     def on_resize(self, width, height):
-        """ Update event """
-
         self._width  = float(width)
         self._height = float(height)
         self._window_aspect = self._width / self._height
@@ -183,8 +194,6 @@ class Trackball(Transform):
 
 
     def on_mouse_drag(self, x, y, dx, dy, button):
-        """ Drag event """
-
         width = self._width
         height = self._height
         x  = (x*2.0 - width)/width
@@ -196,8 +205,6 @@ class Trackball(Transform):
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
-        """ Zoom event """
-
         width = self._width
         height = self._height
         aspect = self._window_aspect * self._aspect

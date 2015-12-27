@@ -23,9 +23,9 @@ Important links
 **Source repository**   https://github.com/glumpy/glumpy
 **Issue tracker**       https://github.com/glumpy/glumpy/issues
 **Website**             http://glumpy.github.io
-**Examples gallery**    http://glumpy.github.io/gallery.html
+**Gallery**             http://glumpy.github.io/gallery.html
 **Documentation**       http://glumpy.readthedocs.org/en/latest/
-**Gitter chatroom**     https://gitter.im/glumpy/chatroom
+**Chatroom**            https://gitter.im/glumpy/chatroom
 **Mailing list**        https://groups.google.com/forum/#!forum/glumpy-users
 ======================= ====================================================
 
@@ -106,3 +106,4 @@ etc.
    api/architecture
    api/app
    api/gloo
+   api/transforms

@@ -28,47 +28,114 @@ ViewportDispatcher.register_event_type('on_draw')
 
 class Viewport(event.EventDispatcher):
     """
-    A Viewport represents a rectangular area on a window. It can has children
-    whose size can be defined in absolute coordinates or in relative
-    coordinates relatively to the parent viewport. Let's consider a root
-    viewport of size 400x400 and a child viewport:
+    A Viewport represents a rectangular area on a window.
 
-    child.size = 100,100
-    -> Final size will be 100,100
+    :param size: Requested size as (width, height)
+    :param position:  Requested position as (x,y)
+    :param anchor: Anchor point as (x,y)
+    :param float aspect: Aspect (= width/height).
 
-    child.size = -100,-100
-    -> Final size will be (400-100),(400-100) = 300,300
+    The size and the position are always relative to the parent viewport.  They
+    may be given in pixels (int) or as a percentage (float) of parent viewport
+    size. Positive or negative values are accepted.
 
-    child.size = 0.5,0.5
-    -> Final size will be (.5*400),(.5*400) = 200,200
+    .. important::
+    
+       The viewport class works in conjunction with the Viewport transform that
+       ensure actual positioning and sizing within a shader program.
 
-    child.size = -0.5,-0.5
-    -> Final size will be (400*(1-0.5)),(400*(1-0.5)) = 200,200
+    Let's consider a root viewport of size 400x400 and a child viewport:
 
-    Note that it is also possible to define an aspect (=height/width) that can
-    be enforced. Positioning the viewport inside the parent viewport is also
-    made using absolute or relative coordinates. Let's consider again the root
-    viewport whose default coordinates are always +0+0:
+    **Absolute size**
 
-    child.position = +10,+10
-    -> Final position will be +10+10
+      .. code:: python
 
-    child.position = -10,-10
-    -> Final position will be (400-10,400-10) = 390,390
+         viewport = Viewport(400,400)
+         child = Viewport(100,100)
+         viewport.add(child)
 
-    child.position = 0.25,0.25
-    -> Final position will be (400*0.25,400*0.25) = 100,100
+         # Child size is 100x100 (pixels)
 
-    child.position = -0.25,-0.25
-    -> Final position will be (400*(1-0.25),400*(1-0.25) = 300,300
+      .. code:: python
 
-    Note that the final position of the viewport relates to the anchor point
-    which can be also set in absolute or relative coordinates.
+         viewport = Viewport(400,400)
+         child = Viewport(-100, -100)
+         viewport.add(child)
+
+         # Child size is (400-100) x (400-100) = 300 x 300 (pixels)
+
+
+    **Relative size**
+
+      .. code:: python
+
+         viewport = Viewport(400,400)
+         child = Viewport(0.5, 0.5)
+         viewport.add(child)
+
+         # Child size is 400*0.5 x 400*0.5 = 200 x 200 (pixels)
+
+         # Child size is 200x200 pixels.
+
+      .. code:: python
+
+         viewport = Viewport(400,400)
+         child = Viewport(-0.125, -0.125)
+         viewport.add(child)
+
+         # Child size is (400*(1-0.125)) x (400*(1-0.125)) = 50 x 50 (pixels)
+
+      .. note::
+
+         It is also possible to define an aspect (width/height) that will be
+         enforced anytime.
+
+    Positioning the viewport inside the parent viewport is also made using
+    absolute or relative coordinates.
+
+    **Absolute position**
+
+      .. code:: python
+
+         viewport = Viewport(size=(400,400), position=(0,0))
+         child = Viewport(size=(100,100), position=(10,10))
+         viewport.add(child)
+
+         # Child position is +10+10 (pixels)
+
+      .. code:: python
+
+         viewport = Viewport(size=(400,400), position=(0,0))
+         child = Viewport(size=(100,100), position=(-10,-10))
+         viewport.add(child)
+
+         # Child position is +(400-10)+(400-10) = +390+390 (pixels)
+
+    **Relative position**
+
+      .. code:: python
+
+         viewport = Viewport(size=(400,400), position=(0,0))
+         child = Viewport(size=(100,100), position=(0.25,0.25))
+         viewport.add(child)
+
+         # Child position is +(400*0.25)+(400*0.25) = +100+100 (pixels)
+
+      .. code:: python
+
+         viewport = Viewport(size=(400,400), position=(0,0))
+         child = Viewport(size=(100,100), position=(-0.25,-0.25))
+         viewport.add(child)
+
+         # Child position is +(400*(1-0.25))+(400*(1-0.25)) = +300+300 (pixels)
+
+      .. note::
+
+         The final position of the viewport relates to the anchor point which
+         can be also set in absolute or relative coordinates.
 
     The order of rendering is done according to the order of the viewport
     hierarchy, starting from the root viewport.
-
-    Any child viewport is guaranteed to be clipped against the parent viewport.
     """
 
 
@@ -82,23 +149,6 @@ class Viewport(event.EventDispatcher):
 
         Parameters
         ----------
-        size: tuple as ([int,float], [int,float])
-            Requested size.
-            May be absolute (pixel) or relative to the parent (percent).
-            Positive or negative values are accepted.
-
-        position: tuple as ([int,float], [int,float])
-            Requested position.
-            May be absolute (pixel) or relative to the parent (percent).
-            Positive or negative values are accepted.
-
-        anchor: tuple as ([int,float], [int,float]) or string
-            Anchor point for positioning.
-            May be absolute (pixel) or relative (percent).
-            Positive or negative values are accepted.
-
-        aspect: float
-            Aspect (width/height) to be enforced.
         """
 
         self._parent = None
