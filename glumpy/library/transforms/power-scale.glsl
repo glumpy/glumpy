@@ -1,7 +1,7 @@
-// ----------------------------------------------------------------------------
-// Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+// -----------------------------------------------------------------------------
+// Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 // Distributed under the (new) BSD License.
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /*
   Power scales are similar to linear scales, except there's an exponential
   transform that is applied to the input domain value before the output range

@@ -40,7 +40,7 @@ Measuring time
 The `tick` and `get_fps` functions can be used in conjunction to fulfil most
 games' basic requirements::
 
-    from pyglet import clock
+    from glumpy.app import clock
     while True:
         dt = clock.tick()
         # ... update and render ...
@@ -230,7 +230,7 @@ class Clock(_ClockBase):
         :Parameters:
             `fps_limit` : float
                 If not None, the maximum allowable framerate.  Defaults
-                to None.  Deprecated in pyglet 1.2.
+                to None. 
             `time_function` : function
                 Function to return the elapsed time of the application,
                 in seconds.  Defaults to time.time, but can be replaced
@@ -256,8 +256,6 @@ class Clock(_ClockBase):
         This updates the clock's internal measure of time and returns
         the difference since the last update (or since the clock was created).
 
-        :since: pyglet 1.2
-
         :rtype: float
         :return: The number of seconds since the last `update_time`, or 0
             if this was the first time it was called.
@@ -277,8 +275,6 @@ class Clock(_ClockBase):
 
     def call_scheduled_functions(self, dt):
         '''Call scheduled functions that elapsed on the last `update_time`.
-
-        :since: pyglet 1.2
 
         :Parameters:
             dt : float
@@ -350,8 +346,6 @@ class Clock(_ClockBase):
                 but will not sleep or busy-wait for any reason.  Recommended
                 for advanced applications managing their own sleep timers
                 only.
-
-                Since pyglet 1.1.
 
         :rtype: float
         :return: The number of seconds since the last "tick", or 0 if this was
@@ -426,7 +420,6 @@ class Clock(_ClockBase):
         :return: Time until the next scheduled event in seconds, or ``None``
             if there is no event scheduled.
 
-        :since: pyglet 1.1
         '''
         if self._schedule_items or not sleep_idle:
             if not self.period_limit:
@@ -455,8 +448,6 @@ class Clock(_ClockBase):
             `fps_limit` : float
                 Maximum frames per second allowed, or None to disable
                 limiting.
-
-        :deprecated: Use `pyglet.app.run` and `schedule_interval` instead.
         '''
         if not fps_limit:
             self.period_limit = None
@@ -550,7 +541,8 @@ class Clock(_ClockBase):
         self._schedule_item(func, last_ts, next_ts, interval, *args, **kwargs)
 
     def schedule_interval_soft(self, func, interval, *args, **kwargs):
-        '''Schedule a function to be called every `interval` seconds,
+        '''
+        Schedule a function to be called every `interval` seconds,
         beginning at a time that does not coincide with other scheduled
         events.
 
@@ -558,27 +550,19 @@ class Clock(_ClockBase):
         clock will move the interval out of phase with other scheduled
         functions so as to distribute CPU more load evenly over time.
 
-        This is useful for functions that need to be called regularly,
-        but not relative to the initial start time.  `pyglet.media`
-        does this for scheduling audio buffer updates, which need to occur
-        regularly -- if all audio updates are scheduled at the same time
-        (for example, mixing several tracks of a music score, or playing
-        multiple videos back simultaneously), the resulting load on the
-        CPU is excessive for those intervals but idle outside.  Using
-        the soft interval scheduling, the load is more evenly distributed.
+        This is useful for functions that need to be called regularly, but not
+        relative to the initial start time.  Using the soft interval
+        scheduling, the load is more evenly distributed.
 
         Soft interval scheduling can also be used as an easy way to schedule
         graphics animations out of phase; for example, multiple flags
         waving in the wind.
-
-        :since: pyglet 1.1
 
         :Parameters:
             `func` : function
                 The function to call when the timer lapses.
             `interval` : float
                 The number of seconds to wait between each call.
-
         '''
         last_ts = self.last_ts or self.next_ts
 
@@ -727,8 +711,6 @@ def tick(poll=False):
             for advanced applications managing their own sleep timers
             only.
 
-            Since pyglet 1.1.
-
     :rtype: float
     :return: The number of seconds since the last "tick", or 0 if this was the
         first frame.
@@ -750,8 +732,6 @@ def get_sleep_time(sleep_idle):
     :rtype: float
     :return: Time until the next scheduled event in seconds, or ``None``
         if there is no event scheduled.
-
-    :since: pyglet 1.1
     '''
     return _default.get_sleep_time(sleep_idle)
 
@@ -769,8 +749,6 @@ def set_fps_limit(fps_limit):
         `fps_limit` : float
             Maximum frames per second allowed, or None to disable
             limiting.
-
-    :deprecated: Use `pyglet.app.run` and `schedule_interval` instead.
     '''
     _default.set_fps_limit(fps_limit)
 
@@ -821,8 +799,6 @@ def schedule_interval_soft(func, interval, *args, **kwargs):
 
     :see: `Clock.schedule_interval_soft`
 
-    :since: pyglet 1.1
-
     :Parameters:
         `func` : function
             The function to call when the timer lapses.
@@ -861,130 +837,3 @@ def unschedule(func):
     '''
     _default.unschedule(func)
 
-class ClockDisplay(object):
-    '''Display current clock values, such as FPS.
-
-    This is a convenience class for displaying diagnostics such as the
-    framerate.  See the module documentation for example usage.
-
-    :Ivariables:
-        `label` : `pyglet.font.Text`
-            The label which is displayed.
-
-    :deprecated: This class presents values that are often misleading, as
-        they reflect the rate of clock ticks, not displayed framerate.  Use
-        pyglet.window.FPSDisplay instead.
-
-    '''
-
-    def __init__(self,
-                 font=None,
-                 interval=0.25,
-                 format='%(fps).2f',
-                 color=(.5, .5, .5, .5),
-                 clock=None):
-        '''Create a ClockDisplay.
-
-        All parameters are optional.  By default, a large translucent
-        font will be used to display the FPS to two decimal places.
-
-        :Parameters:
-            `font` : `pyglet.font.Font`
-                The font to format text in.
-            `interval` : float
-                The number of seconds between updating the display.
-            `format` : str
-                A format string describing the format of the text.  This
-                string is modulated with the dict ``{'fps' : fps}``.
-            `color` : 4-tuple of float
-                The color, including alpha, passed to ``glColor4f``.
-            `clock` : `Clock`
-                The clock which determines the time.  If None, the default
-                clock is used.
-
-        '''
-
-        if clock is None:
-            clock = _default
-        self.clock = clock
-        self.clock.schedule_interval(self.update_text, interval)
-
-        if not font:
-            from pyglet.font import load as load_font
-            font = load_font('', 36, bold=True)
-
-        import pyglet.font
-        self.label = pyglet.font.Text(font, '', color=color, x=10, y=10)
-
-        self.format = format
-
-    def unschedule(self):
-        '''Remove the display from its clock's schedule.
-
-        `ClockDisplay` uses `Clock.schedule_interval` to periodically update
-        its display label.  Even if the ClockDisplay is not being used any
-        more, its update method will still be scheduled, which can be a
-        resource drain.  Call this method to unschedule the update method
-        and allow the ClockDisplay to be garbage collected.
-
-        :since: pyglet 1.1
-        '''
-        self.clock.unschedule(self.update_text)
-
-    def update_text(self, dt=0):
-        '''Scheduled method to update the label text.'''
-        fps = self.clock.get_fps()
-        self.label.text = self.format % {'fps': fps}
-
-    def draw(self):
-        '''Method called each frame to render the label.'''
-        self.label.draw()
-
-# def test_clock():
-#     import getopt
-#     test_seconds = 1
-#     test_fps = 60
-#     show_fps = False
-#     options, args = getopt.getopt(sys.argv[1:], 'vht:f:',
-#         ['time=', 'fps=', 'help'])
-#     for key, value in options:
-#         if key in ('-t', '--time'):
-#             test_seconds = float(value)
-#         elif key in ('-f', '--fps'):
-#             test_fps = float(value)
-#         elif key in ('-v'):
-#             show_fps = True
-#         elif key in ('-h', '--help'):
-#             print ('Usage: clock.py <options>\n'
-#                    '\n'
-#                    'Options:\n'
-#                    '  -t   --time       Number of seconds to run for.\n'
-#                    '  -f   --fps        Target FPS.\n'
-#                    '\n'
-#                    'Tests the clock module by measuring how close we can\n'
-#                    'get to the desired FPS by sleeping and busy-waiting.')
-#             sys.exit(0)
-
-#     set_fps_limit(test_fps)
-#     start = time.time()
-
-#     # Add one because first frame has no update interval.
-#     n_frames = int(test_seconds * test_fps + 1)
-
-#     print 'Testing %f FPS for %f seconds...' % (test_fps, test_seconds)
-#     for i in xrange(n_frames):
-#         tick()
-#         if show_fps:
-#             print get_fps()
-#     total_time = time.time() - start
-#     total_error = total_time - test_seconds
-#     print 'Total clock error: %f secs' % total_error
-#     print 'Total clock error / secs: %f secs/secs' % \
-#         (total_error / test_seconds)
-
-#     # Not fair to add the extra frame in this calc, since no-one's interested
-#     # in the startup situation.
-#     print 'Average FPS: %f' % ((n_frames - 1) / total_time)
-
-# if __name__ == '__main__':
-#     test_clock()

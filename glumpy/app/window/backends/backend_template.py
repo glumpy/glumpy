@@ -3,8 +3,7 @@
 # Distributed under the (new) BSD License. See LICENSE.txt for more info.
 # -----------------------------------------------------------------------------
 """
-For those willing to write their own backend, this a template file where
-all methods need to be written.
+Template backend for writing a new backend.
 """
 import os, sys
 from glumpy import gl
@@ -77,14 +76,16 @@ capability = {
 
 # ------------------------------------------------------- set_configuration ---
 def set_configuration(configuration):
-    # Set GL initialization here (depth buffer size, etc.)
+    """ Set GL initialization here (depth buffer size, etc.) """
     pass
 
 
 
 # ------------------------------------------------------------------ Window ---
-class Window(event.EventDispatcher):
-
+class Window(window.Window):
+    """
+    Generic template for writing a new backend.
+    """
 
     def __init__( self, width=512, height=512, title=None, visible=True, aspect=None,
                   decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
@@ -120,6 +121,55 @@ class Window(event.EventDispatcher):
         # self.dispatch_event('on_key_release', symbol, modifiers)
         # self.dispatch_event('on_character', u"%c" % character)
 
+    def show(self):
+        glfw.glfwShowWindow( self._native_window )
+        self.dispatch_event('on_show')
+
+    def hide(self):
+        glfw.glfwHideWindow( self._native_window )
+        self.dispatch_event('on_hide')
+
+    def close(self):
+        glfw.glfwSetWindowShouldClose(self._native_window, True)
+        glfw.glfwDestroyWindow(self._native_window)
+        __windows__.remove(self)
+        for i in range(len(self._timer_stack)):
+            handler, interval = self._timer_stack[i]
+            self._clock.unschedule(handler)
+        self.dispatch_event('on_close')
+
+    def set_title(self, title):
+        """ Set window title """
+        raise(NotImplemented)
+    
+    def get_title(self, title):
+        """ Get window title """
+        raise(NotImplemented)
+
+    def set_size(self, width, height):
+        """ Set window size """
+        raise(NotImplemented)
+
+    def get_size(self):
+        """ Get window size """
+        raise(NotImplemented)
+
+    def set_position(self, x, y):
+        """ Set window position """
+        raise(NotImplemented)
+
+    def get_position(self):
+        """ Get window position """
+        raise(NotImplemented)
+
+    def swap(self):
+        """ Swap GL bufffers """
+        raise(NotImplemented)
+
+    def activate(self):
+        """ Make this window the (GL) active window """
+        raise(NotImplemented)
+
 
 
 # ----------------------------------------------------------------- windows ---
@@ -129,10 +179,11 @@ def windows():
 
 # ----------------------------------------------------------------- process ---
 def process(dt):
-
+    """ Process events for all windows. Non blocking. """
+    
     # Poll for and process events
     # -> Add toolkit specific code here to process events
-    # -> Must always exit
+    # -> Must return (non bloking)
 
     for window in __windows__:
         # Make window active

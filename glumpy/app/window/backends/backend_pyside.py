@@ -30,6 +30,8 @@ Move windows                  ✓     Unicode handling            ✓
 -------------------------- -------- ------------------------ --------
 Fullscreen                    ✓     Scroll event                ✓    
 ========================== ======== ======================== ========
+"""
+
 import os, sys
 from glumpy import gl
 from glumpy.log import log

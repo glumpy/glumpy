@@ -32,11 +32,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-'''Event dispatch framework.
+''' Event dispatch framework (adapted from pyglet).
 
-All objects that produce events in pyglet implement `EventDispatcher`,
+All objects that produce events in glumpy implement `EventDispatcher`,
 providing a consistent interface for registering and manipulating event
-handlers.  A commonly used event dispatcher is `pyglet.window.Window`.
+handlers.  A commonly used event dispatcher is `glumpy.window.Window`.
 
 Event types
 ===========
@@ -116,7 +116,7 @@ example::
 Dispatching events
 ==================
 
-pyglet uses a single-threaded model for all application code.  Event
+glumpy uses a single-threaded model for all application code.  Event
 handlers are only ever invoked as a result of calling
 EventDispatcher.dispatch_events`.
 

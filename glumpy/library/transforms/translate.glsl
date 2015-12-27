@@ -1,7 +1,7 @@
-// ----------------------------------------------------------------------------
-// Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+// -----------------------------------------------------------------------------
+// Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 // Distributed under the (new) BSD License.
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 uniform vec3 translate_translate;
 
 vec2 forward(float x, float y)
