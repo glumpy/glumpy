@@ -106,4 +106,4 @@ etc.
    api/architecture
    api/app
    api/gloo
-   api/transforms
+   api/graphics

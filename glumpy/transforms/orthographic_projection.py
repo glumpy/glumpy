@@ -58,8 +58,6 @@ class OrthographicProjection(Transform):
 
 
     def on_resize(self, width, height):
-        """ Adjust projection to given size. """
-
         # Compute new Projection
         xmin, xmax = 0, width
         ymin, ymax = 0, height
