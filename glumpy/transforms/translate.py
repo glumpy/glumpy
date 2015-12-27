@@ -7,7 +7,40 @@ from glumpy.transforms.transform import Transform
 
 
 class Translate(Transform):
-    """ Translation transform """
+    """
+    Translation transform
+
+    .. warning::
+
+       Note that parameters must be passed by name (param=value) because
+       positional arguments are reserved for the super class.
+
+    :param 3-tuple translate:
+       Translation vector. Default is (0,0,0).
+
+    The transform is connected to the following events:
+
+      * ``on_attach``: Transform initialization
+
+    **Usage example**:
+
+      .. code:: python
+
+         vertex = '''
+         attribute vec2 position;
+         void main()
+         {
+             gl_Position = <transform>;
+         } '''
+
+         ...
+         window = app.Window(width=800, height=800)
+         program = gloo.Program(vertex, fragment, count=4)
+         ...
+         program['transform'] = Translate("position", translate=(0,0,0))
+         window.attach(program['transform'])
+         ...
+    """
 
     aliases = { "translate" : "translate_translate" }
 
@@ -20,14 +53,14 @@ class Translate(Transform):
 
     @property
     def translate(self):
-        """ Translation """
+        """ Translate vector """
 
         return self._translate
 
 
     @translate.setter
     def translate(self, value):
-        """ Translation """
+        """ Translate vector """
 
         self._translate = np.asarray(value,dtype=np.float32)
         if self.is_attached:
@@ -35,6 +68,4 @@ class Translate(Transform):
 
 
     def on_attach(self, program):
-        """ Initialization """
-
         self["translate"] = self._translate

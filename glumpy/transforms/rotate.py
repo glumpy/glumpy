@@ -21,7 +21,47 @@ def _rotation(angle, x, y, z):
 
 
 class Rotate(Transform):
-    """ Rotation transform """
+    """
+    Rotation transform
+
+    .. warning::
+
+       Note that parameters must be passed by name (param=value) because
+       positional arguments are reserved for the super class.
+
+    :param 3-tuple axis:
+       Rotation axis. Default is (0,0,1).
+
+    :param float angle:
+       Rotation angle. Default is 0.
+
+    :param 3-tuple origin:
+       Rotation origin. Default is (0,0,0).
+
+
+    The transform is connected to the following events:
+
+      * ``on_attach``: Transform initialization
+
+    **Usage example**:
+
+      .. code:: python
+
+         vertex = '''
+         attribute vec2 position;
+         void main()
+         {
+             gl_Position = <transform>;
+         } '''
+
+         ...
+         window = app.Window(width=800, height=800)
+         program = gloo.Program(vertex, fragment, count=4)
+         ...
+         program['transform'] = Rotate("position", angle=15)
+         window.attach(program['transform'])
+         ...
+    """
 
     aliases = { "axis"    : "rotate_axis",
                 "angle"   : "rotate_angle",
@@ -30,13 +70,7 @@ class Rotate(Transform):
                 "inverse" : "rotate_inverse_matrix" }
 
     def __init__(self, *args, **kwargs):
-        """
-        Initialize the transform.
-        Note that parameters must be passed by name (param=value).
-
-        Kwargs parameters
-        -----------------
-        """
+        """ Initialize the transform.  """
         self._forward = np.zeros((4,4), dtype=np.float32)
         self._inverse = np.zeros((4,4), dtype=np.float32)
         self._axis = Transform._get_kwarg("axis", kwargs, (0,0,1))
@@ -82,7 +116,6 @@ class Rotate(Transform):
         if self.is_attached:
             self["origin"] = self._origin
 
-
     @property
     def angle(self):
         """ Rotation angle (degrees) """
@@ -105,8 +138,6 @@ class Rotate(Transform):
 
 
     def on_attach(self, program):
-        """ Initialization """
-
         self["axis"] = self._axis
         self["angle"] = self._angle
         self["origin"] = self._origin
