@@ -7,8 +7,8 @@ Transforms
 
 The ``glumpy.transforms`` module offers common transforms (interactive or not).
 
-* :any:`transform-panzoom`     — Pan & zoom (2D)
-* :any:`transform-trackball`   — Trackball (3D)
+* :any:`transform-panzoom`     — Mouse controlled pan & zoom (2D)
+* :any:`transform-trackball`   — Mouse controlled trackball (3D)
 
   
 .. ----------------------------------------------------------------------------

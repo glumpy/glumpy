@@ -297,6 +297,8 @@ class Snippet(object):
             symbol = self.symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=\()" % name, symbol, code)
         for name, _ in names:
+            # Variable starting "__" are protected and unaliased
+            #if not name.startswith("__"):
             symbol = self.symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=[^\w])" % name, symbol, code)
         return code

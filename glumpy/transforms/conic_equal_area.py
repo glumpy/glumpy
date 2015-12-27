@@ -59,7 +59,7 @@ class ConicEqualArea(Transform):
         self._parallels = Transform._get_kwarg("parallels", kwargs, (0,90))
         code = library.get("transforms/conic-equal-area.glsl")
 
-        # Make sure to call the foward function
+        # Make sure to call the forward function
         kwargs["call"] = "forward"
 
         Transform.__init__(self, code, *args, **kwargs)

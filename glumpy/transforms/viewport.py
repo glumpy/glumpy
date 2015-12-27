@@ -67,14 +67,14 @@ class Viewport(Transform):
 
     @property
     def extents(self):
-        """ Viewport extents as (x,y,w,h) (abosute coordinates) """
+        """ Viewport extents as (x,y,w,h) (absolute coordinates) """
 
         return self._local
 
 
     @extents.setter
     def extents(self, value):
-        """ Viewport extents as (x,y,w,h) (abosute coordinates) """
+        """ Viewport extents as (x,y,w,h) (absolute coordinates) """
 
         self._local = value
         if self.is_attached:
