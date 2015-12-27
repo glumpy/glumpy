@@ -4,8 +4,8 @@
 .. _gloo-texture-2D.py:      https://github.com/glumpy/glumpy/blob/master/examples/gloo-texture-2D.py
 .. _gloo-image.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-image.py
 .. _gloo-console.py:         https://github.com/glumpy/glumpy/blob/master/examples/gloo-console.py
-.. _gloo-terminal.py:        https://github.com/glumpy/glumpy/blob/master/examples/gloo-terminal.py
 .. _gloo-cloud.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-cloud.py
+.. _gloo-terminal.py:        https://github.com/glumpy/glumpy/blob/master/examples/gloo-terminal.py
 .. _gloo-atlas.py:           https://github.com/glumpy/glumpy/blob/master/examples/gloo-atlas.py
 .. _gloo-framebuffer.py:     https://github.com/glumpy/glumpy/blob/master/examples/gloo-framebuffer.py
 .. _gloo-rain.py:            https://github.com/glumpy/glumpy/blob/master/examples/gloo-rain.py

@@ -8,9 +8,11 @@ window, create a GL context and handle events.
 * :any:`section-windows`       — Window related objects
 
   * :any:`section-window`      — Main window class
-  * :any:`section-event`       — Event management
-  * :any:`section-key`         — Keyboard events
-  * :any:`section-mouse`       — Mouse events
+
+    * :any:`section-event`       — Event management
+    * :any:`section-key`         — Keyboard events
+    * :any:`section-mouse`       — Mouse events
+      
   * :any:`section-backends`    — Window backends
 
     * :any:`section-backend-freeglut` — Freeglut
@@ -22,9 +24,9 @@ window, create a GL context and handle events.
     * :any:`section-backend-pyside`   — PySide (Qt 4.x)
     * :any:`section-backend-template` — Backend template
 
+* :any:`section-viewport`      — Viewport area
 * :any:`section-configuration` — OpenGL context configuration
 * :any:`section-clock`         — Time management
-* :any:`section-viewport`      — Viewport area
 * :any:`section-console`       — Failsafe console
 * :any:`section-parser`        — Command line parser & default settings
 
@@ -34,3 +36,6 @@ window, create a GL context and handle events.
 
    app-window
    app-backends
+   app-viewport
+   app-configuration
+   app-clock

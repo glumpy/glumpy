@@ -1,7 +1,8 @@
+.. ----------------------------------------------------------------------------
+.. _section-clock:
+
 =====
 Clock
 =====
 
-.. autoclass:: glumpy.app.Clock
-   :show-inheritance:
-   :members:
+.. automodule:: glumpy.app.clock

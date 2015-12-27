@@ -9,10 +9,12 @@ features. You'll find below a list organized around several sections.
 
   * :any:`section-examples-app`         — Window, context, events, backends, etc
   * :any:`section-examples-gloo`        — Shader, buffer, texture, program, etc.
+  * :any:`section-examples-text`        — Font & text related
   * :any:`section-examples-transform`   — Linear/power/log scales, panzoom, trackball, etc.
   * :any:`section-examples-collection`  — Point, segment, path, triangle, custom, etc
   * :any:`section-examples-computation` — Framebuffer, GPGPU, etc.
   * :any:`section-examples-filter`      — Post-processing, render to texture, etc.
+  * :any:`section-examples-misc`        — Miscellaneous rendering technique
   * :any:`section-examples-candy`       — Fast, scalable & beautiful
 
 .. toctree::
@@ -21,6 +23,7 @@ features. You'll find below a list organized around several sections.
       
    examples-app
    examples-gloo
+   examples-text
    examples-transform
    examples-collection
    examples-computation

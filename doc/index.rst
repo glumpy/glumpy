@@ -5,11 +5,11 @@
 .. _OpenGL:     http://www.opengl.org
 .. _Jupyter:    https://jupyter.org
 
-===========================================================
-Glumpy
-===========================================================
-Fast, scalable & beautiful scientific visualization
------------------------------------------------------------
+====================
+Glumpy documentation
+====================
+
+.. image:: _static/glumpy-teaser.png
 
 `Glumpy`_ is an `OpenGL`_-based interactive visualization library in
 Python. Its goal is to make it easy to create fast, scalable, beautiful,

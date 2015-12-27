@@ -4,6 +4,8 @@
 .. _interpolations.py:   https://github.com/glumpy/glumpy/blob/master/examples/interpolations.py
 .. _realtime-signals.py: https://github.com/glumpy/glumpy/blob/master/examples/realtime-signals.py
 
+.. ----------------------------------------------------------------------------
+.. _section-examples-misc:
 
 =============
 Miscellaneous

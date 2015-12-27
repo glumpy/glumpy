@@ -5,6 +5,18 @@
 Backends
 ========
 
+**Content**
+
+* :any:`section-backend-freeglut` — Freeglut
+* :any:`section-backend-osxglut`  — OSX Glut
+* :any:`section-backend-glfw`     — GLFW
+* :any:`section-backend-pyglet`   — Pyglet
+* :any:`section-backend-sdl`      — PyGame (SDL 1.x)
+* :any:`section-backend-sdl2`     — SDL 2.0
+* :any:`section-backend-pyside`   — PySide (Qt 4.x)
+* :any:`section-backend-template` — Backend template
+
+
 .. ----------------------------------------------------------------------------
 .. _section-backend-freeglut:
 
@@ -44,8 +56,8 @@ Pyglet
 .. ----------------------------------------------------------------------------
 .. _section-backend-sdl:
 
-SDL (pygame)
-============
+Pygame
+======
 
 .. automodule:: glumpy.app.window.backends.backend_sdl
 
@@ -66,3 +78,12 @@ PySide
 ======
 
 .. automodule:: glumpy.app.window.backends.backend_pyside
+
+
+.. ----------------------------------------------------------------------------
+.. _section-backend-template:
+
+Template
+========
+
+.. automodule:: glumpy.app.window.backends.backend_template
