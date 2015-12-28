@@ -2,58 +2,46 @@
 # Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-""" Orthographic projection transform. """
 from glumpy import glm, library
 from . transform import Transform
 
 class OrthographicProjection(Transform):
+    """
+    Orthographic projection (or orthogonal projection) is a means of
+    representing a three-dimensional object in two dimensions. It is a form of
+    parallel projection, where all the projection lines are orthogonal to the
+    projection plane, resulting in every plane of the scene appearing in
+    affine transformation on the viewing surface.
+
+    :param float aspect: 
+       Aspect ratio (width/height). Default is None.
+
+    :param bool xinvert:
+       Whether to invert X axis. Default is False.
+
+    :param bool yinvert: 
+       Whether to invert Y axis. Default is False.
+
+    :param int znear: 
+       Z near clipping place. Default is -1000.
+
+    :param int zfar: 
+       Z far clipping place. Default is +1000.
+
+    :param bool normalize: 
+       Whether to use normalized device coordinates. Default is False
+    """
 
     def __init__(self, *args, **kwargs):
-        """
-        Orthographic projection transform.
-
-        Paremeters
-        ----------
-
-        aspect : float (default: None)
-            Aspect ratio (width/height) to be enforced
-
-        xinvert: bool (default: False)
-            Whether to invert X axis
-
-        yinvert: bool (default: False)
-            Whether to invert Y axis
-
-        normalize: bool (default: False)
-            Whether to use normalized device coordinates
-        """
 
         code = library.get("transforms/projection.glsl")
 
-        kwargs["aspect"] = kwargs.get("aspect", None)
-        self.aspect = kwargs["aspect"]
-        del kwargs["aspect"]
-
-        kwargs["xinvert"] = kwargs.get("xinvert", False)
-        self.xinvert = kwargs["xinvert"]
-        del kwargs["xinvert"]
-
-        kwargs["yinvert"] = kwargs.get("yinvert", False)
-        self.yinvert = kwargs["yinvert"]
-        del kwargs["yinvert"]
-
-        kwargs["znear"] = kwargs.get("xinvert", -1000)
-        self.znear = kwargs["znear"]
-        del kwargs["znear"]
-
-        kwargs["zfar"] = kwargs.get("xinvert", +1000)
-        self.zfar = kwargs["zfar"]
-        del kwargs["zfar"]
-
-        kwargs["normalize"] = kwargs.get("normalize", False)
-        self.normalize = kwargs["normalize"]
-        del kwargs["normalize"]
-
+        self.aspect    = Transform._get_kwarg("aspect", kwargs) or None
+        self.xinvert   = Transform._get_kwarg("xinvert", kwargs) or False
+        self.yinvert   = Transform._get_kwarg("yinvert", kwargs) or False
+        self.znear     = Transform._get_kwarg("znear", kwargs) or -1000
+        self.zfar      = Transform._get_kwarg("znear", kwargs) or +1000
+        self.normalize = Transform._get_kwarg("normalize", kwargs) or False
         Transform.__init__(self, code, *args, **kwargs)
 
 

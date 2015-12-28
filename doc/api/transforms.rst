@@ -1,53 +1,64 @@
 .. ----------------------------------------------------------------------------
 .. _section-transforms:
 
-==========
-Transforms
-==========
+===============
+Transformations
+===============
 
-The ``glumpy.transforms`` module offers common transforms (interactive or not).
+The ``glumpy.transforms`` module offers common transforms (interactive or not)
+that can be combined with other shaders and objects, espcially collections.
 
-* **Base**
 
-  * :any:`transform-transform`   — Base transform
-  * :any:`transform-viewport`    — Viewport transformation and clipping
-  * :any:`transform-position`    — Generic position transform
-  * :any:`transform-translate`   — Translate transform
-  * :any:`transform-rotate`      — Rotate transform
+.. warning::
+
+   In all transforms, parameters must be passed by name (param=value) because
+   positional arguments are reserved for the super class (Snippet).
+
+   A transform must be attached to a window such as to receive user events.
+
+
+
+* :any:`section-transform-base`
+
+  * :any:`transform-transform`  - General base transform
+  * :any:`transform-viewport`   — Viewport transformation and clipping
+  * :any:`transform-position`   — Generic position transform
+  * :any:`transform-translate`  — Translate transform
+  * :any:`transform-rotate`     — Rotate transform
     
-* **Interactive**
-  
-  * :any:`transform-panzoom`     — User controlled pan & zoom (2D)
-  * :any:`transform-trackball`   — User controlled trackball (3D)
+* :any:`section-transform-interactive`
 
-* **Scale**
+  * :any:`transform-panzoom`           — User controlled pan & zoom (2D)
+  * :any:`transform-trackball`         — User controlled trackball (3D)
 
-  * :any:`transform-quantitative-scale`  — Quantitative scale (base)
-  * :any:`transform-linear-scale`        — Linear scale
-  * :any:`transform-power-scale`         — Power scale
-  * :any:`transform-log-scale`           — Log scale
-      
-* **Projection**
+* :any:`section-transform-scale`
 
-  * :any:`transform-orthographic` — Orthographic projection
-  * :any:`transform-perpsective`  — Perspective projection
-  * :any:`transform-pvm`          — Model-View-Projection model
-  
-* **Cartographic**
+  * :any:`transform-quantitative-scale` — Quantitative scale
+
+    * :any:`transform-linear-scale`       — Linear scale
+    * :any:`transform-power-scale`        — Power scale
+    * :any:`transform-log-scale`          — Log scale
+
+* :any:`section-transform-projection`
+
+  * :any:`transform-orthographic`     — Orthographic projection
+  * :any:`transform-pvm`              — Perspective projection
+    
+* :any:`section-transform-cartographic`
 
   * :any:`transform-conic-equal-area`      — Conic Equal Area
+  * :any:`transform-albers`                — Albers
   * :any:`transform-azimuthal-equal-area`  — Azimuthal Equal Area
   * :any:`transform-azimuthal-equidistant` — Azimuthal Equidistant
-  * :any:`transform-albers` — Conic Equal Area, with USA-centric defaults
 
     
 .. ----------------------------------------------------------------------------
 .. toctree::
    :hidden:
 
-   transform-panzoom
-   transform-trackball
-   transform-viewport
-   transform-position
-   transform-translate
-   transform-rotate
+   transform-base
+   transform-interactive
+   transform-scale
+   transform-projection
+   transform-cartographic
+

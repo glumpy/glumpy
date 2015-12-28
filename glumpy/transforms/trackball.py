@@ -12,11 +12,6 @@ class Trackball(Transform):
     """
     3D trackball transform
 
-    .. warning::
-
-       Note that parameters must be passed by name (param=value) because
-       positional arguments are reserved for the super class.
-
     :param float aspect:
        Indicate what is the aspect ratio of the object displayed. This is
        necessary to convert pixel drag move in oject space coordinates.

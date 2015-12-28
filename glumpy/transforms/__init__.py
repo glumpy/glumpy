@@ -27,6 +27,7 @@ from .pvm_projection import PVMProjection
 # from perpective_projection import PerspectiveProjection
 from .orthographic_projection import OrthographicProjection
 
-from .log_scale import LogScale
-from .power_scale import PowerScale
-from .linear_scale import LinearScale
+from . quantitative_scale import QuantitativeScale
+from . log_scale import LogScale
+from . power_scale import PowerScale
+from . linear_scale import LinearScale

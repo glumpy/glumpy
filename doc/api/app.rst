@@ -39,3 +39,4 @@ window, create a GL context and handle events.
    app-viewport
    app-configuration
    app-clock
+   app-console

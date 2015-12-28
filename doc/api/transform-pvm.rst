@@ -1,10 +1,10 @@
 .. ----------------------------------------------------------------------------
-.. _section-console:
+.. _section-transform-pvm:
 
-=======
-Console
-=======
+===========
+Perspective
+===========
 
-.. autoclass:: glumpy.app.Console
+.. autoclass:: glumpy.transforms.PVMProjection
    :show-inheritance:
    :members:

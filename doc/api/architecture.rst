@@ -9,8 +9,8 @@ Glumpy is organized around three main packages as illustrated below:
 The :doc:`app` package is responsible for opening a window and handling user
 events such as mouse and keyboard interactions. The :doc:`gloo` package is
 responsible for handling shader programs and syncing CPU/GPU data through the
-numpy interface. The **graphics** package provides higher-level common objects
-such as text, collections and widgets.
+numpy interface. The :doc:`graphics` package provides higher-level common
+objects such as text, collections and widgets.
 
 ..
    The overall package organization is as follows:

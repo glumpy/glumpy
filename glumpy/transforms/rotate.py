@@ -24,11 +24,6 @@ class Rotate(Transform):
     """
     Rotation transform
 
-    .. warning::
-
-       Note that parameters must be passed by name (param=value) because
-       positional arguments are reserved for the super class.
-
     :param 3-tuple axis:
        Rotation axis. Default is (0,0,1).
 
