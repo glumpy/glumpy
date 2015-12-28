@@ -38,7 +38,8 @@ def set_default_options(parser):
     # Backend option
     parser.add_argument("--backend", "-b",
                         default = glumpy.defaults.backend(),
-                        choices = ('glfw', 'sdl2', 'pyside', 'pyglet', 'sdl',  'osxglut'),
+                        choices = ('glfw', 'sdl2', 'qt5', 'pyside',
+                                   'pyglet', 'sdl',  'freeglut', 'osxglut'),
                         help="Backend to use, one of ")
 
     # Record

@@ -170,7 +170,7 @@ class Window(event.EventDispatcher):
         self._y = 0
         self._width = width
         self._height = height
-        self._title = (title or sys.argv[0]).encode()
+        self._title = (title or sys.argv[0])
         self._visible = visible
         self._fullscreen = fullscreen
         self._decoration = decoration

@@ -8,4 +8,5 @@ __backends__ = ('glfw',
                 'sdl2',
                 'osxglut',
                 'freeglut',
+                'qt5',
                 'pyside')
