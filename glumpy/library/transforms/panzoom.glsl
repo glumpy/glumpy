@@ -1,7 +1,7 @@
-// ----------------------------------------------------------------------------
-// Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+// -----------------------------------------------------------------------------
+// Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 // Distributed under the (new) BSD License.
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 uniform vec2 panzoom_scale;
 uniform vec2 panzoom_translate;
 vec4 panzoom(vec4 position)

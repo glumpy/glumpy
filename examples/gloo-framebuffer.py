@@ -1,7 +1,5 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
@@ -26,7 +24,7 @@ attribute vec2 position;
 varying vec2 v_texcoord;
 void main()
 {
-    gl_Position = vec4(position,0.0,1.0);
+    gl_Position = vec4(0.85*position,0.0,1.0);
     v_texcoord = (position+1.0)/2.0;
 }
 """
@@ -40,24 +38,22 @@ void main()
 }
 """
 
-window = app.Window(width=1024, height=1024)
+window = app.Window(width=512, height=512)
 
 @window.event
 def on_draw(dt):
     window.clear()
     framebuffer.activate()
-    program_1.draw(gl.GL_TRIANGLE_STRIP)
+    quad_1.draw(gl.GL_TRIANGLE_STRIP)
     framebuffer.deactivate()
-    program_2.draw(gl.GL_TRIANGLE_STRIP)
+    quad_2.draw(gl.GL_TRIANGLE_STRIP)
 
-# texture = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
 texture = np.zeros((window.height,window.width,4),np.float32).view(gloo.TextureFloat2D)
 framebuffer = gloo.FrameBuffer(color=[texture])
-
-program_1 = gloo.Program(vertex_1, fragment_1, count=4)
-program_1["position"] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
-program_2 = gloo.Program(vertex_2, fragment_2, count=4)
-program_2["position"] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
-program_2["texture"] = texture
+quad_1 = gloo.Program(vertex_1, fragment_1, count=4)
+quad_1["position"] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
+quad_2 = gloo.Program(vertex_2, fragment_2, count=4)
+quad_2["position"] = (-1,-1), (-1,+1), (+1,-1), (+1,+1)
+quad_2["texture"] = texture
 
 app.run()

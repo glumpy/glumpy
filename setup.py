@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #-----------------------------------------------------------------------------
-# Copyright (C) 2009-2015  Nicolas P. Rougier
+# Copyright (C) 2011-2016  Nicolas P. Rougier
 #
 # Distributed under the terms of the BSD License. The full license is in
 # the file COPYING, distributed as part of this software.

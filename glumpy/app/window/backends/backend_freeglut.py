@@ -1,8 +1,38 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+`FreeGLUT <http://freeglut.sourceforge.net>`_ is a free-software/open-source
+alternative to the OpenGL Utility Toolkit (GLUT) library. GLUT was originally
+written by Mark Kilgard to support the sample programs in the second edition
+OpenGL RedBook. Since then, GLUT has been used in a wide variety of practical
+applications because it is simple, widely available and highly portable.
+
+**Usage**
+
+  .. code:: python
+
+     from glumpy import app
+
+     app.use("freeglut")
+     window = app.Window()
+
+
+**Capability**
+
+========================== ======== ======================== ========
+Multiple windows              ✘     Set GL API                  ✘
+-------------------------- -------- ------------------------ --------
+Non-decorated windows         ✓     Set GL Profile              ✘
+-------------------------- -------- ------------------------ --------
+Resize windows                ✓     Share GL Context            ✘
+-------------------------- -------- ------------------------ --------
+Move windows                  ✓     Unicode handling            ✘
+-------------------------- -------- ------------------------ --------
+Fullscreen                    ✓     Scroll event                ✓    
+========================== ======== ======================== ========
+"""
 import sys
 from glumpy import gl
 from glumpy.log import log

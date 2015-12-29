@@ -1,8 +1,36 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+`PySDL2 <http://pysdl2.readthedocs.org/en/latest/index.html>`_ is a wrapper
+around the SDL2 library and as such similar to the discontinued PySDL
+project. In contrast to PySDL, it has no licensing restrictions, nor does it
+rely on C code, but uses ctypes instead.
+
+**Usage**
+
+  .. code:: python
+
+     from glumpy import app
+
+     app.use("sdl2")
+     window = app.Window()
+
+**Capability**
+
+========================== ======== ======================== ========
+Multiple windows              ✓     Set GL API                  ✓
+-------------------------- -------- ------------------------ --------
+Non-decorated windows         ✓     Set GL Profile              ✓
+-------------------------- -------- ------------------------ --------
+Resize windows                ✓     Share GL Context            ✓
+-------------------------- -------- ------------------------ --------
+Move windows                  ✓     Unicode handling            ✓
+-------------------------- -------- ------------------------ --------
+Fullscreen                    ✓     Scroll event                ✓
+========================== ======== ======================== ========
+"""
 import sys, ctypes
 from glumpy import gl
 from glumpy.log import log

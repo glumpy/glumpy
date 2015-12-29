@@ -1,7 +1,5 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
@@ -64,7 +62,7 @@ vertices[:,:]["col"]      = C.reshape(rows,cols,1)
 
 indices = np.zeros( (rows,cols, 6), dtype=np.uint32 )
 indices[:,:] = 0,1,2,0,2,3
-indices[:,:] += 4*np.arange(rows*cols).reshape(rows,cols,1)
+indices[:,:] += 4*np.arange(rows*cols,dtype=np.uint32).reshape(rows,cols,1)
 indices = indices.ravel()
 indices = indices.view(gloo.IndexBuffer)
 

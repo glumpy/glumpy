@@ -1,12 +1,9 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import numpy as np
 from glumpy import app, gl, gloo
-from glumpy.transforms import Position, Rotate
+from glumpy.transforms import Rotate
 
 vertex = """
 attribute vec2 position;
@@ -28,10 +25,11 @@ window = app.Window(width=800, height=800)
 @window.event
 def on_draw(dt):
     window.clear()
-    program.draw(gl.GL_TRIANGLE_STRIP)
-    program["transform"].angle += 1
+    quad.draw(gl.GL_TRIANGLE_STRIP)
+    quad["transform"].angle += 1
 
-program = gloo.Program(vertex, fragment, count=4)
-program["position"] = [(-.5,-.5), (-.5,+.5), (+.5,-.5), (+.5,+.5)]
-program["transform"] = Rotate(angle=10, origin=(0.5,0.5,0.0))
+quad = gloo.Program(vertex, fragment, count=4)
+quad["position"] = [(-.5,-.5), (-.5,+.5), (+.5,-.5), (+.5,+.5)]
+quad["transform"] = Rotate(angle=10, origin=(0.5,0.5,0.0))
+
 app.run()

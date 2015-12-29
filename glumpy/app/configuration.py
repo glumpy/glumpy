@@ -1,10 +1,23 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
-GL Configuration settings
+When a window is created, it can be given a specific GL configuration in
+order to specify specific GL settings. If no configuration, the default
+configuration as provided by the ``get_default`` method is used.
+
+**Usage example**:
+
+  .. code:: python
+
+     from glumpy import app
+
+     config = app.configuration.Configuration()
+     config.major_version = 3
+     config.minor_version = 2
+     config.profile = "core"
+     window = app.Window(config=config)
 """
 from glumpy.log import log
 from glumpy import defaults

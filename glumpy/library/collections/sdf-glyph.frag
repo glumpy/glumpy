@@ -1,7 +1,7 @@
-// ----------------------------------------------------------------------------
-// Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+// -----------------------------------------------------------------------------
+// Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 // Distributed under the (new) BSD License.
-// ----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Ref: http://www.java-gaming.org/index.php?topic=33612.0
 //      http://www.reddit.com/
 //       -> r/gamedev/comments/2879jd/just_found_out_about_signed_distance_field_text/

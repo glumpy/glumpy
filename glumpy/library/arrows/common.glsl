@@ -1,8 +1,7 @@
-/* -------------------------------------------------------------------------
- * Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
- * Distributed under the (new) BSD License.
- * -------------------------------------------------------------------------
- */
+// -----------------------------------------------------------------------------
+// Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+// Distributed under the (new) BSD License.
+// -----------------------------------------------------------------------------
 
 // Computes the signed distance from a line
 float line_distance(vec2 p, vec2 p1, vec2 p2) {

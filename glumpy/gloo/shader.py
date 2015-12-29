@@ -1,8 +1,33 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All rights reserved.
-# Distributed under the terms of the new BSD License.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+A Shader is a user-defined program designed to run on some stage of a
+graphics processor. Its purpose is to execute one of the programmable stages of
+the rendering pipeline.
+
+Read more on shaders on `OpenGL Wiki <https://www.opengl.org/wiki/Shader>`_
+
+**Example usage**
+
+  .. code:: python
+
+     vertex = '''
+         attribute vec2 position;
+         void main (void)
+         {
+             gl_Position = vec4(0.85*position, 0.0, 1.0);
+         } '''
+     fragment = '''
+         void main(void)
+         {
+             gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+         } '''
+
+     quad = gloo.Program(vertex, fragment, count=4)
+     quad['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
+"""
 import re
 import os.path
 import numpy as np
@@ -17,7 +42,23 @@ from . parser import (remove_comments, preprocess,
 
 # ------------------------------------------------------------ Shader class ---
 class Shader(GLObject):
-    """Abstract shader class."""
+    """
+    Abstract shader class.
+
+    :param gl.GLEnum target:
+
+       * gl.GL_VERTEX_SHADER
+       * gl.GL_FRAGMENT_SHADER
+       * gl.GL_GEOMETRY_SHADER
+
+    :param str code: Shader code or a filename containing shader code
+
+    .. note::
+    
+       If the shader code is actually a filename, the filename must be prefixed
+       with ``file:``. Note that you can also get shader code from the library
+       module.
+    """
 
     _gtypes = {
         'float':       gl.GL_FLOAT,
@@ -43,13 +84,7 @@ class Shader(GLObject):
 
     def __init__(self, target, code):
         """
-        Initialize the shader and get code if possible.
-
-        Parameters
-        ----------
-
-        code: str
-            code can be a filename or the actual code
+        Initialize the shader.
         """
 
         GLObject.__init__(self)
@@ -322,7 +357,7 @@ class VertexShader(Shader):
 
 
 
-# ---------------------------------------------------- FragmentShader class ---
+
 class FragmentShader(Shader):
     """ Fragment shader class """
 
@@ -341,9 +376,25 @@ class FragmentShader(Shader):
         return "Fragment shader %d (%s)" % (self._id, self._source)
 
 
-# ---------------------------------------------------- GeometryShader class ---
+
 class GeometryShader(Shader):
-    """ Geometry shader class """
+    """ Geometry shader class.
+
+        :param str code: Shader code or a filename containing shader code
+        :param int vertices_out: Number of output vertices
+        :param gl.GLEnum input_type:
+
+           * GL_POINTS
+           * GL_LINES​, GL_LINE_STRIP​, GL_LINE_LIST
+           * GL_LINES_ADJACENCY​, GL_LINE_STRIP_ADJACENCY
+           * GL_TRIANGLES​, GL_TRIANGLE_STRIP​, GL_TRIANGLE_FAN
+           * GL_TRIANGLES_ADJACENCY​, GL_TRIANGLE_STRIP_ADJACENCY
+
+        :param gl.GLEnum output_type:
+
+           * GL_POINTS, GL_LINES​, GL_LINE_STRIP
+           * GL_TRIANGLES​, GL_TRIANGLE_STRIP​, GL_TRIANGLE_FAN
+    """
 
 
     def __init__(self, code=None, vertices_out=0, input_type=None, output_type=None):

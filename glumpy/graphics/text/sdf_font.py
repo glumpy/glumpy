@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
 from . font import Glyph
 from glumpy.ext import freetype
-from glumpy.ext.sdf import compute_sdf
-
+# Lazy import to avoid problem on readthedocs.org
+# from glumpy.ext.sdf import compute_sdf
 
 
 def bilinear_interpolate(im, x, y):
@@ -78,6 +77,9 @@ class SDFFont(object):
 
 
     def load_glyph(self, face, charcode):
+
+        # Lazy import to avoid problem on readthedocs.org
+        from glumpy.ext.sdf import compute_sdf
 
         face.set_char_size( self._hires_size*64 )
         face.load_char(charcode, freetype.FT_LOAD_RENDER |

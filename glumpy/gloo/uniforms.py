@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 """
@@ -77,27 +76,22 @@ def dtype_reduce(dtype, level=0, depth=0):
 
 
 class Uniforms(Texture2D):
-    """ Uniforms texture holder
+    """
+    Uniforms data texture holder.
 
-    Parameters
-    ----------
+    This class is used in conjunction with collections in order to store a
+    number of uniforms in a texture such that each vertices can retrieve a
+    specific group of uniforms. The data type can be structured but must be
+    reduceable to n x np.float32. Note that you don't need to manipulate
+    directly this function, it is done automagically in collections.
 
-    data : ndarray
-        Texture data (optional)
+    .. note::
+ 
+       The code needed to retrieve a specific item is given from the ``code``
+       function and is generated specifically for the actual data type.
 
-    dtype : dtype
-        Texture data type (optional)
-
-    store : bool
-        Specify whether this object stores a reference to the data,
-        allowing the data to be updated regardless of striding. Note
-        that modifying the data after passing it here might result in
-        undesired behavior, unless a copy is given. Default True.
-
-
-    Usage
-    -----
-
+    :param int size: Number of items to be stored in the texture
+    :param numpy.dtype dtype: Item data type (must be reduceable to n x np.float32)
     """
 
     def __init__(self, size, dtype):
@@ -199,6 +193,7 @@ class Uniforms(Texture2D):
     def code(self, prefix="u_"):
         """
         Generate the GLSL code needed to retrieve fake uniform values from a texture.
+        The generated uniform names can be prefixed with the given prefix.
         """
 
         dtype = np.dtype(self._original_dtype)

@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 Raw Point Collection
@@ -76,7 +75,7 @@ class RawPointCollection(Collection):
             if transform is not None:
                 # FIXME: this line break things because snippet code will be included
                 #        and it messes with new snippet code
-                program["transform"] = Position()
+                # program["transform"] = Position()
                 program["transform"] = transform
             else:
                 program["transform"] = Position()
@@ -85,7 +84,7 @@ class RawPointCollection(Collection):
             if viewport is not None:
                 # FIXME: this line break things because snippet code will be included
                 #        and it messes with new snippet code
-                program["viewport"] = Viewport()
+                # program["viewport"] = Viewport()
                 program["viewport"] = viewport
             else:
                 program["viewport"] = Viewport()

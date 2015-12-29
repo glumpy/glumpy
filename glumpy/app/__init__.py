@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 """
@@ -20,8 +19,10 @@ from glumpy.app.window import backends
 from . import parser
 from . import configuration
 from . import clock as _clock
+from . clock import Clock
 from . console import Console
 from . viewport import Viewport
+from . window import EventDispatcher
 
 # Default clock
 __clock__ = None

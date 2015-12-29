@@ -1,7 +1,5 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import glumpy
@@ -258,7 +256,7 @@ class TextBuffer(object):
             style = style[:n]
 
         # Tweak code to take style into account
-        codes += style*65536
+        codes += np.uint32(style*65536)
 
         # Replace unknown glyphs with glyph 0
         codes *= np.in1d(codes, self._codes)

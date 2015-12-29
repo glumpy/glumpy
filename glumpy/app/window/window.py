@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import sys
 from glumpy import gl
@@ -15,6 +14,34 @@ from . import event
 class Window(event.EventDispatcher):
     """
     Platform independent window.
+
+    :param int width:
+      Initial width (pixels)
+
+    :param int height:
+      Initial height (pixels)
+
+    :param strtitle:
+       Window title
+
+    :param bool visible:
+       Initial visibility status
+
+    :param bool decoration:
+       Whether window is decorated
+
+    :param bool fullscreen:
+       Initial fullscreen status
+
+    :param config:
+       GL Configuration
+
+    :param Window context:
+       Window to share GL context with
+
+    :param 4-tuple color:
+       Clear color
+
 
     The content area of a window is filled entirely with an OpenGL viewport.
     Applications have no access to operating system widgets or controls; all
@@ -33,7 +60,7 @@ class Window(event.EventDispatcher):
     It is the responsability of the window backend to dispatch the following
     events when necessary:
 
-    Keyboard::
+    **Keyboard**::
 
       def on_key_press(symbol, modifiers):
           'A key on the keyboard was pressed.'
@@ -47,7 +74,7 @@ class Window(event.EventDispatcher):
           'A character has been typed'
           pass
 
-    Mouse::
+    **Mouse**::
 
       def on_mouse_press(self, x, y, button):
           'A mouse button was pressed.'
@@ -70,7 +97,7 @@ class Window(event.EventDispatcher):
           pass
 
 
-    Window::
+    **Window**::
 
       def on_init(self):
           'The window has just initialized iself.'
@@ -99,6 +126,7 @@ class Window(event.EventDispatcher):
       def on_idle(self, dt):
           'The window is inactive.'
           pass
+
     """
 
     def __init__(self, width=256, height=256, title=None, visible=True, aspect=None,
@@ -142,7 +170,7 @@ class Window(event.EventDispatcher):
         self._y = 0
         self._width = width
         self._height = height
-        self._title = (title or sys.argv[0]).encode()
+        self._title = (title or sys.argv[0])
         self._visible = visible
         self._fullscreen = fullscreen
         self._decoration = decoration
@@ -150,7 +178,7 @@ class Window(event.EventDispatcher):
         self._timer_stack = []
         self._timer_date = []
         self._backend = None
-        self.color = color
+        self._color = color
 
         self._clearflags = gl.GL_COLOR_BUFFER_BIT
         if config._depth_size:
@@ -161,34 +189,55 @@ class Window(event.EventDispatcher):
 
     @property
     def width(self):
+        """ Window width (pixels, read-only) """
+
         return self._width
 
+    
     @property
     def height(self):
+        """ Window height (pixels, read-only) """
+
         return self._height
 
     @property
     def fps(self):
+        """ Frame per second (read-only). """
+
         return self._clock.get_fps()
 
+    
     @property
     def config(self):
         return self._config
 
+    @property
+    def color(self):
+        """ Window clear color (read/write) """
+        
+        return self._color
+
+    
+    @color.setter
+    def color(self, color):
+        self._color = color
+        gl.glClearColor(*self._color)
+
+        
     def clear(self,color=None):
         """ Clear the whole window """
 
         if color is not None:
             gl.glClearColor(*color)
             gl.glClear(self._clearflags)
-            gl.glClearColor(*self.color)
+            gl.glClearColor(*self._color)
         else:
             gl.glClear(self._clearflags)
 
     def on_init(self):
         """ Window initialization """
 
-        gl.glClearColor(*self.color)
+        gl.glClearColor(*self._color)
 
 
     def on_resize(self, width, height):

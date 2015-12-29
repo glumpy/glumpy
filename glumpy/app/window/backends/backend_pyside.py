@@ -1,8 +1,37 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+`PySide <http://pyside.github.io/docs/pyside/>`_ is the Python Qt bindings
+project, providing access the complete Qt 4.8 framework as well as to generator
+tools for rapidly generating bindings for any C++ libraries.
+
+**Usage**
+
+  .. code:: python
+
+     from glumpy import app
+
+     app.use("pyside")
+     window = app.Window()
+
+
+**Capability**
+
+========================== ======== ======================== ========
+Multiple windows              ✓     Set GL API                  ✓    
+-------------------------- -------- ------------------------ --------
+Non-decorated windows         ✓     Set GL Profile              ✓    
+-------------------------- -------- ------------------------ --------
+Resize windows                ✓     Share GL Context            ✓    
+-------------------------- -------- ------------------------ --------
+Move windows                  ✓     Unicode handling            ✓    
+-------------------------- -------- ------------------------ --------
+Fullscreen                    ✓     Scroll event                ✓    
+========================== ======== ======================== ========
+"""
+
 import os, sys
 from glumpy import gl
 from glumpy.log import log

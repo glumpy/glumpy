@@ -1,8 +1,37 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+The OSX GLUT backend is only available Apple machine and differs a bit from
+the original glut implementation. It is very limited, deprecated and does not
+support the mouse scroll event. After OSX El Capitan, it will most likely
+become unavailable.
+
+**Usage**
+
+  .. code:: python
+
+     from glumpy import app
+
+     app.use("osxglut")
+     window = app.Window()
+
+
+**Capability**
+
+========================== ======== ======================== ========
+Multiple windows              ✘     Set GL API                  ✘
+-------------------------- -------- ------------------------ --------
+Non-decorated windows         ✓     Set GL Profile              ✘
+-------------------------- -------- ------------------------ --------
+Resize windows                ✓     Share GL Context            ✘
+-------------------------- -------- ------------------------ --------
+Move windows                  ✓     Unicode handling            ✘
+-------------------------- -------- ------------------------ --------
+Fullscreen                    ✓     Scroll event                ✘
+========================== ======== ======================== ========
+"""
 import sys
 from glumpy import gl
 from glumpy.log import log

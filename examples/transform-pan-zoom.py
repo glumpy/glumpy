@@ -1,16 +1,11 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-""" This example shows reactive pan-zoom transform (2D). """
-
 import numpy as np
 from PIL import Image
 from glumpy import app, gl, glm, gloo, data
 from glumpy.transforms import PanZoom, Position
-
 
 vertex = """
     attribute vec2 position;
@@ -29,7 +24,6 @@ fragment = """
     void main()
     {
         gl_FragColor = texture2D(texture, v_texcoord);
-        // gl_FragColor = <interpolation>;
     }
 """
 

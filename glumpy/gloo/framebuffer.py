@@ -1,9 +1,35 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
+"""
+A framebuffer is a collection of buffers that can be used as the destination
+for rendering. OpenGL has two kinds of framebuffers: the default framebuffer,
+which is provided by the OpenGL Context; and user-created framebuffers called
+framebuffer objects (FBOs). The buffers for default framebuffers are part of
+the context and usually represent a window or display device. The buffers for
+FBOs reference images from either textures or render buffers; they are never
+directly visible.
+
+Read more on framebuffers on `OpenGL Wiki
+<https://www.opengl.org/wiki/Framebuffer>`_
+
+**Example usage**
+
+  .. code:: python
+
+     ...
+     texture = np.zeros((512,512,4),np.float32).view(gloo.TextureFloat2D)
+     framebuffer = gloo.FrameBuffer(color=[texture])
+     ...
+
+     @window.event
+     def on_draw(dt):
+         window.clear()
+         framebuffer.activate()
+         quad.draw(gl.GL_TRIANGLE_STRIP)
+         framebuffer.deactivate()
+"""
 import numpy as np
 from glumpy import gl
 from glumpy.log import log
@@ -12,18 +38,11 @@ from glumpy.gloo.texture import Texture2D
 
 
 class RenderBuffer(GLObject):
-    """ Base class for render buffer object
+    """ Base class for render buffer object.
 
-    Parameters
-    ----------
-
-    format : GLEnum
-        The buffer format: gl.GL_RGB565, gl.GL_RGBA4, gl.GL_RGB5_A1,
-        gl.GL_DEPTH_COMPONENT16, or gl.GL_STENCIL_INDEX8
-    width: int
-        Buffer width
-    height: int
-        Buffer height
+    :param GLEnum format: Buffer format
+    :param int width:     Buffer width (pixels)
+    :param int height:    Buffer height (pixel)
     """
 
     def __init__(self, width=0, height=0, format=None):
@@ -37,26 +56,22 @@ class RenderBuffer(GLObject):
 
     @property
     def width(self):
-        """ Buffer width """
+        """ Buffer width (read-only). """
+
         return self._width
 
 
     @property
     def height(self):
-        """ Buffer height """
+        """ Buffer height (read-only). """
         return self._height
 
 
     def resize(self, width, height):
-        """ Resize the buffer (deferred operation)
+        """ Resize the buffer (deferred operation).
 
-        Parameters
-        ----------
-
-        width : int
-            New buffer width
-        height : int
-            New buffer height
+        :param int width:  New buffer width (pixels)
+        :param int height: New buffer height (pixels)
         """
 
         if width != self._width or height != self._height:
@@ -108,17 +123,11 @@ class RenderBuffer(GLObject):
 
 
 class ColorBuffer(RenderBuffer):
-    """ Color buffer object
+    """ Color buffer object.
 
-    Parameters
-    ----------
-
-    width: int
-        Buffer width
-    height: int
-        Buffer height
-    format : GLEnum
-        gl.GL_RGB565, gl.GL_RGBA4, gl.GL_RGB5_A1
+    :param int width:     Buffer width (pixels)
+    :param int height:    Buffer height (pixel)
+    :param GLEnum format: Buffer format (default is gl.GL_RGBA)
     """
 
     def __init__(self, width, height, format=gl.GL_RGBA):
@@ -131,17 +140,11 @@ class ColorBuffer(RenderBuffer):
 
 
 class DepthBuffer(RenderBuffer):
-    """ Depth buffer object
+    """ Depth buffer object.
 
-    Parameters
-    ----------
-
-    width: int
-        Buffer width
-    height: int
-        Buffer height
-    format : GLEnum
-        gl.GL_DEPTH_COMPONENT16
+    :param int width:     Buffer width (pixels)
+    :param int height:    Buffer height (pixel)
+    :param GLEnum format: Buffer format (default is gl.GL_DEPTH_COMPONENT)
     """
 
     def __init__(self, width, height, format=gl.GL_DEPTH_COMPONENT):
@@ -154,15 +157,9 @@ class DepthBuffer(RenderBuffer):
 class StencilBuffer(RenderBuffer):
     """ Stencil buffer object
 
-    Parameters
-    ----------
-
-    width: int
-        Buffer width
-    height: int
-        Buffer height
-    format : GLEnum
-        gl.GL_STENCIL_INDEX8
+    :param int width:     Buffer width (pixels)
+    :param int height:    Buffer height (pixel)
+    :param GLEnum format: Buffer format (default is gl.GL_STENCIL_INDEX8)
     """
 
     def __init__(self, width, height, format=gl.GL_STENCIL_INDEX8):
@@ -174,17 +171,11 @@ class StencilBuffer(RenderBuffer):
 
 
 class FrameBuffer(GLObject):
-    """ Frame buffer object
+    """ Framebuffer object.
 
-    Parameters
-    ----------
-
-    color : ColorBuffer (optional)
-        The color buffer to attach to this frame buffer
-    depth : DepthBuffer (optional)
-        The depth buffer to attach to this frame buffer
-    stencil : StencilBuffer (optional)
-        The stencil buffer to attach to this frame buffer
+    :param ColorBuffer color:     One or several color buffers or None
+    :param DepthBuffer depth:     A depth buffer or None
+    :param StencilBuffer stencil: A stencil buffer or None
     """
 
     def __init__(self, color=None, depth=None, stencil=None):
@@ -210,14 +201,14 @@ class FrameBuffer(GLObject):
 
     @property
     def color(self):
-        """Color buffer attachment"""
+        """ Color buffer attachment(s) (read/write) """
 
         return self._color
 
 
     @color.setter
     def color(self, buffers):
-        """Color buffer attachment"""
+        """ Color buffer attachment(s) (read/write) """
 
         if not isinstance(buffers,list):
             buffers = [buffers]
@@ -245,14 +236,14 @@ class FrameBuffer(GLObject):
 
     @property
     def depth(self):
-        """Depth buffer attachment"""
+        """ Depth buffer attachment (read/write) """
 
         return self._depth
 
 
     @depth.setter
     def depth(self, buffer):
-        """Depth buffer attachment"""
+        """ Depth buffer attachment (read/write) """
 
         if self.width != 0 and self.width != buffer.width:
             raise ValueError("Buffer width does not match")
@@ -273,14 +264,14 @@ class FrameBuffer(GLObject):
 
     @property
     def stencil(self):
-        """Stencil buffer attachment"""
+        """ Stencil buffer attachment (read/write) """
 
         return self._stencil
 
 
     @stencil.setter
     def stencil(self, buffer):
-        """Stencil buffer attachment"""
+        """ Stencil buffer attachment (read/write) """
 
         if self.width != 0 and self.width != buffer.width:
             raise ValueError("Buffer width does not match")
@@ -301,28 +292,25 @@ class FrameBuffer(GLObject):
 
     @property
     def width(self):
-        """ Buffer width """
+        """ Buffer width (read only, pixels) """
 
         return self._width
 
 
     @property
     def height(self):
-        """ Buffer height """
+        """ Buffer height (read only, pixels) """
 
         return self._height
 
 
     def resize(self, width, height):
-        """ Resize the buffer (deferred operation)
+        """ Resize the buffer (deferred operation).
 
-        Parameters
-        ----------
+        This method will also resize any attached buffers.
 
-        width : int
-            New buffer width
-        height : int
-            New buffer height
+        :param int width:  New buffer width (pixels)
+        :param int height: New buffer height (pixels)
         """
 
         self._width = width
@@ -390,7 +378,7 @@ class FrameBuffer(GLObject):
             self._attach()
             self._need_attach = False
         attachments = [gl.GL_COLOR_ATTACHMENT0+i for i in range(len(self.color))]
-        gl.glDrawBuffers(attachments)
+        gl.glDrawBuffers(np.array(attachments,dtype=np.uint32))
 
 
     def _deactivate(self):

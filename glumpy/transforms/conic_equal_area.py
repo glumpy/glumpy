@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 Conic Equal Area projection
@@ -60,7 +59,7 @@ class ConicEqualArea(Transform):
         self._parallels = Transform._get_kwarg("parallels", kwargs, (0,90))
         code = library.get("transforms/conic-equal-area.glsl")
 
-        # Make sure to call the foward function
+        # Make sure to call the forward function
         kwargs["call"] = "forward"
 
         Transform.__init__(self, code, *args, **kwargs)

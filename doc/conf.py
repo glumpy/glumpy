@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# vispy documentation build configuration file, created by
+# glumpy documentation build configuration file, created by
 # sphinx-quickstart on Sat May  4 16:52:02 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -30,8 +30,7 @@ sys.path.append(os.path.abspath('ext'))
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.pngmath',
-              'sphinx.ext.autosummary',
-              'sphinx.ext.intersphinx']
+              'sphinx.ext.autosummary', 'sphinx.ext.intersphinx']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -47,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'glumpy'
-copyright = u'2014, Nicolas P. Rougier'
+copyright = u'2011-2016, Nicolas P. Rougier'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -55,9 +54,9 @@ copyright = u'2014, Nicolas P. Rougier'
 #
 
 # The short X.Y version.
-version = '2.0'
+version = '1.x'
 # The full version, including alpha/beta/rc tags.
-release = '2.0'
+release = '1.x'
 
 
 # -- General configuration -----------------------------------------------

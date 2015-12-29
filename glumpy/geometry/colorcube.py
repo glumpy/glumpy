@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import gloo
@@ -18,7 +17,7 @@ def colorcube(size=2.0):
 
     # Vertices positions
     p = np.array([[1, 1, 1], [-1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                  [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, -1]])
+                  [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, -1]], dtype=float)
     p *= size/2.0
 
     # Face Normals

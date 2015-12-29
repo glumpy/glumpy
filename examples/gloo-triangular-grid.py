@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Copyright (c) 2015, Dzhelil S. Rufat. All Rights Reserved.
 # Distributed under the (new) BSD License.

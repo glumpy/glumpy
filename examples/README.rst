@@ -1,63 +1,84 @@
+.. _app-backend.py: https://github.com/glumpy/glumpy/blob/master/examples/app-backend.py
+.. _app-config.py: https://github.com/glumpy/glumpy/blob/master/examples/app-config.py
+.. _app-event-loop.py: https://github.com/glumpy/glumpy/blob/master/examples/app-event-loop.py
+.. _app-events.py: https://github.com/glumpy/glumpy/blob/master/examples/app-events.py
+.. _app-interactive.py: https://github.com/glumpy/glumpy/blob/master/examples/app-interactive.py
+.. _app-screenshot.py: https://github.com/glumpy/glumpy/blob/master/examples/app-screenshot.py
+.. _app-simple.py: https://github.com/glumpy/glumpy/blob/master/examples/app-simple.py
+.. _app-timed.py: https://github.com/glumpy/glumpy/blob/master/examples/app-timed.py
+.. _app-two-windows.py: https://github.com/glumpy/glumpy/blob/master/examples/app-two-windows.py
+.. _app-two-programs.py: https://github.com/glumpy/glumpy/blob/master/examples/app-two-programs.py
+
 ========
 Examples
 ========
 
-App
-===
+Glumpy comes with a lot of examples that aim at illustrating the main
+features. You'll find below a list organized around several sections.
 
-**glumpy.app** is the layer responsible for opening a window, handling events
+.. contents::
+   :local:
+
+
+Application-wide functionnality (app)
+=====================================
+
+The ``glumpy.app`` is responsible for opening a window, handling events
 (mouse, keyboard and user event). It also provides convenient interfaces to
 parse command line options and configure the GL context.
 
-* `app-backend.py <https://github.com/glumpy/glumpy/blob/master/examples/app-backend.py>`_
 
-  Show how to change the backend programatically.
+* app-backend.py_
+    This example shows how to change the backend programmatically.
 
+    **Warning**:
+      Note that if the backend is set, the ``--backend`` command line option
+      has not effect.
+    
+* app-config.py_
+    This example shows how to choose and use a specific GL configuration (GL
+    version & profile, depth buffer size, stencil, ...).
+  
+* app-event-loop.py_
+    This example shows how to run manually the event loop.
+    It might come handy if you want to integrate a glumpy program into another application.
 
-* `app-config.py <https://github.com/glumpy/glumpy/blob/master/examples/app-config.py>`_
+* app-events.py_
+    This example exhibits all available events and display them when triggered.
 
-  This shows how to setup a specific GL configuration (depth buffer size, stencil, ...)
+    **Note**:
+      Note that the idle event is commented out because it generates far too
+      many messages.
 
+* app-interactive.py_
+    This example runs in interactive mode where python console is reactive.
 
-* `app-event-loop.py <https://github.com/glumpy/glumpy/blob/master/examples/app-event-loop.py>`_
+* app-screenshot.py_
+    This examples takes a single screenshot and immeditaley exit.
 
-  Show how to manually handle the event loop.
+    **Note**:
+       You can also take a screenshot anytime using the ``F10`` key. The
+       screenshot will be named after the example filename.
 
+* app-simple.py_
+    This is the most simple glumpy example that display a black window and wait
+    for the user to exit the application
 
-* `app-events.py <https://github.com/glumpy/glumpy/blob/master/examples/app-events.py>`_
+    **Note**
+       You can exit any glumpy program by closing the window or pressing the
+       ``ESC`` key. If you want to disable the ``ESC`` behavior, you'll have to
+       connect to the key press event and override behavior.
 
-  This example connect to all available events and display them when triggered.
+* app-timed.py_
+    This example creates a window and closes it after 5 seconds.
 
+* app-two-windows.py_
+    This example opens two windows, one should be black, the other white.
 
-* `app-interactive.py <https://github.com/glumpy/glumpy/blob/master/examples/app-interactive.py>`_
-
-  Display a window in interactive mode (python console is reactive).
-
-
-* `app-screenshot.py <https://github.com/glumpy/glumpy/blob/master/examples/app-screenshot.py>`_
-
-  This takes a screenshot and exit.
-
-
-* `app-simple.py <https://github.com/glumpy/glumpy/blob/master/examples/app-simple.py>`_
-
-  The most simple glumpy example. This should display a black window.
-
-
-* `app-timed.py <https://github.com/glumpy/glumpy/blob/master/examples/app-timed.py>`_
-
-  Open a window, display it for 1 second and exit.
-
-
-* `app-two-windows.py <https://github.com/glumpy/glumpy/blob/master/examples/app-two-windows.py>`_
-
-  Open two windows, one black, one white.
-
-
-* `app-two-programs.py <https://github.com/glumpy/glumpy/blob/master/examples/app-two-programs.py>`_
-
-  Display two points (square), one blue, one red.
-
+* app-two-programs.py_
+    This example displays two points (square), one blue, one red, using two
+    shader programs. This example also serves as a test for checking glumpy is
+    running properly.
 
 
 
@@ -66,7 +87,7 @@ Gloo
 
 **glumpy.gloo** is the heart of glumpy and is responsible for talking to the
 GPU throught buffers, textures and programs. This is done quite transparently
-thanls to the numpy interface (and the GPU data object which is a subclassed
+thanks to the numpy interface (and the GPU data object which is a subclassed
 numpy array).
 
 

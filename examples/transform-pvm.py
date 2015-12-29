@@ -1,11 +1,7 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-""" This example shows standard projection-view-model transform. """
-
 import numpy as np
 from glumpy import app, gl, glm, gloo
 from glumpy.geometry import colorcube

@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 A collection is a container for several (optionally indexed) objects having
@@ -28,7 +27,7 @@ def next_power_of_2(n):
     return max(4,n + 1)
 
 
-class Item(object):
+class BaseItem(object):
     """
     An item represent an object within a collection and is created on demand
     when accessing a specific object of the collection.
@@ -122,7 +121,7 @@ class Item(object):
 
 
     def __str__(self):
-        return "Item (%s, %s, %s)" % (self._vertices, self._indices, self._uniforms)
+        return "BaseItem (%s, %s, %s)" % (self._vertices, self._indices, self._uniforms)
 
 
 
@@ -414,7 +413,7 @@ class BaseCollection(object):
                 ustart, uend = self._uniforms_list._items[key]
                 uniforms  = U[ustart:uend]
 
-            return Item(self, key, vertices, indices, uniforms)
+            return BaseItem(self, key, vertices, indices, uniforms)
 
         # Error
         else:

@@ -1,34 +1,7 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-"""
-Log scale transform
-
-Log scales are similar to linear scales, except there's a logarithmic transform
-that is applied to the input domain value before the output range value is
-computed. The mapping to the output range value y can be expressed as a
-function of the input domain value x: y = m log(x) + b.
-
-As log(0) is negative infinity, a log scale must have either an
-exclusively-positive or exclusively-negative domain; the domain must not
-include or cross zero. A log scale with a positive domain has a well-defined
-behavior for positive values, and a log scale with a negative domain has a
-well-defined behavior for negative values (the input value is multiplied by -1,
-and the resulting output value is also multiplied by -1). The behavior of the
-scale is undefined if you pass a negative value to a log scale with a positive
-domain or vice versa.
-
-The transform is connected to the following events:
-
- * attach (initialization)
-
-Relevant shader code:
-
- * transforms/log-scale-forward.glsl
-"""
 import numpy as np
 from glumpy import library
 from . transform import Transform
@@ -36,7 +9,28 @@ from . quantitative_scale import QuantitativeScale
 
 
 class LogScale(QuantitativeScale):
-    """ Log scale transform """
+    """
+    Log scales are similar to linear scales, except there's a logarithmic
+    transform that is applied to the input domain value before the output range
+    value is computed. The mapping to the output range value y can be expressed
+    as a function of the input domain value x: y = m log(x) + b.
+
+    As log(0) is negative infinity, a log scale must have either an
+    exclusively-positive or exclusively-negative domain; the domain must not
+    include or cross zero. A log scale with a positive domain has a
+    well-defined behavior for positive values, and a log scale with a negative
+    domain has a well-defined behavior for negative values (the input value is
+    multiplied by -1, and the resulting output value is also multiplied by
+    -1). The behavior of the scale is undefined if you pass a negative value to
+    a log scale with a positive domain or vice versa.
+
+
+    :param 2-tuple domain: Input domains. Default is (-1,+1).
+    :param 2-tuple range: Output range. Default is (-1,+1).
+    :param float base: Log base. Default is 10.
+    :param bool clamp: Clamping test. Default is False.
+    :param bool discard: Discard test. Default is True.
+    """
 
     aliases = { "domain"  : "log_scale_domain",
                 "range"   : "log_scale_range",
@@ -47,26 +41,7 @@ class LogScale(QuantitativeScale):
 
     def __init__(self, *args, **kwargs):
         """
-        Initialize the transform.
-        Note that parameters must be passed by name (param=value).
-
-        Kwargs parameters
-        -----------------
-
-        base : float (default is 10)
-            Log base
-
-        domain : tuple of 2 floats (default is (1,10))
-            Input domain
-
-        range : tuple of 2 floats (default is (-1,1))
-            Output range
-
-        clamp : bool (default is False)
-           Clamping test
-
-        discard : bool (default is False)
-           Discard test
+        Initialize the transform
         """
 
         self._base = float(Transform._get_kwarg("base", kwargs) or 10.0)
@@ -78,12 +53,13 @@ class LogScale(QuantitativeScale):
 
     @property
     def base(self):
-        """ Input base for xyz """
+        """ Input base """
         return self._base
 
 
     @base.setter
     def base(self, value):
+        """ Input base """
         self._base = np.abs(float(value))
         if self.is_attached:
             self["base"] = self._base
@@ -91,8 +67,6 @@ class LogScale(QuantitativeScale):
 
 
     def on_attach(self, program):
-        """ Initialization event """
-
         QuantitativeScale.on_attach(self, program)
         self["base"] = self._base
 

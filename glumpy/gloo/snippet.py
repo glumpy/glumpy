@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import re
@@ -12,7 +11,7 @@ class Snippet(object):
     """
     A snippet is a piece of GLSL code that can be injected into an another GLSL
     code. It provides the necessary machinery to take care of name collisions,
-    external variables and snippet composition (call, +, -, /, *).
+    external variables and snippet composition (call, +, -, /, \*).
 
     A snippet can declare uniforms, const, attributes and varying using random
     names. However, these names will be later mangled such as to avoid name
@@ -298,6 +297,8 @@ class Snippet(object):
             symbol = self.symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=\()" % name, symbol, code)
         for name, _ in names:
+            # Variable starting "__" are protected and unaliased
+            #if not name.startswith("__"):
             symbol = self.symbols[name]
             code = re.sub(r"(?<=[^\w])(%s)(?=[^\w])" % name, symbol, code)
         return code

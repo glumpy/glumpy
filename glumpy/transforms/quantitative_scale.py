@@ -1,8 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 Abstract quantitative scale
@@ -11,11 +9,6 @@ Scales are functions that map from an input domain to an output
 range. Quantitative scales have a continuous domain, such as the set of real
 numbers, or dates. There are also ordinal scales, which have a discrete
 domain, such as a set of names or categories.
-
-The transform is connected to the following events:
-
- * attach (initialization)
-
 """
 import numpy as np
 from glumpy import library
@@ -23,7 +16,13 @@ from . transform import Transform
 
 
 class QuantitativeScale(Transform):
-    """ Quantitative scale transform (abstract class) """
+    """
+    Abstract quantitative scale.
+    
+    The transform is connected to the following events:
+
+      * ``on_attach``: Transform initialization
+    """
 
     aliases = { }
 
@@ -31,22 +30,6 @@ class QuantitativeScale(Transform):
     def __init__(self, code, *args, **kwargs):
         """
         Initialize the transform.
-        Note that parameters must be passed by name (param=value).
-
-        Kwargs parameters
-        -----------------
-
-        domain : tuple of 2 floats (default is (-1,1))
-            Input domains
-
-        range : tuple of 2 floats (default is (-1,1))
-            Output range
-
-        clamp : bool (default is False)
-           Clamping test
-
-        discard : bool (default is True)
-           Discard test
         """
 
         self._clamp   = False
@@ -86,14 +69,14 @@ class QuantitativeScale(Transform):
 
     @property
     def range(self):
-        """ Output range for xyz """
+        """ Output range """
 
         return self._range
 
 
     @range.setter
     def range(self, value):
-        """ Output range for xyz """
+        """ Output range """
 
         self._range = np.asarray(value, dtype=np.float32)
         if self.is_attached:
@@ -101,14 +84,14 @@ class QuantitativeScale(Transform):
 
     @property
     def clamp(self):
-        """ Whether to clamp value """
+        """ Whether to clamp value when out of range """
 
         return self._clamp
 
 
     @clamp.setter
     def clamp(self, value):
-        """ Whether to clamp value """
+        """ Whether to clamp value when out of range """
 
         self._clamp = value
         if self.is_attached:
@@ -117,14 +100,14 @@ class QuantitativeScale(Transform):
 
     @property
     def discard(self):
-        """ Whether to discard value (fragment shader only) """
+        """ Whether to discard value when out of range """
 
         return self._discard
 
 
     @discard.setter
     def discard(self, value):
-        """ Whether to discard value (fragment shader only) """
+        """ Whether to discard value when out of range """
 
         self._discard = value
         if self.is_attached:
@@ -141,8 +124,6 @@ class QuantitativeScale(Transform):
 
 
     def on_attach(self, program):
-        """ Initialization event """
-
         self["discard"] = self._discard
         self["clamp"]   = self._clamp
         self["range"]   = self._process_range()

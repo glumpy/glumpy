@@ -1,24 +1,7 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-"""
-Transform
-
-Transforms are specific snippet that can handle and propagate events such that
-they are able to react to window event.
-
-A Transform can be connected to the following events:
-
- * attach
- * resize
- * mouse_scroll
- * mouse_grab
- * mouse_press
- * mouse_release
-"""
 import os
 import numpy as np
 from glumpy.gloo import Snippet
@@ -26,6 +9,21 @@ from glumpy.app.window.event import EventDispatcher
 
 
 class Transform(Snippet,EventDispatcher):
+    """
+    Transform
+
+    Transforms are snippets that can handle and propagate events such that they
+    are able to react to window event.
+
+    A Transform can be connected to the following events:
+
+    * ``on_attach``
+    * ``on_resize``
+    * ``on_mouse_scroll``
+    * ``on_mouse_grab``
+    * ``on_mouse_press``
+    * ``on_mouse_release``
+    """
 
     aliases = { }
 

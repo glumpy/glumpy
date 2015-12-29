@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
 Default argument parser for any glumpy program.
@@ -39,7 +38,8 @@ def set_default_options(parser):
     # Backend option
     parser.add_argument("--backend", "-b",
                         default = glumpy.defaults.backend(),
-                        choices = ('glfw', 'sdl2', 'pyside', 'pyglet', 'sdl',  'osxglut'),
+                        choices = ('glfw', 'sdl2', 'qt5', 'pyside',
+                                   'pyglet', 'sdl',  'freeglut', 'osxglut'),
                         help="Backend to use, one of ")
 
     # Record

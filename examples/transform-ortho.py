@@ -1,11 +1,7 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-""" This example shows standard orthographic projection transform. """
-
 import numpy as np
 from  glumpy import app, gl, glm, gloo
 from glumpy.transforms import OrthographicProjection, Position
@@ -31,14 +27,13 @@ window = app.Window(width=800, height=800)
 @window.event
 def on_draw(dt):
     window.clear()
-    program.draw(gl.GL_TRIANGLE_STRIP)
+    quad.draw(gl.GL_TRIANGLE_STRIP)
 
 @window.event
 def on_resize(w, h):
-    program['position'] = [(w-100,h-100), (w-100,h), (w,h-100), (w,h)]
+    quad['position'] = [(w-100,h-100), (w-100,h), (w,h-100), (w,h)]
 
-transform = OrthographicProjection(Position("position"))
-program = gloo.Program(vertex, fragment, count=4)
-program["transform"] = transform
-window.attach(transform)
+quad = gloo.Program(vertex, fragment, count=4)
+quad["transform"] = OrthographicProjection(Position("position"))
+window.attach(quad["transform"])
 app.run()

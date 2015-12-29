@@ -1,36 +1,65 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-"""
-Pan & Zoom transform
-
-The panzoom transform allow to translate and scale an object in the window
-space coordinate (2D). This means that whatever point you grab on the screen,
-it should remains under the mouse pointer. Zoom is realized using the mouse
-scroll and is always centered on the mouse pointer.
-
-The transform is connected to the following events:
-
- * attach (initialization)
- * resize (update)
- * mouse_scroll (zoom)
- * mouse_grab (pan)
-
-Relevant shader code:
-
- * transforms/panzoom.glsl
-
-"""
 import numpy as np
 from glumpy import library
 from . transform import Transform
 
-
 class PanZoom(Transform):
-    """ 2D Pan & zoom transform """
+    """
+    2D pan & zoom transform.
+
+    :param float aspect:
+       Indicate what is the aspect ratio of the object displayed. This is
+       necessary to convert pixel drag move in oject space coordinates.
+       Default is None.
+
+    :param float,float pan: 
+       Initial translation. Default is (0,0)
+
+    :param float,float zoom: 
+       Initial zoom level. Default is (1,1)
+
+    :param float zoom_min:
+       Minimal zoom level. Default is 0.01
+
+    :param float zoom_max:
+        Minimal zoom level. Default is 1000.0
+
+
+    The panzoom transform allow to translate and scale a scene in the window
+    space coordinate (2D). This means that whatever point you grab on the
+    screen, it should remains under the mouse pointer. Zoom is realized using
+    the mouse scroll and is always centered on the mouse pointer.
+
+    The transform is connected to the following events:
+
+      * ``on_attach``: Transform initialization
+      * ``on_resize``: Tranform update to maintain aspect
+      * ``on_mouse_scroll``: Zoom in & out (user action)
+      * ``on_mouse_grab``: Pan (user action)
+
+
+    **Usage example**:
+
+      .. code:: python
+
+         vertex = '''
+         attribute vec2 position;
+         void main()
+         {
+             gl_Position = <transform>(vec4(position, 0.0, 1.0));
+         } '''
+
+         ...
+         window = app.Window(width=800, height=800)
+         program = gloo.Program(vertex, fragment, count=4)
+         ...
+         program['transform'] = PanZoom(aspect=1)
+         window.attach(program['transform'])
+         ...
+    """
 
     aliases = { "pan"       : "panzoom_translate",
                 "translate" : "panzoom_translate",
@@ -40,26 +69,6 @@ class PanZoom(Transform):
     def __init__(self, *args, **kwargs):
         """
         Initialize the transform.
-        Note that parameters must be passed by name (param=value).
-
-        Kwargs parameters
-        -----------------
-
-        aspect : float (default is None)
-           Indicate what is the aspect ratio of the object displayed. This is
-           necessary to convert pixel drag move in oject space coordinates.
-
-        pan : float, float (default is 0,0)
-           Initial translation
-
-        zoom : float, float (default is 1)
-           Initial zoom level
-
-        zoom_min : float (default is 0.01)
-           Minimal zoom level
-
-        zoom_max : float (default is 1000)
-           Maximal zoom level
         """
 
         code = library.get("transforms/panzoom.glsl")
@@ -147,9 +156,14 @@ class PanZoom(Transform):
         self._zoom_max = max(value, self._zoom_min)
 
 
-    def on_attach(self, program):
-        """ Initialization event """
+    def reset(self):
+        """ Reset transform (zoom=1, pan=(0,0)) """
 
+        self.zoom = 1
+        self.pan = 0,0
+
+
+    def on_attach(self, program):
         self["pan"] = self.pan
         aspect = 1.0
         if self._aspect is not None:
@@ -158,8 +172,6 @@ class PanZoom(Transform):
 
 
     def on_resize(self, width, height):
-        """ Update event """
-
         self._width = float(width)
         self._height = float(height)
         aspect = self._width/self._height
@@ -178,8 +190,6 @@ class PanZoom(Transform):
 
 
     def on_mouse_scroll(self, x, y, dx, dy):
-        """ Zoom event """
-
         # Normalize mouse coordinates and invert y axis
         x = x/(self._width/2.) - 1.
         y = 1.0 - y/(self._height/2.)
@@ -193,15 +203,6 @@ class PanZoom(Transform):
 
 
     def on_mouse_drag(self, x, y, dx, dy, button):
-        """ Pan event """
-
         dx =  2*(dx / self._width)
         dy = -2*(dy / self._height)
         self.pan = self.pan + (dx,dy)
-
-
-    def reset(self):
-        """ Reset """
-
-        self.zoom = 1
-        self.pan = 0,0

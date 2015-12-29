@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
 from . collection import Collection
@@ -138,7 +137,7 @@ class AggGlyphCollection(Collection):
                 vertices[index]['texcoord'] = (u0,v0),(u0,v1),(u1,v1),(u1,v0)
                 vertices[index]['offset'] = offset
                 indices[index] = index*4
-                indices[index] += 0,1,2, 0,2,3
+                indices[index] += np.array([0,1,2, 0,2,3], dtype=np.uint32)
                 pen[0] = pen[0]+glyph.advance[0]/64. + kerning
                 pen[1] = pen[1]+glyph.advance[1]/64.
                 prev = charcode

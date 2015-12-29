@@ -1,8 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier
-# Distributed under the (new) BSD License. See LICENSE.txt for more info.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app
@@ -25,8 +23,6 @@ T = np.random.uniform(0,2*np.pi,n)
 Z = np.zeros(n)
 
 points.append (np.dstack((R,T,Z)).reshape(n,3) )
-
 window.attach(points["transform"])
 window.attach(points["viewport"])
-
 app.run()

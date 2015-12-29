@@ -1,11 +1,7 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2014, Nicolas P. Rougier. All Rights Reserved.
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-""" This example shows reactive trackball transform """
-
 import numpy as np
 from glumpy import app, gl, glm, gloo
 from glumpy.geometry import colorcube
@@ -63,16 +59,14 @@ outline  = O.view(gloo.IndexBuffer)
 
 cube = gloo.Program(vertex, fragment)
 cube.bind(vertices)
-transform = Trackball(Position("position"))
-cube['transform'] = transform
-window.attach(transform)
+cube['transform'] = Trackball(Position("position"))
+window.attach(cube['transform'])
 
 # OpenGL initalization
 gl.glEnable(gl.GL_DEPTH_TEST)
 gl.glPolygonOffset(1, 1)
 gl.glEnable(gl.GL_LINE_SMOOTH)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-gl.glLineWidth(0.75)
 
 # Run
 app.run()
