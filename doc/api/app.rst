@@ -40,3 +40,4 @@ window, create a GL context and handle events.
    app-configuration
    app-clock
    app-console
+   app-parser

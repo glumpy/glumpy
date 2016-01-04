@@ -2,12 +2,6 @@
 # Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-"""
-A collection is a container for several (optionally indexed) objects having
-the same vertex structure (vtype) and same uniforms type (utype). A collection
-allows to manipulate objects individually and each object can have its own set
-of uniforms provided they are a combination of floats.
-"""
 import math
 import numpy as np
 from glumpy import gl
@@ -127,6 +121,18 @@ class BaseItem(object):
 
 
 class BaseCollection(object):
+    """
+    A collection is a container for several (optionally indexed) objects having
+    the same vertex structure (vtype) and same uniforms type (utype). A
+    collection allows to manipulate objects individually and each object can
+    have its own set of uniforms provided they are a combination of floats
+    because they are internally stored into a texture can be retrieved from
+    within the shader using a specific code (fetchcode).
+
+    :param np.dtype vtype: Vertex type (mandatory)
+    :param np.dtype utype: Uniform type or None
+    :param np.dtype itype: Index type (np.uint32 or None)
+    """
 
     def __init__(self, vtype, utype=None, itype=None):
 

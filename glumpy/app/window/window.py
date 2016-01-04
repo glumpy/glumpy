@@ -133,33 +133,6 @@ class Window(event.EventDispatcher):
                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
         """
         Create a window.
-
-        Parameters
-        ----------
-
-        width: int
-            Window initial width
-
-        height: int
-            Window initial height
-
-        title: int
-            Window title
-
-        visible: bool
-            Window initial visibility status
-
-        decoration: bool
-            Window decoration (close button, maximize button, etc.)
-
-        fullscreen: bool
-            Window initial fullscreen mode
-
-        config: Configuration
-            GL Configuration
-
-        context: Window
-            Another window to share GL context with
         """
 
         event.EventDispatcher.__init__(self)
