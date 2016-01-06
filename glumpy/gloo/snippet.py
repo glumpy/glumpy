@@ -15,8 +15,8 @@ class Snippet(object):
 
     :param string code: Shader code
     :param string default: Default function to be called if none is specified.
-    :param *args: Arguments
-    :param *args: Keyword arguments
+    :param list args: Arguments
+    :param dict kwargs: Keyword arguments
 
     A snippet can declare uniforms, const, attributes and varying using random
     names. However, these names will be later mangled such as to avoid name
@@ -59,6 +59,9 @@ class Snippet(object):
         self._objects = parser.parse(code)
 
         # Arguments (other snippets or strings)
+        for arg in args:
+            if isinstance(arg,Snippet) and self in arg.snippets:
+                raise ValueError("Recursive call is forbidden.")
         self._args = list(args)
 
         # No chained snippet yet
@@ -446,6 +449,10 @@ class Snippet(object):
         IMPORTANT: The returned snippet is `self`, not a copy.
         """
 
+        for arg in args:
+            if isinstance(arg,Snippet) and self in arg.snippets:
+                raise ValueError("Recursive call is forbidden")
+
         # Override call arguments
         self._args = args
 
@@ -627,3 +634,5 @@ if __name__ == '__main__':
     print("Code:")
     print(D.code)
     print()
+
+
