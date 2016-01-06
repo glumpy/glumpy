@@ -365,11 +365,11 @@ class Snippet(object):
         return code
 
 
-#    @property
-#    def call(self):
-#        """ Computes and returns the GLSL code that correspond to the call """
-#        self.mangled_code()
-#        return self.mangled_call()
+    @property
+    def call(self):
+        """ Computes and returns the GLSL code that correspond to the call """
+        self.mangled_code()
+        return self.mangled_call()
 
 
     def mangled_call(self, function=None, arguments=None, override=False):
@@ -517,8 +517,8 @@ class Snippet(object):
     def __repr__(self):
         # return self.generate_call()
 
-        # s = self._name
-        s = self.__class__.__name__
+        s = self._name
+        # s = self.__class__.__name__
         s += "("
         if len(self._args):
             s += " "
@@ -599,40 +599,3 @@ class Snippet(object):
         if not found:
             error = 'Snippet does not have such key ("%s")' % key
             raise IndexError(error)
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-
-    A = Snippet("uniform float a;\nvoid function_A(void) {};\n\n", name = "Snippet_A")
-    B = Snippet("uniform float b;\nvoid function_B(void) {};\n\n", name = "Snippet_B")
-    C = Snippet("uniform float c;\nvoid function_C(void) {};\n\n", name = "Snippet_C")
-    D = A(B("A")) + C()
-
-    print(D["Snippet_A"])
-    print(D["Snippet_B"])
-    print(D["Snippet_C"])
-
-    print(D.locals)
-    print(D.globals)
-
-    print(D["Snippet_A"].locals)
-    print(D["Snippet_B"].locals)
-    print(D["Snippet_C"].locals)
-
-    # print D.objects
-    print(D.symbols)
-    # print D
-
-    print(D)
-    print([snippet._id for snippet in D.dependencies])
-
-    print()
-    print("Call:")
-    print(D.call)
-    print()
-    print("Code:")
-    print(D.code)
-    print()
-
-
