@@ -149,12 +149,12 @@ class Shader(GLObject):
 
                 # If the last snippet name endswith "!" this means to call
                 # the snippet with given arguments and not the ones stored.
-                # If S = A(B(C)):
-                #   S("t") -> A(B(C("t")))
-                #   S!("t") -> A("t")
-                isolated = False
+                # If S = A(B(C))("t"):
+                #   <S>     -> A(B(C("t")))
+                #   <S!>(t) -> A("t")
+                override = False
                 if subhook[-1] == "!":
-                    isolated = True
+                    override = True
                     subhook = subhook[:-1]
 
                 # Do we have a class alias ? We don't return it yet since we
@@ -164,7 +164,7 @@ class Shader(GLObject):
                 # If subhook is a variable (uniform/attribute/varying)
                 if subhook in s.globals:
                     return s.globals[subhook]
-                return s.mangled_call(subhook, match.group("args"), isolated=isolated)
+                return s.mangled_call(subhook, match.group("args"), oveeride=override)
 
             # If subhook is a variable (uniform/attribute/varying)
             if subhook in snippet.globals:
