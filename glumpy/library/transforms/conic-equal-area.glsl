@@ -3,15 +3,7 @@
 // Distributed under the (new) BSD License.
 // -----------------------------------------------------------------------------
 #include "math/constants.glsl"
-
-#ifndef __GEO_POSITION_STRUCT__
-#define __GEO_POSITION_STRUCT__
-struct GeoPosition
-{
-    vec2 position; // Actual position
-    bool frozen;   // Prevent further transformation if true
-};
-#endif
+#include "transforms/geo-position-struct.glsl"
 
 uniform float conic_scale;
 uniform vec2  conic_center;
@@ -22,7 +14,6 @@ uniform vec4  conic_clip;
 
 vec2 forward(float longitude, float latitude)
 {
-
     float phi0 = conic_parallels.x * radian;
     float phi1 = conic_parallels.y * radian;
 
@@ -37,7 +28,7 @@ vec2 forward(float longitude, float latitude)
     return P*conic_scale + conic_translate;
 }
 
-GeoPosition forward(GeoPosition position) //float longitude, float latitude)
+GeoPosition forward(GeoPosition position)
 {
     if (position.frozen)
         return position;
@@ -49,7 +40,6 @@ GeoPosition forward(GeoPosition position) //float longitude, float latitude)
         return position;
     if( (conic_clip.w <= +90) && (position.latitude > conic_clip.w) )
         return position;
-
     vec2 P = forward(position.longitude, position.latitude);
     position.longitude = P.x;
     position.latitude = P.y;
