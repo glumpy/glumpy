@@ -2,15 +2,7 @@
 // Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 // Distributed under the (new) BSD License.
 // -----------------------------------------------------------------------------
-#ifndef __GEO_POSITION_STRUCT__
-#define __GEO_POSITION_STRUCT__
-struct GeoPosition
-{
-    vec2 position; // Actual position
-    bool frozen;   // Prevent further transformation if true
-};
-#endif
-
+#include "geo-position-struct.glsl"
 
 vec4 position(float x)
 {
@@ -54,5 +46,5 @@ vec4 position(float x, vec2 yz)
 
 vec4 position(GeoPosition P)
 {
-    return vec4(P.position.xy, 0.0, 1.0);
+    return vec4(P.longitude, P.latitude, 0.0, 1.0);
 }

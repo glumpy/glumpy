@@ -20,30 +20,8 @@ uniform vec2  conic_translate;
 uniform vec2  conic_parallels;
 uniform vec4  conic_clip;
 
-GeoPosition forward(GeoPosition position) //float longitude, float latitude)
+vec2 forward(float longitude, float latitude)
 {
-    if (position.frozen)
-        return position;
-    
-    float longitude = position.position.x;
-    float latitude = position.position.y;
-    
-    if( (conic_clip.x >= -180) && (longitude < conic_clip.x) )
-        return position;
-        //return vec2 (longitude, latitude);
-
-    if( (conic_clip.y <= +180) && (longitude > conic_clip.y) )
-        return position;
-        //return vec2 (longitude, latitude);
-
-    if( (conic_clip.z >= -90) && (latitude < conic_clip.z) )
-        return position;
-        // return vec2 (longitude, latitude);
-
-    if( (conic_clip.w <= +90) && (latitude > conic_clip.w) )
-        return position;
-        // return vec2 (longitude, latitude);
-
 
     float phi0 = conic_parallels.x * radian;
     float phi1 = conic_parallels.y * radian;
@@ -56,13 +34,30 @@ GeoPosition forward(GeoPosition position) //float longitude, float latitude)
     float rho = sqrt(C - 2.0*n*sin(latitude))/n;
     vec2 P = vec2(       rho * sin(longitude * n),
                   rho0 - rho * cos(longitude*n)) + conic_center;
+    return P*conic_scale + conic_translate;
+}
 
-    position.position = P*conic_scale + conic_translate;
+GeoPosition forward(GeoPosition position) //float longitude, float latitude)
+{
+    if (position.frozen)
+        return position;
+    if( (conic_clip.x >= -180) && (position.longitude < conic_clip.x) )
+        return position;
+    if( (conic_clip.y <= +180) && (position.longitude > conic_clip.y) )
+        return position;
+    if( (conic_clip.z >= -90) && (position.latitude < conic_clip.z) )
+        return position;
+    if( (conic_clip.w <= +90) && (position.latitude > conic_clip.w) )
+        return position;
+
+    vec2 P = forward(position.longitude, position.latitude);
+    position.longitude = P.x;
+    position.latitude = P.y;
     position.frozen = true;
     return position;
-    
-    //return P*conic_scale + conic_translate;
 }
+
+
 
 // vec2 forward(vec2 P) { return forward(P.x,P.y); }
 // vec3 forward(vec3 P) { return vec3(forward(P.x,P.y), P.z); }
