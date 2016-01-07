@@ -2,14 +2,15 @@
 # Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-from .panzoom import PanZoom
-from .viewport import Viewport
-from .trackball import Trackball
-from .xyz import X,Y,Z
-from .rotate import Rotate
-from .position import Position
-from .translate import Translate
-from .transform import Transform
+from . panzoom import PanZoom
+from . viewport import Viewport
+from . trackball import Trackball
+from . xyz import X,Y,Z
+from . rotate import Rotate
+from . position import Position
+from . geoposition import GeoPosition
+from . translate import Translate
+from . transform import Transform
 
 
 from .albers import Albers
