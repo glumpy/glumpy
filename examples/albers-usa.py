@@ -146,13 +146,10 @@ for county in topology["objects"]["counties"]["geometries"]:
         if len(V) > 3:
             key = county["id"]
             if key in unemployment.keys():
-                c = 10*unemployment[county["id"]]
                 rate = unemployment[county["id"]]
             else:
                 rate = 0.0
-            rgba = c,c,c,1
-            polys.append(V[:-1], color=rgba, rate=rate)
-
+            polys.append(V[:-1], color=(1,1,1,1), rate=rate)
     elif county["type"] == "MultiPolygon":
         for P in geometry(county, arcs, scale, translate)["coordinates"]:
             V = np.zeros((len(P[0]),3))
@@ -161,13 +158,10 @@ for county in topology["objects"]["counties"]["geometries"]:
             if len(V) > 3:
                 key = county["id"]
                 if key in unemployment.keys():
-                    c = 10*unemployment[county["id"]]
                     rate = unemployment[county["id"]]
                 else:
                     rate = 0.0
-                    # c = 1
-                rgba = c,c,c,1
-                polys.append(V[:-1], color=rgba, rate=rate)
+                polys.append(V[:-1], color=(1,1,1,1), rate=rate)
 
 window.attach(paths["transform"])
 window.attach(paths["viewport"])
