@@ -141,9 +141,7 @@ def get(name, depth=0):
             raise RuntimeError
     elif extension == 'obj':
         return objload(filename)
-    elif extension == 'svg':
-        return filename
-    elif extension == 'json':
+    elif extension in ['svg', 'json', 'tsv']:
         return filename
     elif extension in ('png', 'jpg', 'jpeg', 'tif', 'tiff', 'tga'):
         if Image is not None:
