@@ -6,9 +6,8 @@ import csv, json
 import numpy as np
 from itertools import chain
 from glumpy import app, gl, data
-from glumpy.graphics.collections import PathCollection, PolygonCollection
-from glumpy.transforms import GeoPosition, Position, OrthographicProjection, PanZoom, Viewport
-from glumpy.transforms import ConicEqualArea, Albers
+from glumpy.transforms import *
+from glumpy.graphics.collections import *
 
 
 def relative_to_absolute(arc, scale=None, translate=None):
