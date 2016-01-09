@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 import csv, json
 import numpy as np
-from glumpy import app, gl, data
+from glumpy import app, gl, gloo, data
 from glumpy.transforms import *
 from glumpy.graphics.collections import *
 
@@ -21,23 +21,66 @@ Hawai = ConicEqualArea(scale=scale,        parallels = (8, 18),
                         rotate = (157, 0), center = (.24, -.32),
                         clip = [-180, -140, -90, +90] )
 
-transform = Position(Lower48(Hawai(Alaska(GeoPosition()))))
-transform = PanZoom(OrthographicProjection(transform))
+transform = PanZoom(OrthographicProjection(
+                   Position(Lower48(Hawai(Alaska(GeoPosition()))))))
 
 
-# Building collection using extended dtype and our own fragment 
-# -------------------------------------------------------------
-fragment = """
-#include "colormaps/colormaps.glsl"
-varying float rate;
+# Framebuffer vertex & fragment
+# -----------------------------
+quad_vertex = """
+attribute vec2 position;
+varying vec2 v_texcoord;
 void main(void)
 {
-    gl_FragColor = vec4(colormap_autumn(1-rate),1.0);
+    gl_Position = vec4(position,0,1);
+    v_texcoord = (position+1.0)/2.0;
+}"""
+
+quad_fragment = """
+uniform sampler2D color;
+varying vec2 v_texcoord;
+void main(void)
+{
+    gl_FragColor = texture2D(color,v_texcoord);
 }
 """
+
+# Building collection using extended dtype and our own vertex/fragment 
+# --------------------------------------------------------------------
+vertex = """
+varying vec3 v_id;
+varying vec4 v_color;
+void main()
+{
+    fetch_uniforms();
+    v_color = color;
+
+    int i = int(id);
+    v_id = vec3 ( mod(floor(id / (256*256)), 256) / 255.0,
+                  mod(floor(id /     (256)), 256) / 255.0,
+                  mod(floor(id /       (1)), 256) / 255.0);
+    gl_Position = <transform(position)>;
+} """
+
+fragment = """
+#include "colormaps/colormaps.glsl"
+varying vec4 v_color;
+varying float rate;
+varying vec3 v_id;
+void main(void)
+{
+    if( rate  > 0)
+        gl_FragData[0] = vec4(colormap_autumn(1-rate),1.0);
+    else
+        gl_FragData[0] = v_color;
+    gl_FragData[1] = vec4(v_id, 1.0);
+}
+"""
+user_dtype = [ ('rate', (np.float32, 1), 'shared', 0.0),
+               ('id',   (np.float32, 1), 'shared', 0.0) ]
 paths = PathCollection("agg+", transform=transform, linewidth='shared', color="shared")
-polys = PolygonCollection("raw", transform=transform, color="shared", fragment=fragment,
-                          user_dtype=[('rate', (np.float32, 1), 'shared', 0.0)])
+polys = PolygonCollection("raw", transform=transform, color="shared",
+                          user_dtype=user_dtype, vertex=vertex, fragment=fragment)
 
 
 # Opening the topojson file
@@ -107,24 +150,69 @@ for county in geomap["objects"]["counties"]["geometries"]:
             rate = 0.0
             if key in unemployment.keys():
                 rate = unemployment[county["id"]]
-            polys.append(V[:-1], color=(1,1,1,1), rate=rate)
+            polys.append(V[:-1], color=(1,1,1,1), rate=rate, id=-1)
 
 # Federal states
 for state in geomap["objects"]["states"]["geometries"]:
     for V in build_paths(state):
+        V[:,2] = 1
         paths.append(V, closed=True, color=(.25,.25,.25,1), linewidth=0.75)
+        if len(V) > 3:
+            index = len(polys)
+            polys.append(V[:-1], color=(1,1,1,0.75), rate=-1, id=index)
 
 # USA land
 for V in build_paths(geomap["objects"]["land"]):
     paths.append(V, closed=True, color=(0,0,0,1), linewidth=1.5)
 
 
+
 window = app.Window(2*960, 2*600, color=(1,1,1,1))
+
+quad = gloo.Program(quad_vertex, quad_fragment, count=4)
+quad['position']= [(-1,-1), (-1,1), (1,-1), (1,1)]
+color = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
+color.interpolation = gl.GL_LINEAR
+pick = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
+pick.interpolation = gl.GL_LINEAR
+framebuffer = gloo.FrameBuffer(color=[color,pick])
+quad["color"] = color
+index = -1
+mouse = 0,0
 
 @window.event
 def on_draw(dt):
+    global index
+    framebuffer.activate()
     window.clear()
     polys.draw(), paths.draw()
+    if mouse is not None:
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT1, gl.GL_FRONT)
+        r,g,b,a = gl.glReadPixels(mouse[0],mouse[1], 1, 1, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
+        if type(r) is not int: r = ord(r)
+        if type(g) is not int: g = ord(g)
+        if type(b) is not int: b = ord(b)
+        new_index = b + 256*g + 256*256*r
+        if -1 < new_index < len(polys):
+            index = new_index
+            polys["color"] = 1,1,1,0.75
+            polys[index]["color"] = 1,1,1,0
+    framebuffer.deactivate()
+    quad.draw(gl.GL_TRIANGLE_STRIP)
+
+@window.event
+def on_mouse_motion(x,y, dx, dy):
+    global mouse
+    mouse = int(x), window.height-int(y)
+
+@window.event
+def on_resize(width, height):
+    framebuffer.resize(width,height)
+    quad["color"] = framebuffer.color[0]
+
+@window.event
+def on_init():
+    gl.glEnable(gl.GL_BLEND)
 
 window.attach(paths["transform"])
 window.attach(paths["viewport"])
