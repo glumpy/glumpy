@@ -164,7 +164,7 @@ class Shader(GLObject):
                 # If subhook is a variable (uniform/attribute/varying)
                 if subhook in s.globals:
                     return s.globals[subhook]
-                return s.mangled_call(subhook, match.group("args"), oveeride=override)
+                return s.mangled_call(subhook, match.group("args"), override=override)
 
             # If subhook is a variable (uniform/attribute/varying)
             if subhook in snippet.globals:
