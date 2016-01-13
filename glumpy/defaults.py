@@ -148,7 +148,7 @@ def double_buffer():
 
 
 # -------------------------------------------------------------- depth_size ---
-__depth_size__ = 16
+__depth_size__ = 32
 
 def get_default_depth_size():
     """ Default depth size """
