@@ -64,52 +64,82 @@ def _fetch_file(filename):
 
 
 def objload(filename) :
-    V = [] #vertex
-    T = [] #texcoords
-    N = [] #normals
-    F = [] #face indexies
-    for line in open(filename):
+    V = [] # vertex
+    T = [] # texcoords
+    N = [] # normals
+    F   = [] # face indices
+    F_V = [] # face indices
+    F_T = [] # face indices
+    F_N = [] # face indices
+    
+    for lineno,line in enumerate(open(filename)):
         if line[0] == '#':
             continue
-        line = line.strip().split(' ')
-        if line[0] == 'v':     #vertex
-            V.append([float(x) for x in line[1:]])
-        elif line[0] == 'vt' : # tex-coord
-            T.append([float(x) for x in line[1:]])
-        elif line[0] == 'vn' : # normal vector
-            N.append([float(x) for x in line[1:]])
-        elif line[0] == 'f' :  # face
-            face = line[1:]
-            if len(face) != 3 :
-                raise Exception('not a triangle')
-            for i in range(0, len(face)) :
-                face[i] = face[i].split('/')
-                for j in range(0, len(face[i])):
-                    face[i][j] = int(face[i][j]) - 1
-            F.append(face)
+        values = line.strip().split(' ')
+        code = values[0]
+        values = values[1:]
+        # vertex (v)
+        if code == 'v':
+            V.append([float(x) for x in values])
+        # tex-coord (vt)
+        elif code == 'vt' :
+            T.append([float(x) for x in values])
+        # normal (n)
+        elif code == 'vn' :
+            N.append([float(x) for x in values])
+        # face (f)
+        elif code == 'f' :
+            if len(values) != 3:
+                raise ValueError('not a triangle at line' % lineno)
+            for v in values:
+                for j,index in enumerate(v.split('/')):
+                    if len(index):
+                        if   j==0: F_V.append(int(index)-1)
+                        elif j==1: F_T.append(int(index)-1)
+                        elif j==2: F_N.append(int(index)-1)
 
-    hashes = []
-    indices = []
-    vertices = []
-    for face in F:
-        for i in range(3):
-            h = hash(tuple(face[i]))
-            if h in hashes:
-                j = hashes.index(h)
-            else:
-                j = len(hashes)
-                vertices.append( (V[face[i][0]],
-                                  T[face[i][1]],
-                                  N[face[i][2]]) )
-                hashes.append(h)
-            indices.append(j)
-    vtype = [('position', np.float32, 3),
-             ('texcoord', np.float32, 2),
-             ('normal',   np.float32, 3)]
+    # Building the vertices
+    V = np.array(V)
+    F_V = np.array(F_V)
+    vtype = [('position', np.float32, 3)]
+    
+    if len(T):
+        T = np.array(T)
+        F_T = np.array(F_T)
+        vtype.append(('texcoord', np.float32, 2))
+    if len(N):
+        N = np.array(N)
+        F_N = np.array(F_N)
+        vtype.append(('normal', np.float32, 3))
+        
+    vertices = np.empty(len(F_V),vtype)
+    vertices["position"] = V[F_V]
+    if len(T):
+        vertices["texcoord"] = T[F_T]
+    if len(N):
+        vertices["normal"] = N[F_N]
+    vertices = vertices.view(gloo.VertexBuffer)
+
+    # Centering and scaling to fit the unit box
+    xmin,xmax = vertices["position"][:,0].min(), vertices["position"][:,0].max()
+    ymin,ymax = vertices["position"][:,1].min(), vertices["position"][:,1].max()
+    zmin,zmax = vertices["position"][:,2].min(), vertices["position"][:,2].max()
+    vertices["position"][:,0] -= (xmax+xmin)/2.0
+    vertices["position"][:,1] -= (ymax+ymin)/2.0
+    vertices["position"][:,2] -= (zmax+zmin)/2.0
+    scale = max(max(xmax-xmin,ymax-ymin), zmax-zmin) / 2.0
+    vertices["position"] /= scale
+    
+    # xmin,xmax = vertices["position"][:,0].min(), vertices["position"][:,0].max()
+    # ymin,ymax = vertices["position"][:,1].min(), vertices["position"][:,1].max()
+    # zmin,zmax = vertices["position"][:,2].min(), vertices["position"][:,2].max()
+    # print("xmin: %g, xmax: %g" % (xmin,xmax))
+    # print("ymin: %g, xmax: %g" % (ymin,ymax))
+    # print("zmin: %g, zmax: %g" % (zmin,zmax))
+    
     itype = np.uint32
-
-    vertices = np.array(vertices, dtype=vtype).view(gloo.VertexBuffer)
-    indices = np.array(indices, dtype=itype).view(gloo.IndexBuffer)
+    indices = np.arange(len(vertices), dtype=np.uint32)
+    indices = indices.view(gloo.IndexBuffer)
     return vertices, indices
 
 
