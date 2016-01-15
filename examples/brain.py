@@ -9,49 +9,59 @@ from glumpy.transforms import Trackball, Position
 
 
 vertex = """
+uniform mat4 m_model;
+uniform mat4 m_view;
+uniform mat4 m_normal;
 attribute vec3 position;
 attribute vec3 normal;
-varying vec3 v_position;
 varying vec3 v_normal;
+varying vec3 v_position;
+
 void main()
 {
-    v_position = position;
-    v_normal = normal;
     gl_Position = <transform>;
+    vec4 P = m_view * m_model* vec4(position, 1.0);
+    v_position = P.xyz / P.w;
+    v_normal = vec3(m_normal * vec4(normal,0.0));
 }
 """
 
 fragment = """
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 normal;
-uniform vec3 light_color[3];
-uniform vec3 light_position[3];
-varying vec3 v_position;
 varying vec3 v_normal;
+varying vec3 v_position;
 
-float lighting(vec3 v_normal, vec3 light_position)
-{
-    // Calculate normal in world coordinates
-    vec3 n = normalize(normal * vec4(v_normal,1.0)).xyz;
-    // Calculate the location of this fragment (pixel) in world coordinates
-    vec3 position = vec3(view * model * vec4(v_position, 1));
-    // Calculate the vector from this pixels surface to the light source
-    vec3 surface_to_light = light_position - position;
-    // Calculate the cosine of the angle of incidence (brightness)
-    float brightness = dot(n, surface_to_light) /
-                      (length(surface_to_light) * length(n));
-    brightness = max(min(brightness,1.0),0.0);
-    return brightness;
-}
+const vec3 light_position = vec3(1.0,1.0,1.0);
+const vec3 ambient_color = vec3(0.1, 0.0, 0.0);
+const vec3 diffuse_color = vec3(0.75, 0.125, 0.125);
+const vec3 specular_color = vec3(1.0, 1.0, 1.0);
+const float shininess = 128.0;
+const float gamma = 2.2;
 
 void main()
 {
-    vec4 color = vec4(1,.5,.5,1);
-    vec4 l1 = vec4(light_color[0] * lighting(v_normal, light_position[0]), 1);
-//    vec4 l2 = vec4(light_color[1] * lighting(v_normal, light_position[1]), 1);
-//    vec4 l3 = vec4(light_color[2] * lighting(v_normal, light_position[2]), 1);
-    gl_FragColor = mix(color, l1, 0.75);
+    vec3 normal= normalize(v_normal);
+    vec3 light_direction = normalize(light_position - v_position);
+    float lambertian = max(dot(light_direction,normal), 0.0);
+    float specular = 0.0;
+
+    if (lambertian > 0.0)
+    {
+        // Blinn Phong
+        vec3 view_direction = normalize(-v_position);
+        vec3 half_direction = normalize(light_direction + view_direction);
+        float specular_angle = max(dot(half_direction, normal), 0.0);
+        specular = pow(specular_angle, shininess);
+    }
+    vec3 color_linear = ambient_color +
+                        lambertian * diffuse_color +
+                        specular * specular_color;
+
+    // apply gamma correction (assume ambientColor, diffuseColor and specColor
+    // have been linearized, i.e. have no gamma correction in them)
+    vec3 color_gamma = pow(color_linear, vec3(1.0/gamma));
+
+    // use the gamma corrected color in the fragment
+    gl_FragColor = vec4(color_gamma, 1.0);
 }
 """
 
@@ -63,23 +73,21 @@ trackball = Trackball(Position("position"))
 brain['transform'] = trackball
 trackball.theta, trackball.phi, trackball.zoom = 80, -135, 15
 
-brain["light_position[0]"] = 3, 0, 0+5
-brain["light_position[1]"] = 0, 3, 0+5
-brain["light_position[2]"] = -3, -3, +5
-brain["light_color[0]"]    = 1, 1, 1
-brain["light_color[1]"]    = 1, 1, 1
-brain["light_color[2]"]    = 1, 1, 1
+# brain["light_position[0]"] = +3,  0, +5
+# brain["light_position[1]"] =  0, +3, +5
+# brain["light_position[2]"] = -3, -3, +5
+# brain["light_color[0]"] = 1, 1, 1
+# brain["light_color[1]"] = 1, 1, 1
+# brain["light_color[2]"] = 1, 1, 1
 
-
-window = app.Window(width=1024, height=768,
-                    color=(0.30, 0.30, 0.35, 1.00))
+window = app.Window(width=1024, height=768, color=(0.30, 0.30, 0.35, 1.00))
 
 def update():
     model = brain['transform']['model'].reshape(4,4)
     view  = brain['transform']['view'].reshape(4,4)
-    brain['view']  = view
-    brain['model'] = model
-    brain['normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
+    brain['m_view']  = view
+    brain['m_model'] = model
+    brain['m_normal'] = np.array(np.matrix(np.dot(view, model)).I.T)
     
 @window.event
 def on_draw(dt):
@@ -94,7 +102,6 @@ def on_mouse_drag(x, y, dx, dy, button):
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
     update()
-
 
 window.attach(brain['transform'])
 app.run()
