@@ -4,7 +4,6 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import app, gl, gloo, data, log
-from glumpy.geometry import primitives
 from glumpy.transforms import Trackball, Position
 
 
@@ -43,10 +42,8 @@ void main()
     vec3 light_direction = normalize(light_position - v_position);
     float lambertian = max(dot(light_direction,normal), 0.0);
     float specular = 0.0;
-
     if (lambertian > 0.0)
     {
-        // Blinn Phong
         vec3 view_direction = normalize(-v_position);
         vec3 half_direction = normalize(light_direction + view_direction);
         float specular_angle = max(dot(half_direction, normal), 0.0);
@@ -55,12 +52,7 @@ void main()
     vec3 color_linear = ambient_color +
                         lambertian * diffuse_color +
                         specular * specular_color;
-
-    // apply gamma correction (assume ambientColor, diffuseColor and specColor
-    // have been linearized, i.e. have no gamma correction in them)
     vec3 color_gamma = pow(color_linear, vec3(1.0/gamma));
-
-    // use the gamma corrected color in the fragment
     gl_FragColor = vec4(color_gamma, 1.0);
 }
 """
@@ -73,14 +65,7 @@ trackball = Trackball(Position("position"))
 brain['transform'] = trackball
 trackball.theta, trackball.phi, trackball.zoom = 80, -135, 15
 
-# brain["light_position[0]"] = +3,  0, +5
-# brain["light_position[1]"] =  0, +3, +5
-# brain["light_position[2]"] = -3, -3, +5
-# brain["light_color[0]"] = 1, 1, 1
-# brain["light_color[1]"] = 1, 1, 1
-# brain["light_color[2]"] = 1, 1, 1
-
-window = app.Window(width=1024, height=768, color=(0.30, 0.30, 0.35, 1.00))
+window = app.Window(width=1024, height=768)
 
 def update():
     model = brain['transform']['model'].reshape(4,4)
