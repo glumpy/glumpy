@@ -47,7 +47,7 @@ class AggPointCollection(RawPointCollection):
         if vertex is None:
             vertex = library.get("collections/agg-point.vert")
         if fragment is None:
-            fragment= library.get("collections/agg-point.frag")
+            fragment = library.get("collections/agg-point.frag")
 
         RawPointCollection.__init__(self, user_dtype=user_dtype,
                                     transform=transform, viewport=viewport,
