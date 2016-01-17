@@ -167,12 +167,9 @@ class AggGlyphCollection(Collection):
         else:
             dy = 0
         vertices['position'] += 0, round(dy)
-
         vertices = vertices.ravel()
         indices  = indices.ravel()
-
         return vertices, indices
-        # return vertices.view(VertexBuffer), indices.view(IndexBuffer)
 
 
     def view(self, transform, viewport=None):
