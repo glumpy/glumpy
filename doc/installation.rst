@@ -35,7 +35,7 @@ The most easy way to install these dependencies is:
    $ pip install pyopengl
    $ pip install triangle
 
-If you have alread installed them, make sure to upgrade to the lastest version:
+If you have alread installed them, make sure to upgrade to the latest version:
 
 .. code-block:: bash
 
