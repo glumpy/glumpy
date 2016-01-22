@@ -33,7 +33,7 @@ Development status
 ==================
 
 Glumpy is still under active development (as of January 2016) and is already
-pretty much useable (for the hacker). Furture development includes:
+pretty much useable (for the hacker). Future development includes:
 
  * **Short term** (6 months):
 
