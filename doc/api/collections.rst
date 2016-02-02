@@ -8,22 +8,24 @@ Collections
 The ``glumpy.graphics.collections`` module offers dynamic collections of
 objects.
 
-* :any:`collection-point`     - Points
-* :any:`collection-markers`   - Markers
-* :any:`collection-segment`   — Segments
-* :any:`collection-path`      — Path
-* :any:`collection-glyph`     — Glyphs
-* :any:`collection-triangle`  — Triangles
+* :any:`section-collection`           — Base
+* :any:`section-collection-point`     — Points
+* :any:`section-collection-marker`    — Markers
+* :any:`section-collection-segment`   — Segments
+* :any:`section-collection-path`      — Path
+* :any:`section-collection-glyph`     — Glyphs
+* :any:`section-collection-triangle`  — Triangles
 
     
 .. ----------------------------------------------------------------------------
 .. toctree::
    :hidden:
 
-   transform-collection-point
-   transform-collection-segment
-   transform-collection-markers
-   transform-collection-path
-   transform-collection-glyph
-   transform-collection-triangle
+   collection
+   collection-point
+   collection-segment
+   collection-marker
+   collection-path
+   collection-glyph
+   collection-triangle
 

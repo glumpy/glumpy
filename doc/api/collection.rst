@@ -1,9 +1,10 @@
 .. ----------------------------------------------------------------------------
-.. _section-parser:
+.. _section-collection:
 
 ==============
-Options parser
+BaseCollection
 ==============
 
-.. automodule:: glumpy.app.parser
+.. autoclass:: glumpy.graphics.collections.BaseCollection
+   :show-inheritance:
    :members:

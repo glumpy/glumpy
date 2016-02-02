@@ -2,12 +2,6 @@
 # Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-"""
-A collection is a container for several (optionally indexed) objects having
-the same vertex structure (vtype) and same uniforms type (utype). A collection
-allows to manipulate objects individually and each object can have its own set
-of uniforms provided they are a combination of floats.
-"""
 import math
 import numpy as np
 from glumpy import gl
@@ -127,6 +121,18 @@ class BaseItem(object):
 
 
 class BaseCollection(object):
+    """
+    A collection is a container for several (optionally indexed) objects having
+    the same vertex structure (vtype) and same uniforms type (utype). A
+    collection allows to manipulate objects individually and each object can
+    have its own set of uniforms provided they are a combination of floats
+    because they are internally stored into a texture can be retrieved from
+    within the shader using a specific code (fetchcode).
+
+    :param np.dtype vtype: Vertex type (mandatory)
+    :param np.dtype utype: Uniform type or None
+    :param np.dtype itype: Index type (np.uint32 or None)
+    """
 
     def __init__(self, vtype, utype=None, itype=None):
 
@@ -213,7 +219,7 @@ class BaseCollection(object):
 
 
     def __len__(self):
-        """ x.__len__() <==> len(x) """
+        """ Size of the collection in terms of items """
 
         return len(self._vertices_list)
 
@@ -255,11 +261,11 @@ class BaseCollection(object):
             All index values must be between 0 and len(vertices)
 
         itemsize: int, tuple or 1-D array
-            If `itemsize is an integer, N, the array will be divided
+            If ``itemsize`` is an integer, N, the array will be divided
             into elements of size N. If such partition is not possible,
             an error is raised.
 
-            If `itemsize` is 1-D array, the array will be divided into
+            If ``itemsize`` is 1-D array, the array will be divided into
             elements whose succesive sizes will be picked from itemsize.
             If the sum of itemsize values is different from array size,
             an error is raised.

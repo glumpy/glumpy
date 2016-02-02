@@ -5,7 +5,7 @@
 
 // Externs
 // ------------------------------------
-// vec2 origin;
+// vec3 origin;
 // vec2 position;
 // vec2 texcoord;
 // vec4 color;
@@ -29,5 +29,6 @@ void main()
 
     // We set actual position after transform
     v_offset = 3.0*(offset + origin.x - int(origin.x));
+    gl_Position /= gl_Position.w;
     gl_Position = gl_Position + vec4(2.0*position/<viewport.viewport_global>.zw,0,0);
 }

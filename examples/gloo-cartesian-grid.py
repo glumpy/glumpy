@@ -3,7 +3,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from glumpy imort app, gloo, gl, glm
+from glumpy import app, gloo, gl, glm
 
 vertex = """
     attribute vec2 a_texcoord;

@@ -3,6 +3,7 @@
 // Distributed under the (new) BSD License.
 // -----------------------------------------------------------------------------
 #include "math/constants.glsl"
+#include "transforms/geo-position-struct.glsl"
 
 uniform float conic_scale;
 uniform vec2  conic_center;
@@ -13,20 +14,6 @@ uniform vec4  conic_clip;
 
 vec2 forward(float longitude, float latitude)
 {
-/*
-    if( (conic_clip.x >= -180) && (longitude < conic_clip.x) )
-        return vec2 (longitude, latitude);
-
-    if( (conic_clip.y <= +180) && (longitude > conic_clip.y) )
-        return vec2 (longitude, latitude);
-
-    if( (conic_clip.z >= -90) && (latitude < conic_clip.z) )
-        return vec2 (longitude, latitude);
-
-    if( (conic_clip.w <= +90) && (latitude > conic_clip.w) )
-        return vec2 (longitude, latitude);
-*/
-
     float phi0 = conic_parallels.x * radian;
     float phi1 = conic_parallels.y * radian;
 
@@ -41,9 +28,30 @@ vec2 forward(float longitude, float latitude)
     return P*conic_scale + conic_translate;
 }
 
-vec2 forward(vec2 P) { return forward(P.x,P.y); }
-vec3 forward(vec3 P) { return vec3(forward(P.x,P.y), P.z); }
-vec4 forward(vec4 P) { return vec4(forward(P.x,P.y), P.z, P.w); }
+GeoPosition forward(GeoPosition position)
+{
+    if (position.frozen)
+        return position;
+    if( (conic_clip.x >= -180) && (position.longitude < conic_clip.x) )
+        return position;
+    if( (conic_clip.y <= +180) && (position.longitude > conic_clip.y) )
+        return position;
+    if( (conic_clip.z >= -90) && (position.latitude < conic_clip.z) )
+        return position;
+    if( (conic_clip.w <= +90) && (position.latitude > conic_clip.w) )
+        return position;
+    vec2 P = forward(position.longitude, position.latitude);
+    position.longitude = P.x;
+    position.latitude = P.y;
+    position.frozen = true;
+    return position;
+}
+
+
+
+// vec2 forward(vec2 P) { return forward(P.x,P.y); }
+// vec3 forward(vec3 P) { return vec3(forward(P.x,P.y), P.z); }
+// vec4 forward(vec4 P) { return vec4(forward(P.x,P.y), P.z, P.w); }
 
 
 /*

@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 from glumpy import gl, library
-from glumpy.transforms import Position
+from glumpy.transforms import Position, Viewport
 from  . collection import Collection
 
 

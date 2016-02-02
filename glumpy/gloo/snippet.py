@@ -13,6 +13,11 @@ class Snippet(object):
     code. It provides the necessary machinery to take care of name collisions,
     external variables and snippet composition (call, +, -, /, \*).
 
+    :param string code: Shader code
+    :param string default: Default function to be called if none is specified.
+    :param list args: Arguments
+    :param dict kwargs: Keyword arguments
+
     A snippet can declare uniforms, const, attributes and varying using random
     names. However, these names will be later mangled such as to avoid name
     collisions with other snippets and/or main code. This means that any
@@ -25,12 +30,18 @@ class Snippet(object):
       B = Snippet(code="...")
       C = A(B("P"))
 
+    .. warning::
+
+       Calling a snippet does not create a new snippet but instead links it the
+       called snippet to the calling one. In the example above, the ``A._call``
+       is now ``B``.
+
+
     and arithmetic composition::
 
       A = Snippet(code="...")
       B = Snippet(code="...")
       C = A("P") + B("P")
-
     """
 
     # Internal id counter for automatic snippets name mangling
@@ -48,6 +59,9 @@ class Snippet(object):
         self._objects = parser.parse(code)
 
         # Arguments (other snippets or strings)
+        for arg in args:
+            if isinstance(arg,Snippet) and self in arg.snippets:
+                raise ValueError("Recursive call is forbidden.")
         self._args = list(args)
 
         # No chained snippet yet
@@ -132,7 +146,7 @@ class Snippet(object):
     @property
     def symbols(self):
         """
-        Symbol table.
+        Symbol table defined as a list of (name, mangled_name).
         """
 
         return self._symbols
@@ -141,9 +155,7 @@ class Snippet(object):
     @property
     def locals(self):
         """
-        Local symbols.
-
-        Local symbols are defined from the code of this snippet only, not
+        Local table of symbols defined from the code of this snippet only, not
         taking into account symbols from arguments (call) or next (operators).
         """
 
@@ -158,9 +170,7 @@ class Snippet(object):
     @property
     def globals(self):
         """
-        Global symbols.
-
-        Global symbols are defined from all the codes composing this snippet,
+        Global string symbols generated from all the codes composing this snippet,
         taking into account symbols from arguments (call) and next (operators).
         """
 
@@ -190,7 +200,15 @@ class Snippet(object):
 
     @property
     def last(self):
-        """ Get last snippet in the arithmetic chain. """
+        """
+        Get last snippet in the arithmetic chain
+
+        **Example**::
+
+          A,B,C = Snippet(...), Snippet(...), Snippet(...)
+          D = A(B) + C
+          D.last # C
+        """
 
         if self.next:
             snippet = self.next
@@ -201,7 +219,15 @@ class Snippet(object):
 
     @property
     def snippets(self):
-        """ Get all snippets composing this snippet (including self) """
+        """ 
+        Get all snippets composing this snippet (including self).
+
+        **Example**::
+
+          A,B,C = Snippet(...), Snippet(...), Snippet(...)
+          D = A(B) + C
+          D.snippets # [A,B,C]
+        """
 
         all = [self,]
         for snippet in self._args:
@@ -216,12 +242,20 @@ class Snippet(object):
 
     @property
     def is_attached(self):
-        """ Whether snippet is attached to a program """
+        """ 
+        Whether snippet is attached to one or several programs.
+        """
         return len(self._programs) > 0
 
 
     def lookup(self, name, deepsearch=True):
-        """ Search for a specific symbol """
+        """
+        Search for a specific symbol.
+
+        :param str name: Name to be search in symbols 
+        :param bool deepsearch: Whether to restrict search to self (False)
+                                or to search into all snippets (True)
+        """
 
         if deepsearch:
             for snippet in self.snippets:
@@ -234,8 +268,16 @@ class Snippet(object):
 
 
     def attach(self, program):
-        """ Attach this snippet to a program """
+        """
+        Attach this snippet to a program
 
+        .. note::
+        
+           Attachment is recursive and will attach all the snippets composing
+           self.
+        """
+
+        
         if program not in self._programs:
             self._programs.append(program)
 
@@ -250,7 +292,16 @@ class Snippet(object):
 
 
     def detach(self, program):
-        """ Detach this snippet from a program """
+        """
+        Detach this snippet from a program
+
+        :param Program program: Program to detach this snippet from
+
+        .. note::
+        
+           Detachment is recursive and will detach all the snippets composing
+           self.
+        """
 
         if program in self._programs:
             index = self._programs.indexof(program)
@@ -262,7 +313,17 @@ class Snippet(object):
 
     @property
     def dependencies(self):
-        """ Compute snippet dependencies """
+        """
+        Compute all snippet dependencies.
+
+        **Example**::
+        
+          A,B,C,D = Snippet(...), Snippet(...), Snippet(...), Snippet(...)
+          AB = A(B)
+          CD = C(D)
+          S = AB+CD
+          S.dependencies # [A,B,C,D]
+        """
 
         deps = [self]
         for snippet in self._args:
@@ -306,14 +367,20 @@ class Snippet(object):
 
     @property
     def call(self):
-        """ Mangled call """
-
+        """ Computes and returns the GLSL code that correspond to the call """
         self.mangled_code()
         return self.mangled_call()
 
 
-    def mangled_call(self, function=None, arguments=None, isolated=False):
-        """ Generate mangled call """
+    def mangled_call(self, function=None, arguments=None, override=False):
+        """
+        Compute tGLSL code that corresponds to the actual call of the snippet
+
+        :param string function: Snippet's function to be called
+        :param list arguments: Arguments to give to the function call
+        :param bool override: Whether to override python arguments
+                              with shader arguments
+        """
 
         s = ""
 
@@ -336,7 +403,7 @@ class Snippet(object):
 
             s = self.lookup(name, deepsearch=False) or name
 
-            if len(self._args) and isolated is False:
+            if len(self._args) and override is False:
                 s += "("
                 for i,arg in enumerate(self._args):
                     if isinstance(arg,Snippet):
@@ -381,6 +448,10 @@ class Snippet(object):
 
         IMPORTANT: The returned snippet is `self`, not a copy.
         """
+
+        for arg in args:
+            if isinstance(arg,Snippet) and self in arg.snippets:
+                raise ValueError("Recursive call is forbidden")
 
         # Override call arguments
         self._args = args
@@ -446,8 +517,8 @@ class Snippet(object):
     def __repr__(self):
         # return self.generate_call()
 
-        # s = self._name
-        s = self.__class__.__name__
+        s = self._name
+        # s = self.__class__.__name__
         s += "("
         if len(self._args):
             s += " "
@@ -528,38 +599,3 @@ class Snippet(object):
         if not found:
             error = 'Snippet does not have such key ("%s")' % key
             raise IndexError(error)
-
-
-# -----------------------------------------------------------------------------
-if __name__ == '__main__':
-
-    A = Snippet("uniform float a;\nvoid function_A(void) {};\n\n", name = "Snippet_A")
-    B = Snippet("uniform float b;\nvoid function_B(void) {};\n\n", name = "Snippet_B")
-    C = Snippet("uniform float c;\nvoid function_C(void) {};\n\n", name = "Snippet_C")
-    D = A(B("A")) + C()
-
-    print(D["Snippet_A"])
-    print(D["Snippet_B"])
-    print(D["Snippet_C"])
-
-    print(D.locals)
-    print(D.globals)
-
-    print(D["Snippet_A"].locals)
-    print(D["Snippet_B"].locals)
-    print(D["Snippet_C"].locals)
-
-    # print D.objects
-    print(D.symbols)
-    # print D
-
-    print(D)
-    print([snippet._id for snippet in D.dependencies])
-
-    print()
-    print("Call:")
-    print(D.call)
-    print()
-    print("Code:")
-    print(D.code)
-    print()

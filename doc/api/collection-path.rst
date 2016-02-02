@@ -1,9 +1,6 @@
 .. ----------------------------------------------------------------------------
-.. _section-parser:
+.. _section-collection-path:
 
 ==============
-Options parser
+CollectionPath
 ==============
-
-.. automodule:: glumpy.app.parser
-   :members:

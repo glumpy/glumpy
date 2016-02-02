@@ -20,6 +20,14 @@ section.
 .. image:: ../_static/light-cube.png
    :align: left
    :width: 45%
+      
+.. image:: ../_static/texture-cube-simple.png
+   :align: left
+   :width: 45%
+
+.. image:: ../_static/light-cube-simple.png
+   :align: left
+   :width: 45%
 
 
 Colored cube
@@ -237,7 +245,8 @@ color. We can use one or the other or combined them into a single color:
 
        
 
-Source: `texture-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/texture-cube.py>`_
+Source: `texture-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/texture-cube.py>`_  or `texture-cube-simple.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/texture-cube-simple.py>`_ (simpler)
+
 
 Lighted cube
 ============
@@ -246,4 +255,4 @@ For the final stage, we'll add light to our scene. We have once again to
 compute everything inside the shader using a light model. We'll stick to Phong
 shading but there are many other light models that coud be used.
 
-Source: `light-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/light-cube.py>`_
+Source: `light-cube.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/light-cube.py>`_ or `light-cube-simple.py <https://github.com/glumpy/glumpy/blob/master/examples/tutorial/light-cube-simple.py>`_ (simpler)
