@@ -3,8 +3,8 @@
 // Distributed under the (new) BSD License.
 // -----------------------------------------------------------------------------
 
-#ifndef __GEO_POSITION_STRUCT__
-#define __GEO_POSITION_STRUCT__
+#ifndef _GLUMPY__GEO_POSITION_STRUCT__
+#define _GLUMPY__GEO_POSITION_STRUCT__
 struct GeoPosition
 {
     float longitude;
