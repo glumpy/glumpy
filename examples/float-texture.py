@@ -41,6 +41,6 @@ program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
 program['texcoord'] = [( 0, 1), ( 0, 0), ( 1, 1), ( 1, 0)]
 T = np.linspace(0/256.0, 1/256.0, 32*32)
-program['texture'] = T.astype(np.float32).reshape(32,32)
+program['texture'] = T.astype(np.float32).reshape(32,32).view(gloo.TextureFloat2D)
 
 app.run()
