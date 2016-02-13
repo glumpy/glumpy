@@ -197,15 +197,17 @@ class Window(event.EventDispatcher):
         gl.glClearColor(*self._color)
 
         
-    def clear(self,color=None):
+    def clear(self,color=None, clearflags=None):
         """ Clear the whole window """
 
         if color is not None:
             gl.glClearColor(*color)
-            gl.glClear(self._clearflags)
+            if  clearflags is not None: gl.glClear(clearflags)
+            else:                       gl.glClear(self._clearflags)
             gl.glClearColor(*self._color)
         else:
-            gl.glClear(self._clearflags)
+            if  clearflags is not None: gl.glClear(clearflags)
+            else:                       gl.glClear(self._clearflags)
 
     def on_init(self):
         """ Window initialization """

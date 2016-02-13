@@ -77,7 +77,7 @@ def update():
 @window.event
 def on_draw(dt):
     window.clear()
-    brain.draw(gl.GL_TRIANGLES, indices)
+    brain.draw(gl.GL_TRIANGLES)
 
 @window.event
 def on_mouse_drag(x, y, dx, dy, button):

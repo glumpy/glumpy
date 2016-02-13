@@ -85,5 +85,4 @@ class RawTriangleCollection(Collection):
 
         I = np.array(indices).ravel()
 
-        Collection.append(self, vertices=V, uniforms=U, indices=I,
-                                itemsize=itemsize)
+        Collection.append(self, vertices=V, uniforms=U, indices=I, itemsize=itemsize)

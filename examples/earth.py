@@ -6,7 +6,9 @@ import csv
 import numpy as np
 from glumpy import app, gl, glm, gloo, data
 from glumpy.geometry.primitives import sphere
-from glumpy.transforms import Trackball, Viewport, Position
+from glumpy.transforms import Arcball, Viewport, Position
+from glumpy.graphics.text import FontManager
+from glumpy.graphics.collections import GlyphCollection
 from glumpy.graphics.collections import PathCollection, MarkerCollection
 
 
@@ -49,8 +51,8 @@ void main()
 }
 """
 
-trackball = Trackball(Position(),znear=1,zfar=10)
-viewport = Viewport()
+transform = Arcball(Position(),znear=1,zfar=10)
+viewport  = Viewport()
 
 radius = 1.5
 vertices, indices = sphere(radius, 64, 64)
@@ -58,10 +60,10 @@ earth = gloo.Program(vertex, fragment)
 earth.bind(vertices)
 earth['texture'] = data.get("earth-black.jpg")
 earth['texture'].interpolation = gl.GL_LINEAR
-earth['transform'] = trackball
+earth['transform'] = transform
 
 paths = PathCollection(mode="agg+", color="global", linewidth="global",
-                       viewport = viewport, transform=trackball)
+                       viewport=viewport, transform=transform)
 paths["color"] = 0,0,0,0.5
 paths["linewidth"] = 1.0
 
@@ -97,6 +99,7 @@ void main (void)
     float scale = (3.5 - length(gl_Position.xyz)/length(vec3(1.5)));
     v_fg_color.a = scale;
     v_bg_color.a = scale;
+    scale=1;
     v_size       = scale * size;
     gl_PointSize = M_SQRT2 * size * scale + 2.0 * (linewidth + 1.5*antialias);
     <viewport.transform>;
@@ -104,33 +107,78 @@ void main (void)
 """
 
 markers = MarkerCollection(marker="disc", vertex=vertex,
-                           viewport = viewport, transform=trackball)
-La, Lo = [], []
+                           viewport = viewport, transform=transform)
+C, La, Lo = [], [], []
 with open(data.get("capitals.csv"), 'r') as file:
     reader = csv.reader(file, delimiter=',')
     next(reader, None) # skip the header
     for row in reader:
-        La.append(np.pi/2 + float(row[2])*np.pi/180)
-        Lo.append(np.pi   + float(row[3])*np.pi/180)
+        capital = row[1]
+        latitude = np.pi/2 + float(row[2])*np.pi/180
+        longitude = np.pi  + float(row[3])*np.pi/180
+        C.append(capital)
+        La.append(latitude)
+        Lo.append(longitude)
 P = spheric_to_cartesian(Lo, La, radius*1.01)
 markers.append(P, bg_color = (1,1,1,1), fg_color=(.25,.25,.25,1), size = 10)
 
 
+
+
+
+vertex = """
+varying vec4  v_color;
+varying float v_offset;
+varying vec2  v_texcoord;
+
+// Main
+// ------------------------------------
+void main()
+{
+    fetch_uniforms();
+
+    gl_Position = <transform(origin)>;
+    v_color = color;
+    v_texcoord = texcoord;
+    <viewport.transform>;
+
+    float scale = (3.5 - length(gl_Position.xyz)/length(vec3(1.5)));
+    v_color.a = scale;
+
+    // We set actual position after transform
+    v_offset = 3.0*(offset + origin.x - int(origin.x));
+    gl_Position /= gl_Position.w;
+    gl_Position = gl_Position + vec4(2.0*position/<viewport.viewport_global>.zw,0,0);
+}
+"""
+
+labels = GlyphCollection('agg', vertex=vertex,
+                         transform=transform, viewport=viewport)
+font = FontManager.get("OpenSans-Regular.ttf", size=16, mode='agg')
+for i in range(len(P)):
+    labels.append(C[i], font, origin = P[i])
+labels["position"][:,1] -= 20
+    
 window = app.Window(width=1024, height=1024, color=(.2,.2,.35,1))
-window.attach(trackball)
+window.attach(transform)
 window.attach(viewport)
 
 @window.event
 def on_draw(dt):
     window.clear()
+    gl.glEnable(gl.GL_DEPTH_TEST)
     earth.draw(gl.GL_TRIANGLES, indices)
-    paths.draw(), markers.draw()
+    paths.draw()
+    gl.glDisable(gl.GL_DEPTH_TEST)
+    gl.glEnable(gl.GL_BLEND)
+    markers.draw()
+    labels.draw()
 
 @window.event
 def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
-    trackball.phi = 175
-    trackball.theta = -130
-    trackball.zoom = 23
+    transform.phi = 125
+    transform.theta = -150
+    transform.zoom = 15
 
 app.run()

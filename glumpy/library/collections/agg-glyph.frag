@@ -19,6 +19,8 @@ varying vec2  v_texcoord;
 // ------------------------------------
 void main(void)
 {
+    if (v_color.a <= 0.0) discard;
+    
     <viewport.clipping>;
 
     vec2 viewport = <viewport.viewport_global>.zw;

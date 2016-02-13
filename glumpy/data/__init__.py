@@ -63,7 +63,9 @@ def _fetch_file(filename):
 
 
 
-def objload(filename) :
+def objload(filename, rescale=True):
+    """ """
+    
     V = [] # vertex
     T = [] # texcoords
     N = [] # normals
@@ -120,22 +122,23 @@ def objload(filename) :
         vertices["normal"] = N[F_N]
     vertices = vertices.view(gloo.VertexBuffer)
 
-    # Centering and scaling to fit the unit box
-    xmin,xmax = vertices["position"][:,0].min(), vertices["position"][:,0].max()
-    ymin,ymax = vertices["position"][:,1].min(), vertices["position"][:,1].max()
-    zmin,zmax = vertices["position"][:,2].min(), vertices["position"][:,2].max()
-    vertices["position"][:,0] -= (xmax+xmin)/2.0
-    vertices["position"][:,1] -= (ymax+ymin)/2.0
-    vertices["position"][:,2] -= (zmax+zmin)/2.0
-    scale = max(max(xmax-xmin,ymax-ymin), zmax-zmin) / 2.0
-    vertices["position"] /= scale
+    if rescale:
+        # Centering and scaling to fit the unit box
+        xmin,xmax = vertices["position"][:,0].min(), vertices["position"][:,0].max()
+        ymin,ymax = vertices["position"][:,1].min(), vertices["position"][:,1].max()
+        zmin,zmax = vertices["position"][:,2].min(), vertices["position"][:,2].max()
+        vertices["position"][:,0] -= (xmax+xmin)/2.0
+        vertices["position"][:,1] -= (ymax+ymin)/2.0
+        vertices["position"][:,2] -= (zmax+zmin)/2.0
+        scale = max(max(xmax-xmin,ymax-ymin), zmax-zmin) / 2.0
+        vertices["position"] /= scale
     
-    # xmin,xmax = vertices["position"][:,0].min(), vertices["position"][:,0].max()
-    # ymin,ymax = vertices["position"][:,1].min(), vertices["position"][:,1].max()
-    # zmin,zmax = vertices["position"][:,2].min(), vertices["position"][:,2].max()
-    # print("xmin: %g, xmax: %g" % (xmin,xmax))
-    # print("ymin: %g, xmax: %g" % (ymin,ymax))
-    # print("zmin: %g, zmax: %g" % (zmin,zmax))
+        # xmin,xmax = vertices["position"][:,0].min(), vertices["position"][:,0].max()
+        # ymin,ymax = vertices["position"][:,1].min(), vertices["position"][:,1].max()
+        # zmin,zmax = vertices["position"][:,2].min(), vertices["position"][:,2].max()
+        # print("xmin: %g, xmax: %g" % (xmin,xmax))
+        # print("ymin: %g, xmax: %g" % (ymin,ymax))
+        # print("zmin: %g, zmax: %g" % (zmin,zmax))
     
     itype = np.uint32
     indices = np.arange(len(vertices), dtype=np.uint32)
@@ -150,16 +153,23 @@ def checkerboard(grid_num=8, grid_size=32):
     return 255 * Z.repeat(grid_size, axis=0).repeat(grid_size, axis=1)
 
 
-def get(name, depth=0):
+def get(name, *args, **kwargs): #, depth=0):
     """ Retrieve data content from a name """
 
     if name == "checkerboard":
         return checkerboard(8,16)
 
-    extension = os.path.basename(name).split('.')[-1]
     filename = _fetch_file(name)
+    return load(filename, *args, **kwargs)
+
+
+def load(filename, *args, **kwargs):
+    """ Load data content from a filename """
+    
+    extension = os.path.basename(filename).split('.')[-1]
+
     if extension == 'npy':
-        return np.load(filename)
+        return np.load(filename, *args, **kwargs)
     elif extension in ['ttf', 'otf']:
         if filename is not None:
             return filename
@@ -170,7 +180,7 @@ def get(name, depth=0):
             log.critical("Default font not available")
             raise RuntimeError
     elif extension == 'obj':
-        return objload(filename)
+        return objload(filename, *args, **kwargs)
     elif extension in ['svg', 'json', 'csv', 'tsv']:
         return filename
     elif extension in ('png', 'jpg', 'jpeg', 'tif', 'tiff', 'tga'):

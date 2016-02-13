@@ -38,7 +38,7 @@ def on_draw(dt):
 
     # Filled cube
     cube.draw(gl.GL_TRIANGLES, I)
-
+    
     # Rotate cube
     theta += 0.5 # degrees
     phi += 0.5 # degrees

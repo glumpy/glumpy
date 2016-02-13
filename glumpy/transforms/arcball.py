@@ -3,14 +3,13 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from . import _trackball
 from . transform import Transform
 from glumpy import gl, glm, library
 
 
-class Trackball(Transform):
+class Arcball(Transform):
     """
-    3D trackball transform
+    3D arcball transform
 
     :param float aspect:
        Indicate what is the aspect ratio of the object displayed. This is
@@ -24,18 +23,18 @@ class Trackball(Transform):
        Distance clip plane. Default is 1000.
 
     :param float theta:
-       Angle (in degrees) around the z axis. Default is 45.
+       Angle (in degrees) around the z axis. Default is 0.
 
     :param float phi: 
-       Angle (in degrees) around the x axis. Default is 45.
+       Angle (in degrees) around the x axis. Default is 0.
 
     :param float distance:
-       Distance from the trackball to the object.  Default is 8.
+       Distance from the arcball to the object.  Default is 8.
 
     :param float zoom:
            Zoom level. Default is 35.
 
-    The trackball transform simulates a virtual trackball (3D) that can rotate
+    The arcball transform simulates a virtual arcball (3D) that can rotate
     around the origin using intuitive mouse gestures.
 
     The transform is connected to the following events:
@@ -60,39 +59,38 @@ class Trackball(Transform):
          window = app.Window(width=800, height=800)
          program = gloo.Program(vertex, fragment, count=4)
          ...
-         program['transform'] = Trackball(aspect=1)
+         program['transform'] = Arcball(aspect=1)
          window.attach(program['transform'])
          ...
     """
 
-    aliases = { "view"       : "trackball_view",
-                "model"      : "trackball_model",
-                "projection" : "trackball_projection" }
+    aliases = { "view"       : "arcball_view",
+                "model"      : "arcball_model",
+                "projection" : "arcball_projection" }
 
     def __init__(self, *args, **kwargs):
         """
         Initialize the transform.
         """
 
-        code = library.get("transforms/trackball.glsl")
+        code = library.get("transforms/arcball.glsl")
         Transform.__init__(self, code, *args, **kwargs)
 
         self._aspect = Transform._get_kwarg("aspect", kwargs) or 1
         self._znear = Transform._get_kwarg("znear", kwargs) or 2.0
         self._zfar = Transform._get_kwarg("zfar", kwargs) or 1000.0
-        theta = Transform._get_kwarg("theta", kwargs) or 45
-        phi = Transform._get_kwarg("phi", kwargs) or 45
+        self._theta = Transform._get_kwarg("theta", kwargs) or 0
+        self._phi = Transform._get_kwarg("phi", kwargs) or 0
         self._distance = Transform._get_kwarg("distance", kwargs) or 8
         self._zoom = Transform._get_kwarg("zoom", kwargs) or 35
         self._width = 1
         self._height = 1
         self._window_aspect = 1
 
-        self._trackball = _trackball.Trackball(45,45)
         self._projection = np.eye(4, dtype=np.float32)
         self._view = np.eye(4, dtype=np.float32)
+        self._model = np.eye(4, dtype=np.float32)
         glm.translate(self._view, 0, 0, -abs(self._distance))
-
 
 
     @property
@@ -115,15 +113,17 @@ class Trackball(Transform):
     def theta(self):
         """ Angle (in degrees) around the z axis """
 
-        return self._trackball.theta
+        return self._theta
 
     @theta.setter
     def theta(self, theta):
         """ Angle (in degrees) around the z axis """
 
-        self._trackball.theta = theta
-        self["model"] = self._trackball.model
-
+        self._theta = theta
+        model = np.eye(4, dtype=np.float32)
+        glm.rotate(model, self._theta, 0, 0, 1)
+        glm.rotate(model, self._phi, 1, 0, 0)
+        self["model"] = model
 
     @property
     def phi(self):
@@ -135,8 +135,11 @@ class Trackball(Transform):
     def phi(self, phi):
         """ Angle (in degrees) around the x axis """
 
-        self._trackball.phi = phi
-        self["model"] = self._trackball.model
+        self._phi = phi
+        model = np.eye(4, dtype=np.float32)
+        glm.rotate(model, self._theta, 0, 0, 1)
+        glm.rotate(model, self._phi, 1, 0, 0)
+        self["model"] = model
 
 
     @property
@@ -169,11 +172,11 @@ class Trackball(Transform):
         aspect = self._window_aspect * self._aspect
         self['projection'] = glm.perspective(self._zoom, aspect,
                                              self._znear, self._zfar)
-
+    
 
     def on_attach(self, program):
         self["view"] = self._view
-        self["model"] = self._trackball.model
+        self["model"] = self._model
         self["projection"] = self._projection
 
 
@@ -187,16 +190,13 @@ class Trackball(Transform):
         Transform.on_resize(self, width, height)
 
 
-
     def on_mouse_drag(self, x, y, dx, dy, button):
-        width = self._width
-        height = self._height
-        x  = (x*2.0 - width)/width
-        dx = (2.*dx)/width
-        y  = (height - y*2.0)/height
-        dy = -(2.*dy)/height
-        self._trackball.drag_to(x,y,dx,dy)
-        self["model"] = self._trackball.model
+        model = np.eye(4, dtype=np.float32)
+        self._theta -= dx/5.0
+        self._phi += dy/5.0
+        glm.rotate(model, self._theta, 0, 0, 1)
+        glm.rotate(model, self._phi, 1, 0, 0)
+        self["model"] = model
 
 
     def on_mouse_scroll(self, x, y, dx, dy):

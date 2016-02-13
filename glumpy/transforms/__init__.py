@@ -4,6 +4,7 @@
 # -----------------------------------------------------------------------------
 from . panzoom import PanZoom
 from . viewport import Viewport
+from . arcball import Arcball
 from . trackball import Trackball
 from . xyz import X,Y,Z
 from . rotate import Rotate
