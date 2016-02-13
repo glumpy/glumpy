@@ -5,7 +5,7 @@
 import math
 import numpy as np
 from glumpy import gl
-from glumpy.gloo.texture import Texture2D
+from glumpy.gloo.texture import TextureFloat2D
 from glumpy.gloo.buffer import VertexBuffer, IndexBuffer
 from . util import dtype_reduce
 from . array_list import ArrayList
@@ -515,7 +515,7 @@ class BaseCollection(object):
 
             # shape[2] = float count is only used in vertex shader code
             texture = texture.reshape(shape[0],shape[1],4)
-            self._uniforms_texture = texture.view(Texture2D)
+            self._uniforms_texture = texture.view(TextureFloat2D)
             self._uniforms_texture.interpolation = gl.GL_NEAREST
 
         if len(self._programs):
