@@ -10,7 +10,6 @@ from glumpy import app, gl
 from glumpy.graphics.collections import TriangleCollection, PathCollection
 from glumpy.transforms import Position, Trackball
 
-
 # -----------------------------------------------------------------------------
 # Copyright (C)  Tyler Reddy, Ross Hemsley, Edd Edmondson,
 #                Nikolai Nowaczyk, Joe Pitt-Francis, 2015.
@@ -136,19 +135,34 @@ transform = Trackball(Position())
 cells     = TriangleCollection("raw", transform=transform, color='shared')
 outlines  = PathCollection("raw", transform=transform, color='shared')
 
-size = 5000
-points = np.random.normal(size=(size, 3)) 
+# Random
+n = 5000
+points = np.random.normal(size=(n, 3)) 
 points /= np.linalg.norm(points, axis=1)[:, np.newaxis]
+
+# Fibonnaci sphere
+n = 5000
+offset = 2.0/n
+increment = np.pi * (3.0 - np.sqrt(5.0))
+Y = ((np.arange(n) * offset) - 1) + (offset / 2.)
+R = np.sqrt(1-Y*Y)
+P = np.arange(n) * increment
+X = np.cos(P) * R
+Z = np.sin(P) * R
+points = np.zeros((len(X),3))
+points[:,0] = X
+points[:,1] = Y
+points[:,2] = Z
+
+
 sv = SphericalVoronoi(points, 2, (0,0,0))
 sv.sort_vertices_of_regions()
 
 for region in sv.regions:
     color = np.random.uniform(0.5, 1.0, 4)
-    color[-1] = 1.0
     V = sv.vertices[region]
-    n = len(V)-2
-    I = np.zeros((n,3))
-    I[:,1] = 1 + np.arange(n)
+    I = np.zeros((len(V)-2,3))
+    I[:,1] = 1 + np.arange(len(I))
     I[:,2] = 1 + I[:,1]
     cells.append(V, I.ravel(), color=color)
     outlines.append(V, color=(0,0,0,1), closed=True)
