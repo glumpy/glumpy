@@ -117,7 +117,7 @@ def on_draw(dt):
     gl.glEnable(gl.GL_POLYGON_OFFSET_FILL)
     cells.draw()
 
-    # Cell outline
+    # Cell outlines
     gl.glDisable(gl.GL_POLYGON_OFFSET_FILL)
     gl.glEnable(gl.GL_BLEND)
     gl.glDepthMask(gl.GL_FALSE)
@@ -135,37 +135,37 @@ transform = Trackball(Position())
 cells     = TriangleCollection("raw", transform=transform, color='shared')
 outlines  = PathCollection("raw", transform=transform, color='shared')
 
-# Random
-n = 5000
+# Random points
+n = 2000
 points = np.random.normal(size=(n, 3)) 
 points /= np.linalg.norm(points, axis=1)[:, np.newaxis]
 
-# Fibonnaci sphere
-n = 5000
-offset = 2.0/n
-increment = np.pi * (3.0 - np.sqrt(5.0))
-Y = ((np.arange(n) * offset) - 1) + (offset / 2.)
-R = np.sqrt(1-Y*Y)
-P = np.arange(n) * increment
-X = np.cos(P) * R
-Z = np.sin(P) * R
-points = np.zeros((len(X),3))
-points[:,0] = X
-points[:,1] = Y
-points[:,2] = Z
-
-
+# Voronoi cells
 sv = SphericalVoronoi(points, 2, (0,0,0))
 sv.sort_vertices_of_regions()
 
 for region in sv.regions:
-    color = np.random.uniform(0.5, 1.0, 4)
-    V = sv.vertices[region]
+    z = np.random.uniform(0,1)
+
+    V = (1.0+0.1*z) * sv.vertices[region]
+    color = (.75+.25*z,.25+.75*z,.25+.75*z,1)
+
     I = np.zeros((len(V)-2,3))
     I[:,1] = 1 + np.arange(len(I))
     I[:,2] = 1 + I[:,1]
     cells.append(V, I.ravel(), color=color)
     outlines.append(V, color=(0,0,0,1), closed=True)
+
+    V_ = []
+    for v1,v2 in zip(V[:-1],V[1:]):
+        V_.extend(((0,0,0),v1,v2))
+    V_.extend(((0,0,0), V[-1], V[0]))
+    
+    V_ = np.array(V_)
+    I = np.arange(len(V_))
+    cells.append(V_, I, color=color)
+    outlines.append(V_, color=(0,0,0,1), closed=True)
+    
 
 window.attach(outlines["transform"])
 window.attach(outlines["viewport"])
