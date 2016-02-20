@@ -233,7 +233,6 @@ class Window(window.Window):
         self._native_window.setAutoBufferSwap(False)
         self._native_window.setMouseTracking(True)
         self._native_window.setWindowTitle(self._title)
-        self._native_window.show()
 
         def paint_gl():
             self.dispatch_event("on_draw", 0.0)
@@ -308,6 +307,8 @@ class Window(window.Window):
             modifiers = self._modifiers_translate(event.modifiers())
             self.dispatch_event("on_key_release", code, modifiers)
         self._native_window.keyReleaseEvent = key_release_event
+
+        self._native_window.show()
 
         __windows__.append(self)
 
