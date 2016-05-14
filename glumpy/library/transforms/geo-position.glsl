@@ -9,7 +9,7 @@ GeoPosition geoposition(float x)
     GeoPosition position;
     position.longitude = x;
     position.latitude = 0.0;
-    position.frozen = true;
+    position.frozen = false;
     return position;
 }
 
