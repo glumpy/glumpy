@@ -115,9 +115,9 @@ def objload(filename, rescale=True):
         vtype.append(('normal', np.float32, 3))
         
     vertices = np.empty(len(F_V),vtype)
-    vertices["position"] = V[F_V]
+    vertices["position"] = V[F_V,:3]
     if len(T):
-        vertices["texcoord"] = T[F_T]
+        vertices["texcoord"] = T[F_T,:2]
     if len(N):
         vertices["normal"] = N[F_N]
     vertices = vertices.view(gloo.VertexBuffer)
