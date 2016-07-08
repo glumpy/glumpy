@@ -225,7 +225,7 @@ class Uniform(Variable):
                 if data.dtype in [np.float16, np.float32, np.float64]:
                     self._data = data.astype(np.float32).view(Texture1D)
                 else:
-                    self._data = data.astype(np.uint8).view(Texture1D)
+                    self._data = data.view(Texture1D)
 
         elif self._gtype == gl.GL_SAMPLER_2D:
             if isinstance(data, Texture2D):
@@ -240,7 +240,7 @@ class Uniform(Variable):
                 if data.dtype in [np.float16, np.float32, np.float64]:
                     self._data = data.astype(np.float32).view(Texture2D)
                 else:
-                    self._data = data.astype(np.uint8).view(Texture2D)
+                    self._data = data.view(Texture2D)
 
         elif self._gtype == gl.GL_SAMPLER_CUBE:
             if isinstance(data, TextureCube):
@@ -254,7 +254,7 @@ class Uniform(Variable):
                 if data.dtype in [np.float16, np.float32, np.float64]:
                     self._data = data.astype(np.float32).view(TextureCube)
                 else:
-                    self._data = data.astype(np.uint8).view(TextureCube)
+                    self._data = data.view(TextureCube)
 
         else:
             self._data[...] = np.array(data,copy=False).ravel()
