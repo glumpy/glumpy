@@ -255,6 +255,9 @@ def __init__(clock=None, framerate=None, backend=None):
             handler, interval = window._timer_stack[i]
             __clock__.schedule_interval(handler, interval)
 
+        # Activate window
+        window.activate()
+
         # Dispatch init event
         window.dispatch_event('on_init')
 

@@ -204,8 +204,8 @@ class Window(event.EventDispatcher):
             gl.glClearColor(*color)
             if  clearflags is not None: gl.glClear(clearflags)
             else:                       gl.glClear(self._clearflags)
-            gl.glClearColor(*self._color)
         else:
+            gl.glClearColor(*self._color)
             if  clearflags is not None: gl.glClear(clearflags)
             else:                       gl.glClear(self._clearflags)
 

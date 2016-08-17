@@ -380,6 +380,8 @@ glfwTerminate                   = _glfw.glfwTerminate
 # glfwGetMonitors                 = _glfw.glfwGetMonitors
 # glfwGetMonitors.restype         = POINTER(GLFWmonitor)
 glfwGetPrimaryMonitor           = _glfw.glfwGetPrimaryMonitor
+glfwGetPrimaryMonitor.restype   = POINTER(GLFWmonitor)
+
 # glfwGetMonitorPos               = _glfw.glfwGetMonitorPos
 # glfwGetMonitorPhysicalSize      = _glfw.glfwGetMonitorPhysicalSize
 glfwGetMonitorName              = _glfw.glfwGetMonitorName
