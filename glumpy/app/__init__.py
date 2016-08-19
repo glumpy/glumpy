@@ -238,12 +238,14 @@ def __init__(clock=None, framerate=None, backend=None):
     __clock__.set_fps_limit(framerate)
 
     # OpenGL Initialization
-    gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-    gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
-    gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-    gl.glEnable(gl.GL_POINT_SPRITE)
-    gl.glEnable(gl.GL_BLEND)
-    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+    for window in backend.windows():
+        window.activate()
+        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
+        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
+        gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
+        gl.glEnable(gl.GL_POINT_SPRITE)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
 
     # Initialize timers for all windows
