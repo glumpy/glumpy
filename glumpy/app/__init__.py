@@ -106,7 +106,7 @@ def use(backend, api=None, major=None, minor=None, profile=None):
 
     if backend not in backends.__backends__:
         log.critical("Unknown backend (%s)" % backend)
-        log.cirtical("Available backends are: %s", str(backends.__backends__))
+        log.critical("Available backends are: %s", str(backends.__backends__))
         sys.exit(0)
 
     # BUG: For some reason, the import module changes the working directory
