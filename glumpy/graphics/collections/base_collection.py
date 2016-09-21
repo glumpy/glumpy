@@ -13,12 +13,12 @@ from . array_list import ArrayList
 
 def next_power_of_2(n):
     """ Return next power of 2 greater than or equal to n """
-    n -= 1 # greater than OR EQUAL TO n
+    n -= 1  # greater than OR EQUAL TO n
     shift = 1
-    while (n+1) & n: # n+1 is not a power of 2 yet
+    while (n+1) & n:  # n+1 is not a power of 2 yet
         n |= n >> shift
         shift *= 2
-    return max(4,n + 1)
+    return max(4, n+1)
 
 
 class BaseItem(object):
@@ -50,27 +50,23 @@ class BaseItem(object):
             Uniform parameters of the item
         """
 
-        self._parent   = parent
-        self._key      = key
+        self._parent = parent
+        self._key = key
         self._vertices = vertices
-        self._indices  = indices
-        self._uniforms  = uniforms
-
+        self._indices = indices
+        self._uniforms = uniforms
 
     @property
     def vertices(self):
         return self._vertices
 
-
     @vertices.setter
     def vertices(self, data):
         self._vertices[...] = np.array(data)
 
-
     @property
     def indices(self):
         return self._indices
-
 
     @indices.setter
     def indices(self, data):
@@ -79,18 +75,15 @@ class BaseItem(object):
         start = self._parent.vertices._items[self._key][0]
         self._indices[...] = np.array(data) + start
 
-
     @property
     def uniforms(self):
         return self._uniforms
-
 
     @uniforms.setter
     def uniforms(self, data):
         if self._uniforms is None:
             raise ValueError("Item has no associated uniform")
         self._uniforms[...] = data
-
 
     def __getitem__(self, key):
         """ Get a specific uniforms value """
@@ -102,7 +95,6 @@ class BaseItem(object):
         else:
             raise IndexError("Unknown key ('%s')" % key)
 
-
     def __setitem__(self, key, value):
         """ Set a specific uniforms value """
 
@@ -113,11 +105,9 @@ class BaseItem(object):
         else:
             raise IndexError("Unknown key")
 
-
     def __str__(self):
-        return "BaseItem (%s, %s, %s)" % (self._vertices, self._indices, self._uniforms)
-
-
+        return "BaseItem (%s, %s, %s)" % (
+            self._vertices, self._indices, self._uniforms)
 
 
 class BaseCollection(object):
@@ -178,11 +168,11 @@ class BaseCollection(object):
             if utype.names is None:
                 raise ValueError("utype must be a structured dtype")
 
-            # Convert types to lists (in case they were already dtypes) such that
-            # we can append new fields
+            # Convert types to lists (in case they were already dtypes) such
+            # that we can append new fields
             vtype = eval(str(np.dtype(vtype)))
             # We add a uniform index to access uniform data
-            vtype.append( ('collection_index', 'f4') )
+            vtype.append(('collection_index', 'f4'))
             vtype = np.dtype(vtype)
 
             # Check utype is made of float32 only
@@ -199,30 +189,26 @@ class BaseCollection(object):
             if (count - r_utype[1]) > 0:
                 utype.append(('__unused__', 'f4', count-r_utype[1]))
 
-            self._uniforms_list  = ArrayList(dtype=utype)
+            self._uniforms_list = ArrayList(dtype=utype)
             self._uniforms_float_count = count
 
             # Reserve some space in texture such that we have
             # at least one full line
             shape = self._compute_texture_shape(1)
-            self._uniforms_list.reserve( shape[1] / (count/4) )
+            self._uniforms_list.reserve(shape[1]/(count/4))
 
         # Last since utype may add a new field in vtype (collecion_index)
         self._vertices_list = ArrayList(dtype=vtype)
-
 
         # Record all types
         self._vtype = np.dtype(vtype)
         self._itype = np.dtype(itype) if itype is not None else None
         self._utype = np.dtype(utype) if utype is not None else None
 
-
-
     def __len__(self):
         """ Size of the collection in terms of items """
 
         return len(self._vertices_list)
-
 
     @property
     def vtype(self):
@@ -230,20 +216,17 @@ class BaseCollection(object):
 
         return self._vtype
 
-
     @property
     def itype(self):
         """ Indices dtype """
 
         return self._itype
 
-
     @property
     def utype(self):
         """ Uniforms dtype """
 
         return self._utype
-
 
     def append(self, vertices, uniforms=None, indices=None, itemsize=None):
         """
@@ -290,7 +273,7 @@ class BaseCollection(object):
 
         # Individual itemsize (array)
         # ---------------------------
-        elif isinstance(itemsize, (np.ndarray,list)):
+        elif isinstance(itemsize, (np.ndarray, list)):
             count = len(itemsize)
             index = np.repeat(np.arange(count), itemsize)
         else:
@@ -299,7 +282,6 @@ class BaseCollection(object):
         if self.utype:
             vertices["collection_index"] = index + len(self)
         self._vertices_list.append(vertices, itemsize)
-
 
         # Indices
         # -----------------------------
@@ -315,8 +297,9 @@ class BaseCollection(object):
                 if itemsize is None:
                     I = np.array(indices) + vsize
                 elif isinstance(itemsize, int):
-                    I = vsize + (np.tile(indices,count) +
-                                 itemsize*np.repeat(np.arange(count), len(indices)))
+                    I = vsize + (np.tile(indices, count) +
+                                 itemsize*np.repeat(np.arange(count),
+                                                    len(indices)))
                 else:
                     raise ValueError("Indices not compatible with items")
                 self._indices_list.append(I, len(indices))
@@ -332,8 +315,6 @@ class BaseCollection(object):
 
         self._need_update = True
 
-
-
     def __delitem__(self, index):
         """ x.__delitem__(y) <==> del x[y] """
 
@@ -348,7 +329,7 @@ class BaseCollection(object):
         elif isinstance(index, slice):
             istart, istop, _ = index.indices(len(self))
             if istart > istop:
-                istart, istop = istop,istart
+                istart, istop = istop, istart
             if istart == istop:
                 return
         # Deleting everything
@@ -372,8 +353,6 @@ class BaseCollection(object):
 
         self._need_update = True
 
-
-
     def __getitem__(self, key):
         """ """
 
@@ -382,7 +361,6 @@ class BaseCollection(object):
         # lists) since only them are aware of any external modification.
         if self._need_update:
             self._update()
-
 
         V = self._vertices_buffer
         I = None
@@ -413,18 +391,17 @@ class BaseCollection(object):
             uniforms = None
             if I is not None:
                 istart, iend = self._indices_list._items[key]
-                indices  = I[istart:iend]
+                indices = I[istart:iend]
 
             if U is not None:
                 ustart, uend = self._uniforms_list._items[key]
-                uniforms  = U[ustart:uend]
+                uniforms = U[ustart:uend]
 
             return BaseItem(self, key, vertices, indices, uniforms)
 
         # Error
         else:
             raise IndexError("Cannot get more than one item at once")
-
 
     def __setitem__(self, key, data):
         """ x.__setitem__(i, y) <==> x[i]=y """
@@ -435,8 +412,8 @@ class BaseCollection(object):
                 if key in program.hooks:
                     program[key] = data
                     found = True
-            if found: return
-
+            if found:
+                return
 
         # WARNING
         # Here we want to make sure to use buffers and texture (instead of
@@ -477,7 +454,6 @@ class BaseCollection(object):
         else:
             raise IndexError("Cannot set more than one item")
 
-
     def _compute_texture_shape(self, size=1):
         """ Compute uniform texture shape """
 
@@ -486,11 +462,10 @@ class BaseCollection(object):
         linesize = 1024
         count = self._uniforms_float_count
         cols = linesize // float(count/4)
-        rows = max(1,int(math.ceil(size / float(cols))))
+        rows = max(1, int(math.ceil(size/float(cols))))
         shape = rows, cols*(count/4), count
         self._ushape = shape
         return shape
-
 
     def _update(self):
         """ Update vertex buffers & texture """
@@ -514,7 +489,7 @@ class BaseCollection(object):
             shape = self._compute_texture_shape(size)
 
             # shape[2] = float count is only used in vertex shader code
-            texture = texture.reshape(shape[0],shape[1],4)
+            texture = texture.reshape(shape[0], shape[1], 4)
             self._uniforms_texture = texture.view(TextureFloat2D)
             self._uniforms_texture.interpolation = gl.GL_NEAREST
 
@@ -525,8 +500,6 @@ class BaseCollection(object):
                     program["uniforms"] = self._uniforms_texture
                     program["uniforms_shape"] = self._ushape
 
-
-
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
     vtype = [('value', 'f4', 2)]
@@ -534,18 +507,18 @@ if __name__ == '__main__':
              ('value_2', 'f4', 3)]
     itype = np.uint32
 
+    C = BaseCollection(vtype, utype, itype)
+    V = np.zeros(3, dtype=vtype)
+    for i in range(50000):
+        C.append(V, indices=[0, 1, 2])
 
     C = BaseCollection(vtype, utype, itype)
-    V = np.zeros(3,dtype=vtype)
-    for i in range(50000): C.append(V, indices=[0,1,2])
+    V = np.zeros(3*50000, dtype=vtype)
+    C.append(V, itemsize=3, indices=[0, 1, 2])
 
     C = BaseCollection(vtype, utype, itype)
-    V = np.zeros(3*50000,dtype=vtype)
-    C.append(V, itemsize=3, indices=[0,1,2])
-
-    C = BaseCollection(vtype, utype, itype)
-    V = np.zeros(3*50000,dtype=vtype)
-    C.append(V,itemsize=3*np.ones(50000,dtype=int))
+    V = np.zeros(3*50000, dtype=vtype)
+    C.append(V, itemsize=3*np.ones(50000, dtype=int))
 
     # C = BaseCollection(vtype, utype, itype)
     # V = np.zeros(3,dtype=vtype)
