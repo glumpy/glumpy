@@ -8,7 +8,10 @@
 #include "colormaps/hot.glsl"
 #include "colormaps/gray.glsl"
 #include "colormaps/cool.glsl"
+#include "colormaps/jet.glsl"
 #include "colormaps/wheel.glsl"
+#include "colormaps/stripes.glsl"
+#include "colormaps/discrete.glsl"
 
 #include "colormaps/autumn.glsl"
 #include "colormaps/winter.glsl"
@@ -22,3 +25,4 @@
 #include "colormaps/reds.glsl"
 #include "colormaps/blues.glsl"
 #include "colormaps/greens.glsl"
+

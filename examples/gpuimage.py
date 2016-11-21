@@ -22,6 +22,7 @@ void main()
 
 fragment = """
 #include "math/constants.glsl"
+#include "colormaps/jet.glsl"
 uniform float u_time;
 varying vec2 v_position;
 
@@ -47,33 +48,13 @@ float f(float x, float y, float t) {
 
 }
 
-vec4 jet(float x) {
-    vec3 a, b;
-    float c;
-    if (x < 0.34) {
-        a = vec3(0, 0, 0.5);
-        b = vec3(0, 0.8, 0.95);
-        c = (x - 0.0) / (0.34 - 0.0);
-    } else if (x < 0.64) {
-        a = vec3(0, 0.8, 0.95);
-        b = vec3(0.85, 1, 0.04);
-        c = (x - 0.34) / (0.64 - 0.34);
-    } else if (x < 0.89) {
-        a = vec3(0.85, 1, 0.04);
-        b = vec3(0.96, 0.7, 0);
-        c = (x - 0.64) / (0.89 - 0.64);
-    } else {
-        a = vec3(0.96, 0.7, 0);
-        b = vec3(0.5, 0, 0);
-        c = (x - 0.89) / (1.0 - 0.89);
-    }
-    return vec4(mix(a, b, c), 1.0);
-}
-
 void main() {
+
     vec2 pos = v_position;
     float z = f(x_scale * pos.x, y_scale * pos.y, t_scale * u_time);
-    gl_FragColor = jet((z + z_offset) / (z_max));
+    vec3 c = colormap_jet((z + z_offset) / (z_max));
+    gl_FragColor = vec4(c, 1.0);
+
 }
 """
 
