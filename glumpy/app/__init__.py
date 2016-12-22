@@ -335,8 +335,12 @@ def run(clock=None, framerate=None, interactive=None,
 
         if options.record:
             from .movie import record
-            # Obtain the name of the script that is being run
-            name = os.path.basename(sys.argv[0])
+            try:
+                # Check if output file name given
+                name = sys.argv[2]
+            except:
+                # Obtain the name of the script that is being run
+                name = os.path.basename(sys.argv[0])
             # Replace .py extension with .mp4
             filename=re.sub('.py$', '.mp4', name)
             log.info("Recording movie in '%s'" % filename)
