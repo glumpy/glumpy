@@ -27,9 +27,9 @@ void main() {
 """
 
 
-program1 = gloo.Program(vertex, fragment1)  # blue on the left
+program1 = gloo.Program(vertex, fragment1)  # blue on the right
 program1['a_position'] = np.zeros((1,2),dtype=np.float32) + 0.5
-program2 = gloo.Program(vertex, fragment2)  # red on the right
+program2 = gloo.Program(vertex, fragment2)  # red on the left
 program2['a_position'] = np.zeros((1,2),dtype=np.float32) - 0.5
 
 

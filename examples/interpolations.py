@@ -106,7 +106,7 @@ vertices['interpol'] = np.arange(17).reshape(17,1)
 program.bind(vertices)
 indices = np.zeros((17,6),np.uint32).view(gloo.IndexBuffer)
 indices[:] = [0,1,2,1,2,3]
-indices += 4*np.arange(17).reshape(17,1)
+indices += 4*np.arange(17,dtype=np.uint32).reshape(17,1)
 
 lena = data.get("lena.png")
 program['u_data'] = lena

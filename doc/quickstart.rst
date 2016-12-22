@@ -104,12 +104,12 @@ directly relates to the `position` attribute within the vertex shader and the
 
 
 .. code:: python
-          
+
    quad['position'] = [(-0.5, -0.5),
                        (-0.5, +0.5),
                        (+0.5, -0.5),
                        (+0.5, +0.5)]
-   quad['color'] = 0,0,0,1
+   quad['color'] = 1,0,0,1  # red
 
 Last, we specify in the :meth:`~glumpy.app.Window.on_draw` method that the quad
 needs to be rendered using :const:`gl.GL_TRIANGLE_STRIP`.
@@ -138,12 +138,14 @@ and adapt quad coordinates according to the sine of the time variable.
 
    vertex = """
             uniform float time;
-            vec2 attribute position;
+            attribute vec2 position;
             void main()
             {
                 vec2 xy = vec2(sin(2.0*time));
                 gl_Position = vec4(position*(0.25 + 0.75*xy*xy), 0.0, 1.0);
             } """
+
+   quad = gloo.Program(vertex, fragment, count=4)
 
 We also need to initialize the time variable and to update it at each draw
 call.
