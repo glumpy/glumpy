@@ -97,10 +97,10 @@ class SDFFont(object):
 
         # Pad high resolution glyph with a blank border and normalize values
         # between 0 and 1
-        hires_width  = (1+2*self._padding)*width
-        hires_height = (1+2*self._padding)*height
+        hires_width  = int((1+2*self._padding)*width)
+        hires_height = int((1+2*self._padding)*height)
         hires_data = np.zeros( (hires_height,hires_width), np.double)
-        ox,oy = self._padding*width, self._padding*height
+        ox,oy = int(self._padding*width), int(self._padding*height)
         hires_data[oy:oy+height, ox:ox+width] = G/255.0
 
        # Compute distance field at high resolution

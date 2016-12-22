@@ -489,7 +489,7 @@ class BaseCollection(object):
             shape = self._compute_texture_shape(size)
 
             # shape[2] = float count is only used in vertex shader code
-            texture = texture.reshape(shape[0], shape[1], 4)
+            texture = texture.reshape(int(shape[0]), int(shape[1]), 4)
             self._uniforms_texture = texture.view(TextureFloat2D)
             self._uniforms_texture.interpolation = gl.GL_NEAREST
 

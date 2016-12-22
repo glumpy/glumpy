@@ -59,7 +59,7 @@ def compute_grid():
     stop  = xmax - math.fmod(xmax, t1)
     if abs(stop-xmax) < epsilon: stop -= t1
     count = (stop-start)/t1+1
-    I = np.zeros(count+2)
+    I = np.zeros(int(count+2))
     I[0], I[-1] = xmin, xmax
     I[1:-1] = np.linspace(start, stop, count, endpoint=True)
     Z[..., 0] = I[find_closest_direct(I, start=xmin, end=xmax, count=n)]
@@ -70,7 +70,7 @@ def compute_grid():
     stop  = xmax - math.fmod(xmax, t2)
     if abs(stop-xmax) < epsilon: stop -= t2
     count = (stop-start)/t2+1
-    I = np.zeros(count+2)
+    I = np.zeros(int(count+2))
     I[0], I[-1] = xmin, xmax
     I[1:-1] = np.linspace(start, stop, count, endpoint=True)
     Z[..., 1] = I[find_closest_direct(I, start=xmin, end=xmax, count=n)]
@@ -83,7 +83,7 @@ def compute_grid():
     stop  = ymax - math.fmod(ymax, t1)
     if abs(stop-ymax) < epsilon: stop -= t1
     count = (stop-start)/t1+1
-    I = np.zeros(count+2)
+    I = np.zeros(int(count+2))
     I[0], I[-1] = ymin, ymax
     I[1:-1] = np.linspace(start, stop, count, endpoint=True)
     Z[..., 2] = I[find_closest_direct(I, start=ymin, end=ymax, count=n)]
@@ -94,7 +94,7 @@ def compute_grid():
     stop  = ymax - math.fmod(ymax, t2)
     if abs(stop-ymax) < epsilon: stop -= t2
     count = (stop-start)/t2+1
-    I = np.zeros(count+2)
+    I = np.zeros(int(count+2))
     I[0], I[-1] = ymin, ymax
     I[1:-1] = np.linspace(start, stop, count, endpoint=True)
     Z[..., 3] = I[find_closest_direct(I, start=ymin, end=ymax, count=n)]

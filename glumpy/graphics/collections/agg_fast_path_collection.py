@@ -166,7 +166,7 @@ class AggFastPathCollection(Collection):
         V[:,-1] = V[:,-2]
         V = V.ravel()
         V = np.repeat(V,2,axis=0)
-        V['id'] = np.tile([1,-1],len(V)/2)
+        V['id'] = np.tile([1,-1],len(V)//2)
         if closed:
             V = V.reshape(itemcount,2*(itemsize+3))
         else:

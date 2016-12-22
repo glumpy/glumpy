@@ -140,7 +140,7 @@ class GPUData(np.ndarray):
         return self.__getitem__(slice(start, stop))
 
     def __setslice__(self, start, stop,  value):
-        return self.__setitem__(slice(start, stop), value)
+        return self.__setitem__(slice(int(start), int(stop)), value)
 
     def __iadd__(self, other):
         self._add_pending_data(self._extents[0], self._extents[1])
