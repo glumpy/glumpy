@@ -159,8 +159,8 @@ P[:, :] = species['Coral']
 UV = np.zeros((h, w, 4), dtype=np.float32)
 UV[:, :, 0] = 1.0
 r = 32
-UV[h/2-r:h/2+r,w/2-r:w/2+r,0] = 0.50
-UV[h/2-r:h/2+r,w/2-r:w/2+r,1] = 0.25
+UV[h//2-r:h//2+r,w//2-r:w//2+r,0] = 0.50
+UV[h//2-r:h//2+r,w//2-r:w//2+r,1] = 0.25
 UV += np.random.uniform(0.00, 0.01, (h, w, 4))
 UV[:,:,2] = UV[:,:,0]
 UV[:,:,3] = UV[:,:,1]
