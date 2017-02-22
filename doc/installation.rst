@@ -141,4 +141,36 @@ The OpenGL version must be at least 2.1 and the shading language version must
 be at least 1.1. If this is not the case, you need to install more recent
 versions. Have a look a your system documentation or browse online for howtos.
 
+Step-by-step install for x64 bit Windows 7,8, and 10.
+=========================================================
 
+1. Install Python:
+  - Download Python 3.x from here https://www.python.org/downloads/
+  - Run the executable, install to a short path (e.g. "C:\\python3")
+  - Add the Python executable folder to the system path (Usually done during install)
+  - **reboot for system changes to take effect**
+  After reboot, it's a good idea to type "python" at the command line to make sure the system can find it. You should get the usual ">>>" python CLI console. If not, it's 99% likely the path to python needs added manually.
+
+2. Install dependencies (**From elevated command prompt**)::
+
+    C:\Windows\system32> pip install numpy
+    C:\Windows\system32> pip install cython
+    C:\Windows\system32> pip install pyopengl
+    C:\Windows\system32> pip install triangle
+
+3. Install glumpy (**From elevated command prompt**)::
+
+    C:\Windows\system32> pip install glumpy
+
+4. Install freetype:
+  - Download a precompiled x64 version from here. https://github.com/ubawurinna/freetype-windows-binaries	
+  - Extract the zip somewhere
+  - Copy either of the freetype.dlls in the win64 folder to your python3 folder.
+  - Rename the freetype dll file to just "freetype.dll"
+  The README explains the file differences; files with MT in the name are preferred.
+
+5. Install GLFW:
+  - Download the x64 bit version from here. http://www.glfw.org/download.html
+  - Extract the zip somewhere
+  - Copy one of the glfw.dll files from one of the "lib-xxxxx" folders to your python3 folder.
+  The preferred file is probably from "lib-mingw-w64," you do not need to rename it.
