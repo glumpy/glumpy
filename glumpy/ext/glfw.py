@@ -189,7 +189,7 @@ if _glfw is None:
 
 
 # Load it
-_glfw = ctypes.CDLL(_glfw_file)
+# _glfw = ctypes.CDLL(_glfw_file)
 
 
 # Ensure it's new enough
