@@ -68,7 +68,7 @@ class AggFont(object):
             rows   = face.glyph.bitmap.rows
             pitch  = face.glyph.bitmap.pitch
 
-            w = int(width/3)
+            w = int(width//3)
             h = rows
             # h+1,w+1 to have a black border
             region = self.atlas.allocate( (h+1,w+1) )
