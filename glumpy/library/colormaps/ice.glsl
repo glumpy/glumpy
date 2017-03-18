@@ -6,7 +6,9 @@
 
 vec3 colormap_ice(float t)
 {
-   return vec3(t, t, 1.0);
+   t = 1 - t;
+   return mix(mix(vec3(1,1,1), vec3(0,1,1), t),
+               mix(vec3(0,1,1), vec3(0,0,1), t*t), t);
 }
 
 vec3 colormap_ice(float t, vec3 under, vec3 over)
