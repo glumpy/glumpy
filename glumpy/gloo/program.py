@@ -10,6 +10,7 @@ from glumpy.log import log
 from glumpy import library
 from . snippet import Snippet
 from . globject import GLObject
+from . array import VertexArray
 from . buffer import VertexBuffer, IndexBuffer
 from . shader import VertexShader, FragmentShader, GeometryShader
 from . variable import gl_typeinfo, Uniform, Attribute
@@ -31,7 +32,8 @@ class Program(GLObject):
     :param int count:
       Optional. Number of vertices this program will use. This can be
       specified to initialize a VertexBuffer during program initialization.
-
+    :param str version:
+      GLSL version to use
     .. warning::
 
        If a shader is given as a string and contains a ``{``, glumpy considers
@@ -43,7 +45,7 @@ class Program(GLObject):
     """
 
     # ---------------------------------
-    def __init__(self, vertex=None, fragment=None, geometry=None, count=0):
+    def __init__(self, vertex=None, fragment=None, geometry=None, count=0, version="120"):
         """
         Initialize the program and optionnaly buffer.
         """
@@ -54,14 +56,16 @@ class Program(GLObject):
         self._vertex =  None
         self._fragment = None
         self._geometry = None
+        self._version = version
         
         if vertex is not None:
             if isinstance(vertex, str):
                 if not '{' in vertex:
                     vertex = library.get(vertex)
-                self._vertex = VertexShader(vertex)
+                self._vertex = VertexShader(vertex, version=version)
             elif isinstance(vertex,VertexShader):
                 self._vertex = vertex
+                self._vertex._version = version
             else:
                 log.error("vertex must be a string or a VertexShader")
 
@@ -69,9 +73,10 @@ class Program(GLObject):
             if isinstance(fragment, str):
                 if not '{' in fragment:
                     fragment = library.get(fragment)
-                self._fragment = FragmentShader(fragment)
-            elif isinstance(fragment, FragmentShader):
+                self._fragment = FragmentShader(fragment, version=version)
+            elif isinstance(fragment, FragmentShader, version=version):
                 self._fragment = fragment
+                self._fragment._version = version
             else:
                 log.error("fragment must be a string or a FragmentShader")
 
@@ -79,9 +84,10 @@ class Program(GLObject):
             if isinstance(geometry, str):
                 if not '{' in geometry:
                     geometry = library.get(geometry)
-                self._geometry = GeometryShader(geometry)
+                self._geometry = GeometryShader(geometry, version=version)
             elif isinstance(geometry, GeometryShader):
                 self._geometry = geometry
+                self._geometry._version = version
             else:
                 log.error("geometry must be a string or a GeometryShader")
                 
@@ -303,10 +309,11 @@ class Program(GLObject):
         match.
         """
 
-        if isinstance(data, VertexBuffer):
+        if isinstance(data, (VertexBuffer,VertexArray)):
             for name in data.dtype.names:
                 if name in self._attributes.keys():
                     self._attributes[name].set_data(data.ravel()[name])
+
 
 
     def __setitem__(self, name, data):
@@ -380,6 +387,7 @@ class Program(GLObject):
             if uniform.active:
                 uniform.activate()
 
+        # Need fix when dealing with vertex arrays (only need to active the array)
         for attribute in self._attributes.values():
             if attribute.active:
                 attribute.activate()
@@ -392,6 +400,8 @@ class Program(GLObject):
 
         for uniform in self._uniforms.values():
             uniform.deactivate()
+
+        # Need fix when dealing with vertex arrays (only need to active the array)
         for attribute in self._attributes.values():
             attribute.deactivate()
         log.debug("GPU: Deactivating program (id=%d)" % self._id)
@@ -540,6 +550,7 @@ class Program(GLObject):
                         attributes.append((name, gtype))
             else:
                 attributes.append((name, gtype))
+
         return attributes
 
 

@@ -89,7 +89,11 @@ def get_declarations(code, qualifier = ""):
         return []
 
     variables = []
-    if qualifier:
+
+    if isinstance(qualifier,list):
+        qualifier = "(" + "|".join([str(q) for q in qualifier]) + ")"
+    
+    if qualifier != "":
         re_type = re.compile("""
                              %s                               # Variable qualifier
                              \s+(?P<type>\w+)                 # Variable type
@@ -157,7 +161,7 @@ def get_uniforms(code):
     return get_declarations(code, qualifier = "uniform")
 
 def get_attributes(code):
-    return get_declarations(code, qualifier = "attribute")
+    return get_declarations(code, qualifier = ["attribute", "in"])
 
 def get_varyings(code):
     return get_declarations(code, qualifier = "varying")

@@ -190,6 +190,10 @@ class Window(object):
                  (__backend__.name(), config.api,
                   config.major_version, config.minor_version))
 
+        if config.samples > 0:
+            log.info("Using multisampling with %d samples" %
+                     (config.samples))
+
         # Display fps options
         if options.display_fps:
             @window.timer(1.0)
@@ -243,7 +247,10 @@ def __init__(clock=None, framerate=None, backend=None):
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
         gl.glEnable(gl.GL_VERTEX_PROGRAM_POINT_SIZE)
-        gl.glEnable(gl.GL_POINT_SPRITE)
+        try: # This has been removed in 3.2 (it's now on by default)
+            gl.glEnable(gl.GL_POINT_SPRITE)
+        except:
+            pass
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 

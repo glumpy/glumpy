@@ -62,6 +62,7 @@ import numpy as np
 from glumpy import gl
 from glumpy.log import log
 from glumpy.gloo.globject import GLObject
+from glumpy.gloo.array import VertexArray
 from glumpy.gloo.buffer import VertexBuffer
 from glumpy.gloo.texture import TextureCube
 from glumpy.gloo.texture import Texture1D, Texture2D
@@ -338,11 +339,11 @@ class Attribute(Variable):
         isnumeric = isinstance(data, (float, int))
 
         # New vertex buffer
-        if isinstance(data, VertexBuffer):
+        if isinstance(data, (VertexBuffer,VertexArray)):
             self._data = data
 
         # We already have a vertex buffer
-        elif isinstance(self._data, VertexBuffer):
+        elif isinstance(self._data, (VertexBuffer,VertexArray)):
             self._data[...] = data
 
         # Data is a tuple with size <= 4, we assume this designates a generate
@@ -379,13 +380,16 @@ class Attribute(Variable):
             offset = ctypes.c_void_p(self.data.offset)
             gl.glEnableVertexAttribArray(self.handle)
             gl.glVertexAttribPointer(self.handle, size, gtype, gl.GL_FALSE, stride, offset)
-
+        elif isinstance(self.data,VertexArray):
+            self.data.activate()
 
     def _deactivate(self):
         if isinstance(self.data,VertexBuffer):
             self.data.deactivate()
             if self.handle > 0:
                 gl.glDisableVertexAttribArray(self.handle)
+        elif isinstance(self.data,VertexArray):
+            self.data.deactivate()
 
 
     def _update(self):
@@ -435,6 +439,7 @@ class Attribute(Variable):
         if self._data is None:
             return 0
         return self._data.size
+
 
     def __len__(self):
         """ Length of the underlying vertex buffer """

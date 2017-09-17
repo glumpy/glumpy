@@ -83,7 +83,7 @@ class Shader(GLObject):
     }
 
 
-    def __init__(self, target, code):
+    def __init__(self, target, code, version="120"):
         """
         Initialize the shader.
         """
@@ -91,6 +91,7 @@ class Shader(GLObject):
         GLObject.__init__(self)
         self._target = target
         self._snippets = {}
+        self._version = version
 
         if os.path.isfile(code):
             with open(code, 'rt') as file:
@@ -230,7 +231,7 @@ class Shader(GLObject):
             raise RuntimeError(error)
 
         # Set shader version
-        code = "#version 120\n" + self.code
+        code = ("#version %s\n" % self._version) + self.code
         gl.glShaderSource(self._handle, code)
 
         # Actual compilation
@@ -343,8 +344,8 @@ class Shader(GLObject):
 class VertexShader(Shader):
     """ Vertex shader class """
 
-    def __init__(self, code=None):
-        Shader.__init__(self, gl.GL_VERTEX_SHADER, code)
+    def __init__(self, code=None, version="120"):
+        Shader.__init__(self, gl.GL_VERTEX_SHADER, code, version)
 
     @property
     def code(self):
@@ -363,8 +364,8 @@ class FragmentShader(Shader):
     """ Fragment shader class """
 
 
-    def __init__(self, code=None):
-        Shader.__init__(self, gl.GL_FRAGMENT_SHADER, code)
+    def __init__(self, code=None, version="120"):
+        Shader.__init__(self, gl.GL_FRAGMENT_SHADER, code, version)
 
     @property
     def code(self):
@@ -398,8 +399,9 @@ class GeometryShader(Shader):
     """
 
 
-    def __init__(self, code=None, vertices_out=0, input_type=None, output_type=None):
-        Shader.__init__(self, gl.GL_GEOMETRY_SHADER_EXT, code)
+    def __init__(self, code=None,
+                 vertices_out=0, input_type=None, output_type=None, version="120"):
+        Shader.__init__(self, gl.GL_GEOMETRY_SHADER_EXT, code, version)
 
         self._vertices_out = vertices_out
 
