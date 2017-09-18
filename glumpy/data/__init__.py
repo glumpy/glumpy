@@ -9,6 +9,10 @@ try:
     from PIL import Image
 except:
     Image = None
+try:
+    from urllib.parse import urljoin    # Python 3
+except ImportError:
+    from urlparse import urljoin        # Python 2
 from glumpy import gloo
 from glumpy.log import log
 
@@ -33,13 +37,13 @@ def _fetch_file(filename):
 
     # Font server
     if extension in ['ttf', 'otf']:
-        server = "https://github.com/glumpy/glumpy-font/raw/master/Fonts"
+        server = "https://github.com/glumpy/glumpy-font/raw/master/Fonts/"
     # Data server
     else:
-        server = "https://github.com/glumpy/glumpy-data/raw/master/Data"
+        server = "https://github.com/glumpy/glumpy-data/raw/master/Data/"
 
     filename = os.path.basename(filename)
-    remote = os.path.join(server, filename)
+    remote = urljoin(server, filename)
 
     # Build url request
     log.info('Requesting "%s" from remote server' % filename)
@@ -51,7 +55,7 @@ def _fetch_file(filename):
     # Fetch symlink data (font location)
     symlink = response.read().decode()
 
-    remote = os.path.join(server, symlink)
+    remote = urljoin(server, symlink)
     response = request.urlopen(remote)
 
     # Fetch data
