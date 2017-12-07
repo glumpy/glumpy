@@ -274,7 +274,7 @@ class Shader(GLObject):
 
         # Nouveau
         # 0:28(16): error: syntax error, unexpected ')', expecting '('
-        m = re.match(r'(\d+):(\d+)\((\d+)\):\s(.*)', error )
+        m = re.match( r'(\d+):(\d+)\((\d+)\):\s(.*)', error )
         if m: return int(m.group(2)), m.group(4)
 
         raise ValueError('Unknown GLSL error format:\n{}\n'.format(error))
