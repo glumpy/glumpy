@@ -274,7 +274,7 @@ class Shader(GLObject):
 
         # Nouveau
         # 0:28(16): error: syntax error, unexpected ')', expecting '('
-        m = re.match( r'(\d+):(\d+)\((\d+)\):\s(.*)', error )
+        m = re.match(r'(\d+):(\d+)\((\d+)\):\s(.*)', error )
         if m: return int(m.group(2)), m.group(4)
 
         raise ValueError('Unknown GLSL error format:\n{}\n'.format(error))
@@ -350,7 +350,7 @@ class VertexShader(Shader):
     @property
     def code(self):
         code = super(VertexShader, self).code
-        code = "#define _GLUMPY__VERTEX_SHADER__\n" + code
+        code = "#define _GLUMPY_VERTEX_SHADER_\n" + code
         return code
 
 
@@ -370,7 +370,7 @@ class FragmentShader(Shader):
     @property
     def code(self):
         code = super(FragmentShader, self).code
-        code = "#define _GLUMPY__FRAGMENT_SHADER__\n" + code
+        code = "#define _GLUMPY_FRAGMENT_SHADER_\n" + code
         return code
 
 
