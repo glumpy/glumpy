@@ -285,12 +285,8 @@ class Window(window.Window):
         self._native_window.mouseMoveEvent = mouse_move_event
 
         def wheel_event(event):
-            if event.orientation == QtCore.Qt.Horizontal:
-                offset_x = event.delta()
-                offset_y = 0
-            else:
-                offset_x = 0
-                offset_y = event.delta()
+            offset_x = event.angleDelta().x()                                                                                                                   │
+            offset_y = event.angleDelta().y()
             x = event.pos().x()
             y = event.pos().y()
             self.dispatch_event("on_mouse_scroll", x, y, offset_x/10.0, offset_y/10.0)
