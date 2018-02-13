@@ -74,7 +74,7 @@ class Program(GLObject):
                 if not '{' in fragment:
                     fragment = library.get(fragment)
                 self._fragment = FragmentShader(fragment, version=version)
-            elif isinstance(fragment, FragmentShader, version=version):
+            elif isinstance(fragment, FragmentShader):
                 self._fragment = fragment
                 self._fragment._version = version
             else:
