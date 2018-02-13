@@ -400,7 +400,7 @@ class GeometryShader(Shader):
 
 
     def __init__(self, code=None,
-                 vertices_out=0, input_type=None, output_type=None, version="120"):
+                 vertices_out=None, input_type=None, output_type=None, version="120"):
         Shader.__init__(self, gl.GL_GEOMETRY_SHADER_EXT, code, version)
 
         self._vertices_out = vertices_out
