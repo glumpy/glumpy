@@ -211,7 +211,12 @@ class Texture(GPUData,GLObject):
         if self.handle > -1:
             gl.glDeleteTextures(np.array([self.handle], dtype=np.uint32))
 
-
+    def get(self):
+        """ Read the texture data back into CPU memory """
+        host = np.zeros(self.shape, self.dtype)
+        gl.glBindTexture(self.target, self._handle)
+        gl.glGetTexImage(self.target, 0, self.cpu_format, self.gtype, host)
+        return host
 
 
 class Texture1D(Texture):

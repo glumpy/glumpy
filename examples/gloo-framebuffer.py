@@ -45,6 +45,8 @@ def on_draw(dt):
     window.clear()
     framebuffer.activate()
     quad_1.draw(gl.GL_TRIANGLE_STRIP)
+    # The texture can be read as np.ndarray.
+    # out_texture = framebuffer.color[0].get()
     framebuffer.deactivate()
     quad_2.draw(gl.GL_TRIANGLE_STRIP)
 
