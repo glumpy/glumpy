@@ -89,7 +89,9 @@ class Trackball(Transform):
         self._window_aspect = 1
 
         self._trackball = _trackball.Trackball(45,45)
-        self._projection = np.eye(4, dtype=np.float32)
+        aspect = self._window_aspect * self._aspect
+        self._projection = glm.perspective(self._zoom, aspect,
+                                           self._znear, self._zfar)
         self._view = np.eye(4, dtype=np.float32)
         glm.translate(self._view, 0, 0, -abs(self._distance))
 
