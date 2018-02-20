@@ -1,3 +1,8 @@
+# -----------------------------------------------------------------------------
+# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Distributed under the (new) BSD License.
+# -----------------------------------------------------------------------------
+#
 # modified examples/tutorial/quad-simple.py
 from glumpy import app, gloo, gl
 import numpy as np
