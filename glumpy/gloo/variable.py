@@ -373,14 +373,7 @@ class Attribute(Variable):
 
 
     def _activate(self):
-        if isinstance(self.data,VertexBuffer):
-            self.data.activate()
-            size, gtype, dtype = gl_typeinfo[self._gtype]
-            stride = self.data.stride
-            offset = ctypes.c_void_p(self.data.offset)
-            gl.glEnableVertexAttribArray(self.handle)
-            gl.glVertexAttribPointer(self.handle, size, gtype, gl.GL_FALSE, stride, offset)
-        elif isinstance(self.data,VertexArray):
+        if isinstance(self.data, (VertexBuffer, VertexArray)):
             self.data.activate()
             size, gtype, dtype = gl_typeinfo[self._gtype]
             stride = self.data.stride
