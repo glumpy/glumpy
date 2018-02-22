@@ -285,7 +285,7 @@ class Window(window.Window):
         self._native_window.mouseMoveEvent = mouse_move_event
 
         def wheel_event(event):
-            offset_x = event.angleDelta().x()                                                                                                                   │
+            offset_x = event.angleDelta().x()
             offset_y = event.angleDelta().y()
             x = event.pos().x()
             y = event.pos().y()
