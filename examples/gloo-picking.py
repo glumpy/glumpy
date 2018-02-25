@@ -100,7 +100,7 @@ color = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
 color.interpolation = gl.GL_LINEAR
 pick = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
 pick.interpolation = gl.GL_LINEAR
-framebuffer = gloo.FrameBuffer(color=[color,pick])
+framebuffer = gloo.FrameBuffer(color=[color,pick], depth=gloo.DepthBuffer(window.width, window.height))
 quad["color"] = color
 
 index = 0
