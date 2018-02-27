@@ -136,5 +136,10 @@ def on_mouse_motion(x,y, dx, dy):
     global mouse
     mouse = int(x), window.height-int(y)
 
+@window.event
+def on_mouse_drag(x,y, dx, dy):
+    global mouse
+    mouse = int(x), window.height-int(y)
+
 window.attach(program['transform'])
 app.run()
