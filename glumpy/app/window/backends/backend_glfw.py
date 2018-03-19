@@ -68,56 +68,56 @@ def __init__():
     if not __initialized__:
         # glfw might change dir on initialization (feature, not a bug)
         cwd = os.getcwd()
-        glfw.glfwInit()
+        glfw.init()
         os.chdir(cwd)
     __initialized__ = True
 
 def __exit__():
     global __initialized__
-    glfw.glfwTerminate()
+    glfw.terminate()
     __initialized__ = False
 
 
 # ------------------------------------------------------------ availability ---
 try:
-    from glumpy.ext import glfw
+    import glfw
     __availability__ = True
-    __version__ = ("%d.%d.%d") % glfw.version
+    __version__ = "%d.%d.%d" % glfw.get_version()
     __init__()
 
-    __mouse_map__ = { glfw.GLFW_MOUSE_BUTTON_LEFT:   window.mouse.LEFT,
-                      glfw.GLFW_MOUSE_BUTTON_MIDDLE: window.mouse.MIDDLE,
-                      glfw.GLFW_MOUSE_BUTTON_RIGHT:  window.mouse.RIGHT }
+    __mouse_map__ = { glfw.MOUSE_BUTTON_LEFT:   window.mouse.LEFT,
+                      glfw.MOUSE_BUTTON_MIDDLE: window.mouse.MIDDLE,
+                      glfw.MOUSE_BUTTON_RIGHT:  window.mouse.RIGHT }
 
-    __key_map__   = { glfw.GLFW_KEY_ESCAPE:        window.key.ESCAPE,
-                      glfw.GLFW_KEY_ENTER:         window.key.ENTER,
-                      glfw.GLFW_KEY_TAB:           window.key.TAB,
-                      glfw.GLFW_KEY_BACKSPACE:     window.key.BACKSPACE,
-                      glfw.GLFW_KEY_INSERT:        window.key.INSERT,
-                      glfw.GLFW_KEY_DELETE:        window.key.DELETE,
-                      glfw.GLFW_KEY_RIGHT:         window.key.RIGHT,
-                      glfw.GLFW_KEY_LEFT:          window.key.LEFT,
-                      glfw.GLFW_KEY_DOWN:          window.key.DOWN,
-                      glfw.GLFW_KEY_UP:            window.key.UP,
-                      glfw.GLFW_KEY_PAGE_UP:       window.key.PAGEUP,
-                      glfw.GLFW_KEY_PAGE_DOWN:     window.key.PAGEDOWN,
-                      glfw.GLFW_KEY_HOME:          window.key.HOME,
-                      glfw.GLFW_KEY_END:           window.key.END,
-                      glfw.GLFW_KEY_CAPS_LOCK:     window.key.CAPSLOCK,
-                      glfw.GLFW_KEY_PRINT_SCREEN:  window.key.PRINT,
-                      glfw.GLFW_KEY_PAUSE:         window.key.PAUSE,
-                      glfw.GLFW_KEY_F1:            window.key.F1,
-                      glfw.GLFW_KEY_F2:            window.key.F2,
-                      glfw.GLFW_KEY_F3:            window.key.F3,
-                      glfw.GLFW_KEY_F4:            window.key.F4,
-                      glfw.GLFW_KEY_F5:            window.key.F5,
-                      glfw.GLFW_KEY_F6:            window.key.F6,
-                      glfw.GLFW_KEY_F7:            window.key.F7,
-                      glfw.GLFW_KEY_F8:            window.key.F8,
-                      glfw.GLFW_KEY_F9:            window.key.F9,
-                      glfw.GLFW_KEY_F10:           window.key.F10,
-                      glfw.GLFW_KEY_F11:           window.key.F11,
-                      glfw.GLFW_KEY_F12:           window.key.F12 }
+    __key_map__   = { glfw.KEY_ESCAPE:        window.key.ESCAPE,
+                      glfw.KEY_ENTER:         window.key.ENTER,
+                      glfw.KEY_TAB:           window.key.TAB,
+                      glfw.KEY_BACKSPACE:     window.key.BACKSPACE,
+                      glfw.KEY_INSERT:        window.key.INSERT,
+                      glfw.KEY_DELETE:        window.key.DELETE,
+                      glfw.KEY_RIGHT:         window.key.RIGHT,
+                      glfw.KEY_LEFT:          window.key.LEFT,
+                      glfw.KEY_DOWN:          window.key.DOWN,
+                      glfw.KEY_UP:            window.key.UP,
+                      glfw.KEY_PAGE_UP:       window.key.PAGEUP,
+                      glfw.KEY_PAGE_DOWN:     window.key.PAGEDOWN,
+                      glfw.KEY_HOME:          window.key.HOME,
+                      glfw.KEY_END:           window.key.END,
+                      glfw.KEY_CAPS_LOCK:     window.key.CAPSLOCK,
+                      glfw.KEY_PRINT_SCREEN:  window.key.PRINT,
+                      glfw.KEY_PAUSE:         window.key.PAUSE,
+                      glfw.KEY_F1:            window.key.F1,
+                      glfw.KEY_F2:            window.key.F2,
+                      glfw.KEY_F3:            window.key.F3,
+                      glfw.KEY_F4:            window.key.F4,
+                      glfw.KEY_F5:            window.key.F5,
+                      glfw.KEY_F6:            window.key.F6,
+                      glfw.KEY_F7:            window.key.F7,
+                      glfw.KEY_F8:            window.key.F8,
+                      glfw.KEY_F9:            window.key.F9,
+                      glfw.KEY_F10:           window.key.F10,
+                      glfw.KEY_F11:           window.key.F11,
+                      glfw.KEY_F12:           window.key.F12 }
 
 except ImportError:
     __availability__ = False
@@ -144,43 +144,43 @@ capability = {
 def set_configuration(config):
     """ Set gl configuration for GLFW """
 
-    glfw.glfwWindowHint( glfw.GLFW_REFRESH_RATE, 0 )
+    glfw.window_hint(glfw.REFRESH_RATE, 0)
 
-    glfw.glfwWindowHint(glfw.GLFW_RED_BITS, config.red_size)
-    glfw.glfwWindowHint(glfw.GLFW_GREEN_BITS, config.green_size)
-    glfw.glfwWindowHint(glfw.GLFW_BLUE_BITS, config.blue_size)
-    glfw.glfwWindowHint(glfw.GLFW_ALPHA_BITS, config.alpha_size)
+    glfw.window_hint(glfw.RED_BITS, config.red_size)
+    glfw.window_hint(glfw.GREEN_BITS, config.green_size)
+    glfw.window_hint(glfw.BLUE_BITS, config.blue_size)
+    glfw.window_hint(glfw.ALPHA_BITS, config.alpha_size)
 
-    glfw.glfwWindowHint(glfw.GLFW_ACCUM_RED_BITS, 0)
-    glfw.glfwWindowHint(glfw.GLFW_ACCUM_GREEN_BITS, 0)
-    glfw.glfwWindowHint(glfw.GLFW_ACCUM_BLUE_BITS, 0)
-    glfw.glfwWindowHint(glfw.GLFW_ACCUM_ALPHA_BITS, 0)
+    glfw.window_hint(glfw.ACCUM_RED_BITS, 0)
+    glfw.window_hint(glfw.ACCUM_GREEN_BITS, 0)
+    glfw.window_hint(glfw.ACCUM_BLUE_BITS, 0)
+    glfw.window_hint(glfw.ACCUM_ALPHA_BITS, 0)
 
-    glfw.glfwWindowHint(glfw.GLFW_DEPTH_BITS, config.depth_size)
-    glfw.glfwWindowHint(glfw.GLFW_STENCIL_BITS, config.stencil_size)
-    glfw.glfwWindowHint(glfw.GLFW_SRGB_CAPABLE, config.srgb)
-    glfw.glfwWindowHint(glfw.GLFW_SAMPLES, config.samples)
-    glfw.glfwWindowHint(glfw.GLFW_STEREO, config.stereo)
+    glfw.window_hint(glfw.DEPTH_BITS, config.depth_size)
+    glfw.window_hint(glfw.STENCIL_BITS, config.stencil_size)
+    glfw.window_hint(glfw.SRGB_CAPABLE, config.srgb)
+    glfw.window_hint(glfw.SAMPLES, config.samples)
+    glfw.window_hint(glfw.STEREO, config.stereo)
 
     if config.api in ("ES", "es"):
-        glfw.glfwWindowHint(glfw.GLFW_CLIENT_API,
-                            glfw.GLFW_OPENGL_ES_API)
+        glfw.window_hint(glfw.CLIENT_API,
+                         glfw.OPENGL_ES_API)
     else:
-        glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MAJOR,
-                            config.major_version)
-        glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR,
-                            config.minor_version)
+        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR,
+                         config.major_version)
+        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR,
+                         config.minor_version)
 
         if config.major_version >= 3 and config.profile == "core":
-            glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
-                                glfw.GLFW_OPENGL_CORE_PROFILE)
-            glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, True)
+            glfw.window_hint(glfw.OPENGL_PROFILE,
+                             glfw.OPENGL_CORE_PROFILE)
+            glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
         elif config.major_version >= 3 and config.profile == "compatibility":
-            glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
-                                glfw.GLFW_OPENGL_COMPAT_PROFILE)
+            glfw.window_hint(glfw.OPENGL_PROFILE,
+                             glfw.OPENGL_COMPAT_PROFILE)
         else:
-            glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE,
-                                glfw.GLFW_OPENGL_ANY_PROFILE)
+            glfw.window_hint(glfw.OPENGL_PROFILE,
+                             glfw.OPENGL_ANY_PROFILE)
 
 
 # ------------------------------------------------------------------ Window ---
@@ -205,37 +205,37 @@ class Window(window.Window):
 
         def on_error(error, message):
             log.warning(message)
-        glfw.glfwSetErrorCallback(on_error)
+        glfw.set_error_callback(on_error)
 
-        glfw.glfwWindowHint(glfw.GLFW_RESIZABLE, True)
-        glfw.glfwWindowHint(glfw.GLFW_DECORATED, True)
-        glfw.glfwWindowHint(glfw.GLFW_VISIBLE, True)
+        glfw.window_hint(glfw.RESIZABLE, True)
+        glfw.window_hint(glfw.DECORATED, True)
+        glfw.window_hint(glfw.VISIBLE, True)
         if not decoration:
-            glfw.glfwWindowHint(glfw.GLFW_DECORATED, False)
+            glfw.window_hint(glfw.DECORATED, False)
         if not visible:
-            glfw.glfwWindowHint(glfw.GLFW_VISIBLE, False)
+            glfw.window_hint(glfw.VISIBLE, False)
 
         if config is None:
             config = configuration.Configuration()
         set_configuration(config)
-        self._native_window = glfw.glfwCreateWindow( self._width, self._height,
-                                                     self._title, None, None)
+        self._native_window = glfw.create_window(self._width, self._height,
+                                                 self._title, None, None)
 
         if not self._native_window:
             log.critical("Window creation failed")
             __exit__()
             sys.exit()
 
-        glfw.glfwMakeContextCurrent(self._native_window)
-        glfw.glfwSwapInterval(0)
+        glfw.make_context_current(self._native_window)
+        glfw.swap_interval(0)
 
         # OSX: check framebuffer size / window size. On retina display, they
         #      can be different so we try to correct window size such as having
         #      the framebuffer size of the right size
-        w,h = glfw.glfwGetFramebufferSize(self._native_window)
+        w,h = glfw.get_framebuffer_size(self._native_window)
         if w != width or h!= height:
             width, height  = width//2, height//2
-            glfw.glfwSetWindowSize(self._native_window, width, height)
+            glfw.set_window_size(self._native_window, width, height)
             log.info("HiDPI detected, fixing window size")
             self._hidpi = True
 
@@ -243,11 +243,11 @@ class Window(window.Window):
         def on_framebuffer_resize(win, width, height):
             self._width, self._height = width, height
             self.dispatch_event('on_resize', width, height)
-        glfw.glfwSetFramebufferSizeCallback(self._native_window, on_framebuffer_resize)
+        glfw.set_framebuffer_size_callback(self._native_window, on_framebuffer_resize)
         # def on_resize(win, width, height):
         #     self._width, self._height = width, height
         #     self.dispatch_event('on_resize', width, height)
-        # glfw.glfwSetWindowSizeCallback(self._native_window, on_resize)
+        # glfw.set_window_size_callback(self._native_window, on_resize)
 
 
         def on_cursor_enter(win, entered):
@@ -255,46 +255,46 @@ class Window(window.Window):
                 self.dispatch_event('on_enter')
             else:
                 self.dispatch_event('on_leave')
-        glfw.glfwSetCursorEnterCallback(self._native_window, on_cursor_enter)
+        glfw.set_cursor_enter_callback(self._native_window, on_cursor_enter)
 
 
         def on_window_close(win):
             self.close()
-        glfw.glfwSetWindowCloseCallback(self._native_window, on_window_close)
+        glfw.set_window_close_callback(self._native_window, on_window_close)
 
 
         def on_keyboard(win, key, scancode, action, mods):
             symbol = self._keyboard_translate(key)
             modifiers = self._modifiers_translate(mods)
-            if action in[glfw.GLFW_PRESS,glfw.GLFW_REPEAT]:
+            if action in[glfw.PRESS,glfw.REPEAT]:
                 self.dispatch_event('on_key_press', symbol, modifiers)
             else:
                 self.dispatch_event('on_key_release', symbol, modifiers)
-        glfw.glfwSetKeyCallback(self._native_window, on_keyboard)
+        glfw.set_key_callback(self._native_window, on_keyboard)
 
 
         def on_character(win, character):
             self.dispatch_event('on_character', u"%c" % character)
-        glfw.glfwSetCharCallback(self._native_window, on_character)
+        glfw.set_char_callback(self._native_window, on_character)
 
 
         def on_mouse_button(win, button, action, mods):
-            x,y = glfw.glfwGetCursorPos(win)
+            x,y = glfw.get_cursor_pos(win)
             if self._hidpi:
                 x, y = 2*x, 2*y
 
             button = __mouse_map__.get(button, window.mouse.UNKNOWN)
-            if action == glfw.GLFW_RELEASE:
+            if action == glfw.RELEASE:
                 self._button = window.mouse.NONE
                 self._mouse_x = x
                 self._mouse_y = y
                 self.dispatch_event('on_mouse_release', x, y, button)
-            elif action == glfw.GLFW_PRESS:
+            elif action == glfw.PRESS:
                 self._button = button
                 self._mouse_x = x
                 self._mouse_y = y
                 self.dispatch_event('on_mouse_press', x, y, button)
-        glfw.glfwSetMouseButtonCallback(self._native_window, on_mouse_button)
+        glfw.set_mouse_button_callback(self._native_window, on_mouse_button)
 
 
         def on_mouse_motion(win, x, y):
@@ -308,50 +308,50 @@ class Window(window.Window):
                 self.dispatch_event('on_mouse_drag', x, y, dx, dy, self._button)
             else:
                 self.dispatch_event('on_mouse_motion', x, y, dx, dy)
-        glfw.glfwSetCursorPosCallback(self._native_window, on_mouse_motion)
+        glfw.set_cursor_pos_callback(self._native_window, on_mouse_motion)
 
 
         def on_scroll(win, xoffset, yoffset):
-            x,y = glfw.glfwGetCursorPos(win)
+            x,y = glfw.get_cursor_pos(win)
             if self._hidpi:
                 x, y = 2*x, 2*y
             self.dispatch_event('on_mouse_scroll', x, y, xoffset, yoffset)
-        glfw.glfwSetScrollCallback( self._native_window, on_scroll )
+        glfw.set_scroll_callback(self._native_window, on_scroll)
 
         self._width, self._height = self.get_size()
         __windows__.append(self)
 
 
-    def _modifiers_translate( self, modifiers ):
+    def _modifiers_translate(self, modifiers):
         _modifiers = 0
-        if modifiers & glfw.GLFW_MOD_SHIFT:
+        if modifiers & glfw.MOD_SHIFT:
             _modifiers |=  window.key.MOD_SHIFT
-        if modifiers & glfw.GLFW_MOD_CONTROL:
+        if modifiers & glfw.MOD_CONTROL:
             _modifiers |=  window.key.MOD_CTRL
-        if modifiers & glfw.GLFW_MOD_ALT:
+        if modifiers & glfw.MOD_ALT:
             _modifiers |=  window.key.MOD_ALT
-        if modifiers & glfw.GLFW_MOD_SUPER:
+        if modifiers & glfw.MOD_SUPER:
             _modifiers |=  window.key.MOD_COMMAND
         self._modifiers = modifiers
         return _modifiers
 
-    def _keyboard_translate( self, code ):
+    def _keyboard_translate(self, code):
         if (32 <= code <= 96) or code in [161,162]:
             return code
         return __key_map__.get(code, window.key.UNKNOWN)
 
 
     def show(self):
-        glfw.glfwShowWindow( self._native_window )
+        glfw.show_window(self._native_window)
         self.dispatch_event('on_show')
 
     def hide(self):
-        glfw.glfwHideWindow( self._native_window )
+        glfw.hide_window(self._native_window)
         self.dispatch_event('on_hide')
 
     def close(self):
-        glfw.glfwSetWindowShouldClose(self._native_window, True)
-        glfw.glfwDestroyWindow(self._native_window)
+        glfw.set_window_should_close(self._native_window, True)
+        glfw.destroy_window(self._native_window)
         __windows__.remove(self)
         for i in range(len(self._timer_stack)):
             handler, interval = self._timer_stack[i]
@@ -359,34 +359,34 @@ class Window(window.Window):
         self.dispatch_event('on_close')
 
     def set_title(self, title):
-        glfw.glfwSetWindowTitle( self._native_window, title)
+        glfw.set_window_title(self._native_window, title)
         self._title = title
 
     def get_title(self, title):
         return self._title
 
     def set_size(self, width, height):
-        glfw.glfwSetWindowSize(self._native_window, width, height)
-        self._width, self._height = glfw.glfwGetFramebufferSize(self._native_window)
+        glfw.set_window_size(self._native_window, width, height)
+        self._width, self._height = glfw.get_framebuffer_size(self._native_window)
 
     def get_size(self):
-        # self._width, self._height = glfw.glfwGetWindowSize(self._native_window)
-        self._width, self._height = glfw.glfwGetFramebufferSize(self._native_window)
+        # self._width, self._height = glfw.get_window_size(self._native_window)
+        self._width, self._height = glfw.get_framebuffer_size(self._native_window)
         return self._width, self._height
 
     def set_position(self, x, y):
-        glfw.glfwSetWindowPos(self._native_window, x, y)
-        self._x, self._y = glfw.glfwGetWindowPos(self._native_window)
+        glfw.set_window_pos(self._native_window, x, y)
+        self._x, self._y = glfw.get_window_pos(self._native_window)
 
     def get_position(self):
-        self._x, self._y = glfw.glfwGetWindowPos(self._native_window)
+        self._x, self._y = glfw.get_window_pos(self._native_window)
         return self._x, self._y
 
     def swap(self):
-        glfw.glfwSwapBuffers(self._native_window)
+        glfw.swap_buffers(self._native_window)
 
     def activate(self):
-        glfw.glfwMakeContextCurrent(self._native_window)
+        glfw.make_context_current(self._native_window)
 
 
 
@@ -399,7 +399,7 @@ def windows():
 def process(dt):
 
     # Poll for and process events
-    glfw.glfwPollEvents()
+    glfw.poll_events()
 
     for window in __windows__:
         # Make window active
