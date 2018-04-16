@@ -24,7 +24,10 @@ class AggFont(object):
         self.height    = metrics.height/64.0
         self.linegap   = (self.height - self.ascender + self.descender)
 
-        freetype.set_lcd_filter(freetype.FT_LCD_FILTER_LIGHT)
+        try:
+            freetype.set_lcd_filter(freetype.FT_LCD_FILTER_LIGHT)
+        except:
+            pass
 
 
     def __getitem__(self, charcode):
