@@ -350,7 +350,7 @@ class VertexShader(Shader):
     @property
     def code(self):
         code = super(VertexShader, self).code
-        code = "#define _GLUMPY_VERTEX_SHADER_\n" + code
+        code = "#define _GLUMPY__VERTEX_SHADER__\n" + code
         return code
 
 
@@ -370,7 +370,7 @@ class FragmentShader(Shader):
     @property
     def code(self):
         code = super(FragmentShader, self).code
-        code = "#define _GLUMPY_FRAGMENT_SHADER_\n" + code
+        code = "#define _GLUMPY__FRAGMENT_SHADER__\n" + code
         return code
 
 
