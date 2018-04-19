@@ -180,7 +180,7 @@ class Window(window.Window):
                   decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         if vsync:
-            log.warn('vsync not implemented for freeglut backend')
+            log.warn('vsync not implemented for osxglut backend')
 
         if len(__windows__) > 0:
             log.critical(
