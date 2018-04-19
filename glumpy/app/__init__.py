@@ -160,6 +160,9 @@ class Window(object):
         if "config" not in kwargs.keys():
             kwargs['config'] = config
 
+        if 'vsync' not in kwargs.keys():
+            kwargs['vsync'] = options.vsync
+
         # Get command line size
         # if options.size:
         #     size = options.size.split(",")

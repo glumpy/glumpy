@@ -21,15 +21,15 @@ tools for rapidly generating bindings for any C++ libraries.
 **Capability**
 
 ========================== ======== ======================== ========
-Multiple windows              ✓     Set GL API                  ✓    
+Multiple windows              ✓     Set GL API                  ✓
 -------------------------- -------- ------------------------ --------
-Non-decorated windows         ✓     Set GL Profile              ✓    
+Non-decorated windows         ✓     Set GL Profile              ✓
 -------------------------- -------- ------------------------ --------
-Resize windows                ✓     Share GL Context            ✓    
+Resize windows                ✓     Share GL Context            ✓
 -------------------------- -------- ------------------------ --------
-Move windows                  ✓     Unicode handling            ✓    
+Move windows                  ✓     Unicode handling            ✓
 -------------------------- -------- ------------------------ --------
-Fullscreen                    ✓     Scroll event                ✓    
+Fullscreen                    ✓     Scroll event                ✓
 ========================== ======== ======================== ========
 """
 
@@ -150,7 +150,6 @@ def set_configuration(config):
     # ...7868882/enabling-opengl-core-profile-in-qt4-on-os-x
 
     __glformat__ = QtOpenGL.QGLFormat()
-    __glformat__.setSwapInterval(0)
     __glformat__.setRedBufferSize(config.red_size)
     __glformat__.setGreenBufferSize(config.green_size)
     __glformat__.setBlueBufferSize(config.blue_size)
@@ -198,7 +197,7 @@ def set_configuration(config):
 # ------------------------------------------------------------------ Window ---
 class Window(window.Window):
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -214,6 +213,8 @@ class Window(window.Window):
         if config is None:
             config = configuration.Configuration()
         set_configuration(config)
+
+        __glformat__.setSwapInterval(1 if vsync else 0)
 
         self._native_app = QtGui.QApplication.instance()
         if self._native_app is None:

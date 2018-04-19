@@ -22,15 +22,15 @@ and music. It works on Windows, OS X and Linux.
 **Capability**
 
 ========================== ======== ======================== ========
-Multiple windows              ✓     Set GL API                  ✘    
+Multiple windows              ✓     Set GL API                  ✘
 -------------------------- -------- ------------------------ --------
-Non-decorated windows         ✓     Set GL Profile              ✘    
+Non-decorated windows         ✓     Set GL Profile              ✘
 -------------------------- -------- ------------------------ --------
-Resize windows                ✓     Share GL Context            ✓    
+Resize windows                ✓     Share GL Context            ✓
 -------------------------- -------- ------------------------ --------
-Move windows                  ✓     Unicode handling            ✓    
+Move windows                  ✓     Unicode handling            ✓
 -------------------------- -------- ------------------------ --------
-Fullscreen                    ✓     Scroll event                ✓    
+Fullscreen                    ✓     Scroll event                ✓
 ========================== ======== ======================== ========
 """
 import sys
@@ -137,7 +137,7 @@ class Window(window.Window):
 
 
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -156,7 +156,7 @@ class Window(window.Window):
 
         self._native_window = pyglet.window.Window(
             width=self._width, height=self._height, caption=title,
-            resizable=True, vsync=False, config=__configuration__)
+            resizable=True, vsync=vsync, config=__configuration__)
 
         def on_mouse_drag(x, y, dx, dy, button, modifiers):
             # BUGFIX
