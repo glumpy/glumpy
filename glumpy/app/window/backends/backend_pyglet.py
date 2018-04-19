@@ -22,15 +22,15 @@ and music. It works on Windows, OS X and Linux.
 **Capability**
 
 ========================== ======== ======================== ========
-Multiple windows              ✓     Set GL API                  ✘    
+Multiple windows              ✓     Set GL API                  ✘
 -------------------------- -------- ------------------------ --------
-Non-decorated windows         ✓     Set GL Profile              ✘    
+Non-decorated windows         ✓     Set GL Profile              ✘
 -------------------------- -------- ------------------------ --------
-Resize windows                ✓     Share GL Context            ✓    
+Resize windows                ✓     Share GL Context            ✓
 -------------------------- -------- ------------------------ --------
-Move windows                  ✓     Unicode handling            ✓    
+Move windows                  ✓     Unicode handling            ✓
 -------------------------- -------- ------------------------ --------
-Fullscreen                    ✓     Scroll event                ✓    
+Fullscreen                    ✓     Scroll event                ✓
 ========================== ======== ======================== ========
 """
 import sys
@@ -79,6 +79,9 @@ def __exit__():
 # ------------------------------------------------------------ availability ---
 try:
     import pyglet
+    # prevent pyglet from failing if sphinx is loaded
+    if hasattr(sys, 'is_pyglet_docgen'):
+        sys.is_pyglet_docgen = False
     __availability__ = True
     __version__ = pyglet.version
     __init__()
