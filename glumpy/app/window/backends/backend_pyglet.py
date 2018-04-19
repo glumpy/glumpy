@@ -82,6 +82,8 @@ try:
     # prevent pyglet from failing if sphinx is loaded
     if hasattr(sys, 'is_pyglet_docgen'):
         sys.is_pyglet_docgen = False
+    if hasattr(sys, 'is_epydoc'):
+        sys.is_epydoc = False
     __availability__ = True
     __version__ = pyglet.version
     __init__()
