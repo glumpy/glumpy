@@ -22,15 +22,15 @@ loop.
 **Capability**
 
 ========================== ======== ======================== ========
-Multiple windows              ✓     Set GL API                  ✓    
+Multiple windows              ✓     Set GL API                  ✓
 -------------------------- -------- ------------------------ --------
-Non-decorated windows         ✓     Set GL Profile              ✓    
+Non-decorated windows         ✓     Set GL Profile              ✓
 -------------------------- -------- ------------------------ --------
-Resize windows                ✓     Share GL Context            ✓    
+Resize windows                ✓     Share GL Context            ✓
 -------------------------- -------- ------------------------ --------
-Move windows                  ✓     Unicode handling            ✓    
+Move windows                  ✓     Unicode handling            ✓
 -------------------------- -------- ------------------------ --------
-Fullscreen                    ✓     Scroll event                ✓    
+Fullscreen                    ✓     Scroll event                ✓
 ========================== ======== ======================== ========
 """
 import os, sys
@@ -187,7 +187,7 @@ def set_configuration(config):
 class Window(window.Window):
 
     def __init__( self, width=512, height=512, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -227,7 +227,7 @@ class Window(window.Window):
             sys.exit()
 
         glfw.glfwMakeContextCurrent(self._native_window)
-        glfw.glfwSwapInterval(0)
+        glfw.glfwSwapInterval(1 if vsync else 0)
 
         # OSX: check framebuffer size / window size. On retina display, they
         #      can be different so we try to correct window size such as having

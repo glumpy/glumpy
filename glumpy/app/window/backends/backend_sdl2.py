@@ -188,7 +188,7 @@ class Window(window.Window):
     """ """
 
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
         """ """
 
         window.Window.__init__(self, width=width,
@@ -223,7 +223,7 @@ class Window(window.Window):
                                                     width, height, flags)
         self._native_context = sdl2.SDL_GL_CreateContext(self._native_window)
         self._native_id = sdl2.SDL_GetWindowID(self._native_window)
-        sdl2.SDL_GL_SetSwapInterval(0)
+        sdl2.SDL_GL_SetSwapInterval(1 if vsync else 0)
 
         # OSX: check framebuffer size / window size. On retina display, they
         #      can be different so we try to correct window size such as having

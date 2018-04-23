@@ -148,7 +148,6 @@ def set_configuration(configuration):
     """ Set gl configuration """
 
     global __flags__
-    pygame.display.gl_set_attribute( pygame.GL_SWAP_CONTROL, 0 )
     pygame.display.gl_set_attribute( pygame.GL_RED_SIZE, configuration.red_size)
     pygame.display.gl_set_attribute( pygame.GL_GREEN_SIZE, configuration.green_size)
     pygame.display.gl_set_attribute( pygame.GL_BLUE_SIZE, configuration.blue_size)
@@ -174,7 +173,7 @@ class Window(window.Window):
     ''' '''
 
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         if len(__windows__) > 0:
             log.critical(
@@ -196,6 +195,9 @@ class Window(window.Window):
         if config is None:
             config = configuration.Configuration()
         set_configuration(config)
+
+        pygame.display.gl_set_attribute( pygame.GL_SWAP_CONTROL, 1 if vsync else 0)
+
 
         flags = __flags__
         if self._decoration == False:

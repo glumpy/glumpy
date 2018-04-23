@@ -31,7 +31,7 @@ Resize windows                ✓     Share GL Context            ✘
 -------------------------- -------- ------------------------ --------
 Move windows                  ✓     Unicode handling            ✘
 -------------------------- -------- ------------------------ --------
-Fullscreen                    ✓     Scroll event                ✓    
+Fullscreen                    ✓     Scroll event                ✓
 ========================== ======== ======================== ========
 """
 import sys
@@ -178,7 +178,10 @@ def set_configuration(config):
 class Window(window.Window):
 
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
+
+        if vsync:
+            log.warn('vsync not implemented for freeglut backend')
 
         if len(__windows__) > 0:
             log.critical(

@@ -88,7 +88,7 @@ class Window(window.Window):
     """
 
     def __init__( self, width=512, height=512, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -107,7 +107,7 @@ class Window(window.Window):
         # Each on the events below must be called at some point This means you
         # have to connect to key and mouse events using toolkit native methods
         # and dispatch the event to glumpy event stack.
-        
+
         # self.dispatch_event('on_show')
         # self.dispatch_event('on_hide')
         # self.dispatch_event('on_close')
@@ -141,7 +141,7 @@ class Window(window.Window):
     def set_title(self, title):
         """ Set window title """
         raise(NotImplemented)
-    
+
     def get_title(self, title):
         """ Get window title """
         raise(NotImplemented)
@@ -180,7 +180,7 @@ def windows():
 # ----------------------------------------------------------------- process ---
 def process(dt):
     """ Process events for all windows. Non blocking. """
-    
+
     # Poll for and process events
     # -> Add toolkit specific code here to process events
     # -> Must return (non bloking)

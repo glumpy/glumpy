@@ -142,7 +142,7 @@ class Window(window.Window):
 
 
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -161,7 +161,7 @@ class Window(window.Window):
 
         self._native_window = pyglet.window.Window(
             width=self._width, height=self._height, caption=title,
-            resizable=True, vsync=False, config=__configuration__)
+            resizable=True, vsync=vsync, config=__configuration__)
 
         def on_mouse_drag(x, y, dx, dy, button, modifiers):
             # BUGFIX
