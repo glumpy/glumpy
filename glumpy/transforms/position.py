@@ -33,7 +33,7 @@ class Position(Transform):
          program = Program(vertex, fragment)
          program["transform"] = Position("position")
          # or program["transform"] = Position("position.y","position.x")
-         # or program["transform"] = Position("vec2(position.y,position.x"))
+         # or program["transform"] = Position("vec2(position.y,position.x)")
          ...
     """
     
