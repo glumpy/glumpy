@@ -4,6 +4,7 @@
 # -----------------------------------------------------------------------------
 from glumpy import library
 from glumpy.transforms.transform import Transform
+import numpy as np
 
 
 class Translate(Transform):
