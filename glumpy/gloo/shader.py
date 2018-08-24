@@ -239,16 +239,28 @@ class Shader(GLObject):
         status = gl.glGetShaderiv(self._handle, gl.GL_COMPILE_STATUS)
         if not status:
             error = gl.glGetShaderInfoLog(self._handle).decode()
-            lineno, mesg = self._parse_error(error)
-            self._print_error(mesg, lineno-1)
+            parsed_errors = self._parse_error(error)
+            for lineno, mesg in parsed_errors:
+                self._print_error(mesg, lineno - 1)
             raise RuntimeError("Shader compilation error")
-
 
     def _delete(self):
         """ Delete shader from GPU memory (if it was present). """
 
         gl.glDeleteShader(self._handle)
 
+    _ERROR_RE = [
+        # Nvidia
+        # 0(7): error C1008: undefined variable "MV"
+        # 0(2) : error C0118: macros prefixed with '__' are reserved
+        re.compile(r'^\s*(\d+)\((?P<line_no>\d+)\)\s*:\s(?P<error_msg>.*)', re.MULTILINE),
+        # ATI / Intel
+        # ERROR: 0:131: '{' : syntax error parse error
+        re.compile(r'^\s*ERROR:\s(\d+):(?P<line_no>\d+):\s(?P<error_msg>.*)', re.MULTILINE),
+        # Nouveau
+        # 0:28(16): error: syntax error, unexpected ')', expecting '('
+        re.compile(r'^\s*(\d+):(?P<line_no>\d+)\((\d+)\):\s(?P<error_msg>.*)', re.MULTILINE)
+    ]
 
     def _parse_error(self, error):
         """
@@ -260,24 +272,13 @@ class Shader(GLObject):
         error : str
             An error string as returned by the compilation process
         """
-
-        # Nvidia
-        # 0(7): error C1008: undefined variable "MV"
-        # 0(2) : error C0118: macros prefixed with '__' are reserved
-        m = re.match(r'(\d+)\((\d+)\)\s*:\s(.*)', error )
-        if m: return int(m.group(2)), m.group(3)
-
-        # ATI / Intel
-        # ERROR: 0:131: '{' : syntax error parse error
-        m = re.match(r'ERROR:\s(\d+):(\d+):\s(.*)', error )
-        if m: return int(m.group(2)), m.group(3)
-
-        # Nouveau
-        # 0:28(16): error: syntax error, unexpected ')', expecting '('
-        m = re.match( r'(\d+):(\d+)\((\d+)\):\s(.*)', error )
-        if m: return int(m.group(2)), m.group(4)
-
-        raise ValueError('Unknown GLSL error format:\n{}\n'.format(error))
+        for error_re in self._ERROR_RE:
+            matches = list(error_re.finditer(error))
+            if matches:
+                errors = [(int(m.group('line_no')), m.group('error_msg')) for m in matches]
+                return sorted(errors, key=lambda elem: elem[0])
+        else:
+            raise ValueError('Unknown GLSL error format:\n{}\n'.format(error))
 
 
     def _print_error(self, error, lineno):
