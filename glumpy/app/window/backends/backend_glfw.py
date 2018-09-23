@@ -55,6 +55,9 @@ __initialized__ = False
 # Active windows
 __windows__ = []
 
+# Windows scheduled to be destroyed
+__windows_to_remove__ = []
+
 
 # ---------------------------------------------------- convenient functions ---
 def name():      return __name__
@@ -351,12 +354,15 @@ class Window(window.Window):
 
     def close(self):
         glfw.glfwSetWindowShouldClose(self._native_window, True)
-        glfw.glfwDestroyWindow(self._native_window)
         __windows__.remove(self)
+        __windows_to_remove__.append(self)
         for i in range(len(self._timer_stack)):
             handler, interval = self._timer_stack[i]
             self._clock.unschedule(handler)
         self.dispatch_event('on_close')
+
+    def destroy(self):
+        glfw.glfwDestroyWindow(self._native_window)
 
     def set_title(self, title):
         glfw.glfwSetWindowTitle( self._native_window, title)
@@ -414,5 +420,8 @@ def process(dt):
         # Swap buffers
         window.swap()
 
+    for window in __windows_to_remove__:
+        window.destroy()
+        __windows_to_remove__.remove(window)
 
     return len(__windows__)
