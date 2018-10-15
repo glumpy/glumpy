@@ -5,6 +5,7 @@
 """ Shadertoy template to test a shadertoy from www.shadertoy.com """
 
 import datetime
+import time
 import numpy as np
 from glumpy import app, gl, gloo
 
@@ -18,29 +19,34 @@ void main (void)
 
 fragment = """
 uniform vec3      iResolution; // Viewport resolution (in pixels)
-uniform float     iGlobalTime; // Shader playback time (in seconds)
+uniform float     iTime;       // Shader playback time (in seconds)
 uniform vec4      iMouse;      // Mouse pixel coords. xy: current (if MLB down) + zw: click
 uniform vec4      iDate;       // Date as (year, month, day, time in seconds)
 // uniform float     iChannelTime[4];       // Channel playback time (in seconds)
 // uniform vec3      iChannelResolution[4]; // Channel resolution (in pixels)
 // uniform sampler2D iChannel[4];           // Input channel. (XX = 2D or Cube)
 
-// Put your shadertoy code here
+void mainImage(out vec4 fragColor, in vec2 fragCoord);
 void main(void)
 {
-    vec2 uv = gl_FragCoord.xy / iResolution.xy;
-    gl_FragColor = vec4(uv,0.5*sin(1.0+iGlobalTime),1.0);
+    mainImage(gl_FragColor, gl_FragCoord.xy);
+}
+
+// Put your shadertoy code here
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = fragCoord.xy / iResolution.xy;
+    fragColor = vec4(uv,0.5*sin(1.0+iTime),1.0);
 }
 """
 
-
+start_time = time.time()
 window = app.Window(width=800, height=800)
 
 @window.event
 def on_draw(dt):
     window.clear()
     program.draw(gl.GL_TRIANGLE_STRIP)
-    program["iGlobalTime"] += dt
+    program["iTime"] = start_time - time.time()
     today = datetime.datetime.now()
     seconds = (today.hour*60*60 + today.minute*60 + today.second)
     program["iDate"] = today.year, today.month, today.day, seconds
@@ -57,7 +63,6 @@ def on_mouse_drag(x, y, dx, dy, button):
 
 program = gloo.Program(vertex, fragment, count=4)
 program['position'] = [(-1,-1), (-1,+1), (+1,-1), (+1,+1)]
-program["iGlobalTime"] = 0
 gl.glEnable(gl.GL_BLEND)
 gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 app.run(framerate=60)
