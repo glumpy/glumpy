@@ -57,10 +57,8 @@ program["y_index"] = np.tile(np.arange(count),size)
 program["y_value"] = 0
 
 # Compute indices
-I = np.repeat(np.arange(size+1,dtype=np.uint32)*count,2)[1:-1]
-I[-1] = I[0]
-I = np.tile(I,count).reshape(count,2*size)
-I += np.repeat(np.arange(count,dtype=np.uint32),2*size).reshape(count,2*size)
+I = np.arange(count * size, dtype=np.uint32).reshape(size, -1).T
+I = np.roll(np.repeat(I, 2, axis=1), -1, axis=1)
 I = I.view(gloo.IndexBuffer)
 
 app.run()
