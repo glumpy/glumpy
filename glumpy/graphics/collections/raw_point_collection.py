@@ -112,7 +112,7 @@ class RawPointCollection(Collection):
         """
 
         itemsize  = itemsize or 1
-        itemcount = len(P)/itemsize
+        itemcount = len(P)//itemsize
 
         V = np.empty(len(P), dtype=self.vtype)
 

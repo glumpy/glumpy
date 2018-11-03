@@ -30,7 +30,7 @@ class MarkerCollection(Collection):
         ----------
 
         user_dtype: list
-            The base dtype can be completed (appended) by the used_dtype. It
+            The base dtype can be completed (appended) by the user_dtype. It
             only make sense if user also provide vertex and/or fragment shaders
 
         transform: glumpy.Tranforms
