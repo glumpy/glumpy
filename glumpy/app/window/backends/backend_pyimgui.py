@@ -3,10 +3,11 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
-`GLFW <http://www.glfw.org>`_ is an Open Source, multi-platform library for
-creating windows with OpenGL contexts and receiving input and events. It is
-easy to integrate into existing applications and does not lay claim to the main
-loop.
+`pyimgui <https://github.com/swistakm/pyimgui>`_ is a Cython-based binding for 
+the amazing dear imgui C++ library - a Bloat-free Immediate Mode Graphical 
+User Interface.
+
+
 
 **Usage**
 
@@ -14,7 +15,7 @@ loop.
 
      from glumpy import app
 
-     app.use("glfw")
+     app.use("pyimgui")
      window = app.Window()
 
 
@@ -223,8 +224,8 @@ class Window(window.Window):
 
 
         def on_keyboard(win, key, scancode, action, mods):
-            #if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
-            #    return None
+            if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
+                return None
             symbol = self._keyboard_translate(key)
             modifiers = self._modifiers_translate(mods)
             if action in[glfw.PRESS,glfw.REPEAT]:
@@ -235,8 +236,8 @@ class Window(window.Window):
 
 
         def on_character(win, character):
-            #if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
-            #    return None
+            if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
+                return None
             self.dispatch_event('on_character', u"%c" % character)
         glfw.set_char_callback(self._native_window, on_character)
 
@@ -353,6 +354,9 @@ class Window(window.Window):
 
     def activate(self):
         glfw.make_context_current(self._native_window)
+
+    def new_frame(self):
+        imgui.new_frame()
 
     def render_gui(self):
         imgui.render()

@@ -17,7 +17,7 @@ window = app.Window(width=1024, height=768, color=(.0,.0,.0,1), fullscreen=False
 
 @window.event
 def on_draw(dt):
-    imgui.new_frame()
+    window.new_frame()
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
 
