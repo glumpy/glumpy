@@ -10,38 +10,41 @@ from glumpy.graphics.collections import GlyphCollection
 from glumpy.graphics.collections import PathCollection
 from glumpy.graphics.collections import SegmentCollection
 
-import imgui
 app.use("pyimgui")
 
 window = app.Window(width=1024, height=768, color=(.0,.0,.0,1), fullscreen=False,decoration=True)
 
 @window.event
-def on_draw(dt):
-    window.new_frame()
-    if imgui.begin_main_menu_bar():
-        if imgui.begin_menu("File", True):
+def on_gui(dt):
+    gui = window.gui
+    if gui.begin_main_menu_bar():
+        if gui.begin_menu("File", True):
 
-            clicked_quit, selected_quit = imgui.menu_item(
+            clicked_quit, selected_quit = gui.menu_item(
                 "Quit", 'Cmd+Q', False, True
             )
 
             if clicked_quit:
                 exit(1)
 
-            imgui.end_menu()
-        imgui.end_main_menu_bar()
+            gui.end_menu()
+        gui.end_main_menu_bar()
 
-    imgui.show_test_window()
+    gui.show_test_window()
 
-    imgui.begin("Custom window", True)
-    imgui.text("Bar")
-    imgui.text_colored("Eggs", 0.2, 1., 0.)
-    imgui.end()
+    gui.begin("Custom window", True)
+    gui.text("Bar")
+    gui.text_colored("Eggs", 0.2, 1., 0.)
+    gui.end()
+    
+
+@window.event
+def on_draw(dt):
     window.clear()
     ticks.draw()
     labels.draw()
     paths.draw()
-    window.render_gui()
+
 
 @window.event
 def on_key_press(key, modifiers):

@@ -189,6 +189,8 @@ class Window(window.Window):
             config = configuration.Configuration()
         set_configuration(config)
 
+        self.register_event_type('on_gui')
+
         self._native_window = glfw.create_window( self._width, self._height,
                                                      self._title, None, None)
 
@@ -200,6 +202,7 @@ class Window(window.Window):
         glfw.make_context_current(self._native_window)
         glfw.swap_interval(1 if vsync else 0)
         self._impl = GlfwRenderer(self._native_window)
+        self.gui = imgui
 
         def on_framebuffer_resize(win, width, height):
             self._width, self._height = width, height
@@ -381,11 +384,18 @@ def process(dt):
         # Process imgui inputs
         window._impl.process_inputs()
 
+        # Dispatach on_gui event
+        window.new_frame()
+        window.dispatch_event('on_gui', dt)
+
         # Dispatch the main draw event
         window.dispatch_event('on_draw', dt)
 
         # Dispatch the idle event
         window.dispatch_event('on_idle', dt)
+
+        # Render gui last
+        window.render_gui()
 
         # Swap buffers
         window.swap()
