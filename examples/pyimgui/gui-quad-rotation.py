@@ -45,9 +45,7 @@ theta = 0.0
 # Tell glumpy what needs to be done at each redraw
 @window.event
 def on_draw(dt):
-
     imgui.new_frame()
-
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
 

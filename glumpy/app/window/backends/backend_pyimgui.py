@@ -197,7 +197,7 @@ class Window(window.Window):
             sys.exit()
 
         glfw.make_context_current(self._native_window)
-        #glfw.swap_interval(1 if vsync else 0)
+        glfw.swap_interval(1 if vsync else 0)
         self._impl = GlfwRenderer(self._native_window)
 
         def on_framebuffer_resize(win, width, height):
@@ -223,6 +223,8 @@ class Window(window.Window):
 
 
         def on_keyboard(win, key, scancode, action, mods):
+            #if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
+            #    return None
             symbol = self._keyboard_translate(key)
             modifiers = self._modifiers_translate(mods)
             if action in[glfw.PRESS,glfw.REPEAT]:
@@ -233,11 +235,15 @@ class Window(window.Window):
 
 
         def on_character(win, character):
+            #if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
+            #    return None
             self.dispatch_event('on_character', u"%c" % character)
         glfw.set_char_callback(self._native_window, on_character)
 
 
         def on_mouse_button(win, button, action, mods):
+            if self._impl.io.want_capture_mouse:
+                return None
             x,y = glfw.get_cursor_pos(win)
 
             button = __mouse_map__.get(button, window.mouse.UNKNOWN)
@@ -255,6 +261,8 @@ class Window(window.Window):
 
 
         def on_mouse_motion(win, x, y):
+            if self._impl.io.want_capture_mouse:
+               return None
             dx = x - self._mouse_x
             dy = y - self._mouse_y
             self._mouse_x = x
@@ -267,6 +275,8 @@ class Window(window.Window):
 
 
         def on_scroll(win, xoffset, yoffset):
+            if self._impl.io.want_capture_mouse:
+                return None
             x,y = glfw.get_cursor_pos(win)
             self.dispatch_event('on_mouse_scroll', x, y, xoffset, yoffset)
         glfw.set_scroll_callback( self._native_window, on_scroll )
@@ -365,7 +375,7 @@ def process(dt):
         window.activate()
 
         # Process imgui inputs
-        #window._impl.process_inputs()
+        window._impl.process_inputs()
 
         # Dispatch the main draw event
         window.dispatch_event('on_draw', dt)
