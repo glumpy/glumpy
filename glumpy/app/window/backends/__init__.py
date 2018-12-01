@@ -9,4 +9,5 @@ __backends__ = ('glfw',
                 'osxglut',
                 'freeglut',
                 'qt5',
-                'pyside')
+                'pyside',
+                'pyimgui')
