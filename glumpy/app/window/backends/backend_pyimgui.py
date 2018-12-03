@@ -218,7 +218,7 @@ class Window(window.Window):
                 self.dispatch_event('on_enter')
             else:
                 self.dispatch_event('on_leave')
-        glfw.set_cursor_enter_callback(self._native_window, on_cursor_enter)
+        #glfw.set_cursor_enter_callback(self._native_window, on_cursor_enter)
 
 
         def on_window_close(win):
@@ -227,22 +227,22 @@ class Window(window.Window):
 
 
         def on_keyboard(win, key, scancode, action, mods):
-            if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
-                return None
+            #if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
+            #    return None
             symbol = self._keyboard_translate(key)
             modifiers = self._modifiers_translate(mods)
             if action in[glfw.PRESS,glfw.REPEAT]:
                 self.dispatch_event('on_key_press', symbol, modifiers)
             else:
                 self.dispatch_event('on_key_release', symbol, modifiers)
-        glfw.set_key_callback(self._native_window, on_keyboard)
+        #glfw.set_key_callback(self._native_window, on_keyboard)
 
 
         def on_character(win, character):
-            if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
-                return None
+            #if self._impl.io.want_text_input or self._impl.io.want_capture_keyboard:
+            #   return None
             self.dispatch_event('on_character', u"%c" % character)
-        glfw.set_char_callback(self._native_window, on_character)
+        #glfw.set_char_callback(self._native_window, on_character)
 
 
         def on_mouse_button(win, button, action, mods):
