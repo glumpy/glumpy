@@ -135,7 +135,9 @@ Not all event dispatchers require the call to ``dispatch_events``; check with
 the particular class documentation.
 
 '''
-
+from sys import version_info;
+if version_info[0]==3:
+    unicode = str
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: event.py 2319 2008-10-12 02:50:08Z Alex.Holkner $'
 
