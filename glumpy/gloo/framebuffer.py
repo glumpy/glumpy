@@ -365,7 +365,7 @@ class FrameBuffer(GLObject):
         """ Delete buffer from GPU """
 
         log.debug("GPU: Delete framebuffer")
-        gl.glDeleteFramebuffer(self._handle)
+        gl.glDeleteFramebuffers(1, np.array([self._handle]))
 
 
     def _activate(self):
