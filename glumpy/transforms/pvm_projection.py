@@ -90,7 +90,7 @@ class PVMProjection(Transform):
         self._distance = Transform._get_kwarg("distance", kwargs) or 5
         self._fovy     = Transform._get_kwarg("fovy", kwargs) or 40
         self._znear    = Transform._get_kwarg("znear", kwargs) or 2.0
-        self._zfar     = Transform._get_kwarg("znear", kwargs) or 100.0
+        self._zfar     = Transform._get_kwarg("zfar", kwargs) or 100.0
         self._view = np.eye(4, dtype=np.float32)
         self._model = np.eye(4, dtype=np.float32)
         self._projection = np.eye(4, dtype=np.float32)
@@ -163,13 +163,13 @@ class PVMProjection(Transform):
     @property
     def zfar(self):
         """ Z far clipping place """
-        return self._znear
+        return self._zfar
 
     @zfar.setter
     def zfar(self, value):
-        """ Z near clipping place """
+        """ Z far clipping place """
 
-        if value > self._znear:
+        if value > self._zfar:
             self._zfar = value
             self._build_projection()
 
