@@ -36,7 +36,7 @@ class Buffer(GPUData,GLObject):
     (gl.GL_ARRAY_BUFFER or gl.GL_ELEMENT_ARRAY_BUFFER).
     """
 
-    def __init__(self, target, usage=gl.GL_DYNAMIC_DRAW):
+    def __init__(self, target, usage):
         GLObject.__init__(self)
         self._target = target
         self._usage = usage
