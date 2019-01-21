@@ -63,7 +63,7 @@ void clip(float index)
 {
     vec2 P = gl_FragCoord.xy;
 
-    // mod doesn't plya well with 0
+    // mod doesn't play well with 0
     float i = index+.00001;
     float col = mod(i,cols);
     float row = floor(i/cols);
@@ -81,7 +81,6 @@ void clip(float index)
 }
 """)
 
-
 rows,cols = 3,3
 window = app.Window(width=1024, height=1024, color=(0.30, 0.30, 0.35, 1.00))
 
@@ -94,11 +93,11 @@ dtype = [("position", np.float32, 3),
 cubes = BaseCollection(vtype=dtype, itype=np.uint32)
 V,I = primitives.cube()
 C = np.zeros(len(V),dtype=dtype)
-C[...] = V
+for key in V.dtype.names: C[key] = V[key]
 for i in range(rows*cols):
     C["index"] = i
     cubes.append(vertices=C, indices=I)
-cubes._update() #build_buffers()
+cubes._update() 
 V = cubes._vertices_buffer
 I = cubes._indices_buffer
 
