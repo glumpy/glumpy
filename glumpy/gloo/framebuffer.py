@@ -45,7 +45,7 @@ class RenderBuffer(GLObject):
     :param int height:    Buffer height (pixel)
     """
 
-    def __init__(self, width=0, height=0, format=None):
+    def __init__(self, width, height, format):
         GLObject.__init__(self)
         self._width = width
         self._height = height
