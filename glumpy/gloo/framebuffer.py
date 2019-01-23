@@ -43,12 +43,14 @@ class RenderBuffer(GLObject):
     :param GLEnum format: Buffer format
     :param int width:     Buffer width (pixels)
     :param int height:    Buffer height (pixel)
+    :param int samples:   Buffer samples for multisampling.
     """
 
-    def __init__(self, width=0, height=0, format=None):
+    def __init__(self, width, height, format, samples):
         GLObject.__init__(self)
         self._width = width
         self._height = height
+        self._samples = samples
         self._target = gl.GL_RENDERBUFFER
         self._format = format
         self._need_resize = True
@@ -57,27 +59,37 @@ class RenderBuffer(GLObject):
     @property
     def width(self):
         """ Buffer width (read-only). """
-
+        
         return self._width
 
 
     @property
     def height(self):
         """ Buffer height (read-only). """
+        
         return self._height
 
+    @property
+    def samples(self):
+        """ Buffer samples(read-only). """
+        
+        return self._samples
 
-    def resize(self, width, height):
+    def resize(self, width, height, samples=None):
         """ Resize the buffer (deferred operation).
 
         :param int width:  New buffer width (pixels)
         :param int height: New buffer height (pixels)
+        :param int samples: New number of buffer samples.
         """
 
         if width != self._width or height != self._height:
             self._need_resize = True
             self._width = width
             self._height = height
+        if samples != None:
+            self._need_resize = True
+            self._samples = samples
 
     def _create(self):
         """ Create buffer on GPU """
@@ -115,9 +127,15 @@ class RenderBuffer(GLObject):
 
         # WARNING: width/height should be checked against maximum size
         # maxsize = gl.glGetParameter(gl.GL_MAX_RENDERBUFFER_SIZE)
+        # WARNING: samples should be checked against maximum size
+        # maxsize = gl.glGetParameter(X), where X is gl.GL_MAX_SAMPLES or GL_MAX_INTEGER_SAMPLES. Don't know which.
         log.debug("GPU: Resize render buffer")
-        gl.glRenderbufferStorage(self._target, self._format,
-                                 self._width, self._height)
+        if not self._samples:
+            gl.glRenderbufferStorage(self._target, self._format,
+                                     self._width, self._height)
+        else:
+            gl.glRenderbufferStorageMultisample(self._target, self._samples, self._format,
+                                                self._width, self._height)
 
 
 
@@ -130,10 +148,10 @@ class ColorBuffer(RenderBuffer):
     :param GLEnum format: Buffer format (default is gl.GL_RGBA)
     """
 
-    def __init__(self, width, height, format=gl.GL_RGBA):
+    def __init__(self, width, height, format=gl.GL_RGBA, samples=0):
         # if format not in (gl.GL_RGB565, gl.GL_RGBA4, gl.GL_RGB5_A1):
         #     raise ValueError("Format not allowed for color buffer")
-        RenderBuffer.__init__(self, width, height, format)
+        RenderBuffer.__init__(self, width, height, format, samples)
 
 
 
@@ -147,10 +165,10 @@ class DepthBuffer(RenderBuffer):
     :param GLEnum format: Buffer format (default is gl.GL_DEPTH_COMPONENT)
     """
 
-    def __init__(self, width, height, format=gl.GL_DEPTH_COMPONENT):
+    def __init__(self, width, height, format=gl.GL_DEPTH_COMPONENT, samples=0):
         #if format not in (gl.GL_DEPTH_COMPONENT16,):
         #    raise ValueError("Format not allowed for depth buffer")
-        RenderBuffer.__init__(self, width, height, format)
+        RenderBuffer.__init__(self, width, height, format, samples)
 
 
 
@@ -162,10 +180,10 @@ class StencilBuffer(RenderBuffer):
     :param GLEnum format: Buffer format (default is gl.GL_STENCIL_INDEX8)
     """
 
-    def __init__(self, width, height, format=gl.GL_STENCIL_INDEX8):
+    def __init__(self, width, height, format=gl.GL_STENCIL_INDEX8, samples=0):
         # if format not in (gl.GL_STENCIL_INDEX,):
         #     raise ValueError("Format not allowed for color buffer")
-        RenderBuffer.__init__(self, width, height, format)
+        RenderBuffer.__init__(self, width, height, format, samples)
 
 
 
@@ -184,8 +202,9 @@ class FrameBuffer(GLObject):
 
         GLObject.__init__(self)
 
-        self._width = 0
-        self._height = 0
+        self._width = None
+        self._height = None
+        self._samples = None
         self._color = None
         self._depth = None
         self._stencil = None
@@ -216,12 +235,15 @@ class FrameBuffer(GLObject):
         self._color = []
 
         for i,buffer in enumerate(buffers):
-            if self.width != 0 and self.width != buffer.width:
+            if self.width != None and self.width != buffer.width:
                 raise ValueError("Buffer width does not match")
-            elif self.height != 0 and self.height != buffer.height:
+            elif self.height != None and self.height != buffer.height:
                 raise ValueError("Buffer height does not match")
+            elif self.samples != None and self.samples != buffer.samples:
+                raise ValueError("Buffer samples does not match")
             self._width = buffer.width
             self._height = buffer.height
+            self._samples = buffer.samples
 
             target = gl.GL_COLOR_ATTACHMENT0+i
             self._color.append(buffer)
@@ -245,12 +267,15 @@ class FrameBuffer(GLObject):
     def depth(self, buffer):
         """ Depth buffer attachment (read/write) """
 
-        if self.width != 0 and self.width != buffer.width:
+        if self.width != None and self.width != buffer.width:
             raise ValueError("Buffer width does not match")
-        elif self.height != 0 and self.height != buffer.height:
+        elif self.height != None and self.height != buffer.height:
             raise ValueError("Buffer height does not match")
+        elif self.samples != None and self.samples != buffer.samples:
+            raise ValueError("Buffer samples does not match")
         self._width = buffer.width
         self._height = buffer.height
+        self._samples = buffer.samples
 
         target = gl.GL_DEPTH_ATTACHMENT
         self._depth = buffer
@@ -273,12 +298,15 @@ class FrameBuffer(GLObject):
     def stencil(self, buffer):
         """ Stencil buffer attachment (read/write) """
 
-        if self.width != 0 and self.width != buffer.width:
+        if self.width != None and self.width != buffer.width:
             raise ValueError("Buffer width does not match")
-        elif self.height != 0 and self.height != buffer.height:
+        elif self.height != None and self.height != buffer.height:
             raise ValueError("Buffer height does not match")
+        elif self.samples != None and self.samples != buffer.samples:
+            raise ValueError("Buffer samples does not match")
         self._width = buffer.width
         self._height = buffer.height
+        self._samples = buffer.samples
 
         target = gl.GL_STENCIL_ATTACHMENT
         self._stencil = buffer
@@ -427,6 +455,9 @@ class FrameBuffer(GLObject):
         elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
             raise RuntimeError(
                 'attachments do not have the same width and height.')
+        elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+            raise RuntimeError(
+                'attachments do not have the same number of samples.')
         elif res == gl.GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
             raise RuntimeError('Internal format of attachment '
                                'is not renderable.')
