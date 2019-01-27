@@ -53,7 +53,7 @@ Output
   Record a movie (default is "movie.mp4")
   
   
-Open GL
+OpenGL
 =======
 
 ``--gl-api API``:
