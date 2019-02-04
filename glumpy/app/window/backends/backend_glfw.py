@@ -221,8 +221,10 @@ class Window(window.Window):
         if config is None:
             config = configuration.Configuration()
         set_configuration(config)
+
+        monitor = glfw.glfwGetMonitors()[0] if fullscreen else None
         self._native_window = glfw.glfwCreateWindow( self._width, self._height,
-                                                     self._title, None, None)
+                                                     self._title, monitor, None)
 
         if not self._native_window:
             log.critical("Window creation failed")
