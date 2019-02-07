@@ -178,7 +178,6 @@ class Window(event.EventDispatcher):
         """ Frame per second (read-only). """
 
         return self._clock.get_fps()
-
     
     @property
     def config(self):
@@ -187,17 +186,15 @@ class Window(event.EventDispatcher):
     @property
     def color(self):
         """ Window clear color (read/write) """
-        
         return self._color
 
     
     @color.setter
     def color(self, color):
         self._color = color
-        gl.glClearColor(*self._color)
 
         
-    def clear(self,color=None, clearflags=None):
+    def clear(self, color=None, clearflags=None):
         """ Clear the whole window """
 
         if color is not None:
@@ -208,12 +205,6 @@ class Window(event.EventDispatcher):
             gl.glClearColor(*self._color)
             if  clearflags is not None: gl.glClear(clearflags)
             else:                       gl.glClear(self._clearflags)
-
-    def on_init(self):
-        """ Window initialization """
-
-        gl.glClearColor(*self._color)
-
 
     def on_resize(self, width, height):
         """" Default resize handler that set viewport """
