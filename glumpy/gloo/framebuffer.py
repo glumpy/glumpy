@@ -26,7 +26,7 @@ Read more on framebuffers on `OpenGL Wiki
      @window.event
      def on_draw(dt):
          framebuffer.activate()
-         framebuffer.clear()
+         window.clear(clearflags=framebuffer.clearflags())
          quad.draw(gl.GL_TRIANGLE_STRIP)
          framebuffer.deactivate()
 """
@@ -353,15 +353,15 @@ class FrameBuffer(GLObject):
             self._pending_attachments.append((target, self.stencil))
             self._need_attach = True
 
-    def clear(self):
-        """ Clear the framebuffer """
+    def clearflags(self):
+        """ Get clear flags for this framebuffer. """
         
         clearflags = gl.GL_COLOR_BUFFER_BIT
         if self._depth is not None:
             clearflags |= gl.GL_DEPTH_BUFFER_BIT
         if self._stencil is not None:
             clearflags |= gl.GL_STENCIL_BUFFER_BIT
-        gl.glClear(clearflags)
+        return clearflags
 
     def _create(self):
         """ Create framebuffer on GPU """
