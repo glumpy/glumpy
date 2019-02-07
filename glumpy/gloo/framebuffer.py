@@ -26,7 +26,7 @@ Read more on framebuffers on `OpenGL Wiki
      @window.event
      def on_draw(dt):
          framebuffer.activate()
-         window.clear(clearflags=framebuffer.clearflags())
+         window.clear()
          quad.draw(gl.GL_TRIANGLE_STRIP)
          framebuffer.deactivate()
 """
