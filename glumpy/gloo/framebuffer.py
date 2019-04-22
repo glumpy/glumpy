@@ -25,8 +25,8 @@ Read more on framebuffers on `OpenGL Wiki
 
      @window.event
      def on_draw(dt):
-         window.clear()
          framebuffer.activate()
+         window.clear()
          quad.draw(gl.GL_TRIANGLE_STRIP)
          framebuffer.deactivate()
 """
@@ -45,7 +45,7 @@ class RenderBuffer(GLObject):
     :param int height:    Buffer height (pixel)
     """
 
-    def __init__(self, width=0, height=0, format=None):
+    def __init__(self, width, height, format):
         GLObject.__init__(self)
         self._width = width
         self._height = height
@@ -184,8 +184,8 @@ class FrameBuffer(GLObject):
 
         GLObject.__init__(self)
 
-        self._width = 0
-        self._height = 0
+        self._width = None
+        self._height = None
         self._color = None
         self._depth = None
         self._stencil = None
@@ -216,9 +216,9 @@ class FrameBuffer(GLObject):
         self._color = []
 
         for i,buffer in enumerate(buffers):
-            if self.width != 0 and self.width != buffer.width:
+            if self.width is not None and self.width != buffer.width:
                 raise ValueError("Buffer width does not match")
-            elif self.height != 0 and self.height != buffer.height:
+            elif self.height is not None and self.height != buffer.height:
                 raise ValueError("Buffer height does not match")
             self._width = buffer.width
             self._height = buffer.height
@@ -245,9 +245,9 @@ class FrameBuffer(GLObject):
     def depth(self, buffer):
         """ Depth buffer attachment (read/write) """
 
-        if self.width != 0 and self.width != buffer.width:
+        if self.width is not None and self.width != buffer.width:
             raise ValueError("Buffer width does not match")
-        elif self.height != 0 and self.height != buffer.height:
+        elif self.height is not None and self.height != buffer.height:
             raise ValueError("Buffer height does not match")
         self._width = buffer.width
         self._height = buffer.height
@@ -273,9 +273,9 @@ class FrameBuffer(GLObject):
     def stencil(self, buffer):
         """ Stencil buffer attachment (read/write) """
 
-        if self.width != 0 and self.width != buffer.width:
+        if self.width is not None and self.width != buffer.width:
             raise ValueError("Buffer width does not match")
-        elif self.height != 0 and self.height != buffer.height:
+        elif self.height is not None and self.height != buffer.height:
             raise ValueError("Buffer height does not match")
         self._width = buffer.width
         self._height = buffer.height

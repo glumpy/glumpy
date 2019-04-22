@@ -38,6 +38,12 @@ class GLObject(object):
     #     else:
     #         print "Deleting something"
 
+    def __enter__(self):
+        self.activate()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.deactivate()
 
     @property
     def need_create(self):

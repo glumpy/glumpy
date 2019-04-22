@@ -11,7 +11,7 @@ class Position(Transform):
     Generic position transform
 
     The position transform is a convenient transform that takes any positional
-    format and transform it in a vec4 format. It wotks thanks to GLSL function
+    format and transform it in a vec4 format. It works thanks to GLSL function
     overloading.
 
     **Usage example**:

@@ -90,7 +90,7 @@ simple timer function where we'll update the scale value:
        quad.draw(gl.GL_TRIANGLE_STRIP)
 
        
-Exercices
+Exercises
 =========
 
 **Quad rotation** Instead of scaling the quad, try to make it rotate. Note that
