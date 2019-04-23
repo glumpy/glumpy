@@ -23,6 +23,7 @@ def triangulate(P):
     n = len(P)
     S = np.repeat(np.arange(n+1),2)[1:-1]
     S[-2:] = n-1,0
+    S = S.reshape((-1, 2))
     T = triangle.triangulate({'vertices': P[:,:2], 'segments': S}, "p")
     return  T["triangles"].ravel()
 
