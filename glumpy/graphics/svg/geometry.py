@@ -60,7 +60,7 @@ curve_angle_tolerance_epsilon = 0.01
 curve_recursion_limit         = 32
 m_cusp_limit                  = 0.0
 m_angle_tolerance             = 10*math.pi/180.0
-m_approximation_scale         = 1.0
+m_approximation_scale         = 2.0
 m_distance_tolerance_square   = (0.5 / m_approximation_scale)**2
 epsilon                       = 1e-10
 
