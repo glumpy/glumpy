@@ -17,8 +17,9 @@ def triangulate(vertices):
     vertices_2d = vertices[:,:2]
     segments = np.repeat(np.arange(n+1),2)[1:-1]
     segments[-2:] = n-1,0
+    segments_2d = segments.reshape((-1, 2))
     T = triangle.triangulate({'vertices': vertices_2d,
-                              'segments': segments}, "p")
+                              'segments': segments_2d}, "p")
     vertices_2d = T["vertices"]
     triangles   = T["triangles"]
     vertices = np.empty((len(vertices_2d),3))
