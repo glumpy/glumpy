@@ -12,7 +12,7 @@ interface.
 
 import os
 import numpy as np
-from glumpy import gloo, gl
+from glumpy import gloo, gl, library
 from glumpy.gloo.program import Program
 from glumpy.transforms import Position, Viewport
 from . util import fetchcode
@@ -105,7 +105,7 @@ class Collection(BaseCollection):
         self._defaults = defaults
 
         # Build program (once base collection is built)
-        saved = vertex
+        saved = library.get(vertex)
         vertex = ""
 
         if self.utype is not None:
