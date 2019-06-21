@@ -25,8 +25,8 @@ class AggGlyphCollection(Collection):
             vertex = library.get('collections/agg-glyph.vert')
 
         if "fragment" in kwargs.keys():
-            fragment = kwargs["vertex"]
-            del kwargs["vertex"]
+            fragment = kwargs["fragment"]
+            del kwargs["fragment"]
         else:
             fragment = library.get('collections/agg-glyph.frag')
 
