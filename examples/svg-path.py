@@ -25,8 +25,8 @@ def on_init():
     gl.glEnable(gl.GL_DEPTH_TEST)
 
 
-paths = collections.PathCollection("agg+", transform=transform)
-paths["miter_limit"] = 4.0
+paths = collections.PathCollection("agg", transform=transform)
+# paths["miter_limit"] = 4.0
 paths["linewidth"] = 50.0
 paths["color"] = 0.0,0.0,0.0,0.5
 
