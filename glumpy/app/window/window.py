@@ -283,7 +283,7 @@ class Window(event.EventDispatcher):
         """ Get window position """
         log.warn('%s backend cannot get position' %  self._backend.name())
 
-    def set_fullscreen(self, fullsrceen):
+    def set_fullscreen(self, fullscreen):
         """ Set window fullscreen mode """
         log.warn('%s backend cannot set fullscreen mode' % self._backend.name())
 

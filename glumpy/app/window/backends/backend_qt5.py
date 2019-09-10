@@ -357,7 +357,7 @@ class Window(window.Window):
         self._native_window.setWindowTitle(self._title)
         self._title = title
 
-    def get_title(self, title):
+    def get_title(self):
         return self._title
 
     def set_size(self, width, height):
@@ -369,6 +369,17 @@ class Window(window.Window):
         self._width = self._native_window.geometry().width()
         self._height = self._native_window.geometry().height()
         return self._width, self._height
+
+    def set_fullscreen(self, fullscreen):
+        if fullscreen:
+            self._native_window.showFullScreen()
+        else:
+            self._native_window.showNormal()
+        self._fullscreen = fullscreen
+        self.get_size()
+
+    def get_fullscreen(self):
+        return self._fullscreen
 
     def set_position(self, x, y):
         self._native_window.move(x,y)
