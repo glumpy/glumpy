@@ -370,7 +370,10 @@ class Window(window.Window):
         self._height = self._native_window.geometry().height()
         return self._width, self._height
 
-    def set_fullscreen(self, fullscreen):
+    def set_fullscreen(self, fullscreen, screen=None):
+        if screen is not None:
+            self.set_screen(screen)
+
         if fullscreen:
             self._native_window.showFullScreen()
         else:
@@ -380,6 +383,14 @@ class Window(window.Window):
 
     def get_fullscreen(self):
         return self._fullscreen
+
+    def set_screen(self, screen):
+        if isinstance(screen, int):
+            screen = self._native_app.screens()[screen]
+        self._native_window.windowHandle().setScreen(screen)
+
+    def get_screen(self):
+        return self._native_window.windowHandle().screen()
 
     def set_position(self, x, y):
         self._native_window.move(x,y)
