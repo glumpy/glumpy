@@ -213,7 +213,7 @@ class Window(window.Window):
         if visible:
             flags |= sdl2.SDL_WINDOW_SHOWN
         else:
-            flags |= SDL_WINDOW_HIDDEN
+            flags |= sdl2.SDL_WINDOW_HIDDEN
         if not decoration:
             flags |= sdl2.SDL_WINDOW_BORDERLESS
 
