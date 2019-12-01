@@ -33,8 +33,10 @@ from __future__ import division
 import subprocess as sp
 import re
 import warnings
-import logging
-logging.captureWarnings(True)
+
+# #113
+#import logging
+#logging.captureWarnings(True)
 
 
 import numpy as np
