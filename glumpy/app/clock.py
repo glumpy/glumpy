@@ -612,7 +612,7 @@ class Clock(_ClockBase):
         divs = 1
         while True:
             next_ts = last_ts
-            for i in range(divs - 1):
+            for _ in range(divs - 1):
                 next_ts += dt
                 if not taken(next_ts, dt / 4):
                     return next_ts
