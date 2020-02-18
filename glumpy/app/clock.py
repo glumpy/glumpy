@@ -161,7 +161,7 @@ if sys.platform in ('win32', 'cygwin'):
                 0, ctypes.c_void_p(), ctypes.c_void_p(), False)
             _kernel32.WaitForSingleObject(self._timer, 0xffffffff)
 
-    _default_time_function = time.clock
+    _default_time_function = time.perf_counter
 
 else:
     _c_file = ctypes.util.find_library('c')
