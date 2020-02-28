@@ -161,7 +161,10 @@ if sys.platform in ('win32', 'cygwin'):
                 0, ctypes.c_void_p(), ctypes.c_void_p(), False)
             _kernel32.WaitForSingleObject(self._timer, 0xffffffff)
 
-    _default_time_function = time.clock
+    if sys.version_info < (3, 8):
+        _default_time_function = time.clock
+    else:
+        _default_time_function = time.perf_counter
 
 else:
     _c_file = ctypes.util.find_library('c')
@@ -612,7 +615,7 @@ class Clock(_ClockBase):
         divs = 1
         while True:
             next_ts = last_ts
-            for i in range(divs - 1):
+            for _ in range(divs - 1):
                 next_ts += dt
                 if not taken(next_ts, dt / 4):
                     return next_ts
