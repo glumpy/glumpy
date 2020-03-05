@@ -323,19 +323,7 @@ class Window(window.Window):
         if QtCore.Qt.ShiftModifier & modifiers:
             _modifiers |= window.key.MOD_SHIFT
         if QtCore.Qt.ControlModifier & modifiers:
-            _modifiers |= window.key.MOD_CONTROL
-        if QtCore.Qt.AltModifier & modifiers:
-            _modifiers |= window.key.MOD_ALT
-        if QtCore.Qt.MetaModifier & modifiers:
-            _modifiers |= window.key.MOD_META
-        return _modifiers
-
-    def _modifiers_translate( self, modifiers ):
-        _modifiers = 0
-        if QtCore.Qt.ShiftModifier & modifiers:
-            _modifiers |= window.key.MOD_SHIFT
-        if QtCore.Qt.ControlModifier & modifiers:
-            _modifiers |= window.key.MOD_CONTROL
+            _modifiers |= window.key.MOD_CTRL
         if QtCore.Qt.AltModifier & modifiers:
             _modifiers |= window.key.MOD_ALT
         if QtCore.Qt.MetaModifier & modifiers:
