@@ -302,7 +302,7 @@ class Window(window.Window):
 
         def key_release_event(event):
             code = self._keyboard_translate(event.key())
-            modifiers = self._modifiers_translate(event.modifiers())
+            modifiers = self._modifiers_translate(QtWidgets.QApplication.keyboardModifiers())
             self.dispatch_event("on_key_release", code, modifiers)
         self._native_window.keyReleaseEvent = key_release_event
 
