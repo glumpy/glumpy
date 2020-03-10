@@ -302,7 +302,7 @@ class Window(window.Window):
 
         def key_release_event(event):
             code = self._keyboard_translate(event.key())
-            modifiers = self._modifiers_translate(event.modifiers())
+            modifiers = self._modifiers_translate(QtWidgets.QApplication.keyboardModifiers())
             self.dispatch_event("on_key_release", code, modifiers)
         self._native_window.keyReleaseEvent = key_release_event
 
@@ -323,19 +323,7 @@ class Window(window.Window):
         if QtCore.Qt.ShiftModifier & modifiers:
             _modifiers |= window.key.MOD_SHIFT
         if QtCore.Qt.ControlModifier & modifiers:
-            _modifiers |= window.key.MOD_CONTROL
-        if QtCore.Qt.AltModifier & modifiers:
-            _modifiers |= window.key.MOD_ALT
-        if QtCore.Qt.MetaModifier & modifiers:
-            _modifiers |= window.key.MOD_META
-        return _modifiers
-
-    def _modifiers_translate( self, modifiers ):
-        _modifiers = 0
-        if QtCore.Qt.ShiftModifier & modifiers:
-            _modifiers |= window.key.MOD_SHIFT
-        if QtCore.Qt.ControlModifier & modifiers:
-            _modifiers |= window.key.MOD_CONTROL
+            _modifiers |= window.key.MOD_CTRL
         if QtCore.Qt.AltModifier & modifiers:
             _modifiers |= window.key.MOD_ALT
         if QtCore.Qt.MetaModifier & modifiers:
