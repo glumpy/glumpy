@@ -77,6 +77,8 @@ def use(backend, api=None, major=None, minor=None, profile=None):
     """
 
     global __backend__
+    
+    config = configuration.get_default()
 
     # Parse options (in backend name, see note above)
     exp = """(?P<backend>\w+)?
@@ -87,8 +89,8 @@ def use(backend, api=None, major=None, minor=None, profile=None):
     r = re.search(exp, backend, re.IGNORECASE | re.VERBOSE)
     _backend = r.group('backend') or "glfw"
     _api     = r.group('api') or "GL"
-    _major   = int(r.group('major') or "2")
-    _minor   = int(r.group('minor') or "1")
+    _major   = int(r.group('major') or str(config.major_version))
+    _minor   = int(r.group('minor') or str(config.minor_version))
     _profile = r.group('profile') or ""
 
     # Arguments take precedence over shortened options
@@ -98,7 +100,6 @@ def use(backend, api=None, major=None, minor=None, profile=None):
     minor   = minor or _minor
     profile = profile or _profile
 
-    config = configuration.get_default()
     config.api = api
     config.major_version = major
     config.minor_version = minor
@@ -186,7 +187,6 @@ class Window(object):
         # Create the backend window
         window = __backend__.Window(*args, **kwargs)
         window._backend = __backend__
-        config = configuration.gl_get_configuration()
         window._config = config
 
         log.info("Using %s (%s %d.%d)" %
