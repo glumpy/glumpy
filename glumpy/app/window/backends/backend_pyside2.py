@@ -4,9 +4,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
-`PySide <http://pyside.github.io/docs/pyside/>`_ is the Python Qt bindings
-project, providing access the complete Qt 4.8 framework as well as to generator
-tools for rapidly generating bindings for any C++ libraries.
+PySide2 is the official Python module from the Qt for Python project, which provides access to the complete Qt 5.12+ framework.
 
 **Usage**
 
@@ -14,7 +12,7 @@ tools for rapidly generating bindings for any C++ libraries.
 
      from glumpy import app
 
-     app.use("pyside")
+     app.use("pyside2")
      window = app.Window()
 
 
@@ -41,7 +39,7 @@ from glumpy.app.window import window
 
 
 # Backend name
-__name__ = "PySide"
+__name__ = "PySide2"
 
 # Backend version (if available)
 __version__ = ""
