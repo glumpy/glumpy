@@ -11,7 +11,7 @@ vec2 forward(vec2 P)
 { return P + translate_translate.xy; }
 
 vec3 forward(float x, float y, float z)
-{ return vec3(x,y,z) + translate_translate); }
+{ return vec3(x,y,z) + translate_translate; }
 
 vec3 forward(vec3 P)
 { return P + translate_translate; }
@@ -26,7 +26,7 @@ vec2 inverse(vec2 P)
 { return P - translate_translate.xy; }
 
 vec3 inverse(float x, float y, float z)
-{ return vec3(x,y,z) - translate_translate); }
+{ return vec3(x,y,z) - translate_translate; }
 
 vec3 inverse(vec3 P)
 { return P - translate_translate; }
