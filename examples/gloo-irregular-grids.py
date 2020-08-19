@@ -61,7 +61,7 @@ def compute_grid():
     count = (stop-start)/t1+1
     I = np.zeros(int(count+2))
     I[0], I[-1] = xmin, xmax
-    I[1:-1] = np.linspace(start, stop, count, endpoint=True)
+    I[1:-1] = np.linspace(start, stop, int(count), endpoint=True)
     Z[..., 0] = I[find_closest_direct(I, start=xmin, end=xmax, count=n)]
 
     t2 = minor_grid[0]
@@ -72,7 +72,7 @@ def compute_grid():
     count = (stop-start)/t2+1
     I = np.zeros(int(count+2))
     I[0], I[-1] = xmin, xmax
-    I[1:-1] = np.linspace(start, stop, count, endpoint=True)
+    I[1:-1] = np.linspace(start, stop, int(count), endpoint=True)
     Z[..., 1] = I[find_closest_direct(I, start=xmin, end=xmax, count=n)]
 
     ymin, ymax = limits2[2:]
@@ -85,7 +85,7 @@ def compute_grid():
     count = (stop-start)/t1+1
     I = np.zeros(int(count+2))
     I[0], I[-1] = ymin, ymax
-    I[1:-1] = np.linspace(start, stop, count, endpoint=True)
+    I[1:-1] = np.linspace(start, stop, int(count), endpoint=True)
     Z[..., 2] = I[find_closest_direct(I, start=ymin, end=ymax, count=n)]
 
     t2 = minor_grid[1]
@@ -96,7 +96,7 @@ def compute_grid():
     count = (stop-start)/t2+1
     I = np.zeros(int(count+2))
     I[0], I[-1] = ymin, ymax
-    I[1:-1] = np.linspace(start, stop, count, endpoint=True)
+    I[1:-1] = np.linspace(start, stop, int(count), endpoint=True)
     Z[..., 3] = I[find_closest_direct(I, start=ymin, end=ymax, count=n)]
 
 
