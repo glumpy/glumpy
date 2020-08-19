@@ -379,14 +379,17 @@ class Window(window.Window):
         else:
             self._native_window.showNormal()
         self._fullscreen = fullscreen
-        self.get_size()
 
     def get_fullscreen(self):
         return self._fullscreen
 
     def set_screen(self, screen):
         if isinstance(screen, int):
+            self._screen = screen
             screen = self._native_app.screens()[screen]
+        else:
+            self._screen = self._native_app.screens().index(screen)
+
         self._native_window.windowHandle().setScreen(screen)
 
     def get_screen(self):

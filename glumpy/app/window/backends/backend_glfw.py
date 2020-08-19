@@ -366,6 +366,11 @@ class Window(window.Window):
     def destroy(self):
         glfw.glfwDestroyWindow(self._native_window)
 
+
+    def get_screen(self):
+        
+        glfw.glfwGetWindowMonitor()
+
     def set_title(self, title):
         glfw.glfwSetWindowTitle( self._native_window, title)
         self._title = title

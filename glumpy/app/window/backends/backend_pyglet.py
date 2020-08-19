@@ -242,10 +242,9 @@ class Window(window.Window):
         self._native_window.set_visible(False)
 
     def set_fullscreen(self, state, screen=None):
-        if screen is not None:
-            if not(isinstance(screen, pyglet.canvas.Screen)) and isinstance(screen, int):
-                screens = self._native_window.canvas.display.get_screens()
-                screen = screens[screen]
+        if isinstance(screen, int):
+            screens = self._native_window.canvas.display.get_screens()
+            screen = screens[screen]
 
         self._native_window.set_fullscreen(state, screen=screen)
         self._fullscreen = state
@@ -259,6 +258,15 @@ class Window(window.Window):
 
     def get_title(self):
         return self._title
+
+    def set_screen(self, screen):
+        if isinstance(screen, int):
+            self._screen = screen
+        else:
+            self._screen = pyglet.canvas.get_display().get_screens().index(screen)
+
+    def get_screen(self):
+        return pyglet.canvas.get_display().get_screens()[self._screen]
 
     def set_size(self, width, height):
         self._native_window.set_size(width, height)
