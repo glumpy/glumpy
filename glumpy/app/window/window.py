@@ -145,7 +145,7 @@ class Window(event.EventDispatcher):
         self._height = height
         self._title = (title or sys.argv[0])
         self._visible = visible
-        self._screen = screen
+        self._screen = 0 if screen is None else screen
         self._fullscreen = fullscreen
         self._decoration = decoration
         self._clock = None

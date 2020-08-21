@@ -201,7 +201,7 @@ def set_configuration(config):
 # ------------------------------------------------------------------ Window ---
 class Window(window.Window):
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
+                  decoration=True, fullscreen=False, screen=None, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -210,6 +210,7 @@ class Window(window.Window):
                                      aspect=aspect,
                                      decoration=decoration,
                                      fullscreen=fullscreen,
+                                     screen=screen,
                                      config=config,
                                      context=context,
                                      color=color)
@@ -235,6 +236,8 @@ class Window(window.Window):
         self._native_window.setAutoBufferSwap(False)
         self._native_window.setMouseTracking(True)
         self._native_window.setWindowTitle(self._title)
+
+        self.set_fullscreen(fullscreen, screen)
 
         def paint_gl():
             self.dispatch_event("on_draw", 0.0)
