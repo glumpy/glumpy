@@ -130,7 +130,7 @@ class Window(event.EventDispatcher):
     """
 
     def __init__(self, width=256, height=256, title=None, visible=True, aspect=None,
-                 decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                 decoration=True, fullscreen=False, screen=None, config=None, context=None, color=(0,0,0,1)):
         """
         Create a window.
         """
@@ -145,6 +145,7 @@ class Window(event.EventDispatcher):
         self._height = height
         self._title = (title or sys.argv[0])
         self._visible = visible
+        self._screen = screen
         self._fullscreen = fullscreen
         self._decoration = decoration
         self._clock = None
@@ -283,7 +284,15 @@ class Window(event.EventDispatcher):
         """ Get window position """
         log.warn('%s backend cannot get position' %  self._backend.name())
 
-    def set_fullscreen(self, fullsrceen):
+    def set_screen(self, screen):
+        """ Set window screen """
+        log.warn('%s backend cannot set screen' % self._backend.name())
+
+    def get_screen(self):
+        """ Get window screen """
+        log.warn('%s backend cannot get screen' % self._backend.name())
+
+    def set_fullscreen(self, fullscreen):
         """ Set window fullscreen mode """
         log.warn('%s backend cannot set fullscreen mode' % self._backend.name())
 
