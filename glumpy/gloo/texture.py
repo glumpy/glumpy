@@ -443,8 +443,13 @@ class Texture3D(Texture):
         gl.glBindTexture(self.target, self._handle)
         #since null pointer is passed, only empty mem is allocated on GPU
         #-- see https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage3D.xhtml
-        gl.glTexImage3D(self.target, 0, self._gpu_format, self.depth, self.height, self.width, 
+        #
+        #the swizzled order of the dimensions assures the right interpretation of the underlying array
+        gl.glTexImage3D(self.target, 0, self._gpu_format, self.depth, self.width, self.height, 
                         0, self._cpu_format, self.gtype, None)
+        
+        #gl.glTexImage3D(self.target, 0, self._gpu_format, self.width, self.depth, self.height, 
+        #                0, self._cpu_format, self.gtype, None)
         self._need_setup = False
 
 
@@ -454,8 +459,9 @@ class Texture3D(Texture):
         #FIXME: lazy alternative -- update complet texture
         if self.pending_data:    
             gl.glBindTexture(self._target, self.handle)
-            gl.glTexImage3D(self.target, 0, self._gpu_format, self.depth, self.height, self.width,
-                            0, self._cpu_format, self.gtype, self)
+            #the swizzled order of the dimensions assures the right interpretation of the underlying array
+            gl.glTexImage3D(self.target, 0, self._gpu_format, self.depth, self.width, self.height,
+                            0, self._cpu_format, self.gtype, np.ascontiguousarray( self ))
             gl.glBindTexture(self._target, self.handle)
 
 
