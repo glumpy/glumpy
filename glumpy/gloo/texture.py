@@ -383,6 +383,119 @@ class TextureFloat2D(Texture2D):
         self._gpu_format = Texture._gpu_float_formats[self.shape[-1]]
 
 
+class Texture3D(Texture):
+    """ 2D texture """
+
+    def __init__(self):
+        Texture.__init__(self, gl.GL_TEXTURE_3D)
+        self.shape = self._check_shape(self.shape, 3)
+        self._cpu_format = Texture._cpu_formats[self.shape[-1]]
+        self._gpu_format = Texture._gpu_formats[self.shape[-1]]
+
+    @property
+    def depth(self):
+        """ Texture depth (z-axis, 2nd numpy axis """
+
+        return self.shape[2]
+
+    @property
+    def width(self):
+        """ Texture width (x-axis), 1st numpy axis """
+
+        return self.shape[1]
+
+
+    @property
+    def height(self):
+        """ Texture height (y-axis), 0th numpy axis """
+
+        return self.shape[0]
+
+
+    # def _create(self):
+    #     """ Create texture on GPU """
+
+    #     Texture._create(self)
+    #     log.debug("GPU: Resizing texture(%sx%s)"% (self.width,self.height))
+    #     gl.glBindTexture(self.target, self._handle)
+    #     gl.glTexImage2D(self.target, 0, self.format, self.width, self.height,
+    #                     0, self.format, self.gtype, None)
+    #     """
+    #     if self.format == gl.GL_RED:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_R32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+
+    #     elif self.format == gl.GL_RG:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_RG32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+    #     elif self.format == gl.GL_RGB:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_RGB32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+    #     elif self.format == gl.GL_RGBA:
+    #         gl.glTexImage2D(self.target, 0, gl.GL_RGBA32F, self.width, self.height,
+    #                         0, self.format, self.gtype, None)
+    #     """
+
+    def _setup(self):
+        """ Setup texture on GPU """
+
+        Texture._setup(self)
+        gl.glBindTexture(self.target, self._handle)
+        #since null pointer is passed, only empty mem is allocated on GPU
+        #-- see https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage3D.xhtml
+        gl.glTexImage3D(self.target, 0, self._gpu_format, self.depth, self.height, self.width, 
+                        0, self._cpu_format, self.gtype, None)
+        self._need_setup = False
+
+
+    def _update(self):
+        """ Update texture on GPU """
+
+        #FIXME: lazy alternative -- update complet texture
+        if self.pending_data:    
+            gl.glBindTexture(self._target, self.handle)
+            gl.glTexImage3D(self.target, 0, self._gpu_format, self.depth, self.height, self.width,
+                            0, self._cpu_format, self.gtype, self)
+            gl.glBindTexture(self._target, self.handle)
+
+
+        if False: 
+            if self.pending_data:
+                log.debug("GPU: Updating texture")
+
+                start, stop = self.pending_data
+                offset, nbytes = start, stop-start
+
+                itemsize = self.strides[1]
+                offset /= itemsize
+                nbytes /= itemsize
+
+                nbytes += offset % self.width
+                offset -= offset % self.width
+                nbytes += (self.width - ((offset + nbytes) % self.width)) % self.width
+
+                x = 0
+                y = offset // self.width
+                width = self.width
+                height = nbytes // self.width
+                gl.glBindTexture(self._target, self.handle)
+                gl.glTexSubImage2D(self.target, 0, x, y, width, height,
+                                self._cpu_format, self.gtype, self)
+                gl.glBindTexture(self._target, self.handle)
+
+        self._pending_data = None
+        self._need_update = False
+
+
+
+class TextureFloat3D(Texture3D):
+    """ 3D float texture """
+
+    def __init__(self):
+        Texture3D.__init__(self)
+        self._gpu_format = Texture._gpu_float_formats[self.shape[-1]]
+
+
 class DepthTexture(Texture2D):
     """ Depth texture """
 
