@@ -541,6 +541,7 @@ glfwIconifyWindow              = _glfw.glfwIconifyWindow
 glfwRestoreWindow              = _glfw.glfwRestoreWindow
 glfwShowWindow                 = _glfw.glfwShowWindow
 glfwHideWindow                 = _glfw.glfwHideWindow
+glfwSetWindowMonitor           = _glfw.glfwSetWindowMonitor
 glfwGetWindowMonitor           = _glfw.glfwGetWindowMonitor
 glfwGetWindowAttrib            = _glfw.glfwGetWindowAttrib
 glfwSetWindowUserPointer       = _glfw.glfwSetWindowUserPointer
@@ -705,13 +706,13 @@ def glfwGetMonitorPhysicalSize(monitor):
 
 def glfwGetVideoMode(monitor):
     _glfw.glfwGetVideoMode.restype = POINTER(GLFWvidmode)
-    c_modes = _glfw.glfwGetVideoModes(monitor)
-    return (c_modes.width,
-            c_modes.height,
-            c_modes.redBits,
-            c_modes.blueBits,
-            c_modes.greenBits,
-            c_modes.refreshRate )
+    c_mode = _glfw.glfwGetVideoMode(monitor)
+    return (c_mode.contents.width,
+            c_mode.contents.height,
+            c_mode.contents.redBits,
+            c_mode.contents.blueBits,
+            c_mode.contents.greenBits,
+            c_mode.contents.refreshRate)
 
 
 def GetGammaRamp(monitor):

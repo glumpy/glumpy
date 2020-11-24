@@ -201,7 +201,7 @@ def set_configuration(config):
 # ------------------------------------------------------------------ Window ---
 class Window(window.Window):
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
+                  decoration=True, fullscreen=False, screen=None, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -210,6 +210,7 @@ class Window(window.Window):
                                      aspect=aspect,
                                      decoration=decoration,
                                      fullscreen=fullscreen,
+                                     screen=screen,
                                      config=config,
                                      context=context,
                                      color=color)
@@ -235,6 +236,8 @@ class Window(window.Window):
         self._native_window.setAutoBufferSwap(False)
         self._native_window.setMouseTracking(True)
         self._native_window.setWindowTitle(self._title)
+
+        self.set_fullscreen(fullscreen, screen)
 
         def paint_gl():
             self.dispatch_event("on_draw", 0.0)
@@ -345,7 +348,7 @@ class Window(window.Window):
         self._native_window.setWindowTitle(self._title)
         self._title = title
 
-    def get_title(self, title):
+    def get_title(self):
         return self._title
 
     def set_size(self, width, height):
@@ -357,6 +360,31 @@ class Window(window.Window):
         self._width = self._native_window.geometry().width()
         self._height = self._native_window.geometry().height()
         return self._width, self._height
+
+    def set_fullscreen(self, fullscreen, screen=None):
+        if screen is not None:
+            self.set_screen(screen)
+
+        if fullscreen:
+            self._native_window.showFullScreen()
+        else:
+            self._native_window.showNormal()
+        self._fullscreen = fullscreen
+
+    def get_fullscreen(self):
+        return self._fullscreen
+
+    def set_screen(self, screen):
+        if isinstance(screen, int):
+            self._screen = screen
+            screen = self._native_app.screens()[screen]
+        else:
+            self._screen = self._native_app.screens().index(screen)
+
+        self._native_window.windowHandle().setScreen(screen)
+
+    def get_screen(self):
+        return self._native_window.windowHandle().screen()
 
     def set_position(self, x, y):
         self._native_window.move(x,y)
