@@ -42,8 +42,8 @@ def zoom(Z, ratio):
     """ Bilinear image zoom """
 
     nrows, ncols = Z.shape
-    x,y = np.meshgrid(np.linspace(0, ncols, (ratio*ncols), endpoint=False),
-                      np.linspace(0, nrows, (ratio*nrows), endpoint=False))
+    x,y = np.meshgrid(np.linspace(0, ncols, round(ratio*ncols), endpoint=False),
+                      np.linspace(0, nrows, round(ratio*nrows), endpoint=False))
     return bilinear_interpolate(Z, x, y)
 
 
