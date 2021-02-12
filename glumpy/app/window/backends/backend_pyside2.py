@@ -4,12 +4,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 """
-`PyQt <https://riverbankcomputing.com/software/pyqt/intro/>`_ is a set of
-Python v2 and v3 bindings for The Qt Company's Qt application framework and
-runs on all platforms supported by Qt including Windows, MacOS/X and
-Linux. PyQt5 supports Qt v5. PyQt4 supports Qt v4 and will build against Qt
-v5. The bindings are implemented as a set of Python modules and contain over
-1,000 classes.
+PySide2 is the official Python module from the Qt for Python project, which provides access to the complete Qt 5.12+ framework.
 
 **Usage**
 
@@ -17,7 +12,7 @@ v5. The bindings are implemented as a set of Python modules and contain over
 
      from glumpy import app
 
-     app.use("qt5")
+     app.use("pyside2")
      window = app.Window()
 
 
@@ -44,7 +39,7 @@ from glumpy.app.window import window
 
 
 # Backend name
-__name__ = "Qt5"
+__name__ = "PySide2"
 
 # Backend version (if available)
 __version__ = ""
@@ -83,12 +78,11 @@ def __exit__():
 
 # ------------------------------------------------------------ availability ---
 try:
-    from PyQt5 import QtGui, QtCore, QtOpenGL, QtWidgets
+    from PySide2 import QtCore, QtOpenGL,QtWidgets
     if not __initialized__:
         __init__()
     __availability__ = True
-    __version__ = QtCore.QT_VERSION_STR
-    # __version__ = QtCore.__version__
+    __version__ = QtCore.__version__
 
     __mouse_map__ = { 0: window.mouse.LEFT,
                       1: window.mouse.MIDDLE,
@@ -201,7 +195,7 @@ def set_configuration(config):
 # ------------------------------------------------------------------ Window ---
 class Window(window.Window):
     def __init__( self, width=256, height=256, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, screen=None, config=None, context=None, color=(0,0,0,1), vsync=False):
+                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -210,7 +204,6 @@ class Window(window.Window):
                                      aspect=aspect,
                                      decoration=decoration,
                                      fullscreen=fullscreen,
-                                     screen=screen,
                                      config=config,
                                      context=context,
                                      color=color)
@@ -236,8 +229,7 @@ class Window(window.Window):
         self._native_window.setAutoBufferSwap(False)
         self._native_window.setMouseTracking(True)
         self._native_window.setWindowTitle(self._title)
-
-        self.set_fullscreen(fullscreen, screen)
+        #self._native_window.show()
 
         def paint_gl():
             self.dispatch_event("on_draw", 0.0)
@@ -289,8 +281,12 @@ class Window(window.Window):
         self._native_window.mouseMoveEvent = mouse_move_event
 
         def wheel_event(event):
-            offset_x = event.angleDelta().x()
-            offset_y = event.angleDelta().y()
+            if event.orientation == QtCore.Qt.Horizontal:
+                offset_x = event.delta()
+                offset_y = 0
+            else:
+                offset_x = 0
+                offset_y = event.delta()
             x = event.pos().x()
             y = event.pos().y()
             self.dispatch_event("on_mouse_scroll", x, y, offset_x/10.0, offset_y/10.0)
@@ -305,11 +301,9 @@ class Window(window.Window):
 
         def key_release_event(event):
             code = self._keyboard_translate(event.key())
-            modifiers = self._modifiers_translate(QtWidgets.QApplication.keyboardModifiers())
+            modifiers = self._modifiers_translate(event.modifiers())
             self.dispatch_event("on_key_release", code, modifiers)
         self._native_window.keyReleaseEvent = key_release_event
-
-        self._native_window.show()
 
         __windows__.append(self)
 
@@ -326,7 +320,19 @@ class Window(window.Window):
         if QtCore.Qt.ShiftModifier & modifiers:
             _modifiers |= window.key.MOD_SHIFT
         if QtCore.Qt.ControlModifier & modifiers:
-            _modifiers |= window.key.MOD_CTRL
+            _modifiers |= window.key.MOD_CONTROL
+        if QtCore.Qt.AltModifier & modifiers:
+            _modifiers |= window.key.MOD_ALT
+        if QtCore.Qt.MetaModifier & modifiers:
+            _modifiers |= window.key.MOD_META
+        return _modifiers
+
+    def _modifiers_translate( self, modifiers ):
+        _modifiers = 0
+        if QtCore.Qt.ShiftModifier & modifiers:
+            _modifiers |= window.key.MOD_SHIFT
+        if QtCore.Qt.ControlModifier & modifiers:
+            _modifiers |= window.key.MOD_CONTROL
         if QtCore.Qt.AltModifier & modifiers:
             _modifiers |= window.key.MOD_ALT
         if QtCore.Qt.MetaModifier & modifiers:
@@ -348,7 +354,7 @@ class Window(window.Window):
         self._native_window.setWindowTitle(self._title)
         self._title = title
 
-    def get_title(self):
+    def get_title(self, title):
         return self._title
 
     def set_size(self, width, height):
@@ -360,31 +366,6 @@ class Window(window.Window):
         self._width = self._native_window.geometry().width()
         self._height = self._native_window.geometry().height()
         return self._width, self._height
-
-    def set_fullscreen(self, fullscreen, screen=None):
-        if screen is not None:
-            self.set_screen(screen)
-
-        if fullscreen:
-            self._native_window.showFullScreen()
-        else:
-            self._native_window.showNormal()
-        self._fullscreen = fullscreen
-
-    def get_fullscreen(self):
-        return self._fullscreen
-
-    def set_screen(self, screen):
-        if isinstance(screen, int):
-            self._screen = screen
-            screen = self._native_app.screens()[screen]
-        else:
-            self._screen = self._native_app.screens().index(screen)
-
-        self._native_window.windowHandle().setScreen(screen)
-
-    def get_screen(self):
-        return self._native_window.windowHandle().screen()
 
     def set_position(self, x, y):
         self._native_window.move(x,y)

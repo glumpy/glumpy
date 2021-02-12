@@ -5,9 +5,13 @@
 # the file COPYING, distributed as part of this software.
 #-----------------------------------------------------------------------------
 import os
+from setuptools import dist, setup, Extension
+
+dist.Distribution().fetch_build_eggs(['Cython>=0.15.1', 'numpy>=1.10'])
+
 import numpy
 from Cython.Distutils import build_ext
-from setuptools import setup, Extension
+
 
 if __name__ == "__main__":
 
