@@ -3,7 +3,7 @@ The hard way
 ============
 
 Before even using OpenGL, we need to open a window with a valid GL
-context. This can be done using toolkit such as Gtk, Qt or Wx or any native
+context. This can be done using toolkit such as Qt or Wx, or any native
 toolkit (Windows, Linux, OSX). Note there also exists dedicated toolkits such
 as GLFW or GLUT and the advantage of GLUT is that it's already installed
 alongside OpenGL. Even if it is now deprecated, we'll use GLUT since it's a
