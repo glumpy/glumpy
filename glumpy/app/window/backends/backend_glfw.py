@@ -107,6 +107,8 @@ try:
                       glfw.GLFW_KEY_HOME:          window.key.HOME,
                       glfw.GLFW_KEY_END:           window.key.END,
                       glfw.GLFW_KEY_CAPS_LOCK:     window.key.CAPSLOCK,
+                      glfw.GLFW_KEY_LEFT_SHIFT:    window.key.LSHIFT,
+                      glfw.GLFW_KEY_RIGHT_SHIFT:   window.key.RSHIFT,
                       glfw.GLFW_KEY_PRINT_SCREEN:  window.key.PRINT,
                       glfw.GLFW_KEY_PAUSE:         window.key.PAUSE,
                       glfw.GLFW_KEY_F1:            window.key.F1,
