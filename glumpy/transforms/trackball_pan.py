@@ -146,7 +146,7 @@ class TrackballPan(Transform):
         return self._zoom
 
 
-    @phi.setter
+    @zoom.setter
     def zoom(self, value):
         """ Zoom level (aperture angle in degrees) """
 
@@ -162,6 +162,8 @@ class TrackballPan(Transform):
         return self._aspect
 
 
+
+
     @aspect.setter
     def aspect(self, value):
         """ Projection aspect """
@@ -170,6 +172,40 @@ class TrackballPan(Transform):
         self['projection'] = glm.perspective(self._zoom, aspect,
                                              self._znear, self._zfar)
 
+
+    @property
+    def view_x(self):
+        """
+        Pan X
+        """
+        return self._view_x
+
+    @view_x.setter
+    def view_x(self, value):
+        """
+        Set pan X
+        """
+        self._view_x = value
+        self.update_pan()
+
+
+    @property
+    def view_y(self):
+        """
+        Pan y
+        """
+        return self._view_y
+
+    @view_y.setter
+    def view_y(self, value):
+        """
+        Set pan y
+        """
+        self._view_y = value
+        self.update_pan()
+
+    def update_pan(self):
+        self["pan"] = self._view_x, self._view_y
 
     def on_attach(self, program):
         self["view"] = self._view
@@ -186,17 +222,14 @@ class TrackballPan(Transform):
                                              self._znear, self._zfar)
         Transform.on_resize(self, width, height)
 
-
-
     def on_mouse_drag(self, x, y, dx, dy, button):
         if self._shift: # shift button is currently pressed
             # print(self._znear, self._zfar)
             dx = 2 * (dx / self._width)
             dy = -2 * (dy / self._height)
-            self['pan'] = self._view_x, self._view_y
             self._view_x += dx
             self._view_y += dy
-            aspect = self._window_aspect * self._aspect
+            self.update_pan()
         else:
             width = self._width
             height = self._height
