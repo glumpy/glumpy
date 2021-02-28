@@ -1,7 +1,7 @@
 import numpy as np
 from . import _trackball
 from . transform import Transform
-from glumpy import gl, glm, library
+from glumpy import gl, glm, library, app
 
 
 class TrackballPan(Transform):
@@ -217,8 +217,7 @@ class TrackballPan(Transform):
                                              self._znear, self._zfar)
 
     def on_key_press(self, k, m):
-        #print('p', k, m)
-        if m == 1:
+        if k == app.window.key.LSHIFT or k == app.window.key.RSHIFT:
             self._shift = True
 
     def on_key_release(self, k, m):
