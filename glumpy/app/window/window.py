@@ -153,6 +153,7 @@ class Window(event.EventDispatcher):
         self._timer_date = []
         self._backend = None
         self._color = color
+        self._native_window = None
 
         self._clearflags = gl.GL_COLOR_BUFFER_BIT
         if config._depth_size:
@@ -209,6 +210,10 @@ class Window(event.EventDispatcher):
             gl.glClearColor(*self._color)
             if  clearflags is not None: gl.glClear(clearflags)
             else:                       gl.glClear(self._clearflags)
+    
+    @property
+    def native_window(self):
+        return self._native_window
 
     def on_init(self):
         """ Window initialization """
