@@ -223,6 +223,7 @@ class Window(event.EventDispatcher):
 
     def on_resize(self, width, height):
         """" Default resize handler that set viewport """
+        self.activate()
         gl.glViewport(0, 0, width, height)
         self.dispatch_event('on_draw', 0.0)
         self.swap()
