@@ -393,7 +393,7 @@ class Window(window.Window):
         glfw.glfwSetWindowTitle( self._native_window, title)
         self._title = title
 
-    def get_title(self, title):
+    def get_title(self):
         return self._title
 
     def set_size(self, width, height):

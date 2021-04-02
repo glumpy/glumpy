@@ -531,7 +531,7 @@ glfwWindowHint                 = _glfw.glfwWindowHint
 # glfwDestroyWindow              = _glfw.glfwDestroyWindow
 glfwWindowShouldClose          = _glfw.glfwWindowShouldClose
 glfwSetWindowShouldClose       = _glfw.glfwSetWindowShouldClose
-glfwSetWindowTitle             = _glfw.glfwSetWindowTitle
+# glfwSetWindowTitle             = _glfw.glfwSetWindowTitle
 # glfwGetWindowPos              = _glfw.glfwGetWindowPos
 glfwSetWindowPos               = _glfw.glfwSetWindowPos
 # glfwGetWindowSize             = _glfw.glfwGetWindowSize
@@ -611,7 +611,7 @@ def glfwCreateWindow(width=640, height=480, title="GLFW Window",
                      monitor=None, share=None):
     _glfw.glfwCreateWindow.restype = POINTER(GLFWwindow)
     if not isinstance(title,bytes):
-        title = title.encode("ascii")
+        title = title.encode('utf-8')
     window = _glfw.glfwCreateWindow(width,height,title,monitor,share)
     __windows__.append(window)
     __destroyed__.append(False)
@@ -644,6 +644,12 @@ def glfwDestroyWindow(window):
         del __py_callbacks__[index]
         # del __windows__[index]
     __destroyed__[index] = True
+
+
+def glfwSetWindowTitle(window, title):
+    if not isinstance(title, bytes):
+        title = title.encode('utf-8')
+    _glfw.glfwSetWindowTitle(window, title)
 
 
 def glfwGetWindowPos(window):
