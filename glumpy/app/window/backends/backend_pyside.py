@@ -356,7 +356,7 @@ class Window(window.Window):
         self._native_window.setWindowTitle(self._title)
         self._title = title
 
-    def get_title(self, title):
+    def get_title(self):
         return self._title
 
     def set_size(self, width, height):
