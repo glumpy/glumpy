@@ -274,7 +274,7 @@ class Quadric(SpatialFilter):
         SpatialFilter.__init__(self, radius=1.5)
 
     def weight(self, x):
-        if x <  0.75:
+        if x <  0.5:
             return 0.75 - x * x
         elif x <  1.5:
             t = x - 1.5
