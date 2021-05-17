@@ -142,7 +142,7 @@ class Window(window.Window):
         """ Set window title """
         raise(NotImplemented)
 
-    def get_title(self, title):
+    def get_title(self):
         """ Get window title """
         raise(NotImplemented)
 

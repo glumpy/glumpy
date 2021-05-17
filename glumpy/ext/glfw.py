@@ -531,7 +531,7 @@ glfwWindowHint                 = _glfw.glfwWindowHint
 # glfwDestroyWindow              = _glfw.glfwDestroyWindow
 glfwWindowShouldClose          = _glfw.glfwWindowShouldClose
 glfwSetWindowShouldClose       = _glfw.glfwSetWindowShouldClose
-glfwSetWindowTitle             = _glfw.glfwSetWindowTitle
+# glfwSetWindowTitle             = _glfw.glfwSetWindowTitle
 # glfwGetWindowPos              = _glfw.glfwGetWindowPos
 glfwSetWindowPos               = _glfw.glfwSetWindowPos
 # glfwGetWindowSize             = _glfw.glfwGetWindowSize
@@ -541,6 +541,7 @@ glfwIconifyWindow              = _glfw.glfwIconifyWindow
 glfwRestoreWindow              = _glfw.glfwRestoreWindow
 glfwShowWindow                 = _glfw.glfwShowWindow
 glfwHideWindow                 = _glfw.glfwHideWindow
+glfwSetWindowMonitor           = _glfw.glfwSetWindowMonitor
 glfwGetWindowMonitor           = _glfw.glfwGetWindowMonitor
 glfwGetWindowAttrib            = _glfw.glfwGetWindowAttrib
 glfwSetWindowUserPointer       = _glfw.glfwSetWindowUserPointer
@@ -610,7 +611,7 @@ def glfwCreateWindow(width=640, height=480, title="GLFW Window",
                      monitor=None, share=None):
     _glfw.glfwCreateWindow.restype = POINTER(GLFWwindow)
     if not isinstance(title,bytes):
-        title = title.encode("ascii")
+        title = title.encode('utf-8')
     window = _glfw.glfwCreateWindow(width,height,title,monitor,share)
     __windows__.append(window)
     __destroyed__.append(False)
@@ -643,6 +644,12 @@ def glfwDestroyWindow(window):
         del __py_callbacks__[index]
         # del __windows__[index]
     __destroyed__[index] = True
+
+
+def glfwSetWindowTitle(window, title):
+    if not isinstance(title, bytes):
+        title = title.encode('utf-8')
+    _glfw.glfwSetWindowTitle(window, title)
 
 
 def glfwGetWindowPos(window):
@@ -705,13 +712,13 @@ def glfwGetMonitorPhysicalSize(monitor):
 
 def glfwGetVideoMode(monitor):
     _glfw.glfwGetVideoMode.restype = POINTER(GLFWvidmode)
-    c_modes = _glfw.glfwGetVideoModes(monitor)
-    return (c_modes.width,
-            c_modes.height,
-            c_modes.redBits,
-            c_modes.blueBits,
-            c_modes.greenBits,
-            c_modes.refreshRate )
+    c_mode = _glfw.glfwGetVideoMode(monitor)
+    return (c_mode.contents.width,
+            c_mode.contents.height,
+            c_mode.contents.redBits,
+            c_mode.contents.blueBits,
+            c_mode.contents.greenBits,
+            c_mode.contents.refreshRate)
 
 
 def GetGammaRamp(monitor):

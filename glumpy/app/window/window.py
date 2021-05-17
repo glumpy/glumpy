@@ -130,7 +130,7 @@ class Window(event.EventDispatcher):
     """
 
     def __init__(self, width=256, height=256, title=None, visible=True, aspect=None,
-                 decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1)):
+                 decoration=True, fullscreen=False, screen=None, config=None, context=None, color=(0,0,0,1)):
         """
         Create a window.
         """
@@ -145,6 +145,7 @@ class Window(event.EventDispatcher):
         self._height = height
         self._title = (title or sys.argv[0])
         self._visible = visible
+        self._screen = 0 if screen is None else screen
         self._fullscreen = fullscreen
         self._decoration = decoration
         self._clock = None
@@ -152,6 +153,7 @@ class Window(event.EventDispatcher):
         self._timer_date = []
         self._backend = None
         self._color = color
+        self._native_window = None
 
         self._clearflags = gl.GL_COLOR_BUFFER_BIT
         if config._depth_size:
@@ -208,6 +210,10 @@ class Window(event.EventDispatcher):
             gl.glClearColor(*self._color)
             if  clearflags is not None: gl.glClear(clearflags)
             else:                       gl.glClear(self._clearflags)
+    
+    @property
+    def native_window(self):
+        return self._native_window
 
     def on_init(self):
         """ Window initialization """
@@ -217,6 +223,7 @@ class Window(event.EventDispatcher):
 
     def on_resize(self, width, height):
         """" Default resize handler that set viewport """
+        self.activate()
         gl.glViewport(0, 0, width, height)
         self.dispatch_event('on_draw', 0.0)
         self.swap()
@@ -283,7 +290,15 @@ class Window(event.EventDispatcher):
         """ Get window position """
         log.warn('%s backend cannot get position' %  self._backend.name())
 
-    def set_fullscreen(self, fullsrceen):
+    def set_screen(self, screen):
+        """ Set window screen """
+        log.warn('%s backend cannot set screen' % self._backend.name())
+
+    def get_screen(self):
+        """ Get window screen """
+        log.warn('%s backend cannot get screen' % self._backend.name())
+
+    def set_fullscreen(self, fullscreen):
         """ Set window fullscreen mode """
         log.warn('%s backend cannot set fullscreen mode' % self._backend.name())
 

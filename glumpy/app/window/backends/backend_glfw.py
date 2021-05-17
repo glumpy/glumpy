@@ -33,7 +33,7 @@ Move windows                  ✓     Unicode handling            ✓
 Fullscreen                    ✓     Scroll event                ✓
 ========================== ======== ======================== ========
 """
-import os, sys
+import os, sys, platform
 from glumpy import gl
 from glumpy.log import log
 from glumpy.app import configuration
@@ -107,6 +107,8 @@ try:
                       glfw.GLFW_KEY_HOME:          window.key.HOME,
                       glfw.GLFW_KEY_END:           window.key.END,
                       glfw.GLFW_KEY_CAPS_LOCK:     window.key.CAPSLOCK,
+                      glfw.GLFW_KEY_LEFT_SHIFT:    window.key.LSHIFT,
+                      glfw.GLFW_KEY_RIGHT_SHIFT:   window.key.RSHIFT,
                       glfw.GLFW_KEY_PRINT_SCREEN:  window.key.PRINT,
                       glfw.GLFW_KEY_PAUSE:         window.key.PAUSE,
                       glfw.GLFW_KEY_F1:            window.key.F1,
@@ -190,7 +192,7 @@ def set_configuration(config):
 class Window(window.Window):
 
     def __init__( self, width=512, height=512, title=None, visible=True, aspect=None,
-                  decoration=True, fullscreen=False, config=None, context=None, color=(0,0,0,1), vsync=False):
+                  decoration=True, fullscreen=False, screen=None, config=None, context=None, color=(0,0,0,1), vsync=False):
 
         window.Window.__init__(self, width=width,
                                      height=height,
@@ -199,6 +201,7 @@ class Window(window.Window):
                                      aspect=aspect,
                                      decoration=decoration,
                                      fullscreen=fullscreen,
+                                     screen=screen,
                                      config=config,
                                      context=context,
                                      color=color)
@@ -222,9 +225,14 @@ class Window(window.Window):
             config = configuration.Configuration()
         set_configuration(config)
 
-        monitor = glfw.glfwGetMonitors()[0] if fullscreen else None
-        self._native_window = glfw.glfwCreateWindow( self._width, self._height,
-                                                     self._title, monitor, None)
+        monitor = glfw.glfwGetMonitors()[self._screen] if fullscreen else None
+        if fullscreen:
+            mode = glfw.glfwGetVideoMode(monitor)
+            self._width, self._height = mode[:2]
+
+        self._native_window = glfw.glfwCreateWindow(self._width, self._height,
+                                                    self._title, monitor, None)
+
 
         if not self._native_window:
             log.critical("Window creation failed")
@@ -238,7 +246,7 @@ class Window(window.Window):
         #      can be different so we try to correct window size such as having
         #      the framebuffer size of the right size
         w,h = glfw.glfwGetFramebufferSize(self._native_window)
-        if w != width or h!= height:
+        if platform == 'darwin' and (w!= width or h!= height):
             width, height  = width//2, height//2
             glfw.glfwSetWindowSize(self._native_window, width, height)
             log.info("HiDPI detected, fixing window size")
@@ -366,11 +374,26 @@ class Window(window.Window):
     def destroy(self):
         glfw.glfwDestroyWindow(self._native_window)
 
+    def get_screen(self):
+        return glfw.glfwGetWindowMonitor(self._native_window)
+
+    def set_fullscreen(self, fullscreen, screen=None):
+        screen = 0 if screen is None else screen
+        mode = glfw.glfwGetVideoMode(glfw.glfwGetMonitors()[screen])
+
+        if fullscreen:
+            glfw.glfwSetWindowMonitor(self._native_window, screen, 0, 0, mode[0], mode[1], mode[-1])
+        else:
+            glfw.glfwSetWindowMonitor(self._native_window, screen, 0, 0, 256, 256, mode[-1])
+
+    def get_fullscreen(self):
+        return self._fullscreen
+
     def set_title(self, title):
         glfw.glfwSetWindowTitle( self._native_window, title)
         self._title = title
 
-    def get_title(self, title):
+    def get_title(self):
         return self._title
 
     def set_size(self, width, height):
