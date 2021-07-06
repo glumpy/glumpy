@@ -3,6 +3,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 __backends__ = ('glfw',
+                'pyglfw',
                 'pyglet',
                 'sdl',
                 'sdl2',
