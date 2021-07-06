@@ -83,10 +83,9 @@ def __exit__():
 
 # ------------------------------------------------------------ availability ---
 try:
-    from glumpy.ext import glfw
-    #import glfw.GLFW as glfw
+    from glfw import GLFW as glfw
     __availability__ = True
-    __version__ = ("%d.%d.%d") % glfw.version
+    __version__ = ("%d.%d.%d") % (glfw.GLFW_VERSION_MAJOR, glfw.GLFW_VERSION_MINOR, glfw.GLFW_VERSION_REVISION)
     __init__()
 
     __mouse_map__ = { glfw.GLFW_MOUSE_BUTTON_LEFT:   window.mouse.LEFT,
