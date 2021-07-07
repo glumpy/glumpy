@@ -450,7 +450,9 @@ def process(dt):
         # Dispatch the idle event
         window.dispatch_event('on_idle', dt)
 
-        window.imguiRenderer.render(imgui.get_draw_data())
+        imgui_draw_data = imgui.get_draw_data()
+        if imgui_draw_data is not None:
+            window.imguiRenderer.render(imgui_draw_data)
 
         # Swap buffers
         window.swap()
