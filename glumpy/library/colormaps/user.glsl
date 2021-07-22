@@ -8,7 +8,7 @@ uniform sampler1D colormap;
 
 vec3 colormap_user(float t)
 {
-    return texture(colormap, t).rgb;
+    return texture1D(colormap, t).rgb;
 }
 
 vec3 colormap_user(float t, vec3 under, vec3 over)
