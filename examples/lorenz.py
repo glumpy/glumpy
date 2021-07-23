@@ -11,7 +11,7 @@ from glumpy.graphics.collections import PathCollection
 from glumpy.graphics.collections import SegmentCollection
 
 
-app.use('pyglfw')
+app.use('glfw')
 window = app.Window(width=1000, height=800, color=(1,1,1,1))
 
 @window.event

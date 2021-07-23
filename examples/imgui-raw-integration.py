@@ -34,7 +34,7 @@ void main()
 """
 
 
-app.use("glfw_imgui")
+app.use("glfw")  # Required for ImGui integration
 window = app.Window(width=1024, height=1024,
                     color=(0.30, 0.30, 0.35, 1.00))
 
@@ -62,6 +62,7 @@ trackball.zoom = 50
 @window.event
 def on_draw(dt):
     # GUI
+    imguiRenderer.process_inputs()
     imgui.new_frame()
 
     if imgui.begin_main_menu_bar():
@@ -99,8 +100,15 @@ def on_draw(dt):
     cube.draw(gl.GL_LINES, outline)
     gl.glDepthMask(gl.GL_TRUE)
 
+    imguiRenderer.render(imgui.get_draw_data())
+
 
 window.attach(cube['transform'])
+
+
+# ImGui
+imgui.create_context()
+imguiRenderer = GlfwRenderer(window._native_window, attach_callbacks=False) # here lives the devil
 
 
 # OpenGL
