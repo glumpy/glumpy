@@ -40,7 +40,7 @@ from glumpy.app.window import window
 
 
 # Backend name
-__name__ = "PYGLFW"
+__name__ = "PYGLFW_IMGUI"
 
 # Backend version (if available)
 __version__ = ""
@@ -83,6 +83,8 @@ def __exit__():
 # ------------------------------------------------------------ availability ---
 try:
     from glfw import GLFW as glfw
+    import imgui
+    from imgui.integrations.glfw import GlfwRenderer
     __availability__ = True
     __version__ = ("%d.%d.%d") % (glfw.GLFW_VERSION_MAJOR, glfw.GLFW_VERSION_MINOR, glfw.GLFW_VERSION_REVISION)
     __init__()
@@ -238,8 +240,12 @@ class Window(window.Window):
             __exit__()
             sys.exit()
 
+
         glfw.glfwMakeContextCurrent(self._native_window)
         glfw.glfwSwapInterval(1 if vsync else 0)
+
+        imgui.create_context()
+        self.imguiRenderer = GlfwRenderer(self._native_window, attach_callbacks=False)
 
         # OSX: check framebuffer size / window size. On retina display, they
         #      can be different so we try to correct window size such as having
@@ -310,6 +316,8 @@ class Window(window.Window):
 
 
         def on_mouse_motion(win, x, y):
+            if imgui.get_io().want_capture_mouse: return
+
             if self._hidpi:
                 x, y = 2*x, 2*y
             dx = x - self._mouse_x
@@ -432,14 +440,19 @@ def process(dt):
     glfw.glfwPollEvents()
 
     for window in __windows__:
-        # Make window active
         window.activate()
+
+        window.imguiRenderer.process_inputs()
 
         # Dispatch the main draw event
         window.dispatch_event('on_draw', dt)
 
         # Dispatch the idle event
         window.dispatch_event('on_idle', dt)
+
+        imgui_draw_data = imgui.get_draw_data()
+        if imgui_draw_data is not None:
+            window.imguiRenderer.render(imgui_draw_data)
 
         # Swap buffers
         window.swap()
