@@ -13,7 +13,7 @@ from . globject import GLObject
 from . array import VertexArray
 from . buffer import VertexBuffer, IndexBuffer
 from . shader import VertexShader, FragmentShader, GeometryShader
-from . variable import gl_typeinfo, Uniform, Attribute
+from . variable import gl_typeinfo, Uniform, Attribute, sampler_types
 
 
 
@@ -276,7 +276,7 @@ class Program(GLObject):
             else:
                 uniform = self._uniforms[name]
             gtype = uniform.gtype
-            if gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE):
+            if gtype in sampler_types:
                 uniform._texture_unit = count
                 count += 1
             self._uniforms[name] = uniform

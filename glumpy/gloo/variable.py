@@ -88,8 +88,17 @@ gl_typeinfo = {
     gl.GL_FLOAT_MAT4   : (16, gl.GL_FLOAT,        np.float32),
     gl.GL_SAMPLER_1D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
     gl.GL_SAMPLER_2D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_INT_SAMPLER_1D : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_UNSIGNED_INT_SAMPLER_1D : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_INT_SAMPLER_2D : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_UNSIGNED_INT_SAMPLER_2D : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
     gl.GL_SAMPLER_CUBE : ( 1, gl.GL_UNSIGNED_INT, np.uint32)
 }
+
+
+sampler_types = (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D, gl.GL_INT_SAMPLER_1D,
+                  gl.GL_UNSIGNED_INT_SAMPLER_1D, gl.GL_INT_SAMPLER_2D,
+                  gl.GL_UNSIGNED_INT_SAMPLER_2D)
 
 
 
@@ -106,7 +115,9 @@ class Variable(GLObject):
                          gl.GL_INT,        gl.GL_BOOL,
                          gl.GL_FLOAT_MAT2, gl.GL_FLOAT_MAT3,
                          gl.GL_FLOAT_MAT4, gl.GL_SAMPLER_1D,
-                         gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE]:
+                         gl.GL_SAMPLER_2D, gl.GL_INT_SAMPLER_1D,
+                         gl.GL_UNSIGNED_INT_SAMPLER_1D, gl.GL_INT_SAMPLER_2D,
+                         gl.GL_UNSIGNED_INT_SAMPLER_2D, gl.GL_SAMPLER_CUBE]:
             raise TypeError("Unknown variable type")
 
         GLObject.__init__(self)
@@ -194,6 +205,10 @@ class Uniform(Variable):
         gl.GL_FLOAT_MAT4:   gl.glUniformMatrix4fv,
         gl.GL_SAMPLER_1D:   gl.glUniform1i,
         gl.GL_SAMPLER_2D:   gl.glUniform1i,
+        gl.GL_INT_SAMPLER_1D:   gl.glUniform1i,
+        gl.GL_UNSIGNED_INT_SAMPLER_1D:   gl.glUniform1i,
+        gl.GL_INT_SAMPLER_2D:   gl.glUniform1i,
+        gl.GL_UNSIGNED_INT_SAMPLER_2D:   gl.glUniform1i,
         gl.GL_SAMPLER_CUBE: gl.glUniform1i
     }
 
@@ -212,7 +227,9 @@ class Uniform(Variable):
         """ Assign new data to the variable (deferred operation) """
 
         # Textures need special handling
-        if self._gtype == gl.GL_SAMPLER_1D:
+        if self._gtype in (gl.GL_SAMPLER_1D,
+                           gl.GL_INT_SAMPLER_1D,
+                           gl.GL_UNSIGNED_INT_SAMPLER_1D):
 
             if isinstance(data, Texture1D):
                 self._data = data
@@ -229,7 +246,9 @@ class Uniform(Variable):
                 else:
                     self._data = data.view(Texture1D)
 
-        elif self._gtype == gl.GL_SAMPLER_2D:
+        elif self._gtype in (gl.GL_SAMPLER_2D,
+                             gl.GL_INT_SAMPLER_2D,
+                             gl.GL_UNSIGNED_INT_SAMPLER_2D):
             if isinstance(data, Texture2D):
                 self._data = data
             elif isinstance(self._data, Texture2D):
@@ -265,7 +284,7 @@ class Uniform(Variable):
 
 
     def _activate(self):
-        if self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE):
+        if self._gtype in sampler_types:
             if self.data is not None:
                 log.debug("GPU: Active texture is %d" % self._texture_unit)
                 gl.glActiveTexture(gl.GL_TEXTURE0 + self._texture_unit)
@@ -290,7 +309,7 @@ class Uniform(Variable):
             self._ufunction(self._handle, 1, transpose, self._data)
 
         # Textures (need to get texture count)
-        elif self._gtype in (gl.GL_SAMPLER_1D, gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE):
+        elif self._gtype in sampler_types:
             # texture = self.data
             log.debug("GPU: Activactin texture %d" % self._texture_unit)
             # gl.glActiveTexture(gl.GL_TEXTURE0 + self._unit)

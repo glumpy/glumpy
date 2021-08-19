@@ -79,6 +79,10 @@ class Shader(GLObject):
         'mat4':        gl.GL_FLOAT_MAT4,
         'sampler1D':   gl.GL_SAMPLER_1D,
         'sampler2D':   gl.GL_SAMPLER_2D,
+        'isampler1D':   gl.GL_INT_SAMPLER_1D,
+        'usampler1D':   gl.GL_UNSIGNED_INT_SAMPLER_1D,
+        'isampler2D':   gl.GL_INT_SAMPLER_2D,
+        'usampler2D':   gl.GL_UNSIGNED_INT_SAMPLER_2D,
         'samplerCube': gl.GL_SAMPLER_CUBE,
     }
 
