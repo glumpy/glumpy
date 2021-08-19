@@ -15,6 +15,10 @@ float       gl.GL_FLOAT        1  gl.GL_FLOAT        np.float32
 vec2        gl.GL_FLOAT_VEC2   2  gl.GL_FLOAT        np.float32
 vec3        gl.GL_FLOAT_VEC3   3  gl.GL_FLOAT        np.float32
 vec4        gl.GL_FLOAT_VEC4   4  gl.GL_FLOAT        np.float32
+double      gl.GL_DOUBLE       1  gl.GL_DOUBLE       np.float64
+dvec2       gl.GL_DOUBLE_VEC2  2  gl.GL_DOUBLE       np.float64
+dvec3       gl.GL_DOUBLE_VEC3  3  gl.GL_DOUBLE       np.float64
+dvec4       gl.GL_DOUBLE_VEC4  4  gl.GL_DOUBLE       np.float64
 int         gl.GL_INT          1  gl.GL_INT          np.int32
 ivec2       gl.GL_INT_VEC2     2  gl.GL_INT          np.int32
 ivec3       gl.GL_INT_VEC3     3  gl.GL_INT          np.int32
@@ -75,6 +79,10 @@ gl_typeinfo = {
     gl.GL_FLOAT_VEC2   : ( 2, gl.GL_FLOAT,        np.float32),
     gl.GL_FLOAT_VEC3   : ( 3, gl.GL_FLOAT,        np.float32),
     gl.GL_FLOAT_VEC4   : ( 4, gl.GL_FLOAT,        np.float32),
+    gl.GL_DOUBLE       : ( 1, gl.GL_DOUBLE,       np.float64),
+    gl.GL_DOUBLE_VEC2  : ( 2, gl.GL_DOUBLE,       np.float64),
+    gl.GL_DOUBLE_VEC3  : ( 3, gl.GL_DOUBLE,       np.float64),
+    gl.GL_DOUBLE_VEC4  : ( 4, gl.GL_DOUBLE,       np.float64),
     gl.GL_INT          : ( 1, gl.GL_INT,          np.int32),
     gl.GL_INT_VEC2     : ( 2, gl.GL_INT,          np.int32),
     gl.GL_INT_VEC3     : ( 3, gl.GL_INT,          np.int32),
@@ -101,12 +109,14 @@ class Variable(GLObject):
         """ Initialize the data into default state """
 
         # Make sure variable type is allowed (for ES 2.0 shader)
-        if gtype not in [gl.GL_FLOAT,      gl.GL_FLOAT_VEC2,
-                         gl.GL_FLOAT_VEC3, gl.GL_FLOAT_VEC4,
-                         gl.GL_INT,        gl.GL_BOOL,
-                         gl.GL_FLOAT_MAT2, gl.GL_FLOAT_MAT3,
-                         gl.GL_FLOAT_MAT4, gl.GL_SAMPLER_1D,
-                         gl.GL_SAMPLER_2D, gl.GL_SAMPLER_CUBE]:
+        if gtype not in [gl.GL_FLOAT,       gl.GL_FLOAT_VEC2,
+                         gl.GL_FLOAT_VEC3,  gl.GL_FLOAT_VEC4,
+                         gl.GL_DOUBLE,      gl.GL_DOUBLE_VEC2,
+                         gl.GL_DOUBLE_VEC3, gl.GL_DOUBLE_VEC4,
+                         gl.GL_INT,         gl.GL_BOOL,
+                         gl.GL_FLOAT_MAT2,  gl.GL_FLOAT_MAT3,
+                         gl.GL_FLOAT_MAT4,  gl.GL_SAMPLER_1D,
+                         gl.GL_SAMPLER_2D,  gl.GL_SAMPLER_CUBE]:
             raise TypeError("Unknown variable type")
 
         GLObject.__init__(self)
@@ -187,6 +197,10 @@ class Uniform(Variable):
         gl.GL_FLOAT_VEC2:   gl.glUniform2fv,
         gl.GL_FLOAT_VEC3:   gl.glUniform3fv,
         gl.GL_FLOAT_VEC4:   gl.glUniform4fv,
+        gl.GL_DOUBLE:       gl.glUniform1dv,
+        gl.GL_DOUBLE_VEC2:  gl.glUniform2dv,
+        gl.GL_DOUBLE_VEC3:  gl.glUniform3dv,
+        gl.GL_DOUBLE_VEC4:  gl.glUniform4dv,
         gl.GL_INT:          gl.glUniform1iv,
         gl.GL_BOOL:         gl.glUniform1iv,
         gl.GL_FLOAT_MAT2:   gl.glUniformMatrix2fv,
