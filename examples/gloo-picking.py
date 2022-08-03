@@ -100,7 +100,8 @@ color = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
 color.interpolation = gl.GL_LINEAR
 pick = np.zeros((window.height,window.width,4),np.ubyte).view(gloo.Texture2D)
 pick.interpolation = gl.GL_LINEAR
-framebuffer = gloo.FrameBuffer(color=[color,pick], depth=gloo.DepthBuffer(window.width, window.height))
+framebuffer = gloo.FrameBuffer(color=[color,pick],
+                               depth=gloo.DepthBuffer(window.width, window.height))
 quad["color"] = color
 
 index = 0
@@ -132,12 +133,12 @@ def on_resize(width, height):
     quad["color"] = framebuffer.color[0]
 
 @window.event
-def on_mouse_motion(x,y, dx, dy):
+def on_mouse_motion(x, y, dx, dy):
     global mouse
     mouse = int(x), window.height-int(y)
 
 @window.event
-def on_mouse_drag(x,y, dx, dy):
+def on_mouse_drag(x, y, dx, dy, button):
     global mouse
     mouse = int(x), window.height-int(y)
 

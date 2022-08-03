@@ -8,7 +8,11 @@ uniform sampler1D colormap;
 
 vec3 colormap_user(float t)
 {
+#if __VERSION__ < 130
     return texture1D(colormap, t).rgb;
+#else
+    return texture(colormap, t).rgb;
+#endif
 }
 
 vec3 colormap_user(float t, vec3 under, vec3 over)
