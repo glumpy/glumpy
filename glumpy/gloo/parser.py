@@ -163,8 +163,11 @@ def get_uniforms(code):
 def get_attributes(code):
     return get_declarations(code, qualifier = ["attribute", "in"])
 
-def get_varyings(code):
+def get_varyings(code, version=120):
+    #if version <= 120:
     return get_declarations(code, qualifier = "varying")
+    #else:
+    #    return get_declarations(code, qualifier = ["in", "out"])
 
 def get_functions(code):
     def brace_matcher (n):
