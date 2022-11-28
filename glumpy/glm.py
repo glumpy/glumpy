@@ -252,13 +252,15 @@ def lookAt(eye, center, up = [0, 1, 0]):
     up = np.array(up, dtype=np.float32)
 
     # Camera Z axis
-    zaxis = eye - center; zaxis /= np.linalg.norm(zaxis)
+    zaxis = eye - center
+    zaxis /= np.linalg.norm(zaxis)
 
     # Camera's x axis
-    xaxis = np.cross(up, zaxis); xaxis /= np.linalg.norm(xaxis)
+    xaxis = np.cross(up, zaxis)
+    xaxis /= np.linalg.norm(xaxis)
 
     # Camera's y axis
-    yaxis = np.cross(zaxis, xaxis); # axes already normalized
+    yaxis = np.cross(zaxis, xaxis) # axes already normalized
 
     # Rotation matrix to align the world to the camera axes
     R = np.row_stack([xaxis, yaxis, zaxis])
