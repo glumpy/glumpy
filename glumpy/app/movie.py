@@ -35,10 +35,12 @@ def record(window, filename, fps):
     # Modify the on_draw event handler to also write a
     # movie frame every time it is called
     old_on_draw = window.get_handler('on_draw')
-    @window.event
+    window.remove_handler('on_draw', old_on_draw)
+    
     def on_draw(dt):
         old_on_draw(dt)
-        write_frame(writer)
+        write_frame(writer)    
+    window.set_handler('on_draw', on_draw)
 
     yield
 
