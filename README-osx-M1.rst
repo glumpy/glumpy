@@ -1,7 +1,7 @@
 Installing on M1 Macs
 =====================
 
-Installing via ``pip`` on an Apple Silicon/M1 Mac may fail due to an incompatability with the pre-generated Cython code for the  ``triangle`` dependency. As a workaround, this package and glumpy can be downloaded from GitHub and installed manually, like this:
+Installing via ``pip`` on an Apple Silicon/M1 Mac may fail due to an incompatibility with the pre-generated Cython code for the  ``triangle`` dependency. As a workaround, this package and glumpy can be downloaded from GitHub and installed manually, like this:
 
 ::
    
