@@ -19,10 +19,10 @@ int         gl.GL_INT          1  gl.GL_INT          np.int32
 ivec2       gl.GL_INT_VEC2     2  gl.GL_INT          np.int32
 ivec3       gl.GL_INT_VEC3     3  gl.GL_INT          np.int32
 ivec4       gl.GL_INT_VEC4     4  gl.GL_INT          np.int32
-bool        gl.GL_BOOL         1  gl.GL_BOOL         np.bool
-bvec2       gl.GL_BOOL_VEC2    2  gl.GL_BOOL         np.bool
-bvec3       gl.GL_BOOL_VEC3    3  gl.GL_BOOL         np.bool
-bvec4       gl.GL_BOOL_VEC4    4  gl.GL_BOOL         np.bool
+bool        gl.GL_BOOL         1  gl.GL_BOOL         np.bool_
+bvec2       gl.GL_BOOL_VEC2    2  gl.GL_BOOL         np.bool_
+bvec3       gl.GL_BOOL_VEC3    3  gl.GL_BOOL         np.bool_
+bvec4       gl.GL_BOOL_VEC4    4  gl.GL_BOOL         np.bool_
 mat2        gl.GL_FLOAT_MAT2   4  gl.GL_FLOAT        np.float32
 mat3        gl.GL_FLOAT_MAT3   9  gl.GL_FLOAT        np.float32
 mat4        gl.GL_FLOAT_MAT4   16 gl.GL_FLOAT        np.float32
@@ -80,10 +80,10 @@ gl_typeinfo = {
     gl.GL_INT_VEC2     : ( 2, gl.GL_INT,          np.int32),
     gl.GL_INT_VEC3     : ( 3, gl.GL_INT,          np.int32),
     gl.GL_INT_VEC4     : ( 4, gl.GL_INT,          np.int32),
-    gl.GL_BOOL         : ( 1, gl.GL_BOOL,         np.bool),
-    gl.GL_BOOL_VEC2    : ( 2, gl.GL_BOOL,         np.bool),
-    gl.GL_BOOL_VEC3    : ( 3, gl.GL_BOOL,         np.bool),
-    gl.GL_BOOL_VEC4    : ( 4, gl.GL_BOOL,         np.bool),
+    gl.GL_BOOL         : ( 1, gl.GL_BOOL,         np.bool_),
+    gl.GL_BOOL_VEC2    : ( 2, gl.GL_BOOL,         np.bool_),
+    gl.GL_BOOL_VEC3    : ( 3, gl.GL_BOOL,         np.bool_),
+    gl.GL_BOOL_VEC4    : ( 4, gl.GL_BOOL,         np.bool_),
     gl.GL_FLOAT_MAT2   : ( 4, gl.GL_FLOAT,        np.float32),
     gl.GL_FLOAT_MAT3   : ( 9, gl.GL_FLOAT,        np.float32),
     gl.GL_FLOAT_MAT4   : (16, gl.GL_FLOAT,        np.float32),
