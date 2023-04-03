@@ -19,7 +19,7 @@ if __name__ == "__main__":
         os.remove('MANIFEST')
 
     setup(name="glumpy",
-          version="1.1.0",
+          version="1.2.0",
           description="Fast, scalable & beautiful scientific visualisation",
           long_description = """Glumpy is a python library for scientific
                                 visualization that is both fast, scalable
@@ -33,11 +33,11 @@ if __name__ == "__main__":
           maintainer_email="Nicolas.Rougier@inria.fr",
           install_requires=['numpy', 'triangle', 'cython'],
           classifiers=[
-              "Development Status :: 4 - Beta",
+              "Development Status :: 5 - Production/Stable",
               "Operating System :: MacOS :: MacOS X",
               "Operating System :: Microsoft :: Windows",
               "Operating System :: POSIX",
-              "Programming Language :: Python :: 2.7",
+              "Programming Language :: Python :: 3.8",
               "License :: OSI Approved :: BSD License",
               "Intended Audience :: Developers",
               "Intended Audience :: Science/Research",
