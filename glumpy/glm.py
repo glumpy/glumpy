@@ -221,6 +221,59 @@ def rotate(M, angle, x, y, z, point=None):
     M[...] = np.dot(M, R)
     return M
 
+def lookAt(eye, center, up = [0, 1, 0]):
+
+    '''
+    Develops a view matrix for a virtual camera
+
+    Parameters
+    ----------
+    eye : 3-tuple
+        Location of the camera in world coordinates
+    cemter : 3-tuple 
+        Location of a point in world coordinates that should be 
+        at the center of the camera's view.
+    up : 3-tuple
+        Direction vector in world coordinates that should be vertical 
+        as seen by the camera. Default is [0, 1, 0], which causes the 
+        camera's vertical to be aligned with the world's Y axis.
+
+    Returns
+    -------
+    M : array
+        Rigid transformation matrix (4 x 4) that takes world coordinates
+        to camera coordinates.
+
+    '''
+    
+
+    eye = np.array(eye, dtype=np.float32)
+    center = np.array(center, dtype=np.float32)
+    up = np.array(up, dtype=np.float32)
+
+    # Camera Z axis
+    zaxis = eye - center
+    zaxis /= np.linalg.norm(zaxis)
+
+    # Camera's x axis
+    xaxis = np.cross(up, zaxis)
+    xaxis /= np.linalg.norm(xaxis)
+
+    # Camera's y axis
+    yaxis = np.cross(zaxis, xaxis) # axes already normalized
+
+    # Rotation matrix to align the world to the camera axes
+    R = np.row_stack([xaxis, yaxis, zaxis])
+
+    # Translation vector (in camera space) to move the origin to the
+    # camera
+    t = -R@eye
+    
+    M = np.column_stack([R, t])
+    M = np.row_stack([M, [0, 0, 0, 1]])
+
+    return M.T
+
 
 def ortho(left, right, bottom, top, znear, zfar):
     """Create orthographic projection matrix
