@@ -378,12 +378,18 @@ class Window(window.Window):
 
     def set_fullscreen(self, fullscreen, screen=None):
         screen = 0 if screen is None else screen
-        mode = glfw.glfwGetVideoMode(glfw.glfwGetMonitors()[screen])
+        monitor = glfw.glfwGetMonitors()[screen]
+        mode = glfw.glfwGetVideoMode(monitor)
 
         if fullscreen:
-            glfw.glfwSetWindowMonitor(self._native_window, screen, 0, 0, mode[0], mode[1], mode[-1])
+            glfw.glfwSetWindowMonitor(
+                self._native_window, monitor, 0, 0,
+                mode.size.width, mode.size.height, mode.refresh_rate
+            )
+            self._fullscreen = True
         else:
-            glfw.glfwSetWindowMonitor(self._native_window, screen, 0, 0, 256, 256, mode[-1])
+            glfw.glfwSetWindowMonitor(self._native_window, None, 0, 0, 256, 256, mode.refresh_rate)
+            self._fullscreen = False
 
     def get_fullscreen(self):
         return self._fullscreen
