@@ -313,6 +313,8 @@ class FrameBuffer(GLObject):
         :param int height: New buffer height (pixels)
         """
 
+        assert width > 0
+        assert height > 0
         self._width = width
         self._height = height
 
@@ -320,38 +322,40 @@ class FrameBuffer(GLObject):
             if isinstance(buffer, ColorBuffer):
                 buffer.resize(width, height)
             elif isinstance(buffer, Texture2D):
-                newbuffer = np.resize(buffer, (height,width,buffer.shape[2]))
+                newbuffer = np.resize(buffer, (height, width, buffer.shape[2]))
                 newbuffer = newbuffer.view(buffer.__class__)
                 self.color[i] = newbuffer
                 buffer.delete()
 
-                target = gl.GL_COLOR_ATTACHMENT0+i
-                self._pending_attachments.append((target, self.color[i]))
+                target = gl.GL_COLOR_ATTACHMENT0 + i
+                self._pending_attachments.append((target, newbuffer))
                 self._need_attach = True
 
         if isinstance(self.depth, DepthBuffer):
             self.depth.resize(width, height)
         elif isinstance(self.depth, Texture2D):
-            depth = np.resize(self.depth, (height,width, self.depth.shape[2]))
+            depth = np.resize(self.depth, (height, width, self.depth.shape[2]))
             depth = depth.view(self.depth.__class__)
             self.depth.delete()
             self.depth = depth
 
-            target = gl.GL_DEPTH_ATTACHMENT
-            self._pending_attachments.append((target, self.depth))
-            self._need_attach = True
+            # target = gl.GL_DEPTH_ATTACHMENT
+            # fbo._pending_attachments.append((target, fbo.depth))
+            # fbo._need_attach = True
 
         if isinstance(self.stencil, StencilBuffer):
             self.stencil.resize(width, height)
         elif isinstance(self.stencil, Texture2D):
-            stencil = np.resize(self.stencil, (height,width, self.stencil.shape[2]))
+            stencil = np.resize(self.stencil, (height, width, self.stencil.shape[2]))
             stencil = stencil.view(self.stencil.__class__)
             self.stencil.delete()
             self.stencil = stencil
 
-            target = gl.GL_STENCIL_ATTACHMENT
-            self._pending_attachments.append((target, self.stencil))
-            self._need_attach = True
+            # target = gl.GL_STENCIL_ATTACHMENT
+            # fbo._pending_attachments.append((target, fbo.stencil))
+            # fbo._need_attach = True
+
+
 
 
     def _create(self):
