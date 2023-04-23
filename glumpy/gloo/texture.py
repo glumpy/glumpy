@@ -38,20 +38,44 @@ from glumpy.gloo.globject import GLObject
 class Texture(GPUData,GLObject):
     """ Generic texture """
 
-    _cpu_formats = { 1: gl.GL_RED,
-                     2: gl.GL_RG,
-                     3: gl.GL_RGB,
-                     4: gl.GL_RGBA }
+    _cpu_formats = {
+        'float': {1: gl.GL_RED, 2: gl.GL_RG,
+                  3: gl.GL_RGB, 4: gl.GL_RGBA},
+        'integer': {1: gl.GL_RED_INTEGER, 2: gl.GL_RG_INTEGER,
+                    3: gl.GL_RGB_INTEGER, 4: gl.GL_RGBA_INTEGER},
+    }
 
-    _gpu_formats = { 1: gl.GL_RED,
-                     2: gl.GL_RG,
-                     3: gl.GL_RGB,
-                     4: gl.GL_RGBA }
-
-    _gpu_float_formats = { 1: gl.GL_R32F,
-                           2: gl.GL_RG32F,
-                           3: gl.GL_RGB32F,
-                           4: gl.GL_RGBA32F }
+    _gpu_formats = {
+        'quantized': {
+            1: gl.GL_R8, 2: gl.GL_RG8,
+            3: gl.GL_RGB8, 4: gl.GL_RGBA8,
+        },
+        'float': {
+            np.dtype(np.float32): {
+                1: gl.GL_R32F, 2: gl.GL_RG32F,
+                3: gl.GL_RGB32F, 4: gl.GL_RGBA32F},
+        },
+        'integer': {
+            np.dtype(np.int8): {
+                1: gl.GL_R8I, 2: gl.GL_RG8I,
+                3: gl.GL_RGB8I, 4: gl.GL_RGBA8I},
+            np.dtype(np.int16): {
+                1: gl.GL_R16I, 2: gl.GL_RG16I,
+                3: gl.GL_RGB16I, 4: gl.GL_RGBA16I},
+            np.dtype(np.int32): {
+                1: gl.GL_R32I, 2: gl.GL_RG32I,
+                3: gl.GL_RGB32I, 4: gl.GL_RGBA32I},
+            np.dtype(np.uint8): {
+                1: gl.GL_R8UI, 2: gl.GL_RG8UI,
+                3: gl.GL_RGB8UI, 4: gl.GL_RGBA8UI},
+            np.dtype(np.uint16): {
+                1: gl.GL_R16UI, 2: gl.GL_RG16UI,
+                3: gl.GL_RGB16UI, 4: gl.GL_RGBA16UI},
+            np.dtype(np.uint32): {
+                1: gl.GL_R32UI, 2: gl.GL_RG32UI,
+                3: gl.GL_RGB32UI, 4: gl.GL_RGBA32UI},
+        }
+    }
 
     _gtypes = { np.dtype(np.int8):    gl.GL_BYTE,
                 np.dtype(np.uint8):   gl.GL_UNSIGNED_BYTE,
@@ -227,8 +251,9 @@ class Texture1D(Texture):
     def __init__(self):
         Texture.__init__(self, gl.GL_TEXTURE_1D)
         self.shape = self._check_shape(self.shape, 1)
-        self._cpu_format = Texture._cpu_formats[self.shape[-1]]
-        self._gpu_format = Texture._gpu_formats[self.shape[-1]]
+        self._cpu_format = Texture._cpu_formats['float'][self.shape[-1]]
+        self._gpu_format =\
+            Texture._gpu_formats['quantized'][self.shape[-1]]
 
 
     @property
@@ -283,7 +308,19 @@ class TextureFloat1D(Texture1D):
 
     def __init__(self):
         Texture1D.__init__(self)
-        self._gpu_format = Texture._gpu_float_formats[self.shape[-1]]
+        self._gpu_format =\
+            Texture._gpu_formats['float'][self.dtype][self.shape[-1]]
+
+
+
+class TextureInteger1D(Texture1D):
+    """ 1D integer texture """
+
+    def __init__(self):
+        Texture1D.__init__(self)
+        self._cpu_format = Texture._cpu_formats['integer'][self.shape[-1]]
+        self._gpu_format =\
+            Texture._gpu_formats['integer'][self.dtype][self.shape[-1]]
 
 
 
@@ -293,8 +330,9 @@ class Texture2D(Texture):
     def __init__(self):
         Texture.__init__(self, gl.GL_TEXTURE_2D)
         self.shape = self._check_shape(self.shape, 2)
-        self._cpu_format = Texture._cpu_formats[self.shape[-1]]
-        self._gpu_format = Texture._gpu_formats[self.shape[-1]]
+        self._cpu_format = Texture._cpu_formats['float'][self.shape[-1]]
+        self._gpu_format =\
+            Texture._gpu_formats['quantized'][self.shape[-1]]
 
     @property
     def width(self):
@@ -380,7 +418,20 @@ class TextureFloat2D(Texture2D):
 
     def __init__(self):
         Texture2D.__init__(self)
-        self._gpu_format = Texture._gpu_float_formats[self.shape[-1]]
+        self._gpu_format =\
+            Texture._gpu_formats['float'][self.dtype][self.shape[-1]]
+
+
+
+class TextureInteger2D(Texture2D):
+    """ 2D integer texture """
+
+    def __init__(self):
+        Texture2D.__init__(self)
+        self._cpu_format = Texture._cpu_formats['integer'][self.shape[-1]]
+        self._gpu_format =\
+            Texture._gpu_formats['integer'][self.dtype][self.shape[-1]]
+
 
 
 class Texture3D(Texture):
@@ -524,8 +575,9 @@ class TextureCube(Texture):
             raise RuntimeError(error)
 
         self.shape = [6] + list(self._check_shape(self.shape[1:], 2))
-        self._cpu_format = Texture._cpu_formats[self.shape[-1]]
-        self._gpu_format = Texture._gpu_formats[self.shape[-1]]
+        self._cpu_format = Texture._cpu_formats['float'][self.shape[-1]]
+        self._gpu_format =\
+            Texture._gpu_formats['quantized'][self.shape[-1]]
 
     @property
     def width(self):
