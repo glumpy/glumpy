@@ -1,8 +1,8 @@
 # -----------------------------------------------------------------------------
-# Copyright (c) 2009-2016 Nicolas P. Rougier. All rights reserved.
+# Copyright (c) 2009-2023 Nicolas P. Rougier. All rights reserved.
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-__version__ = "1.0.6"
+__version__ = "1.2.1"
 
 from . import app
 from . import api

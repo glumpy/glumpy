@@ -7,7 +7,7 @@
 import os
 from setuptools import dist, setup, Extension
 
-dist.Distribution().fetch_build_eggs(['Cython>=0.15.1', 'numpy>=1.10'])
+dist.Distribution().fetch_build_eggs(['Cython>=0.15.1', 'numpy>=1.20'])
 
 import numpy
 from Cython.Distutils import build_ext
@@ -19,7 +19,7 @@ if __name__ == "__main__":
         os.remove('MANIFEST')
 
     setup(name="glumpy",
-          version="1.2.0",
+          version="1.2.1",
           description="Fast, scalable & beautiful scientific visualisation",
           long_description = """Glumpy is a python library for scientific
                                 visualization that is both fast, scalable
