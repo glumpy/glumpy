@@ -245,7 +245,7 @@ class Window(window.Window):
         #      can be different so we try to correct window size such as having
         #      the framebuffer size of the right size
         w,h = glfw.glfwGetFramebufferSize(self._native_window)
-        if platform == 'darwin' and (w!= width or h!= height):
+        if platform.system() == 'Darwin' and (w!= width or h!= height):
             width, height  = width//2, height//2
             glfw.glfwSetWindowSize(self._native_window, width, height)
             log.info("HiDPI detected, fixing window size")
