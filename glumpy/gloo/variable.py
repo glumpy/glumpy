@@ -8,29 +8,33 @@ the GPU. For OpenGL ES 2.0, there are mainly two types: uniforms and
 attributes. The correspondance betwenn GPU and CPU data types is given in the
 table below.
 
-=========== ================== == ================== ==============
-GLSL Type   GLSL/GL Type       #  GL elementary type Numpy type
-=========== ================== == ================== ==============
-float       gl.GL_FLOAT        1  gl.GL_FLOAT        np.float32
-vec2        gl.GL_FLOAT_VEC2   2  gl.GL_FLOAT        np.float32
-vec3        gl.GL_FLOAT_VEC3   3  gl.GL_FLOAT        np.float32
-vec4        gl.GL_FLOAT_VEC4   4  gl.GL_FLOAT        np.float32
-int         gl.GL_INT          1  gl.GL_INT          np.int32
-ivec2       gl.GL_INT_VEC2     2  gl.GL_INT          np.int32
-ivec3       gl.GL_INT_VEC3     3  gl.GL_INT          np.int32
-ivec4       gl.GL_INT_VEC4     4  gl.GL_INT          np.int32
-bool        gl.GL_BOOL         1  gl.GL_BOOL         np.bool_
-bvec2       gl.GL_BOOL_VEC2    2  gl.GL_BOOL         np.bool_
-bvec3       gl.GL_BOOL_VEC3    3  gl.GL_BOOL         np.bool_
-bvec4       gl.GL_BOOL_VEC4    4  gl.GL_BOOL         np.bool_
-mat2        gl.GL_FLOAT_MAT2   4  gl.GL_FLOAT        np.float32
-mat3        gl.GL_FLOAT_MAT3   9  gl.GL_FLOAT        np.float32
-mat4        gl.GL_FLOAT_MAT4   16 gl.GL_FLOAT        np.float32
-sampler1D   gl.GL_SAMPLER_1D   1  gl.GL_UNSIGNED_INT np.uint32
-sampler2D   gl.GL_SAMPLER_2D   1  gl.GL_UNSIGNED_INT np.uint32
-sampler3D   gl.GL_SAMPLER_3D   1  gl.GL_UNSIGNED_INT np.uint32
-samplerCube gl.GL_SAMPLER_CUBE 1  gl.GL_UNSIGNED_INT np.uint32
-=========== ================== == ================== ==============
+=========== ======================= == ================== ==============
+GLSL Type   GLSL/GL Type            #  GL elementary type Numpy type
+=========== ======================= == ================== ==============
+float       gl.GL_FLOAT             1  gl.GL_FLOAT        np.float32
+vec2        gl.GL_FLOAT_VEC2        2  gl.GL_FLOAT        np.float32
+vec3        gl.GL_FLOAT_VEC3        3  gl.GL_FLOAT        np.float32
+vec4        gl.GL_FLOAT_VEC4        4  gl.GL_FLOAT        np.float32
+int         gl.GL_INT               1  gl.GL_INT          np.int32
+uint        gl.GL_UNSIGNED_INT      1  gl.GL_UNSIGNED_INT np.uint32
+ivec2       gl.GL_INT_VEC2          2  gl.GL_INT          np.int32
+ivec3       gl.GL_INT_VEC3          3  gl.GL_INT          np.int32
+ivec4       gl.GL_INT_VEC4          4  gl.GL_INT          np.int32
+uvec2       gl.GL_UNSIGNED_INT_VEC2 2  gl.GL_UNSIGNED_INT np.uint32
+uvec3       gl.GL_UNSIGNED_INT_VEC3 3  gl.GL_UNSIGNED_INT np.uint32
+uvec4       gl.GL_UNSIGNED_INT_VEC4 4  gl.GL_UNSIGNED_INT np.uint32
+bool        gl.GL_BOOL              1  gl.GL_BOOL         np.bool_
+bvec2       gl.GL_BOOL_VEC2         2  gl.GL_BOOL         np.bool_
+bvec3       gl.GL_BOOL_VEC3         3  gl.GL_BOOL         np.bool_
+bvec4       gl.GL_BOOL_VEC4         4  gl.GL_BOOL         np.bool_
+mat2        gl.GL_FLOAT_MAT2        4  gl.GL_FLOAT        np.float32
+mat3        gl.GL_FLOAT_MAT3        9  gl.GL_FLOAT        np.float32
+mat4        gl.GL_FLOAT_MAT4        16 gl.GL_FLOAT        np.float32
+sampler1D   gl.GL_SAMPLER_1D        1  gl.GL_UNSIGNED_INT np.uint32
+sampler2D   gl.GL_SAMPLER_2D        1  gl.GL_UNSIGNED_INT np.uint32
+sampler3D   gl.GL_SAMPLER_3D        1  gl.GL_UNSIGNED_INT np.uint32
+samplerCube gl.GL_SAMPLER_CUBE      1  gl.GL_UNSIGNED_INT np.uint32
+=========== ======================= == ================== ==============
 
 .. note:: 
 
@@ -72,25 +76,29 @@ from glumpy.gloo.texture import TextureFloat1D, TextureFloat2D, TextureFloat3D
 
 # ------------------------------------------------------------- gl_typeinfo ---
 gl_typeinfo = {
-    gl.GL_FLOAT        : ( 1, gl.GL_FLOAT,        np.float32),
-    gl.GL_FLOAT_VEC2   : ( 2, gl.GL_FLOAT,        np.float32),
-    gl.GL_FLOAT_VEC3   : ( 3, gl.GL_FLOAT,        np.float32),
-    gl.GL_FLOAT_VEC4   : ( 4, gl.GL_FLOAT,        np.float32),
-    gl.GL_INT          : ( 1, gl.GL_INT,          np.int32),
-    gl.GL_INT_VEC2     : ( 2, gl.GL_INT,          np.int32),
-    gl.GL_INT_VEC3     : ( 3, gl.GL_INT,          np.int32),
-    gl.GL_INT_VEC4     : ( 4, gl.GL_INT,          np.int32),
-    gl.GL_BOOL         : ( 1, gl.GL_BOOL,         np.bool_),
-    gl.GL_BOOL_VEC2    : ( 2, gl.GL_BOOL,         np.bool_),
-    gl.GL_BOOL_VEC3    : ( 3, gl.GL_BOOL,         np.bool_),
-    gl.GL_BOOL_VEC4    : ( 4, gl.GL_BOOL,         np.bool_),
-    gl.GL_FLOAT_MAT2   : ( 4, gl.GL_FLOAT,        np.float32),
-    gl.GL_FLOAT_MAT3   : ( 9, gl.GL_FLOAT,        np.float32),
-    gl.GL_FLOAT_MAT4   : (16, gl.GL_FLOAT,        np.float32),
-    gl.GL_SAMPLER_1D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
-    gl.GL_SAMPLER_2D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
-    gl.GL_SAMPLER_3D   : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
-    gl.GL_SAMPLER_CUBE : ( 1, gl.GL_UNSIGNED_INT, np.uint32)
+    gl.GL_FLOAT             : ( 1, gl.GL_FLOAT,        np.float32),
+    gl.GL_FLOAT_VEC2        : ( 2, gl.GL_FLOAT,        np.float32),
+    gl.GL_FLOAT_VEC3        : ( 3, gl.GL_FLOAT,        np.float32),
+    gl.GL_FLOAT_VEC4        : ( 4, gl.GL_FLOAT,        np.float32),
+    gl.GL_INT               : ( 1, gl.GL_INT,          np.int32),
+    gl.GL_UNSIGNED_INT      : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_INT_VEC2          : ( 2, gl.GL_INT,          np.int32),
+    gl.GL_INT_VEC3          : ( 3, gl.GL_INT,          np.int32),
+    gl.GL_INT_VEC4          : ( 4, gl.GL_INT,          np.int32),
+    gl.GL_UNSIGNED_INT_VEC2 : ( 2, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_UNSIGNED_INT_VEC3 : ( 3, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_UNSIGNED_INT_VEC4 : ( 4, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_BOOL              : ( 1, gl.GL_BOOL,         np.bool_),
+    gl.GL_BOOL_VEC2         : ( 2, gl.GL_BOOL,         np.bool_),
+    gl.GL_BOOL_VEC3         : ( 3, gl.GL_BOOL,         np.bool_),
+    gl.GL_BOOL_VEC4         : ( 4, gl.GL_BOOL,         np.bool_),
+    gl.GL_FLOAT_MAT2        : ( 4, gl.GL_FLOAT,        np.float32),
+    gl.GL_FLOAT_MAT3        : ( 9, gl.GL_FLOAT,        np.float32),
+    gl.GL_FLOAT_MAT4        : (16, gl.GL_FLOAT,        np.float32),
+    gl.GL_SAMPLER_1D        : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_SAMPLER_2D        : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_SAMPLER_3D        : ( 1, gl.GL_UNSIGNED_INT, np.uint32),
+    gl.GL_SAMPLER_CUBE      : ( 1, gl.GL_UNSIGNED_INT, np.uint32)
 }
 
 
@@ -103,12 +111,17 @@ class Variable(GLObject):
         """ Initialize the data into default state """
 
         # Make sure variable type is allowed (for ES 2.0 shader)
-        if gtype not in [gl.GL_FLOAT,      gl.GL_FLOAT_VEC2,
-                         gl.GL_FLOAT_VEC3, gl.GL_FLOAT_VEC4,
-                         gl.GL_INT,        gl.GL_BOOL,
-                         gl.GL_FLOAT_MAT2, gl.GL_FLOAT_MAT3,
-                         gl.GL_FLOAT_MAT4, gl.GL_SAMPLER_1D,
-                         gl.GL_SAMPLER_2D, gl.GL_SAMPLER_3D, gl.GL_SAMPLER_CUBE]:
+        if gtype not in [gl.GL_FLOAT,             gl.GL_FLOAT_VEC2,
+                         gl.GL_FLOAT_VEC3,        gl.GL_FLOAT_VEC4,
+                         gl.GL_INT,               gl.GL_INT_VEC2,
+                         gl.GL_INT_VEC3,          gl.GL_INT_VEC4,
+                         gl.GL_UNSIGNED_INT,      gl.GL_UNSIGNED_INT_VEC2,
+                         gl.GL_UNSIGNED_INT_VEC3, gl.GL_UNSIGNED_INT_VEC4,
+                         gl.GL_BOOL,
+                         gl.GL_FLOAT_MAT2,        gl.GL_FLOAT_MAT3,
+                         gl.GL_FLOAT_MAT4,        gl.GL_SAMPLER_1D,
+                         gl.GL_SAMPLER_2D,        gl.GL_SAMPLER_3D,
+                         gl.GL_SAMPLER_CUBE]:
             raise TypeError("Unknown variable type")
 
         GLObject.__init__(self)
