@@ -20,8 +20,10 @@ FormatHandler( 'glumpy',
                    'glumpy.gloo.atlas.Atlas',
                    'glumpy.gloo.texture.Texture2D',
                    'glumpy.gloo.texture.Texture1D',
-                   'glumpy.gloo.texture.FloatTexture2D',
-                   'glumpy.gloo.texture.FloatTexture1D',
+                   'glumpy.gloo.texture.TextureFloat2D',
+                   'glumpy.gloo.texture.TextureFloat1D',
+                   'glumpy.gloo.texture.TextureInteger2D',
+                   'glumpy.gloo.texture.TextureInteger1D',
                    'glumpy.gloo.texture.TextureCube',
                ])
 

@@ -13,6 +13,7 @@ from . texture import Texture
 from . texture import TextureCube
 from . texture import Texture1D, Texture2D
 from . texture import TextureFloat1D, TextureFloat2D
+from . texture import TextureInteger1D, TextureInteger2D
 from . texture import DepthTexture
 from . array import VertexArray
 from . buffer import Buffer
